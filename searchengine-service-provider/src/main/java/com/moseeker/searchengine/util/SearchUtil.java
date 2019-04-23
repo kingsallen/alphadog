@@ -882,7 +882,7 @@ public class SearchUtil {
                 QueryBuilder keyand = QueryBuilders.boolQuery();
                 if(tagIdList.contains("allpublic")){
                     QueryBuilder query0=QueryBuilders.matchQuery("user.talent_pool.is_public",1);
-                    ((BoolQueryBuilder) keyand).must(query0);
+                    ((BoolQueryBuilder) keyand).should(query0);
                     tagIdList.remove("allpublic");
                 }
                 if(tagIdList.size()>0&&tagIdList.contains("talent")){
@@ -891,7 +891,7 @@ public class SearchUtil {
                     ((BoolQueryBuilder) keyand1).must(query1);
                     QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.is_talent",1);
                     ((BoolQueryBuilder) keyand1).must(query2);
-                    ((BoolQueryBuilder) keyand).must(keyand1);
+                    ((BoolQueryBuilder) keyand).should(keyand1);
                     tagIdList.remove("talent");
                 }
                 if(tagIdList.size()>0){
@@ -899,6 +899,7 @@ public class SearchUtil {
                     ((BoolQueryBuilder) keyand).must(query2);
 
                 }
+                ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
                 ((BoolQueryBuilder) builder).must(keyand);
             }
         }
