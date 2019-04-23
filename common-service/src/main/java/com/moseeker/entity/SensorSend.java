@@ -20,7 +20,7 @@ public class SensorSend {
     @Autowired
     public SensorSend() throws IOException {
         SensorsAnalytics sa = new SensorsAnalytics(
-                new SensorsAnalytics.ConcurrentLoggingConsumer("/data/sa/access.log"));
+                new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
     }
 
     public void send(String distinctId,String eventName){
