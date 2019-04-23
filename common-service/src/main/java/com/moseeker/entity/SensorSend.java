@@ -4,8 +4,10 @@ import com.moseeker.common.thread.ThreadPool;
 import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -14,7 +16,12 @@ public class SensorSend {
     private ThreadPool tp = ThreadPool.Instance;
     private final static String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
     private final static boolean SA_WRITE_DATA = true;
-    private final static SensorsAnalytics sa = new SensorsAnalytics(new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    private static SensorsAnalytics sa;
+    @Autowired
+    public SensorSend() throws IOException {
+        SensorsAnalytics sa = new SensorsAnalytics(
+                new SensorsAnalytics.ConcurrentLoggingConsumer("/data/sa/access.log"));
+    }
 
     public void send(String distinctId,String eventName){
         tp.startTast(()->{
