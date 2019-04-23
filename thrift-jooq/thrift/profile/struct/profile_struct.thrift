@@ -296,3 +296,15 @@ struct RequiredFieldInfo{
     5: optional bool position,
     6: optional bool city
 }
+
+struct PrfileUploadFiles{
+    1: optional i32 id,
+    2: optional String fileId,
+    3: optional String uniname,
+    4: optional String unionId;
+    5: optional String filename,
+    6: optional String url,
+    7: optional Timestamp create_time,
+    8: optional Timestamp update_time,
+    9: optional i32 status
+}
