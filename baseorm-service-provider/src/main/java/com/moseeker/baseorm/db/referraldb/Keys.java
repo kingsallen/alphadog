@@ -18,6 +18,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralCompanyConfRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
@@ -32,6 +33,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomHbPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 
 import javax.annotation.Generated;
 
@@ -72,6 +74,7 @@ public class Keys {
     public static final Identity<ReferralRecomEvaluationRecord, Integer> IDENTITY_REFERRAL_RECOM_EVALUATION = Identities0.IDENTITY_REFERRAL_RECOM_EVALUATION;
     public static final Identity<ReferralRecomHbPositionRecord, Integer> IDENTITY_REFERRAL_RECOM_HB_POSITION = Identities0.IDENTITY_REFERRAL_RECOM_HB_POSITION;
     public static final Identity<ReferralSeekRecommendRecord, Integer> IDENTITY_REFERRAL_SEEK_RECOMMEND = Identities0.IDENTITY_REFERRAL_SEEK_RECOMMEND;
+    public static final Identity<ReferralUploadFilesRecord, Integer> IDENTITY_REFERRAL_UPLOAD_FILES = Identities0.IDENTITY_REFERRAL_UPLOAD_FILES;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -96,6 +99,7 @@ public class Keys {
     public static final UniqueKey<ReferralRecomEvaluationRecord> KEY_REFERRAL_RECOM_EVALUATION_REFERRAL_RECOM_EVALUATION_POSITION_ID_POS_ID_PRESENTEE_PK = UniqueKeys0.KEY_REFERRAL_RECOM_EVALUATION_REFERRAL_RECOM_EVALUATION_POSITION_ID_POS_ID_PRESENTEE_PK;
     public static final UniqueKey<ReferralRecomHbPositionRecord> KEY_REFERRAL_RECOM_HB_POSITION_PRIMARY = UniqueKeys0.KEY_REFERRAL_RECOM_HB_POSITION_PRIMARY;
     public static final UniqueKey<ReferralSeekRecommendRecord> KEY_REFERRAL_SEEK_RECOMMEND_PRIMARY = UniqueKeys0.KEY_REFERRAL_SEEK_RECOMMEND_PRIMARY;
+    public static final UniqueKey<ReferralUploadFilesRecord> KEY_REFERRAL_UPLOAD_FILES_PRIMARY = UniqueKeys0.KEY_REFERRAL_UPLOAD_FILES_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -121,6 +125,7 @@ public class Keys {
         public static Identity<ReferralRecomEvaluationRecord, Integer> IDENTITY_REFERRAL_RECOM_EVALUATION = createIdentity(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.ID);
         public static Identity<ReferralRecomHbPositionRecord, Integer> IDENTITY_REFERRAL_RECOM_HB_POSITION = createIdentity(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION, ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.ID);
         public static Identity<ReferralSeekRecommendRecord, Integer> IDENTITY_REFERRAL_SEEK_RECOMMEND = createIdentity(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND, ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.ID);
+        public static Identity<ReferralUploadFilesRecord, Integer> IDENTITY_REFERRAL_UPLOAD_FILES = createIdentity(ReferralUploadFiles.REFERRAL_UPLOAD_FILES, ReferralUploadFiles.REFERRAL_UPLOAD_FILES.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -143,5 +148,6 @@ public class Keys {
         public static final UniqueKey<ReferralRecomEvaluationRecord> KEY_REFERRAL_RECOM_EVALUATION_REFERRAL_RECOM_EVALUATION_POSITION_ID_POS_ID_PRESENTEE_PK = createUniqueKey(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION, "KEY_referral_recom_evaluation_referral_recom_evaluation_position_id_pos_id_presentee_pk", ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID);
         public static final UniqueKey<ReferralRecomHbPositionRecord> KEY_REFERRAL_RECOM_HB_POSITION_PRIMARY = createUniqueKey(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION, "KEY_referral_recom_hb_position_PRIMARY", ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.ID);
         public static final UniqueKey<ReferralSeekRecommendRecord> KEY_REFERRAL_SEEK_RECOMMEND_PRIMARY = createUniqueKey(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND, "KEY_referral_seek_recommend_PRIMARY", ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.ID);
+        public static final UniqueKey<ReferralUploadFilesRecord> KEY_REFERRAL_UPLOAD_FILES_PRIMARY = createUniqueKey(ReferralUploadFiles.REFERRAL_UPLOAD_FILES, "KEY_referral_upload_files_PRIMARY", ReferralUploadFiles.REFERRAL_UPLOAD_FILES.ID);
     }
 }

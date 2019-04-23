@@ -18,6 +18,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 293650403;
+    private static final long serialVersionUID = 2083740806;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -121,6 +122,11 @@ public class Referraldb extends SchemaImpl {
     public final ReferralSeekRecommend REFERRAL_SEEK_RECOMMEND = com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
 
     /**
+     * 用户上传文件记录表
+     */
+    public final ReferralUploadFiles REFERRAL_UPLOAD_FILES = com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles.REFERRAL_UPLOAD_FILES;
+
+    /**
      * No further instances allowed
      */
     private Referraldb() {
@@ -159,5 +165,6 @@ public class Referraldb extends SchemaImpl {
             ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION,
             ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION,
             ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND);
+            ReferralUploadFiles.REFERRAL_UPLOAD_FILES);
     }
 }
