@@ -1279,8 +1279,6 @@ public class UseraccountsService {
         // 更新申请记录的申请人
 
         for(ReferralLog referralLog : referralLogs){
-            JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                    referralLog.getPositionId());
             pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferral_id(referralLog.getId());
@@ -1300,7 +1298,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
-                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
                     countDownLatch.countDown();
                 }
@@ -1337,8 +1335,8 @@ public class UseraccountsService {
             data.put("tableName","application_recom");
             data.put("user_id",applierId);
             scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(result));
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(data));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(result));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(data));
 
             },5000);
     }
