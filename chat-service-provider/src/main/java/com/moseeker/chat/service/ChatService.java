@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice;
@@ -16,6 +17,7 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.chat.constant.ChatOrigin;
 import com.moseeker.chat.constant.ChatSpeakerType;
@@ -23,6 +25,7 @@ import com.moseeker.chat.constant.ChatVoiceConstant;
 import com.moseeker.chat.exception.VoiceErrorEnum;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.service.entity.ChatFactory;
+import com.moseeker.chat.service.entity.UserInfoVO;
 import com.moseeker.chat.utils.*;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -96,6 +99,9 @@ public class ChatService {
 
     @Autowired
     private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private UserUserDao userUserDao;
 
     private ThreadPool pool = ThreadPool.Instance;
 
@@ -1407,4 +1413,19 @@ public class ChatService {
         redisClient.expire(Constant.APPID_ALPHADOG, VOICE_CLEAR_TIMES, String.valueOf(companyId), clearExpireTime);
         return clearObject;
     }
+
+    private UserInfoVO getUserInfa(String unioid){
+        UserInfoVO userInfoVO = new UserInfoVO();
+        List<UserWxUserDO> userWxUserDOS = wxUserDao.getWXUsersByUnionid(unioid);
+        List<UserUserRecord> userUserRecords = userUserDao.fetchByUnionid(unioid);
+        if (userWxUserDOS.size()!=0 && userWxUserDOS != null){
+            //userInfoVO.setAbbreviation(userUserRecords.get(1).getActivation());
+        }
+        if (userUserRecords != null && userUserRecords.size()!= 0){
+
+        }
+        return null;
+    }
+
+
 }

@@ -863,6 +863,9 @@ public class SearchUtil {
      */
     public void handlerTagIds(String tagIds,String hrId,QueryBuilder builder){
         List<String> tagIdList=this.stringConvertList(tagIds);
+        if(tagIdList.size()>1 &&tagIdList.contains("alltalent")){
+            tagIdList.remove("alltalent");
+        }
         if(tagIdList != null && tagIdList.size() >0 && !tagIdList.contains("alltalent")){
 
             if(tagIdList.size()==1){

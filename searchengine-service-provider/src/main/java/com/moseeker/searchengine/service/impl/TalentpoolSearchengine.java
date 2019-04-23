@@ -1422,8 +1422,6 @@ public class TalentpoolSearchengine {
             } else if ("alltalent".equals(profilePoolId)) {
                 if(tagIds == null) {
                     tagIds = "alltalent";
-                } else if(!tagIds.contains("alltalent")) {
-                    tagIds += ",alltalent";
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
                 String allPublisher = params.get("all_publisher");
