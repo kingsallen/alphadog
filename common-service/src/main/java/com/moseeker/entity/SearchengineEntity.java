@@ -600,8 +600,10 @@ public class SearchengineEntity {
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
+                        logger.info("removeApplication applications:{}", JSONObject.toJSONString(applications));
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            logger.info("removeApplication applicationOptional:{}", applicationOptional.get());
                             if (applicationOptional.isPresent()) {
                                 logger.info("removeApplication exists ");
                                 List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());
