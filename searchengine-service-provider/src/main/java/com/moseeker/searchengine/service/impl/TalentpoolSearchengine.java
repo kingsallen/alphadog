@@ -1070,7 +1070,7 @@ public class TalentpoolSearchengine {
         String companyManualTag=params.get("company_manual_tag");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
-        if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag) ){
+        if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag,companyManualTag) ){
             if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
                 if(!intentionCityCode.contains("111111")){
                     intentionCityCode=intentionCityCode+",111111";
@@ -1094,10 +1094,11 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
                 this.queryByHrAutoTag(hrAutoTag,query);
             }
+            if(StringUtils.isNotNullOrEmpty(companyManualTag)) {
+                this.queryByCompanyManualTag(companyManualTag,query);
+            }
         }
-        if(StringUtils.isNotNullOrEmpty(companyManualTag)) {
-            this.queryByCompanyManualTag(companyManualTag,query);
-        }
+
     }
 
 
@@ -1106,11 +1107,14 @@ public class TalentpoolSearchengine {
      判断是否继续执行查询操作
      */
     private boolean validateCommon(String keyword,String cityName,String companyName,String pastPosition,String intentionCity,String companyTag,
-                                   String pastPositionKeyWord,String pastCompanyKeyWord,String hrAutoTag){
+                                   String pastPositionKeyWord,String pastCompanyKeyWord,String hrAutoTag,String companyManualTag){
         return StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
                 StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||
                 StringUtils.isNotNullOrEmpty(intentionCity)||StringUtils.isNotNullOrEmpty(companyTag)||
-                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||StringUtils.isNotNullOrEmpty(pastCompanyKeyWord)||StringUtils.isNotNullOrEmpty(hrAutoTag);
+                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||
+                StringUtils.isNotNullOrEmpty(pastCompanyKeyWord)||
+                StringUtils.isNotNullOrEmpty(hrAutoTag)||
+                StringUtils.isNotNullOrEmpty(companyManualTag);
     }
     /*
      处理现居住地
@@ -1397,7 +1401,10 @@ public class TalentpoolSearchengine {
         String profilePoolId = params.get("profile_pool_id");
         if(StringUtils.isNotNullOrEmpty(profilePoolId)) {
             this.queryByProfilePoolId(profilePoolId,hrId,query);
-            this.queryTagIds(searchUtil.stringConvertList(tagIds),query);
+            if(StringUtils.isNotNullOrEmpty(tagIds)){
+                this.queryTagIds(searchUtil.stringConvertList(tagIds),query);
+            }
+
         }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
@@ -1436,7 +1443,7 @@ public class TalentpoolSearchengine {
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
         String positionId=params.get("position_id");
-        String tagIds=params.get("profile_pool_id");
+        String profilePoolId=params.get("profile_pool_id");
         String companyTag=params.get("company_tag");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
@@ -1453,7 +1460,7 @@ public class TalentpoolSearchengine {
         StringBuffer sb=new StringBuffer();
         sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
 
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(companyTag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+        if(StringUtils.isNullOrEmpty(profilePoolId)&&StringUtils.isNullOrEmpty(companyTag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             if(StringUtils.isNotNullOrEmpty(publisherIds)){
                 List<Integer> publisherIdList=this.convertStringToList(publisherIds);
                 if(!StringUtils.isEmptyList(publisherIdList)){
@@ -1464,7 +1471,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
             sb.append("val.status=="+positionStatus+"&&");
         }
-        if(StringUtils.isNotNullOrEmpty(companyId)&& StringUtils.isNullOrEmpty(tagIds)){
+        if(StringUtils.isNotNullOrEmpty(companyId)&& StringUtils.isNullOrEmpty(profilePoolId)){
             sb.append("val.company_id=="+companyId+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
@@ -1924,12 +1931,10 @@ public class TalentpoolSearchengine {
 
     }
 
-    private void handlerTagId(String profilePoolId,String hrId,String tags, QueryBuilder queryBuilder){
 
-    }
     //处理手动标签
     private void queryTagIds(List<String> tagIdList,QueryBuilder queryBuilder){
-        searchUtil.handleTerm(tagIdList,queryBuilder,"user.talent_pool.tags.id");
+        searchUtil.handleTagMatch(tagIdList,queryBuilder,"user.talent_pool.tags.id");
     }
 
     private void queryPublic(String hrId,QueryBuilder queryBuilder){
