@@ -39,11 +39,6 @@ public class ErrorState extends AbstractBindState {
     }
 
     @Override
-    public int delete(HrThirdPartyAccountDO thirdPartyAccountDO, UserHrAccountDO hrAccount) throws Exception {
-        throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DEL_STATUS_ERROR);
-    }
-
-    @Override
     public int updateBinding(HrThirdPartyAccountDO thirdPartyAccount) throws Exception {
         emailNotification.sendWebBindFailureMail(emailNotification.getMails(), thirdPartyAccount);
         return super.updateBinding(thirdPartyAccount);

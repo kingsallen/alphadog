@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_58jobFeatureRecord extends UpdatableRecordImpl<Dict_58jobFeatureRecord> implements Record2<Integer, String> {
 
-    private static final long serialVersionUID = 1005270588;
+    private static final long serialVersionUID = -1538806094;
 
     /**
      * Setter for <code>dictdb.dict_58job_feature.id</code>. 58同城福利特色id
@@ -45,14 +45,14 @@ public class Dict_58jobFeatureRecord extends UpdatableRecordImpl<Dict_58jobFeatu
     }
 
     /**
-     * Setter for <code>dictdb.dict_58job_feature.name</code>.
+     * Setter for <code>dictdb.dict_58job_feature.name</code>. 58福利特色
      */
     public void setName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_58job_feature.name</code>.
+     * Getter for <code>dictdb.dict_58job_feature.name</code>. 58福利特色
      */
     public String getName() {
         return (String) get(1);

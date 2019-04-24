@@ -13,6 +13,8 @@ import com.moseeker.common.util.query.ValueOp;
 import static com.moseeker.entity.exception.HRException.MOBILE_EXIST;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ import static com.moseeker.entity.exception.HRException.USER_UPDATEMOBILE_SAMEMO
  */
 @Service
 public class HREntity {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     UserHrAccountDao hrAccountDao;
@@ -65,8 +68,10 @@ public class HREntity {
             if (result == 0) {
                 retryCount++;
             } else {
+                logger.info("hr=============:{}",hr);
                 if(StringUtils.isNullOrEmpty(hr.getRemarkName()) && StringUtils.isNullOrEmpty(hr.getUsername())){
                     UserWxUserDO wxUser = wxUserDao.getWXUserById(hr.getWxuserId());
+                    logger.info("wxUser=============:{}",wxUser);
                     if(wxUser == null || StringUtils.isNullOrEmpty(wxUser.getNickname())){
                         chatListDao.updateWelcomeStatusByHrAccountId(hr.getId());
                     }

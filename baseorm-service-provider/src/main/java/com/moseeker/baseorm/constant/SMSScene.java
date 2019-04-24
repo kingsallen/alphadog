@@ -4,6 +4,8 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.KeyIdentifier;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,8 @@ public enum SMSScene {
     SMS_RESETMOBILE_CODE(4, KeyIdentifier.SMS_RESETMOBILE_CODE, "重置手机号码"),
     SMS_VERIFY_MOBILE(5, KeyIdentifier.SMS_VERIFY_MOBILE, "认领卡片验证手机号码")
     ;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private int value;
     private KeyIdentifier keyIdentifier;
@@ -46,6 +50,7 @@ public enum SMSScene {
      */
     public void saveVerifyCode(String countryCode, String mobile, String verifyCode, RedisClient redisClient) {
         String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
+        logger.info("SMSScene saveVerifyCode keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);
         redisClient.set(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern, verifyCode);
     }
 
@@ -62,11 +67,14 @@ public enum SMSScene {
             return false;
         }
         String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
+        logger.info("SMSScene validateVerifyCode keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);
         String codeInRedis = redisClient.get(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
         if (verifyCode.equals(codeInRedis)) {
+            logger.info("SMSScene validateVerifyCode code equals!");
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
             return true;
         } else {
+            logger.info("SMSScene validateVerifyCode code not equals!");
             return false;
         }
     }

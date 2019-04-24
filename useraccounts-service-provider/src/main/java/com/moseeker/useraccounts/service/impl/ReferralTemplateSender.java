@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
@@ -11,13 +10,14 @@ import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
@@ -35,6 +35,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.useraccounts.service.impl.vo.TemplateBaseVO;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -64,7 +66,7 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
-    private static final Integer TEN_MINUTE = 10*60*1000;
+    private static final Integer TEN_MINUTE = 3*60*1000;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -96,9 +98,13 @@ public class ReferralTemplateSender {
     @Autowired
     private JobPositionDao positionDao;
 
+
+    @Autowired
+    private SensorSend sensorSend;
+
     ScheduledThread scheduledThread = ScheduledThread.Instance;
 
-    public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId){
+    public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId) throws InvalidArgumentException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("position_id", positionId);
         jsonObject.put("post_user_id", postUserId);
@@ -139,7 +145,6 @@ public class ReferralTemplateSender {
             jsonObject.put("templateId", Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
@@ -155,6 +160,7 @@ public class ReferralTemplateSender {
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
         long timestamp = System.currentTimeMillis();
         cardInfo.setTimestamp(timestamp);
+        logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
         // 获取指定时间前十分钟内的职位浏览人

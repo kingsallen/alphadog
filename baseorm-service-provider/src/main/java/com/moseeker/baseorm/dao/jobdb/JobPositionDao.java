@@ -709,6 +709,21 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     }
 
     /**
+     * batchhandler的时候根据公司ID查询职位部分字段，只有部分字段，因为全字段可能量很大，导致mysql查询很慢
+     * @param companyId
+     * @param source
+     * @return
+     */
+    public List<JobPositionRecord> getDatasForBatchhandlerDelete(int companyId, int source) {
+        return create.select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.SOURCE_ID, JobPosition.JOB_POSITION.JOBNUMBER
+                , JobPosition.JOB_POSITION.SOURCE, JobPosition.JOB_POSITION.CANDIDATE_SOURCE, JobPosition.JOB_POSITION.STATUS
+                , JobPosition.JOB_POSITION.COMPANY_ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq((short)source))
+                .fetchInto(JobPositionRecord.class);
+    }
+    /**
      * 根据公司编号查找公司下所有的再咋职位编号
      * @param companyIdList 公司编号集合
      * @return 职位编号集合
@@ -859,5 +874,11 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 
         }
 
+    }
+
+    public int getPositionCountByIdList(List<Integer> pidList,int status){
+       int result= create.selectCount().from(JobPosition.JOB_POSITION).where(JobPosition.JOB_POSITION.ID.in(pidList)).and(JobPosition.JOB_POSITION.STATUS.eq((byte)status))
+                .fetchOne().value1();
+       return result;
     }
 }

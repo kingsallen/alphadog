@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -57,7 +58,6 @@ public class ReferralController {
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     private Logger logger = LoggerFactory.getLogger(ReferralController.class);
-    DecimalFormat bonusFormat = new DecimalFormat("###################");
 
     /**
      * 员工上传简历
@@ -88,7 +88,7 @@ public class ReferralController {
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
+            logger.info("ReferralController parseFileProfile file_name:{}", params.getString("file_name"));
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     profileService.parseFileProfile(employeeId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
@@ -257,11 +257,12 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-
+            logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
             BeanUtils.copyProperties(form, candidateInfoStruct);
             candidateInfoStruct.setPosition(form.getPosition());
             candidateInfoStruct.setReasons(form.getReferralReasons());
+            logger.info("postCandidateInfo candidateInfoStruct gender:{}",candidateInfoStruct.getGender());
             int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
             return Result.success(referralLogId).toJson();
         } else {
@@ -478,6 +479,8 @@ public class ReferralController {
                     return profileTab;
                 }).collect(Collectors.toList());
             }
+            logger.info("ReferralProfileTab tab :{}",JSON.toJSONString(result));
+            logger.info("ReferralProfileTab tab :{}",JSON.toJSONString(tabList));
             return Result.success(tabList).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
@@ -569,6 +572,7 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getIds());
             if(idReasons.get("state") == null){
+                logger.info("idReasons:{}", JSON.toJSONString(idReasons));
                 return Result.success(JSONArray.parseArray(idReasons.get("list"))).toJson();
             }else {
                 return new Result(-1, "apply_limit", idReasons).toJson();
@@ -624,6 +628,7 @@ public class ReferralController {
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            logger.info("claimResults:{}", claimResults);
             return Result.success(JSONArray.parseArray(claimResults)).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();

@@ -33,10 +33,10 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.entity.pojos.EmployeeCardViewData;
 import com.moseeker.entity.pojos.EmployeeRadarData;
+import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -49,6 +49,7 @@ import com.moseeker.useraccounts.domain.AwardEntity;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
 import com.moseeker.useraccounts.pojo.PositionReferralInfo;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
@@ -57,12 +58,12 @@ import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.*;
-import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
-import com.moseeker.entity.pojos.RadarUserInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Future;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -358,6 +359,7 @@ public class UserEmployeeServiceImpl {
         List<UserEmployeeDO> employeeDOS = employeeEntity.getActiveEmployeeDOList(companyIdList, pageNum, pageSize);
         List<Integer> positionIdList = positionEntity.getPositionIdList(companyIdList);
 
+        logger.info("getContributions positionIdList:{}", positionIdList);
         if (employeeDOS != null && employeeDOS.size() > 0) {
 
             //用户与员工关系
@@ -370,10 +372,16 @@ public class UserEmployeeServiceImpl {
                 userIdList.add(employeeDO.getSysuserId());
 
             }
+            logger.info("getContributions userIdList:{}", userIdList);
+
+            logger.info("getContributions userEmployeeMap:{}", userEmployeeMap);
 
             LocalDateTime today = LocalDateTime.now();
             LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
             LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+
+            logger.info("getContributions start date:{}", lastFriday.toString());
+            logger.info("getContributions end date:{}", currentFriday.toString());
 
             //查找转发数量
             Future<Map<Integer,Integer>> forwardCountFuture = threadPool.startTast(() ->
@@ -381,6 +389,7 @@ public class UserEmployeeServiceImpl {
             //查找申请数量
             Future<Map<Integer, Integer>> applyCountFuture = threadPool.startTast(() ->
                     applicationEntity.countEmployeeApply(userIdList, positionIdList, lastFriday, currentFriday));
+
             //查找积分数量
             Future<Map<Integer, Integer>> awardsCountFuture = threadPool.startTast(() ->
                     referralEntity.countEmployeeAwards(employeeIdList, lastFriday, currentFriday));
@@ -461,6 +470,7 @@ public class UserEmployeeServiceImpl {
                 });
             }
 
+            logger.info("getContributions applyCountFuture:{}", applyCount);
             List<ContributionDetail> list = new ArrayList<>();
             for (UserEmployeeDO userEmployeeDO: employeeDOS) {
                 ContributionDetail contributionDetail = new ContributionDetail();
@@ -493,6 +503,7 @@ public class UserEmployeeServiceImpl {
         return paginationUtil;
     }
 
+
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("用户编号", userId, 1,null);
@@ -508,6 +519,7 @@ public class UserEmployeeServiceImpl {
         PositionReferralInfo info = new PositionReferralInfo();
         info.setPositionId(position.getId());
         info.setPositionName(position.getTitle());
+
         UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
         UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
         logger.info("getPositionReferralInfo wxUserRecord:{}",wxUserRecord);
@@ -652,32 +664,34 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
+        long positionIdListTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView positionIdListTime:{}",positionIdListTime-employeeTime);
         List<CandidateRecomRecordRecord> list = null;
         try {
             list = this.pagePositionById(positionIdList, employeeUserFuture.get(), userId, companyId, order, page, size, result);
         } catch (Exception e) {
             logger.error(e.getMessage());
-        }
-        long listTime = System.currentTimeMillis();
-        logger.info("fetchEmployeeForwardView listTime:{}",listTime - positionTime);
-        if(StringUtils.isEmptyList(list)){
+        }if(StringUtils.isEmptyList(list)){
             return result;
         }
+        long listTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView listTime:{}",listTime - positionIdListTime);
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
         long dataTime = System.currentTimeMillis();
-        logger.info("fetchEmployeeForwardView dataTime:{}",dataTime-listTime);
+        logger.info("fetchEmployeeForwardView dataTime:{}",dataTime - listTime);
         this.fetchEmployeePostConnection(data);
+        long chainTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView chainTime:{}",chainTime -dataTime);
         List<Integer> userIdList = list.stream().map(m ->m.getPresenteeUserId()).collect(Collectors.toList());
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         long neo4jTime = System.currentTimeMillis();
-        logger.info("fetchEmployeeForwardView neo4jTime:{}",neo4jTime - dataTime);
+        logger.info("fetchEmployeeForwardView neo4jTime:{}",neo4jTime-chainTime);
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
         for(CandidateRecomRecordRecord record: list){
             viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList));
         }
-        long packageTime = System.currentTimeMillis();
-        logger.info("fetchEmployeeForwardView listTime:{}",packageTime - neo4jTime);
-        logger.info("fetchEmployeeForwardView Time:{}",packageTime - startTime);
+        long dataBizTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView dataBizTime:{}",dataBizTime-neo4jTime);
         result.setUserList(viewPages);
         return result;
     }
@@ -789,6 +803,11 @@ public class UserEmployeeServiceImpl {
     }
 
 
+    public List<UserEmployee> getEmployeeByUserIdListAndCompanyList(List<Integer> userIdList,List<Integer> companyIdList){
+        List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
+        return list;
+    }
+
     public List<UserEmployee> getuserEmployeeList(int companyId,List<Integer> userIdList){
         List<UserEmployee> result= userEmployeeDao.getEmployeeList(userIdList,companyId);
         return result;
@@ -799,8 +818,4 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
-    public List<UserEmployee> getEmployeeByUserIdListAndCompanyList(List<Integer> userIdList,List<Integer> companyIdList){
-        List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
-        return list;
-    }
 }

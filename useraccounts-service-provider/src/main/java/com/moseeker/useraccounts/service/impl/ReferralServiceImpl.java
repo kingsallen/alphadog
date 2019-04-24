@@ -43,7 +43,6 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -58,6 +57,15 @@ import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaAskReferralPojo;
 import com.moseeker.useraccounts.service.impl.vo.*;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
+
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,12 +73,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -90,6 +92,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private UserUserDao userDao;
+
+    @Autowired
+    private ThemeDao themeDao;
 
     @Autowired
     private ReferralTemplateSender sender;
@@ -133,26 +138,25 @@ public class ReferralServiceImpl implements ReferralService {
     private JobPositionDao positionDao;
 
     @Autowired
-    private ThemeDao themeDao;
-
-    @Autowired
     ReferralTemplateSender templateSender;
 
     @Autowired
     private ReferralRadarService radarService;
+
+    @Autowired
+    private KafkaSender kafkaSender;
 
     ThreadPool tp = ThreadPool.Instance;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    @Autowired
-    private KafkaSender kafkaSender;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public RedPackets getRedPackets(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException {
+        logger.info("ReferralServiceImpl getRedPackets id:{}, companyId:{}, pageNum:{}, pageSize:{}", userId, companyId, pageNum, pageSize);
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             throw UserAccountException.PROGRAM_FETCH_TOO_MUCH;
         }
@@ -162,30 +166,40 @@ public class ReferralServiceImpl implements ReferralService {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             redPackets.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
         }
-
+        logger.info("ReferralServiceImpl getRedPackets userEmployeeDO:{}", userEmployeeDO);
         List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
+
 
             List<Integer> wxUserIdList = wxUserRecords
                     .stream()
                     .map(userWxUserRecord -> userWxUserRecord.getId().intValue())
                     .collect(Collectors.toList());
+            logger.info("ReferralServiceImpl getRedPackets wxUserIdList:{}", wxUserIdList
+                    .stream()
+                    .map(integer -> String.valueOf(integer))
+                    .collect(Collectors.joining(",")));
             //计算红包总额
             redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList, companyId));
-
+            logger.info("ReferralServiceImpl getRedPackets totalRedPackets:{}", redPackets.getTotalRedpackets());
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
             List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, companyId,
                     pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
+                logger.info("ReferralServiceImpl getRedPackets itemsRecords.size:{}", itemsRecords.size());
                 HBData data = referralEntity.fetchHBData(itemsRecords);
+                logger.info("ReferralServiceImpl getRedPackets data.candidateNameMap:{}", data.getCandidateNameMap());
 
                 List<RedPacket> list = new ArrayList<>();
                 for (HrHbItems hrHbItems : itemsRecords) {
                     list.add(HBBizTool.packageRedPacket(hrHbItems, data));
                 }
+                logger.info("ReferralServiceImpl getRedPackets list:{}", JSON.toJSONString(list));
                 redPackets.setRedpackets(list);
+            } else {
+                logger.info("ReferralServiceImpl getRedPackets itemsRecords is null!");
             }
         }
         return redPackets;
@@ -210,11 +224,13 @@ public class ReferralServiceImpl implements ReferralService {
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
+                logger.info("ReferralServiceImpl getBonus bonusData bonusData.getEmploymentDateMap:{}", bonusData.getEmploymentDateMap());
 
                 List<Bonus> bonuses = new ArrayList<>();
                 for (ReferralEmployeeBonusRecord referralEmployeeBonusRecord : referralEmployeeBonusRecordList) {
                     bonuses.add(HBBizTool.packageBonus(referralEmployeeBonusRecord, bonusData));
                 }
+                logger.info("ReferralServiceImpl getBonus bonuses:{}", JSON.toJSONString(bonuses));
                 bonusList.setBonus(bonuses);
             }
         }
@@ -259,9 +275,10 @@ public class ReferralServiceImpl implements ReferralService {
 
         Activity activity = ActivityType.buildActivity(activityVO.getId(), configDao, positionBindingDao, itemsDao,
                 themeDao, positionDao);
+        logger.info("ReferralServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
         if (activityVO.getStatus() != null) {
             ActivityStatus activityStatus = ActivityStatus.instanceFromValue(activityVO.getStatus().byteValue());
-
+            logger.info("ReferralServiceImpl updateActivity activityStatus:{}", activityStatus);
             if (activityStatus == null) {
                 activity.updateInfo(activityVO, true);
             } else {
@@ -285,12 +302,16 @@ public class ReferralServiceImpl implements ReferralService {
         }
     }
 
+    @CounterIface
     @Override
     public List<ReferralReasonInfo> getReferralReasonInfo(int userId, int companyId, int hrId) throws UserAccountException {
         List<JobApplicationRecord> applicationRecords = applicationDao.getByApplierIdAndCompanyId(userId, companyId);
+        logger.info("getReferralReasonInfo applicationRecords:{}",applicationRecords);
+        logger.info("getReferralReasonInfo applicationRecords:{}",applicationRecords.size());
         if(!StringUtils.isEmptyList(applicationRecords)){
             List<Integer> applicationIds = applicationRecords.stream().map(m -> m.getId()).collect(Collectors.toList());
             List<ReferralRecomEvaluationRecord> evaluationRecords = referralEntity.fetchEvaluationListByUserId(userId, applicationIds);
+            logger.info("getReferralReasonInfo evaluationRecords:{}",evaluationRecords);
             if(!StringUtils.isEmptyList(evaluationRecords)){
                 List<DictReferralEvaluateRecord> dictReferralEvaluateDOS = evaluateDao.getDictReferralEvaluate();
                 List<ReferralReasonInfo> list = new ArrayList<>();
@@ -392,9 +413,17 @@ public class ReferralServiceImpl implements ReferralService {
         if(recommendRecord.getId()<=0){
             throw UserAccountException.REFERRAL_SEEK_RECOMMEND_FAIL;
         }
+        logger.info("recommendRecord:{}", recommendRecord);
         if(recommendRecord.getAppId()<=0) {
+            logger.info("==========updateReferralSeekRecommendRecordForRecommendTime");
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
-            templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            logger.info("==========publishSeekReferralEvent");
+            try {
+                templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            }catch (InvalidArgumentException e) {
+                logger.error(e.getMessage());
+            }
+            logger.info("==========updateCandidateShareChainTemlate");
             KafkaAskReferralPojo kafkaAskReferralPojo = initKafkaAskReferralPojo(position.getCompanyId(), userId, positionId);
             kafkaSender.sendMessage(Constant.KAFKA_TOPIC_ASK_REFERRAL, JSON.toJSONString(kafkaAskReferralPojo));
         }
@@ -523,6 +552,7 @@ public class ReferralServiceImpl implements ReferralService {
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
             logger.info("==========更新data/profile===userId=={}==============",userId);
         }
+
         return applicationId;
     }
 }

@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 
 import java.net.ConnectException;
@@ -55,7 +55,7 @@ public abstract class RedisClient {
 					}
 				}
 			}
-		} catch (JedisConnectionException e) {
+		} catch (JedisException e) {
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 		}
 		return redisKeys;
@@ -255,6 +255,9 @@ public abstract class RedisClient {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
 		try {
+			logger.info("===========rediskey===============");
+			logger.info(cacheKey);
+			logger.info("====================================");
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);

@@ -84,6 +84,8 @@ service UseraccountsServices {
     //认领内推奖金
     void claimReferralBonus(1: i32 bonus_record_id) throws (1: common_struct.BIZException e);
 
+    //批量认领卡片
+    string batchClaimReferralCard(1: i32 userId, 2: string name, 3: string mobile, 4: string vcode, 5:list<i32> referralRecordIds) throws (1: common_struct.BIZException e);
     //是否查看过隐私协议
     i32 ifViewPrivacyProtocol(1: i32 userId) throws (1: common_struct.BIZException e);
 
@@ -93,8 +95,6 @@ service UseraccountsServices {
     //插入隐私协议记录
     void insertPrivacyRecord(1: i32 userId) throws (1: common_struct.BIZException e);
 
-    //批量认领卡片
-    string batchClaimReferralCard(1: i32 userId, 2: string name, 3: string mobile, 4: string vcode, 5:list<i32> referralRecordIds) throws (1: common_struct.BIZException e);
 }
 /**
 * 用户配置服务
@@ -298,5 +298,4 @@ service UserEmployeeService {
     useraccounts_struct.EmployeeForwardViewPage fetchEmployeeForwardView(1: i32 userId, 2:i32 companyId, 3:string positionTitle, 4:string order, 5:i32 page, 6: i32 size) throws (1: common_struct.BIZException e);
 
     useraccounts_struct.RadarInfo fetchEmployeeSeekRecommendPage(1: i32 userId, 2:i32 companyId, 3:i32 page, 4:i32 size) throws (1: common_struct.BIZException e);
-
 }

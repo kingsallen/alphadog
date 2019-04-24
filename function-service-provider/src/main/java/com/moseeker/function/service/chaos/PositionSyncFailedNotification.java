@@ -76,8 +76,6 @@ public class PositionSyncFailedNotification {
 
     static List<String> csMails = new ArrayList<>();
 
-    static List<String> dev = new ArrayList<>();
-
     static String emailLevel = getConfigString("chaos.email.level");
 
     String divider = "<br/>";
@@ -85,7 +83,6 @@ public class PositionSyncFailedNotification {
     static {
         csMails = getEmails("position_sync.email");//发给cs处理的邮件地址
         devMails = getEmails("position_sync.email.dev");//发给dev知晓的邮件地址
-        dev = getEmails("position_sync.dev");
     }
 
     private static String getConfigString(String key) {
@@ -219,7 +216,7 @@ public class PositionSyncFailedNotification {
     }
 
     public void sendHandlerFailureMail(String message, Exception handlerException) {
-        List<String> mails= dev;
+        List<String> mails=Arrays.asList("panyongbing@mosssker.com");
         if (mails == null || mails.size() == 0) {
             logger.warn("没有配置同步邮箱地址!");
             return;

@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.*;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -29,6 +30,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +67,10 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    @Autowired
+    private SensorSend sensorSend;
+
+
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         super.paramCheck(bindingParams, certConf);
@@ -91,7 +99,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     }
 
     @Override
-    protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException {
+    protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException, InvalidArgumentException {
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.clear();
@@ -144,12 +152,24 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
                 //延迟一小时通知
                 long oneHour =  60*60*1000;
+                //long oneHour =  5*1000;
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(),
                         oneHour+System.currentTimeMillis(), jsonObject.toJSONString());
 
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
+                String distinctId =String.valueOf(userEmployee.getSysuserId());
+
+
+                //神策埋点加入 pro
+
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("companyName", companyDO.getName());
+                properties.put("companyId", companyDO.getId());
+              //  properties.put("userId", userEmployee.getSysuserId());
+                properties.put("isEmployee", userEmployee.isSetActivation());
+                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
             } else {
                 response.setMessage("发送激活邮件失败");
             }
@@ -161,7 +181,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     public static void main(String[] args) {
     }
 
-    public Result emailActivation(String activationCode,int bindEmailSource) throws TException {
+    public Result emailActivation(String activationCode,int bindEmailSource) throws TException, InvalidArgumentException {
         log.info("emailActivation param: activationCode={}", activationCode);
         Result response = new Result();
         response.setSuccess(false);

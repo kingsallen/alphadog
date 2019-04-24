@@ -15,6 +15,8 @@ import com.moseeker.profile.service.impl.resumesdk.iface.IResumeParser;
 import com.moseeker.entity.pojo.resume.ResumeParseException;
 import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,8 @@ public class ResumeEntity {
     @Autowired
     private LogResumeDao resumeDao;
 
+    Logger logger = LoggerFactory.getLogger(ResumeEntity.class);
+
     /**
      * 将resumeSDK数据转成ProfileObj
      * @param resumeObj 第三方服务解析后的数据
@@ -49,7 +53,7 @@ public class ResumeEntity {
      */
     public ProfileObj handlerParseData(ResumeObj resumeObj, int uid, String fileName ){
         ProfileObj profileObj = new ProfileObj();
-
+        logger.info("============resumeObjResult:{}", resumeObj.getResult());
         if (resumeObj.getStatus().getCode() == 200) {
             List<ResumeParseException> exceptions = new ArrayList<>();
             resumeParsers.forEach(p-> {

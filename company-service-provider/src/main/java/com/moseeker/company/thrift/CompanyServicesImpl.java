@@ -612,6 +612,7 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+
     /*
      *
      *获取当前公司的开关权限
@@ -620,11 +621,11 @@ public class CompanyServicesImpl implements Iface {
      * */
     @Override
     public List<CompanySwitchVO> switchCheck(int companyId, List<String> moduleNames) throws BIZException, TException {
-            try {
-                return service.switchCheck(companyId,moduleNames);
-            } catch (Exception e) {
-                throw ExceptionUtils.convertException(e);
-            }
+        try {
+            return service.switchCheck(companyId,moduleNames);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
     /*
      *
