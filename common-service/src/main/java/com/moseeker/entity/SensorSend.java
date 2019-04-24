@@ -24,6 +24,10 @@ public class SensorSend {
                 new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
         Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCTest");}};
         sa.registerSuperProperties(properties);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(()-> {
+            sa.shutdown();
+        }));
     }
 
     public void send(String distinctId,String eventName){
@@ -36,9 +40,11 @@ public class SensorSend {
             return 0;
         });
     }
+
     public void send(String distinctId, String eventName, Map<String, Object> properties){
         tp.startTast(()->{
             try {
+                properties.put("$project", "ToCTest");
                 sa.track(distinctId, true, eventName,properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
@@ -46,6 +52,7 @@ public class SensorSend {
             return 0;
         });
     }
+
     public void profileSet(String distinctId, String property, String value){
         tp.startTast(()->{
             try {
