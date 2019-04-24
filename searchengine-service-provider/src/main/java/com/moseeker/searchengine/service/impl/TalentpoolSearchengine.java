@@ -1022,10 +1022,10 @@ public class TalentpoolSearchengine {
      按照收藏时间排序
      */
     private boolean isOrderTalent(Map<String,String>params){
-        String tagIds=params.get("tag_ids");
+        String profilePoolId=params.get("profile_pool_id");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+        if(StringUtils.isNullOrEmpty(profilePoolId)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
             return false;
         }
         return true;
@@ -1237,12 +1237,10 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         String profilePoolId=params.get("profile_pool_id");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
-            String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
             String isPublic=params.get("is_public");
-            if(StringUtils.isNullOrEmpty(tagIds)
-                    &&StringUtils.isNullOrEmpty(profilePoolId)
+            if(StringUtils.isNullOrEmpty(profilePoolId)
                     &&StringUtils.isNullOrEmpty(company_tag)
                     &&StringUtils.isNullOrEmpty(favoriteHrs)
                     &&StringUtils.isNullOrEmpty(isPublic)) {
@@ -1395,51 +1393,11 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
+        String hrId=params.get("hr_id");
         String profilePoolId = params.get("profile_pool_id");
-        if(StringUtils.isNullOrEmpty(profilePoolId)) {
-            //此处尤其要记住。当企业标签不为空时，根据是否是主账号将tagids置位alltalent和talent
-            String company_tag = params.get("company_tag");
-            if (StringUtils.isNotNullOrEmpty(company_tag)) {
-                String allPublisher = params.get("all_publisher");
-                if (StringUtils.isNotNullOrEmpty(allPublisher) && "1".equals(allPublisher)) {
-                    tagIds = "alltalent";
-                } else {
-                    tagIds = "talent";
-                }
-            }
-            //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
-            String hrAutoTag = params.get("hr_auto_tag");
-            if (StringUtils.isNotNullOrEmpty(hrAutoTag)) {
-                tagIds = "talent,allpublic";
-            }
-        }else {
-            if ("talent".equals(profilePoolId)) {
-                if(tagIds == null) {
-                    tagIds = "talent";
-                } else if(!tagIds.contains("talent")) {
-                    tagIds += ",talent";
-                }
-            } else if ("alltalent".equals(profilePoolId)) {
-                if(tagIds == null) {
-                    tagIds = "alltalent";
-                }
-            } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
-                String allPublisher = params.get("all_publisher");
-                if (StringUtils.isNotNullOrEmpty(allPublisher) && "1".equals(allPublisher)) {
-                    if(tagIds == null) {
-                        tagIds = "alltalent";
-                    } else if(!tagIds.contains("alltalent")) {
-                        tagIds += ",alltalent";
-                    }
-                } else {
-                    if(tagIds == null) {
-                        tagIds = "allpublic";
-                    } else if(!tagIds.contains("allpublic")) {
-                        tagIds += ",allpublic";
-                    }
-                }
-                this.queryByProfilePoolId(profilePoolId,"", query);
-            }
+        if(StringUtils.isNotNullOrEmpty(profilePoolId)) {
+            this.queryByProfilePoolId(profilePoolId,hrId,query);
+            this.queryTagIds(searchUtil.stringConvertList(tagIds),query);
         }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
@@ -1451,10 +1409,6 @@ public class TalentpoolSearchengine {
         }
         String companyId=params.get("company_id");
         this.queryByNestCompanyId(Integer.parseInt(companyId),query);
-        if(StringUtils.isNotNullOrEmpty(tagIds)){
-            String hrId=params.get("hr_account_id");
-            this.queryByTagId(tagIds,hrId,query);
-        }
 
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)){
             this.queryTagHrId(favoriteHrs,query);
@@ -1469,6 +1423,7 @@ public class TalentpoolSearchengine {
         return query;
     }
 
+
     /*
       使用script的方式组装对application的查询
      */
@@ -1481,7 +1436,7 @@ public class TalentpoolSearchengine {
         String submitTime=params.get("submit_time");
         String progressStatus=params.get("progress_status");
         String positionId=params.get("position_id");
-        String tagIds=params.get("tag_ids");
+        String tagIds=params.get("profile_pool_id");
         String companyTag=params.get("company_tag");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
@@ -1951,11 +1906,37 @@ public class TalentpoolSearchengine {
     private void queryByProfilePoolId(String profilePoolId,String hrId, QueryBuilder queryBuilder){
         if(StringUtils.isNotNullOrEmpty(profilePoolId)){
             List<String> profilePoolIdList=searchUtil.stringConvertList(profilePoolId);
-            if(profilePoolIdList.contains("")){
-
+            if(profilePoolIdList.contains("allpublic")){
+                //查询自己的和公开的
+               this.queryPublic(hrId,queryBuilder);
+            }else if(profilePoolIdList.contains("talent")){
+                //仅仅只查询自己的
+                searchUtil.handleMatch(1,queryBuilder,"user.talent_pool.is_talent");
+                searchUtil.handleTerms(hrId,queryBuilder,"user.talent_pool.hr_id");
+            }else{
+                if(!profilePoolIdList.contains("alltalent")){
+                    //查询简历池关键是权限，查询的是公开或者自己私有下的相关标签
+                    this.queryPublic(hrId,queryBuilder);
+                    searchUtil.handleTerm(profilePoolId,queryBuilder,"user.talent_pool.profile_pool_id");
+                }
             }
         }
 
+    }
+
+    private void handlerTagId(String profilePoolId,String hrId,String tags, QueryBuilder queryBuilder){
+
+    }
+    //处理手动标签
+    private void queryTagIds(List<String> tagIdList,QueryBuilder queryBuilder){
+        searchUtil.handleTerm(tagIdList,queryBuilder,"user.talent_pool.tags.id");
+    }
+
+    private void queryPublic(String hrId,QueryBuilder queryBuilder){
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        searchUtil.handleTermShould("1",keyand,"user.talent_pool.is_public");
+        searchUtil.shouldTermsQuery(searchUtil.stringConvertList(hrId),keyand,"user.talent_pool.hr_id");
+        ((BoolQueryBuilder) queryBuilder).should(keyand);
     }
 
     /*

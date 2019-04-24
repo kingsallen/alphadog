@@ -97,6 +97,12 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
+    public void handleTerm(List<String> condition,QueryBuilder query,String conditionField){
+        if (condition!=null&&condition.size()>0) {
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).must(cityfilter);
+        }
+    }
     public void handleTermShould(String condition,QueryBuilder query,String conditionField){
         if (StringUtils.isNotEmpty(condition)) {
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
@@ -517,6 +523,12 @@ public class SearchUtil {
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public void shouldTermsQuery(List<String>dataIdList, QueryBuilder query,String conditionField) {
+        if (dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder fullf = QueryBuilders.termsQuery(conditionField, dataIdList);
+            ((BoolQueryBuilder) query).must(fullf);
         }
     }
 
