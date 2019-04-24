@@ -1433,9 +1433,14 @@ public class TalentpoolSearchengine {
                     }
                 } else {
                     if(tagIds == null) {
-                        tagIds = "allpublic";
-                    } else if(!tagIds.contains("allpublic")) {
-                        tagIds += ",allpublic";
+                        tagIds = "talent,allpublic";
+                    } else{
+                        if(!tagIds.contains("allpublic")) {
+                            tagIds += ",allpublic";
+                        }
+                        if(!tagIds.contains("talent")) {
+                            tagIds += ",talent";
+                        }
                     }
                 }
                 this.queryByProfilePoolId(profilePoolId, query);

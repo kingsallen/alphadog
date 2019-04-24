@@ -896,7 +896,7 @@ public class SearchUtil {
                 }
                 if(tagIdList.size()>0){
                     QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.tags.id",tagIdList);
-                    ((BoolQueryBuilder) keyand).should(query2);
+                    ((BoolQueryBuilder) keyand).must(query2);
 
                 }
                 ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
