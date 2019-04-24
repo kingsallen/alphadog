@@ -21,7 +21,7 @@ public class SensorSend {
     @Autowired
     public SensorSend() throws IOException {
         sa = new SensorsAnalytics(
-                new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
+                new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log", null, 10));
         Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCTest");}};
         sa.registerSuperProperties(properties);
 
