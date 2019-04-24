@@ -1438,7 +1438,7 @@ public class TalentpoolSearchengine {
                         tagIds += ",allpublic";
                     }
                 }
-                this.queryByProfilePoolId(profilePoolId, query);
+                this.queryByProfilePoolId(profilePoolId,"", query);
             }
         }
         String favoriteHrs=params.get("favorite_hrs");
@@ -1948,8 +1948,14 @@ public class TalentpoolSearchengine {
         searchUtil.handlerTagIds(tagIds,hrId,queryBuilder);
     }
 
-    private void queryByProfilePoolId(String profilePoolId,QueryBuilder queryBuilder){
-        searchUtil.handlerProfilePoolId(profilePoolId,queryBuilder);
+    private void queryByProfilePoolId(String profilePoolId,String hrId, QueryBuilder queryBuilder){
+        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
+            List<String> profilePoolIdList=searchUtil.stringConvertList(profilePoolId);
+            if(profilePoolIdList.contains("")){
+
+            }
+        }
+
     }
 
     /*
