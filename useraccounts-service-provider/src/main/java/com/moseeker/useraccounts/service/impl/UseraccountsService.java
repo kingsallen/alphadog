@@ -1305,7 +1305,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
-                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId,referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
                     countDownLatch.countDown();
                 }
@@ -1320,17 +1320,25 @@ public class UseraccountsService {
         return claimResults;
     }
 
-    private void updateDataApplicationBatchItems(int positionId,int userId ){
-        JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
-        if (application!=null){
-            int app_id=application.getId();
+    private void updateDataApplicationBatchItems(int positionId,int userId,int applierId ){
             scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
-                logger.info("====================redis==============application更新=============");
-                logger.info("================app_id={}=================",app_id);
+                JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
+                if (application!=null) {
+                    int app_id=application.getId();
+                    redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                    logger.info("====================redis==============application更新=============");
+                    logger.info("================app_id={}=================", app_id);
+                }else{
+                    JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
+                    if(application1!=null){
+                        int app_id=application.getId();
+                        redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                        logger.info("====================redis==============application更新=============");
+                        logger.info("================app_id={}=================", app_id);
+                    }
+                }
             },3000);
         }
-    }
     /*
     这块主要是做兼容处理
     */
@@ -1342,8 +1350,8 @@ public class UseraccountsService {
             data.put("tableName","application_recom");
             data.put("user_id",applierId);
             scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(result));
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(data));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(result));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(data));
 
             },5000);
     }
@@ -1397,7 +1405,7 @@ public class UseraccountsService {
             userdao.updateRecord(userUserRecord);
         }
         referralEntity.claimReferralCard(userUserDO, referralLog);
-        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), repeatReferralLog.getPositionId());
+        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {

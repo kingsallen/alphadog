@@ -867,6 +867,9 @@ public class SearchUtil {
      */
     public void handlerTagIds(String tagIds,String hrId,QueryBuilder builder){
         List<String> tagIdList=this.stringConvertList(tagIds);
+        if(tagIdList.size()>1 &&tagIdList.contains("alltalent")){
+            tagIdList.remove("alltalent");
+        }
         if(tagIdList != null && tagIdList.size() >0 && !tagIdList.contains("alltalent")){
 
             if(tagIdList.size()==1){
@@ -897,7 +900,7 @@ public class SearchUtil {
                 }
                 if(tagIdList.size()>0){
                     QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.tags.id",tagIdList);
-                    ((BoolQueryBuilder) keyand).should(query2);
+                    ((BoolQueryBuilder) keyand).must(query2);
 
                 }
                 ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
@@ -1038,9 +1041,12 @@ public class SearchUtil {
     }
 
     public void handlerProfilePoolId(String profilePoolId, QueryBuilder queryBuilder) {
+        if(!StringUtils.isNumeric(profilePoolId) ||  "0".equals(profilePoolId)) {    // todo 这个兼容一下，之后最好去掉
+            return;
+        }
         List<String> profilePoolIdList=this.stringConvertList(profilePoolId);
         if(profilePoolIdList != null && profilePoolIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.profile_pool_id",profilePoolIdList);
+            QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.profile_pool_id",profilePoolIdList);
             ((BoolQueryBuilder) queryBuilder).must(query2);
         }
     }
@@ -1048,7 +1054,7 @@ public class SearchUtil {
     public void handlerCompanyManualTag(String companyManualTag, QueryBuilder queryBuilder) {
         List<String> tagIdList=this.stringConvertList(companyManualTag);
         if(tagIdList != null && tagIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.termsQuery("user.company_manual_tag_user.tag_id",tagIdList);
+            QueryBuilder query2=QueryBuilders.matchQuery("user.company_manual_tag_user.tag_id",tagIdList);
             ((BoolQueryBuilder) queryBuilder).must(query2);
         }
     }

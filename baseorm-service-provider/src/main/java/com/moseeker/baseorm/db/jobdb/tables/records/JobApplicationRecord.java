@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -196843210;
+    private static final long serialVersionUID = -1507243739;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -408,31 +408,17 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58。  2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
+     * Setter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58, 2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
      */
     public void setOrigin(Integer value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58。  2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
+     * Getter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58, 2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
      */
     public Integer getOrigin() {
         return (Integer) get(27);
-    }
-
-    /**
-     * Setter for <code>jobdb.job_application.event</code>. 事件，0：无，1：HR推荐
-     */
-    public void setEvent(Integer value) {
-        set(28, value);
-    }
-
-    /**
-     * Getter for <code>jobdb.job_application.event</code>. 事件，0：无，1：HR推荐
-     */
-    public Integer getEvent() {
-        return (Integer) get(28);
     }
 
     // -------------------------------------------------------------------------
@@ -461,7 +447,7 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     /**
      * Create a detached, initialised JobApplicationRecord
      */
-    public JobApplicationRecord(Integer id, Integer wechatId, Integer positionId, Integer recommenderId, Timestamp submitTime, Integer statusId, Integer lApplicationId, Integer reward, Integer sourceId, Timestamp _CreateTime, Integer applierId, Integer interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, Integer companyId, Timestamp updateTime, Integer appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount, Integer recommenderUserId, Integer origin, Integer event) {
+    public JobApplicationRecord(Integer id, Integer wechatId, Integer positionId, Integer recommenderId, Timestamp submitTime, Integer statusId, Integer lApplicationId, Integer reward, Integer sourceId, Timestamp _CreateTime, Integer applierId, Integer interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, Integer companyId, Timestamp updateTime, Integer appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount, Integer recommenderUserId, Integer origin) {
         super(JobApplication.JOB_APPLICATION);
 
         set(0, id);
@@ -492,6 +478,5 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
         set(25, viewCount);
         set(26, recommenderUserId);
         set(27, origin);
-        set(28, event);
     }
 }

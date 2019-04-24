@@ -1,14 +1,13 @@
 package com.moseeker.servicemanager.web.controller.company;
 
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.servicemanager.common.ParamUtils;
-import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
-import com.moseeker.servicemanager.web.controller.util.Params;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -17,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+
+import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 
 /**
  * 

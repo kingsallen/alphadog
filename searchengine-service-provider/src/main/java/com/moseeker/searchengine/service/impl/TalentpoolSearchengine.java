@@ -1,13 +1,13 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -870,7 +870,6 @@ public class TalentpoolSearchengine {
         return query;
     }
 
-
     private void handlerProvinceCity(Map<String,String> params) throws TException {
         String cityCode=params.get("city_code");
         String intentionCityCode=params.get("intention_city_code");
@@ -1236,12 +1235,17 @@ public class TalentpoolSearchengine {
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
+        String profilePoolId=params.get("profile_pool_id");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
             String isPublic=params.get("is_public");
-            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(company_tag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            if(StringUtils.isNullOrEmpty(tagIds)
+                    &&StringUtils.isNullOrEmpty(profilePoolId)
+                    &&StringUtils.isNullOrEmpty(company_tag)
+                    &&StringUtils.isNullOrEmpty(favoriteHrs)
+                    &&StringUtils.isNullOrEmpty(isPublic)) {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
@@ -1391,24 +1395,63 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         String tagIds=params.get("tag_ids");
-        //此处尤其要记住。当企业标签不为空时，根据是否是主账号将tagids置位alltalent和talent
-        String company_tag=params.get("company_tag");
-        if(StringUtils.isNotNullOrEmpty(company_tag)){
-            String allPublisher=params.get("all_publisher");
-            if(StringUtils.isNotNullOrEmpty(allPublisher)&&"1".equals(allPublisher)){
-                tagIds="alltalent";
-            }else{
-                tagIds="talent";
+        String profilePoolId = params.get("profile_pool_id");
+        if(StringUtils.isNullOrEmpty(profilePoolId)) {
+            //此处尤其要记住。当企业标签不为空时，根据是否是主账号将tagids置位alltalent和talent
+            String company_tag = params.get("company_tag");
+            if (StringUtils.isNotNullOrEmpty(company_tag)) {
+                String allPublisher = params.get("all_publisher");
+                if (StringUtils.isNotNullOrEmpty(allPublisher) && "1".equals(allPublisher)) {
+                    tagIds = "alltalent";
+                } else {
+                    tagIds = "talent";
+                }
             }
-        }
-        //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
-        String hrAutoTag=params.get("hr_auto_tag");
-        if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
-            tagIds="talent,allpublic";
+            //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
+            String hrAutoTag = params.get("hr_auto_tag");
+            if (StringUtils.isNotNullOrEmpty(hrAutoTag)) {
+                tagIds = "talent,allpublic";
+            }
+        }else {
+            if ("talent".equals(profilePoolId)) {
+                if(tagIds == null) {
+                    tagIds = "talent";
+                } else if(!tagIds.contains("talent")) {
+                    tagIds += ",talent";
+                }
+            } else if ("alltalent".equals(profilePoolId)) {
+                if(tagIds == null) {
+                    tagIds = "alltalent";
+                }
+            } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
+                String allPublisher = params.get("all_publisher");
+                if (StringUtils.isNotNullOrEmpty(allPublisher) && "1".equals(allPublisher)) {
+                    if(tagIds == null) {
+                        tagIds = "alltalent";
+                    } else if(!tagIds.contains("alltalent")) {
+                        tagIds += ",alltalent";
+                    }
+                } else {
+                    if(tagIds == null) {
+                        tagIds = "talent,allpublic";
+                    } else{
+                        if(!tagIds.contains("allpublic")) {
+                            tagIds += ",allpublic";
+                        }
+                        if(!tagIds.contains("talent")) {
+                            tagIds += ",talent";
+                        }
+                    }
+                }
+                this.queryByProfilePoolId(profilePoolId, query);
+            }
         }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+        if (StringUtils.isNullOrEmpty(tagIds)
+                && StringUtils.isNullOrEmpty(favoriteHrs)
+                && StringUtils.isNullOrEmpty(isPublic)
+                && StringUtils.isNullOrEmpty(profilePoolId)) {
             return null;
         }
         String companyId=params.get("company_id");
@@ -1426,10 +1469,6 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByIstalent(query);
-        }
-        String profilePoolId = params.get("profile_pool_id");
-        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
-            this.queryByProfilePoolId(profilePoolId,query);
         }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;

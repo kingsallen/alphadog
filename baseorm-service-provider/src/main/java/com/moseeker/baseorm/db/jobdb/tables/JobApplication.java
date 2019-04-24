@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -145201363;
+    private static final long serialVersionUID = 1919002942;
 
     /**
      * The reference instance of <code>jobdb.job_application</code>
@@ -187,14 +187,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
     public final TableField<JobApplicationRecord, Integer> RECOMMENDER_USER_ID = createField("recommender_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "userdb.user_user.id 推荐人编号");
 
     /**
-     * The column <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58。  2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
+     * The column <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58, 2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
      */
-    public final TableField<JobApplicationRecord, Integer> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58。  2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传");
-
-    /**
-     * The column <code>jobdb.job_application.event</code>. 事件，0：无，1：HR推荐
-     */
-    public final TableField<JobApplicationRecord, Integer> EVENT = createField("event", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "事件，0：无，1：HR推荐");
+    public final TableField<JobApplicationRecord, Integer> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58, 2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传");
 
     /**
      * Create a <code>jobdb.job_application</code> table reference

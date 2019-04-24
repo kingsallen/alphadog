@@ -510,4 +510,11 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
                 .where(UserUser.USER_USER.ID.in(userIdList))
                 .fetchInto(UserUserDO.class);
     }
+
+    public List<UserUserRecord> fetchByUnionid(String unionid){
+        return create
+                .selectFrom(UserUser.USER_USER)
+                .where(UserUser.USER_USER.UNIONID.eq(unionid))
+                .fetch();
+    }
 }
