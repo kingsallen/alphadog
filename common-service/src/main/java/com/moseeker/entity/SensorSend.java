@@ -56,7 +56,10 @@ public class SensorSend {
     public void profileSet(String distinctId, String property, String value){
         tp.startTast(()->{
             try {
-                sa.profileSet(distinctId, true, property,value);
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("$project", "ToCTest");
+                properties.put(property, value);
+                sa.profileSet(distinctId, true, properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
