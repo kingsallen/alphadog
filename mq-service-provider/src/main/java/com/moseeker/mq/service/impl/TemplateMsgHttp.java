@@ -1090,7 +1090,7 @@ public class TemplateMsgHttp {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
     }
 
     private Map<String,JSONObject> createDataMap(JSONObject templateVO) {
