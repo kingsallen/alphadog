@@ -35,6 +35,7 @@ public class SensorSend {
             try {
                 Map<String, Object> properties = new HashMap<>();
                 properties.put("$project", "ToCProduction");
+                logger.info("SensorSend send");
                 sa.track(distinctId, true, eventName, properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
@@ -47,6 +48,7 @@ public class SensorSend {
         tp.startTast(()->{
             try {
                 properties.put("$project", "ToCProduction");
+                logger.info("SensorSend send");
                 sa.track(distinctId, true, eventName,properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
@@ -61,6 +63,7 @@ public class SensorSend {
                 Map<String, Object> properties = new HashMap<>();
                 properties.put("$project", "ToCProduction");
                 properties.put(property, value);
+                logger.info("SensorSend send");
                 sa.profileSet(distinctId, true, properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
