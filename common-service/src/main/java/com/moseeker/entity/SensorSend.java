@@ -33,7 +33,9 @@ public class SensorSend {
     public void send(String distinctId,String eventName){
         tp.startTast(()->{
             try {
-                sa.track(distinctId, true, eventName);
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("$project", "ToCTest");
+                sa.track(distinctId, true, eventName, properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
