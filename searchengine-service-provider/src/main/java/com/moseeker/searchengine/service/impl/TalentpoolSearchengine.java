@@ -1920,6 +1920,11 @@ public class TalentpoolSearchengine {
                 //仅仅只查询自己的
                 searchUtil.handleMatch(1,queryBuilder,"user.talent_pool.is_talent");
                 searchUtil.handleTerms(hrId,queryBuilder,"user.talent_pool.hr_id");
+            }else if(profilePoolIdList.contains("public")){
+                searchUtil.handleMatch(1,queryBuilder,"user.talent_pool.is_public");
+            }else if(profilePoolIdList.contains("hrpublic")){
+                searchUtil.handleMatch(1,queryBuilder,"user.talent_pool.is_public");
+                searchUtil.handleTerms(hrId,queryBuilder,"user.talent_pool.hr_id");
             }else{
                 if(!profilePoolIdList.contains("alltalent")){
                     //查询简历池关键是权限，查询的是公开或者自己私有下的相关标签
