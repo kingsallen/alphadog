@@ -1939,9 +1939,9 @@ public class TalentpoolSearchengine {
 
     private void queryPublic(String hrId,QueryBuilder queryBuilder){
         QueryBuilder keyand = QueryBuilders.boolQuery();
-        searchUtil.handleTermShould("1",keyand,"user.talent_pool.is_public");
+        searchUtil.handlerShouldTerm("1",keyand,"user.talent_pool.is_public");
         searchUtil.shouldTermsQuery(searchUtil.stringConvertList(hrId),keyand,"user.talent_pool.hr_id");
-        ((BoolQueryBuilder) queryBuilder).should(keyand);
+        ((BoolQueryBuilder) queryBuilder).must(keyand);
     }
 
     /*
