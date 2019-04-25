@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -26,6 +28,8 @@ import java.sql.Timestamp;
  * @Date: 2018/11/6
  */
 public abstract class Activity {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Activity(int id, HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao, HrHbItemsDao itemsDao,
                     ThemeDao themeDao)
@@ -45,6 +49,7 @@ public abstract class Activity {
         this.activityStatus = ActivityStatus.instanceFromValue(record.getStatus());
         this.activityCheckState = ActivityCheckState.instanceFromValue(record.getChecked());
 
+        logger.info("Activity Activity id:{}, activityStatus:{}, activityCheckState:{}", id, activityStatus, activityCheckState);
         if (this.activityStatus == null || this.activityCheckState == null) {
             throw UserAccountException.ACTIVITY_STATUS_ERROR;
         }
@@ -59,6 +64,7 @@ public abstract class Activity {
         if (activityStatus.equals(ActivityStatus.Running)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_IN_RUNNING;
         }
+        logger.info("Activity start id:{}, activityStatus:{}, activityCheckState:{}", id, activityStatus, activityCheckState);
         if (activityCheckState.equals(ActivityCheckState.UnChecked) || activityStatus.equals(ActivityStatus.Finish)
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;
@@ -187,6 +193,7 @@ public abstract class Activity {
             if (activityVO.getActualTotal() != null) {
                 hrHbConfig.setActualTotal(activityVO.getActualTotal());
             }
+            logger.info("Activity updateInfo checked:{} activityStatus:{}", checked, activityStatus);
             if (activityVO.getTheme() != null) {
                 themeDao.upsert(id, activityVO.getTheme());
             }

@@ -1,11 +1,5 @@
 package com.moseeker.common.constants;
 
-import org.joda.time.DateTime;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 
  * Common项目常用配置信息
@@ -292,6 +286,10 @@ public final class Constant {
     //职位列表索引
     public static final String ES_POSITION_INDEX="index";
     public static final String ES_POSITION_TYPE="fulltext";
+
+    public static final String POSITION_WX_TYPE="fulltext";
+    public static final String POSITION_WX_INDEX="index";
+
     //talentpool邮件的config_id
     public static final int TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS = 70;
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;
@@ -316,6 +314,7 @@ public final class Constant {
             "educations.description_data;projectexps.name_data;projectexps.company_name;projectexps.role;projectexps.description_data;" +
             "languages.name;skills.name_data;awards.name;credentials.name_data;" +
             "others.other;basic.company_name;basic.industry_name;basic.current_job;basic.position_name;";
+
     public static final String USERNAME_IS_NULL="未填写";
 
     public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";

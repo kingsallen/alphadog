@@ -1,20 +1,23 @@
 package com.moseeker.common.constants;
 
+/**
+ * Created by zztaiwll on 18/6/27.
+ */
 public enum UserType {
+    PC(0),
+    HR(1);
 
-    PC(0), HR(1);
+    private int value;
 
     private UserType(int value) {
         this.value = value;
     }
-    private int value;
 
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     public byte getValueToByte() {
-        return (byte)value;
+        return (byte)this.value;
     }
-
 }

@@ -94,6 +94,7 @@ public class PositionSyncConsumer  {
                 }
             }
             jsonObject.put("channal", pojo.getData().getChannel());
+            logger.info("positionTemplateJson:{}", JSON.toJSONString(jsonObject));
             amqpTemplate.sendAndReceive(MESSAGE_TEMPLATE_EXCHANGE,
                     POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());

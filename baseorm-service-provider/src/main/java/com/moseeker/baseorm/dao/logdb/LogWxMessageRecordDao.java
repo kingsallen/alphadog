@@ -40,6 +40,7 @@ public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, Lo
     public LogWxMessageRecordDO insertLogWxMessageRecord(int templateId, int wechatId, Map<String, Object> templateValueMap) {
         LogWxMessageRecordDO messageRecord = new LogWxMessageRecordDO();
         messageRecord.setTemplateId(templateId);
+//        messageRecord.setTemplateId(Integer.parseInt(String.valueOf(templateValueMap.get("template_id"))));
         messageRecord.setOpenId(String.valueOf(templateValueMap.get("touser")));
         messageRecord.setAccessToken(String.valueOf(templateValueMap.get("accessToken")));
         messageRecord.setJsondata(JSON.toJSONString(templateValueMap.get("data")));
@@ -54,6 +55,8 @@ public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, Lo
         }else {
             messageRecord.setSendstatus("failed");
         }
+       // messageRecord.setSendtime(String.valueOf(nowDate));
+        //messageRecord.setUpdatetime(String.valueOf(nowDate));
         messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
         messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
         messageRecord.setSendtype(0);

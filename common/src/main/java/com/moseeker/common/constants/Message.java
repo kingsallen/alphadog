@@ -15,7 +15,7 @@ public class Message {
         this.key = key;
         if(value != null) {
             this.value = (String) value;
-    }
+        }
         this.newline=newline;
         this.lastline=lastline;
     }

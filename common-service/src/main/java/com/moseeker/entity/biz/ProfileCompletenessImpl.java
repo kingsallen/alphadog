@@ -12,17 +12,17 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.QueryUtil;
+
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.SensorSend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @CounterIface
@@ -83,6 +83,9 @@ public class ProfileCompletenessImpl {
 
     @Autowired
     private ProfileCompletenessDao completenessDao;
+
+    @Autowired
+    private SensorSend sensorSend;
 
     public int getCompleteness(int userId, String uuid, int profileId) {
         int totalComplementness = 0;
@@ -205,6 +208,10 @@ public class ProfileCompletenessImpl {
                     } else {
                         result = 1;
                     }
+                    String distinctId = profileRecord.getUserId().toString();
+                    String property=String.valueOf(useruserCompleteness);
+                    logger.info("ProfileCompletenessImpl.reCalculateUserUserByUserIdOrMobile213  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 }
             }
         }
@@ -795,6 +802,10 @@ public class ProfileCompletenessImpl {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+            String distinctId = profileRecord.getUserId().toString();
+            String property=String.valueOf(completeness);
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness807  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         }
         return completeness;
     }
@@ -811,6 +822,10 @@ public class ProfileCompletenessImpl {
         if (profileRecord != null) {
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileDao.updateRecord(profileRecord);
+            String distinctId = profileRecord.getUserId().toString();
+            String property=String.valueOf(totalComplementness);
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness835  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         }
     }
 }

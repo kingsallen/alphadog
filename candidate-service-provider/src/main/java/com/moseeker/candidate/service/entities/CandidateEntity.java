@@ -445,11 +445,11 @@ public class CandidateEntity implements Candidate {
             }
         }
 
-        /*if (employeeDO != null) {
+        if (employeeDO != null) {
             publishRecommendEvent(employeeDO.getId(), param.getPostUserId(),
                     candidateRecomRecordDO.getPresenteeUserId(), param.getCompanyId(),
                     candidateRecomRecordDO.getPositionId());
-        }*/
+        }
 
         return assembleRecommendResult(param.getId(), param.getPostUserId(), param.getClickTime(), param.getCompanyId());
     }
@@ -1360,11 +1360,10 @@ public class CandidateEntity implements Candidate {
             if (candidateCompanyDOOptional.isPresent()) {
                 CandidateCompanyDO candidateCompanyDO = candidateCompanyDOOptional.get();
                 if (type == Constant.ELASTIC_LAYER_QRCODE) {
-                    candidateCompanyDO.setPositionWxLayerQrcode((byte) 1);
+                    candidateDBDao.updateCandidateCompanySetPositionWxLayerQrcode(candidateCompanyDO.getId(), (byte) 1);
                 } else if (type == Constant.ELASTIC_LAYER_PROFILE) {
-                    candidateCompanyDO.setPositionWxLayerProfile((byte) 1);
+                    candidateDBDao.updateCandidateCompanySetPositionWxLayerProfile(candidateCompanyDO.getId(), (byte) 1);
                 }
-                candidateDBDao.updateCandidateCompany(candidateCompanyDO);
             } else {
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }

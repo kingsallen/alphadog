@@ -91,7 +91,7 @@ public class TemplateService {
         templateDataValueVO.setRemark(remark);
         try {
             UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(sysUserId, hrWxWechatDO.getId());
-
+            logger.info("===============userWxUserRecord:{}", userWxUserRecord);
             Map<String, Object> templateValueMap = sendCreditUpdateTemplate(userWxUserRecord.getOpenid(), templateDataValueVO, hrWxWechatDO, url);
             // 插入模板消息发送记录
             insertLogWxMessageRecord(templateId, hrWxWechatDO.getId(), templateValueMap);
@@ -115,6 +115,7 @@ public class TemplateService {
      */
     private Map<String, Object> sendCreditUpdateTemplate(String openId, TemplateDataValueVO templateDataValueVO, HrWxWechatDO hrWxWechatDO, String url) throws ConnectException, BIZException {
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, templateDataValueVO.getTemplateId());
+        logger.info("=========hrWxTemplateMessageDO:{}", hrWxTemplateMessageDO);
         String requestUrl = getAwardTemplateUrl(hrWxWechatDO);
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
         Map<String, TemplateBaseVO> dataMap = createDataMap(templateDataValueVO);

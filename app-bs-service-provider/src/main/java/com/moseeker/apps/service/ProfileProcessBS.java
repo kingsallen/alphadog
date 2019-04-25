@@ -202,7 +202,7 @@ public class ProfileProcessBS {
 
     // 通过ats的l_application_id得到List<account_id,company_id,application_ia>
     private List<ApplicationAts> getJobApplication(String params)
-            throws Exception {      
+            throws Exception {
         List<Integer> appIds = this.convertList(params);
         List<ApplicationAts> list=jobApplicationDao.getApplicationByLApId(appIds);
         return list;
@@ -215,7 +215,7 @@ public class ProfileProcessBS {
      * @param progressStatus 下一步的状态，对应config_sys_points_conf_tpl.recruit_order
      * @param appIds         申请编号
      * @param accountId      hr_account.id
-     * @throws Exception 
+     * @throws Exception
      */
     @UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
     @CounterIface
@@ -493,7 +493,7 @@ public class ProfileProcessBS {
     }
     /**
      * 发送消息模板
-     * @throws TException 
+     * @throws TException
      */
     @CounterIface
     public void sendTemplate(int userId, String userName, int companyId, HrCompanyDO company,

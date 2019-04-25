@@ -23,7 +23,6 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
@@ -369,6 +368,8 @@ public class ReferralEntity {
             logger.error(e.getMessage(), e);
         }
         data.setCandidateNameMap(candidateNameMap);
+        logger.info("ReferralEntity fetchHBData triggerWxUserIdList:{}", triggerWxUserIdList);
+        logger.info("ReferralEntity fetchHBData candidateNameMap:{}", data.getCandidateNameMap());
 
         Map<Integer, HrHbScratchCardRecord> cardNoMap = new HashMap<>();
         try {
@@ -508,14 +509,18 @@ public class ReferralEntity {
             try {
                 List<HrOperationRecord> operationRecordList = hiredFuture.get();
                 if (operationRecordList != null && operationRecordList.size() > 0) {
+                    logger.info("ReferralEntity fetchBonusData operationRecordList:{}", operationRecordList);
                     operationRecordList.forEach(operation -> {
                         employmentDateMap.put(operation.getAppId().intValue(), operation.getOptTime().getTime());
                     });
+                } else {
+                    logger.info("ReferralEntity fetchBonusData operationRecordList is null!");
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
             bonusData.setEmploymentDateMap(employmentDateMap);
+            logger.info("ReferralEntity fetchBonusData employmentDateMap:{}", bonusData.getEmploymentDateMap());
         }
 
         List<Integer> stageIdList = referralEmployeeBonusRecordList
@@ -694,7 +699,6 @@ public class ReferralEntity {
 
     }
 
-
     public List<ReferralRecomEvaluationRecord> fetchEvaluationListByUserId(int userId, List<Integer> appidList){
         return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
     }
@@ -721,6 +725,7 @@ public class ReferralEntity {
             Map<Integer, Integer> positionView = new HashMap<>();
             Map<Integer, Integer> positionIdMap = new HashMap<>();
             List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
+            logger.info("fetchEmployeeRadarData candidatePositionList:{}", candidatePositionList);
             if(!StringUtils.isEmptyList(candidatePositionList)) {
                 for (CandidatePositionRecord candidatePosition : candidatePositionList) {
                     for (ReferralEmployeeNetworkResourcesRecord record : records){
@@ -792,6 +797,7 @@ public class ReferralEntity {
             data.setTimeMap(timeMap);
             data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            logger.info("fetchEmployeeRadarData candidatePositionList:{}", positionListFuture.get());
             if(!StringUtils.isEmptyList(positionListFuture.get())){
                 positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
             }
@@ -831,7 +837,7 @@ public class ReferralEntity {
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }
-
+        logger.info("fetchEmployeeRadarData data:{}", data);
         return data;
     }
 
@@ -1063,6 +1069,7 @@ public class ReferralEntity {
                 logger.info("fetchEmployeeNetworkResource num:{}",num);
                 for(int i =0; i<num;i++){
                     if(i < list.size()) {
+                    logger.info("fetchEmployeeNetworkResource i:{}",i);
                         ReferralEmployeeNetworkResourcesRecord record = list.get(i);
                         if (resource.getData().size() > i) {
                             record.setDisable((byte) Constant.DISABLE);
@@ -1083,8 +1090,8 @@ public class ReferralEntity {
                     }
                 }
                 logger.info("fetchEmployeeNetworkResource updateRecordList:{}",updateRecordList);
-                logger.info("fetchEmployeeNetworkResource insertRecordList:{}",insertRecordList);
                 networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
+                logger.info("fetchEmployeeNetworkResource insertRecordList:{}",insertRecordList);
                 networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
             }
         }

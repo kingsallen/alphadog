@@ -39,7 +39,7 @@ public abstract class AbstractSyncStateRefresh implements IChannelType{
     /**
      * 单位：毫秒
      */
-    public static final long TIMEOUT = 2 * 60 * 60 * 1000;
+    public static final long TIMEOUT = 1 * 5 * 60 * 1000;
 
     public void refresh(PositionSyncStateRefreshBean refreshBean) {
         try{

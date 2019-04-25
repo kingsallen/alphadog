@@ -13,6 +13,8 @@ import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
@@ -50,7 +52,6 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1641,26 +1642,26 @@ public class TalentPoolService {
             redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
             //todo 这里应该考虑如何解耦,这个方法非常不好，需要和TalentpoolCompanyTagDO解耦，但是先这么做着
                 String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data), TalentpoolCompanyTagDO.class));
-                if (StringUtils.isNullOrEmpty(filterString)) {
+            if (StringUtils.isNullOrEmpty(filterString)) {
                     int id = this.addHrAutomaticData(data);
-                    List<Integer> idList = new ArrayList<>();
-                    idList.add(id);
-                    //ES更新
-                    try {
-                        tp.startTast(() -> {
-                            Map<String, Object> map = JSON.parseObject(JSON.toJSONString(data));
-                                if (data.isSetKeyword_list()) {
-                                String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
-                                map.put("keywords", keyword);
-                            }
+                List<Integer> idList = new ArrayList<>();
+                idList.add(id);
+                //ES更新
+                try {
+                    tp.startTast(() -> {
+                        Map<String, Object> map = JSON.parseObject(JSON.toJSONString(data));
+                            if (data.isSetKeyword_list()) {
+                            String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+                            map.put("keywords", keyword);
                             map.put("company_id",companyId);
-                            tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
-                            return 0;
-                        });
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    return ResponseUtils.success("");
+                        }
+                        tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
+                        return 0;
+                    });
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                return ResponseUtils.success("");
                 } else {
                     return ResponseUtils.fail(1, filterString);
             }

@@ -98,6 +98,7 @@ public abstract class EmployeeReferralProfile {
                                               ProfilePojo profilePojo, UserEmployeeDO employeeDO, ProfileAttementVO attementVO);
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
+        logger.info("=============employeeReferralProfileAdaptor==============");
         ProfileAttementVO attementVO = new ProfileAttementVO();
         validateReferralInfo(profileNotice);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(profileNotice.getEmployeeId());

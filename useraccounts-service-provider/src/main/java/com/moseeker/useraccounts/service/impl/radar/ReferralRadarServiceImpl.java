@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
-import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -36,12 +35,13 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -67,6 +67,7 @@ import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +145,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private static final Integer CHAIN_LIMIT = 3;
 
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
+
+    @Autowired
+    private SensorSend sensorSend;
 
     @Override
     @RadarSwitchLimit
@@ -241,7 +245,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             chain = doInitShortestChain(shortestChain, userUserDOS);
         }
         // 发送消息模板
-        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
+        Date now = new Date();
+        long sendTime=  now.getTime();
+
+        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS,sendTime);
         if(isSent){
             if(inviteInfo.getTimestamp() != 0){
                 templateShareChainDao.updateTypeBySendTime(inviteInfo, ReferralApplyHandleEnum.invite.getType());
@@ -303,7 +310,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public RadarConnectResult connectRadar(int companyId, ConnectRadarInfo radarInfo) {
-        return connectRadar(radarInfo);
+        try{
+            return connectRadar(radarInfo);
+        }catch (Exception e){
+            logger.info("errmsg:{}", e.getMessage());
+            throw e;
+        }
+
 
     }
 
@@ -343,7 +356,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setState(connectionLogRecord.getState().intValue());
         result.setChain(userChains);
         result.setEnable_viewer(enableViewer);
-        logger.info("connectRadar:{}", JSON.toJSONString(result));
+        logger.info("connectRadar:{}", result);
         long end = System.currentTimeMillis();
         logger.info("连连看时长:{}", end - start);
         return result;
@@ -397,7 +410,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         userInfo.setName(recomUser.getCname());
         userInfo.setAvatar(userUserDO.getHeadimg());
         result.put("user", userInfo);
-        logger.info("checkEmployee:{}", JSON.toJSONString(result));
+        logger.info("checkEmployee:{}", result);
         return JSON.toJSONString(result);
     }
 
@@ -412,6 +425,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
         if(flag == 0){
+            logger.info("十分钟内转发，消息模板不发送");
             return;
         }
         logger.info("ReferralCardInfo:{}", cardInfo);
@@ -1148,7 +1162,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/13
      * @return  是否发送成功
      */
-    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS) {
+    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,long sendTime) {
         try{
             UserWxUserDO userWxUserDO = getWxUser(inviteInfo.getEndUserId(), userWxUserDOS);
             if(userWxUserDO == null){
@@ -1160,10 +1174,21 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             JSONObject inviteTemplateVO = initInviteTemplateVO(jobPosition, hrCompanyDO, employee);
             String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()))
                     + "?wechat_signature=" + hrWxWechatDO.getSignature() + "&recom=" + WxUseridEncryUtil.encry(employee.getSysuserId(), 10) + "&psc=0"
-                    + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" + System.currentTimeMillis();
+                 //   + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" + System.currentTimeMillis();
+               //神策数据埋点需要传入nowtime作为唯一UUID
+                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +sendTime;
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
-            return "0".equals(String.valueOf(response.get("errcode")));
+            if("0".equals(String.valueOf(response.get("errcode")))) {
+            String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
+            String distinctId = String.valueOf(inviteInfo.getUserId());
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("templateId", templateId);
+            properties.put("sendTime", sendTime);
+            logger.info("神策邀请投递发送消息模板-----> sendTime{} templateId{}" +sendTime +templateId);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
+                return "0".equals(String.valueOf(response.get("errcode")));
+            }
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
         }

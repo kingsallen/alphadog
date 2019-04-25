@@ -58,10 +58,12 @@ public class JobApplicataionServicesImpl implements Iface {
         try{
             return service.postApplication(jobApplication);
         } catch (CommonException e) {
+            // todo redis删除
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
+            // todo redis删除
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             logger.error(e.getMessage(),e);
@@ -254,10 +256,10 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Override
     public int appSendEmail(int appId) throws BIZException, TException {
-        try {
+        try{
             int result=service.appSendEmail(appId);
             return result;
-        } catch (CommonException e) {
+        }catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -37,40 +37,40 @@ public class ReferralServiceTest {
 //        referralService.getRadarCards(cardInfo);
     }
 
-//    @Test
-//    public void inviteApplicationTest() throws TException, ConnectException {
-//        ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
-//        inviteInfo.setCompanyId(39978);
-//        inviteInfo.setEndUserId(5291537);
-//        inviteInfo.setPid(19501370);
-//        inviteInfo.setTimestamp(1545034217595L);
-//        inviteInfo.setUserId(5283788);
+    @Test
+    public void inviteApplicationTest() throws TException, ConnectException {
+        ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
+        inviteInfo.setCompanyId(39978);
+        inviteInfo.setEndUserId(5291537);
+        inviteInfo.setPid(19501370);
+        inviteInfo.setTimestamp(1545034217595L);
+        inviteInfo.setUserId(5283788);
 //        referralService.inviteApplication(inviteInfo);
-//    }
-//
-//    @Test
-//    public void ignoreCurrentViewerTest() throws TException {
-//        ReferralInviteInfo ignoreInfo = new ReferralInviteInfo();
-//        ignoreInfo.setCompanyId(39978);
-//        ignoreInfo.setEndUserId(5291680);
-//        ignoreInfo.setPid(19501370);
-//        ignoreInfo.setTimestamp(1545034217595L);
-//        ignoreInfo.setUserId(5283788);
+    }
+
+    @Test
+    public void ignoreCurrentViewerTest() throws TException {
+        ReferralInviteInfo ignoreInfo = new ReferralInviteInfo();
+        ignoreInfo.setCompanyId(39978);
+        ignoreInfo.setEndUserId(5291680);
+        ignoreInfo.setPid(19501370);
+        ignoreInfo.setTimestamp(1545034217595L);
+        ignoreInfo.setUserId(5283788);
 //        referralService.ignoreCurrentViewer(ignoreInfo);
-//    }
-//
-//    @Test
-//    public void connectRadarTest() throws TException {
-//        ConnectRadarInfo radarInfo = new ConnectRadarInfo();
+    }
+
+    @Test
+    public void connectRadarTest() throws TException {
+        ConnectRadarInfo radarInfo = new ConnectRadarInfo();
 //        referralService.connectRadar(radarInfo);
-//    }
-//
-//    @Test
-//    public void checkEmployeeTest() throws TException {
-//        CheckEmployeeInfo checkInfo = new CheckEmployeeInfo();
-//        checkInfo.setParentChainId(5044);
-//        checkInfo.setPid(19501370);
-//        checkInfo.setRecomUserId(5291680);
+    }
+
+    @Test
+    public void checkEmployeeTest() throws TException {
+        CheckEmployeeInfo checkInfo = new CheckEmployeeInfo();
+        checkInfo.setParentChainId(5044);
+        checkInfo.setPid(19501370);
+        checkInfo.setRecomUserId(5291680);
 //        referralService.checkEmployee(checkInfo);
-//    }
+    }
 }

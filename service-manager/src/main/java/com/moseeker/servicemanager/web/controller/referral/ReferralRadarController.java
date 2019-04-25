@@ -10,6 +10,8 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @ResponseBody
 public class ReferralRadarController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
 
@@ -90,6 +94,7 @@ public class ReferralRadarController {
                                        @RequestParam(name = "company_id") Integer companyId,
                                        @RequestParam(name = "keyword") String keyword,
                                        @RequestParam(name = "progress") Integer progress) throws TException {
+        logger.info("userId:{}, companyId:{}, keyword:{}, progress:{}", userId, companyId, keyword, progress);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("员工userId", userId, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
@@ -109,6 +114,7 @@ public class ReferralRadarController {
             progressInfo.setProgress(progress);
             progressInfo.setUserId(userId);
             String resultJson = referralService.progressQueryKeyword(progressInfo);
+            logger.info("================resultJson:{}", resultJson);
             JSONArray response = JSONArray.parseArray(resultJson);
             return Result.success(response).toJson();
         } else {
@@ -156,6 +162,7 @@ public class ReferralRadarController {
     @RequestMapping(value = "/v1/referral/employee/check", method = RequestMethod.POST)
     @ResponseBody
     public String checkEmployee(@RequestBody CheckEmployeeForm checkForm) throws Exception {
+        logger.info("checkForm:{}", checkForm);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("转发人", checkForm.getRecomUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("转发链路parentChainId", checkForm.getParentChainId(), -1, Integer.MAX_VALUE);
@@ -175,6 +182,7 @@ public class ReferralRadarController {
             BeanUtils.copyProperties(checkForm, checkInfo);
             String jsonResult = referralService.checkEmployee(checkInfo);
             jsonResult = (jsonResult == null ? "" : jsonResult);
+            logger.info("checkEmployee:{}", jsonResult);
             JSONObject response = JSONObject.parseObject(jsonResult);
             return Result.success(response).toJson();
         } else {

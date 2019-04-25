@@ -13,6 +13,7 @@ import com.moseeker.thrift.gen.candidate.struct.PositionLayerInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
+
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 
 import java.util.List;

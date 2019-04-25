@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
@@ -9,6 +10,8 @@ import com.moseeker.servicemanager.web.controller.referral.form.ActivityForm;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.ActivityDTO;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @CounterIface
 public class RedPacketController {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
 
     /**
@@ -33,6 +37,7 @@ public class RedPacketController {
     @ResponseBody
     public String startActivity(@PathVariable(value = "id") Integer id, @RequestBody ActivityForm form) throws Exception {
 
+        logger.info("RedPacketController startActivity form:{}", JSON.toJSONString(form));
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("调用方编号", form.getAppid());
         validateUtil.addRequiredValidate("活动编号", id);
@@ -55,9 +60,11 @@ public class RedPacketController {
         if (StringUtils.isBlank(result)) {
             ActivityDTO activityDTO = com.moseeker.baseorm.util.BeanUtils.DBToBean(form, ActivityDTO.class);
             activityDTO.setId(id);
+            logger.info("RedPacketController startActivity activityDTO:{}", activityDTO);
             referralService.updateActivity(activityDTO);
             return Result.success("success").toJson();
         } else {
+            logger.info("RedPacketController startActivity result:{}", result);
             return Result.validateFailed(result).toJson();
         }
     }

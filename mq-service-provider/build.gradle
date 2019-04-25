@@ -14,6 +14,7 @@ dependencies {
     compile deps["jetty-support"]
     compile deps["mandrill"]
     compile deps["spring-rabbit"]
+    compile deps["SensorsAnalyticsSDK"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
@@ -24,7 +25,9 @@ task copyJars(type: Copy) {
     from configurations.runtime
     into 'build/libs' // 目标位置
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 jar {
 
     // build one flat jar
@@ -35,6 +38,7 @@ jar {
      manifest {
         attributes 'Main-Class': 'com.moseeker.mq.MqServer'
      }
+    zip64 true
 
 
 }

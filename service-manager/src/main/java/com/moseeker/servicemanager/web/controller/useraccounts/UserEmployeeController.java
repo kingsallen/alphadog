@@ -528,6 +528,7 @@ public class UserEmployeeController {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
     }
+
     @RequestMapping(value="/employee/addpoint", method = RequestMethod.POST)
     @ResponseBody
     public String userEmployeeAddPoint(HttpServletRequest request,  HttpServletResponse response) throws Exception {
@@ -564,7 +565,7 @@ public class UserEmployeeController {
     public String getUserEmployeeByUserId(HttpServletRequest request,  HttpServletResponse response) throws Exception {
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userId= (int) params.get("user_id");
+            int userId=  Integer.parseInt(params.getString("user_id"));
             Response res=service.getUserEmployeeByuserId(userId);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
@@ -600,7 +601,9 @@ public class UserEmployeeController {
         }
         com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo info = service.getPositionReferralInfo(userId, positionId);
         PositionReferralInfo result = new PositionReferralInfo();
+        logger.info("getPositionReferralInfo info:{}",info);
         BeanUtils.copyProperties(info, result);
+        logger.info("getPositionReferralInfo result:{}",JSON.toJSONString(result));
         return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
 
     }
@@ -707,4 +710,5 @@ public class UserEmployeeController {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
     }
+
 }
