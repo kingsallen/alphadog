@@ -566,7 +566,14 @@ public class SmsSender {
         }
         return content;
     }
-    //发送短讯请求
+
+    /**
+     * 美联软通的国际短信。
+     * @param mobile  国家代码+手机号
+     * @param content
+     * @return
+     * @throws Exception
+     */
     private boolean sendI5NationalSms(String mobile, String content) throws Exception{
         StringBuffer buffer = new StringBuffer();
         String encode = "GBK"; //页面编码和短信内容编码为GBK。重要说明：如提交短信后收到乱码，请将GBK改为UTF-8测试。如本程序页面为编码格式为：ASCII/GB2312/GBK则该处为GBK。如本页面编码为UTF-8或需要支持繁体，阿拉伯文等Unicode，请将此处写为：UTF-8
