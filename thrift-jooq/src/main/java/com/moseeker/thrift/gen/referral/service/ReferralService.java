@@ -56,6 +56,14 @@ public class ReferralService {
 
     public void handleCandidateState(com.moseeker.thrift.gen.referral.struct.ReferralStateInfo stateInfo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
+    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
+    public java.lang.String downLoadFiles(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles referralResumeInfo(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -103,6 +111,14 @@ public class ReferralService {
     public void checkSeekReferral(int userId, int presenteeId, int positionId, int companyId, int parentChainId, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
     public void handleCandidateState(com.moseeker.thrift.gen.referral.struct.ReferralStateInfo stateInfo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
+
+    public void uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException;
+
+    public void getUploadFiles(java.lang.String unionId, int pageSize, int pageNo, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler) throws org.apache.thrift.TException;
+
+    public void downLoadFiles(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException;
+
+    public void referralResumeInfo(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -708,6 +724,114 @@ public class ReferralService {
         throw result.e;
       }
       return;
+    }
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_uploadFiles(sceneId, fileName, fileData);
+      return recv_uploadFiles();
+    }
+
+    public void send_uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws org.apache.thrift.TException
+    {
+      uploadFiles_args args = new uploadFiles_args();
+      args.setSceneId(sceneId);
+      args.setFileName(fileName);
+      args.setFileData(fileData);
+      sendBase("uploadFiles", args);
+    }
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles recv_uploadFiles() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      uploadFiles_result result = new uploadFiles_result();
+      receiveBase(result, "uploadFiles");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "uploadFiles failed: unknown result");
+    }
+
+    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_getUploadFiles(unionId, pageSize, pageNo);
+      return recv_getUploadFiles();
+    }
+
+    public void send_getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws org.apache.thrift.TException
+    {
+      getUploadFiles_args args = new getUploadFiles_args();
+      args.setUnionId(unionId);
+      args.setPageSize(pageSize);
+      args.setPageNo(pageNo);
+      sendBase("getUploadFiles", args);
+    }
+
+    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> recv_getUploadFiles() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      getUploadFiles_result result = new getUploadFiles_result();
+      receiveBase(result, "getUploadFiles");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getUploadFiles failed: unknown result");
+    }
+
+    public java.lang.String downLoadFiles(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_downLoadFiles(sceneId);
+      return recv_downLoadFiles();
+    }
+
+    public void send_downLoadFiles(java.lang.String sceneId) throws org.apache.thrift.TException
+    {
+      downLoadFiles_args args = new downLoadFiles_args();
+      args.setSceneId(sceneId);
+      sendBase("downLoadFiles", args);
+    }
+
+    public java.lang.String recv_downLoadFiles() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      downLoadFiles_result result = new downLoadFiles_result();
+      receiveBase(result, "downLoadFiles");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "downLoadFiles failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles referralResumeInfo(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_referralResumeInfo(sceneId);
+      return recv_referralResumeInfo();
+    }
+
+    public void send_referralResumeInfo(java.lang.String sceneId) throws org.apache.thrift.TException
+    {
+      referralResumeInfo_args args = new referralResumeInfo_args();
+      args.setSceneId(sceneId);
+      sendBase("referralResumeInfo", args);
+    }
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles recv_referralResumeInfo() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      referralResumeInfo_result result = new referralResumeInfo_result();
+      receiveBase(result, "referralResumeInfo");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "referralResumeInfo failed: unknown result");
     }
 
   }
@@ -1531,6 +1655,146 @@ public class ReferralService {
       }
     }
 
+    public void uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      uploadFiles_call method_call = new uploadFiles_call(sceneId, fileName, fileData, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class uploadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
+      private java.lang.String sceneId;
+      private java.lang.String fileName;
+      private java.nio.ByteBuffer fileData;
+      public uploadFiles_call(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.sceneId = sceneId;
+        this.fileName = fileName;
+        this.fileData = fileData;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("uploadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        uploadFiles_args args = new uploadFiles_args();
+        args.setSceneId(sceneId);
+        args.setFileName(fileName);
+        args.setFileData(fileData);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_uploadFiles();
+      }
+    }
+
+    public void getUploadFiles(java.lang.String unionId, int pageSize, int pageNo, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getUploadFiles_call method_call = new getUploadFiles_call(unionId, pageSize, pageNo, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getUploadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> {
+      private java.lang.String unionId;
+      private int pageSize;
+      private int pageNo;
+      public getUploadFiles_call(java.lang.String unionId, int pageSize, int pageNo, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.unionId = unionId;
+        this.pageSize = pageSize;
+        this.pageNo = pageNo;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getUploadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getUploadFiles_args args = new getUploadFiles_args();
+        args.setUnionId(unionId);
+        args.setPageSize(pageSize);
+        args.setPageNo(pageNo);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getUploadFiles();
+      }
+    }
+
+    public void downLoadFiles(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      downLoadFiles_call method_call = new downLoadFiles_call(sceneId, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class downLoadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.String> {
+      private java.lang.String sceneId;
+      public downLoadFiles_call(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.sceneId = sceneId;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("downLoadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        downLoadFiles_args args = new downLoadFiles_args();
+        args.setSceneId(sceneId);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public java.lang.String getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_downLoadFiles();
+      }
+    }
+
+    public void referralResumeInfo(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      referralResumeInfo_call method_call = new referralResumeInfo_call(sceneId, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class referralResumeInfo_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
+      private java.lang.String sceneId;
+      public referralResumeInfo_call(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.sceneId = sceneId;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("referralResumeInfo", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        referralResumeInfo_args args = new referralResumeInfo_args();
+        args.setSceneId(sceneId);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_referralResumeInfo();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -1566,6 +1830,10 @@ public class ReferralService {
       processMap.put("employeeReferralRecomEvaluation", new employeeReferralRecomEvaluation());
       processMap.put("checkSeekReferral", new checkSeekReferral());
       processMap.put("handleCandidateState", new handleCandidateState());
+      processMap.put("uploadFiles", new uploadFiles());
+      processMap.put("getUploadFiles", new getUploadFiles());
+      processMap.put("downLoadFiles", new downLoadFiles());
+      processMap.put("referralResumeInfo", new referralResumeInfo());
       return processMap;
     }
 
@@ -2099,6 +2367,102 @@ public class ReferralService {
       }
     }
 
+    public static class uploadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, uploadFiles_args> {
+      public uploadFiles() {
+        super("uploadFiles");
+      }
+
+      public uploadFiles_args getEmptyArgsInstance() {
+        return new uploadFiles_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public uploadFiles_result getResult(I iface, uploadFiles_args args) throws org.apache.thrift.TException {
+        uploadFiles_result result = new uploadFiles_result();
+        try {
+          result.success = iface.uploadFiles(args.sceneId, args.fileName, args.fileData);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class getUploadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getUploadFiles_args> {
+      public getUploadFiles() {
+        super("getUploadFiles");
+      }
+
+      public getUploadFiles_args getEmptyArgsInstance() {
+        return new getUploadFiles_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getUploadFiles_result getResult(I iface, getUploadFiles_args args) throws org.apache.thrift.TException {
+        getUploadFiles_result result = new getUploadFiles_result();
+        try {
+          result.success = iface.getUploadFiles(args.unionId, args.pageSize, args.pageNo);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class downLoadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, downLoadFiles_args> {
+      public downLoadFiles() {
+        super("downLoadFiles");
+      }
+
+      public downLoadFiles_args getEmptyArgsInstance() {
+        return new downLoadFiles_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public downLoadFiles_result getResult(I iface, downLoadFiles_args args) throws org.apache.thrift.TException {
+        downLoadFiles_result result = new downLoadFiles_result();
+        try {
+          result.success = iface.downLoadFiles(args.sceneId);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class referralResumeInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, referralResumeInfo_args> {
+      public referralResumeInfo() {
+        super("referralResumeInfo");
+      }
+
+      public referralResumeInfo_args getEmptyArgsInstance() {
+        return new referralResumeInfo_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public referralResumeInfo_result getResult(I iface, referralResumeInfo_args args) throws org.apache.thrift.TException {
+        referralResumeInfo_result result = new referralResumeInfo_result();
+        try {
+          result.success = iface.referralResumeInfo(args.sceneId);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -2134,6 +2498,10 @@ public class ReferralService {
       processMap.put("employeeReferralRecomEvaluation", new employeeReferralRecomEvaluation());
       processMap.put("checkSeekReferral", new checkSeekReferral());
       processMap.put("handleCandidateState", new handleCandidateState());
+      processMap.put("uploadFiles", new uploadFiles());
+      processMap.put("getUploadFiles", new getUploadFiles());
+      processMap.put("downLoadFiles", new downLoadFiles());
+      processMap.put("referralResumeInfo", new referralResumeInfo());
       return processMap;
     }
 
@@ -3559,6 +3927,266 @@ public class ReferralService {
 
       public void start(I iface, handleCandidateState_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
         iface.handleCandidateState(args.stateInfo,resultHandler);
+      }
+    }
+
+    public static class uploadFiles<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, uploadFiles_args, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
+      public uploadFiles() {
+        super("uploadFiles");
+      }
+
+      public uploadFiles_args getEmptyArgsInstance() {
+        return new uploadFiles_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>() { 
+          public void onComplete(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles o) {
+            uploadFiles_result result = new uploadFiles_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            uploadFiles_result result = new uploadFiles_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, uploadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
+        iface.uploadFiles(args.sceneId, args.fileName, args.fileData,resultHandler);
+      }
+    }
+
+    public static class getUploadFiles<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getUploadFiles_args, java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> {
+      public getUploadFiles() {
+        super("getUploadFiles");
+      }
+
+      public getUploadFiles_args getEmptyArgsInstance() {
+        return new getUploadFiles_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>>() { 
+          public void onComplete(java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> o) {
+            getUploadFiles_result result = new getUploadFiles_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getUploadFiles_result result = new getUploadFiles_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getUploadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler) throws org.apache.thrift.TException {
+        iface.getUploadFiles(args.unionId, args.pageSize, args.pageNo,resultHandler);
+      }
+    }
+
+    public static class downLoadFiles<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, downLoadFiles_args, java.lang.String> {
+      public downLoadFiles() {
+        super("downLoadFiles");
+      }
+
+      public downLoadFiles_args getEmptyArgsInstance() {
+        return new downLoadFiles_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<java.lang.String> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.String>() { 
+          public void onComplete(java.lang.String o) {
+            downLoadFiles_result result = new downLoadFiles_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            downLoadFiles_result result = new downLoadFiles_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, downLoadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException {
+        iface.downLoadFiles(args.sceneId,resultHandler);
+      }
+    }
+
+    public static class referralResumeInfo<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, referralResumeInfo_args, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
+      public referralResumeInfo() {
+        super("referralResumeInfo");
+      }
+
+      public referralResumeInfo_args getEmptyArgsInstance() {
+        return new referralResumeInfo_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>() { 
+          public void onComplete(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles o) {
+            referralResumeInfo_result result = new referralResumeInfo_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            referralResumeInfo_result result = new referralResumeInfo_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, referralResumeInfo_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
+        iface.referralResumeInfo(args.sceneId,resultHandler);
       }
     }
 
@@ -24512,6 +25140,3808 @@ public class ReferralService {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class uploadFiles_args implements org.apache.thrift.TBase<uploadFiles_args, uploadFiles_args._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFiles_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("uploadFiles_args");
+
+    private static final org.apache.thrift.protocol.TField SCENE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sceneId", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField FILE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("fileName", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField FILE_DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("fileData", org.apache.thrift.protocol.TType.STRING, (short)3);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new uploadFiles_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new uploadFiles_argsTupleSchemeFactory();
+
+    public java.lang.String sceneId; // required
+    public java.lang.String fileName; // required
+    public java.nio.ByteBuffer fileData; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SCENE_ID((short)1, "sceneId"),
+      FILE_NAME((short)2, "fileName"),
+      FILE_DATA((short)3, "fileData");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // SCENE_ID
+            return SCENE_ID;
+          case 2: // FILE_NAME
+            return FILE_NAME;
+          case 3: // FILE_DATA
+            return FILE_DATA;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.FILE_NAME, new org.apache.thrift.meta_data.FieldMetaData("fileName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.FILE_DATA, new org.apache.thrift.meta_data.FieldMetaData("fileData", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(uploadFiles_args.class, metaDataMap);
+    }
+
+    public uploadFiles_args() {
+    }
+
+    public uploadFiles_args(
+      java.lang.String sceneId,
+      java.lang.String fileName,
+      java.nio.ByteBuffer fileData)
+    {
+      this();
+      this.sceneId = sceneId;
+      this.fileName = fileName;
+      this.fileData = org.apache.thrift.TBaseHelper.copyBinary(fileData);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public uploadFiles_args(uploadFiles_args other) {
+      if (other.isSetSceneId()) {
+        this.sceneId = other.sceneId;
+      }
+      if (other.isSetFileName()) {
+        this.fileName = other.fileName;
+      }
+      if (other.isSetFileData()) {
+        this.fileData = org.apache.thrift.TBaseHelper.copyBinary(other.fileData);
+      }
+    }
+
+    public uploadFiles_args deepCopy() {
+      return new uploadFiles_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.sceneId = null;
+      this.fileName = null;
+      this.fileData = null;
+    }
+
+    public java.lang.String getSceneId() {
+      return this.sceneId;
+    }
+
+    public uploadFiles_args setSceneId(java.lang.String sceneId) {
+      this.sceneId = sceneId;
+      return this;
+    }
+
+    public void unsetSceneId() {
+      this.sceneId = null;
+    }
+
+    /** Returns true if field sceneId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSceneId() {
+      return this.sceneId != null;
+    }
+
+    public void setSceneIdIsSet(boolean value) {
+      if (!value) {
+        this.sceneId = null;
+      }
+    }
+
+    public java.lang.String getFileName() {
+      return this.fileName;
+    }
+
+    public uploadFiles_args setFileName(java.lang.String fileName) {
+      this.fileName = fileName;
+      return this;
+    }
+
+    public void unsetFileName() {
+      this.fileName = null;
+    }
+
+    /** Returns true if field fileName is set (has been assigned a value) and false otherwise */
+    public boolean isSetFileName() {
+      return this.fileName != null;
+    }
+
+    public void setFileNameIsSet(boolean value) {
+      if (!value) {
+        this.fileName = null;
+      }
+    }
+
+    public byte[] getFileData() {
+      setFileData(org.apache.thrift.TBaseHelper.rightSize(fileData));
+      return fileData == null ? null : fileData.array();
+    }
+
+    public java.nio.ByteBuffer bufferForFileData() {
+      return org.apache.thrift.TBaseHelper.copyBinary(fileData);
+    }
+
+    public uploadFiles_args setFileData(byte[] fileData) {
+      this.fileData = fileData == null ? (java.nio.ByteBuffer)null : java.nio.ByteBuffer.wrap(fileData.clone());
+      return this;
+    }
+
+    public uploadFiles_args setFileData(java.nio.ByteBuffer fileData) {
+      this.fileData = org.apache.thrift.TBaseHelper.copyBinary(fileData);
+      return this;
+    }
+
+    public void unsetFileData() {
+      this.fileData = null;
+    }
+
+    /** Returns true if field fileData is set (has been assigned a value) and false otherwise */
+    public boolean isSetFileData() {
+      return this.fileData != null;
+    }
+
+    public void setFileDataIsSet(boolean value) {
+      if (!value) {
+        this.fileData = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SCENE_ID:
+        if (value == null) {
+          unsetSceneId();
+        } else {
+          setSceneId((java.lang.String)value);
+        }
+        break;
+
+      case FILE_NAME:
+        if (value == null) {
+          unsetFileName();
+        } else {
+          setFileName((java.lang.String)value);
+        }
+        break;
+
+      case FILE_DATA:
+        if (value == null) {
+          unsetFileData();
+        } else {
+          if (value instanceof byte[]) {
+            setFileData((byte[])value);
+          } else {
+            setFileData((java.nio.ByteBuffer)value);
+          }
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SCENE_ID:
+        return getSceneId();
+
+      case FILE_NAME:
+        return getFileName();
+
+      case FILE_DATA:
+        return getFileData();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SCENE_ID:
+        return isSetSceneId();
+      case FILE_NAME:
+        return isSetFileName();
+      case FILE_DATA:
+        return isSetFileData();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof uploadFiles_args)
+        return this.equals((uploadFiles_args)that);
+      return false;
+    }
+
+    public boolean equals(uploadFiles_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_sceneId = true && this.isSetSceneId();
+      boolean that_present_sceneId = true && that.isSetSceneId();
+      if (this_present_sceneId || that_present_sceneId) {
+        if (!(this_present_sceneId && that_present_sceneId))
+          return false;
+        if (!this.sceneId.equals(that.sceneId))
+          return false;
+      }
+
+      boolean this_present_fileName = true && this.isSetFileName();
+      boolean that_present_fileName = true && that.isSetFileName();
+      if (this_present_fileName || that_present_fileName) {
+        if (!(this_present_fileName && that_present_fileName))
+          return false;
+        if (!this.fileName.equals(that.fileName))
+          return false;
+      }
+
+      boolean this_present_fileData = true && this.isSetFileData();
+      boolean that_present_fileData = true && that.isSetFileData();
+      if (this_present_fileData || that_present_fileData) {
+        if (!(this_present_fileData && that_present_fileData))
+          return false;
+        if (!this.fileData.equals(that.fileData))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSceneId()) ? 131071 : 524287);
+      if (isSetSceneId())
+        hashCode = hashCode * 8191 + sceneId.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetFileName()) ? 131071 : 524287);
+      if (isSetFileName())
+        hashCode = hashCode * 8191 + fileName.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetFileData()) ? 131071 : 524287);
+      if (isSetFileData())
+        hashCode = hashCode * 8191 + fileData.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(uploadFiles_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSceneId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sceneId, other.sceneId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetFileName()).compareTo(other.isSetFileName());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetFileName()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.fileName, other.fileName);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetFileData()).compareTo(other.isSetFileData());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetFileData()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.fileData, other.fileData);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("uploadFiles_args(");
+      boolean first = true;
+
+      sb.append("sceneId:");
+      if (this.sceneId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sceneId);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("fileName:");
+      if (this.fileName == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.fileName);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("fileData:");
+      if (this.fileData == null) {
+        sb.append("null");
+      } else {
+        org.apache.thrift.TBaseHelper.toString(this.fileData, sb);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class uploadFiles_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public uploadFiles_argsStandardScheme getScheme() {
+        return new uploadFiles_argsStandardScheme();
+      }
+    }
+
+    private static class uploadFiles_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<uploadFiles_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, uploadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // SCENE_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sceneId = iprot.readString();
+                struct.setSceneIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // FILE_NAME
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.fileName = iprot.readString();
+                struct.setFileNameIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // FILE_DATA
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.fileData = iprot.readBinary();
+                struct.setFileDataIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, uploadFiles_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sceneId != null) {
+          oprot.writeFieldBegin(SCENE_ID_FIELD_DESC);
+          oprot.writeString(struct.sceneId);
+          oprot.writeFieldEnd();
+        }
+        if (struct.fileName != null) {
+          oprot.writeFieldBegin(FILE_NAME_FIELD_DESC);
+          oprot.writeString(struct.fileName);
+          oprot.writeFieldEnd();
+        }
+        if (struct.fileData != null) {
+          oprot.writeFieldBegin(FILE_DATA_FIELD_DESC);
+          oprot.writeBinary(struct.fileData);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class uploadFiles_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public uploadFiles_argsTupleScheme getScheme() {
+        return new uploadFiles_argsTupleScheme();
+      }
+    }
+
+    private static class uploadFiles_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<uploadFiles_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, uploadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSceneId()) {
+          optionals.set(0);
+        }
+        if (struct.isSetFileName()) {
+          optionals.set(1);
+        }
+        if (struct.isSetFileData()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetSceneId()) {
+          oprot.writeString(struct.sceneId);
+        }
+        if (struct.isSetFileName()) {
+          oprot.writeString(struct.fileName);
+        }
+        if (struct.isSetFileData()) {
+          oprot.writeBinary(struct.fileData);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, uploadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.sceneId = iprot.readString();
+          struct.setSceneIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.fileName = iprot.readString();
+          struct.setFileNameIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.fileData = iprot.readBinary();
+          struct.setFileDataIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class uploadFiles_result implements org.apache.thrift.TBase<uploadFiles_result, uploadFiles_result._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFiles_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("uploadFiles_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new uploadFiles_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new uploadFiles_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(uploadFiles_result.class, metaDataMap);
+    }
+
+    public uploadFiles_result() {
+    }
+
+    public uploadFiles_result(
+      com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public uploadFiles_result(uploadFiles_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public uploadFiles_result deepCopy() {
+      return new uploadFiles_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles getSuccess() {
+      return this.success;
+    }
+
+    public uploadFiles_result setSuccess(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public uploadFiles_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof uploadFiles_result)
+        return this.equals((uploadFiles_result)that);
+      return false;
+    }
+
+    public boolean equals(uploadFiles_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(uploadFiles_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("uploadFiles_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class uploadFiles_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public uploadFiles_resultStandardScheme getScheme() {
+        return new uploadFiles_resultStandardScheme();
+      }
+    }
+
+    private static class uploadFiles_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<uploadFiles_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, uploadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, uploadFiles_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class uploadFiles_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public uploadFiles_resultTupleScheme getScheme() {
+        return new uploadFiles_resultTupleScheme();
+      }
+    }
+
+    private static class uploadFiles_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<uploadFiles_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, uploadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, uploadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getUploadFiles_args implements org.apache.thrift.TBase<getUploadFiles_args, getUploadFiles_args._Fields>, java.io.Serializable, Cloneable, Comparable<getUploadFiles_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUploadFiles_args");
+
+    private static final org.apache.thrift.protocol.TField UNION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("unionId", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)2);
+    private static final org.apache.thrift.protocol.TField PAGE_NO_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNo", org.apache.thrift.protocol.TType.I32, (short)3);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getUploadFiles_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getUploadFiles_argsTupleSchemeFactory();
+
+    public java.lang.String unionId; // required
+    public int pageSize; // required
+    public int pageNo; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      UNION_ID((short)1, "unionId"),
+      PAGE_SIZE((short)2, "pageSize"),
+      PAGE_NO((short)3, "pageNo");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // UNION_ID
+            return UNION_ID;
+          case 2: // PAGE_SIZE
+            return PAGE_SIZE;
+          case 3: // PAGE_NO
+            return PAGE_NO;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __PAGESIZE_ISSET_ID = 0;
+    private static final int __PAGENO_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.UNION_ID, new org.apache.thrift.meta_data.FieldMetaData("unionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.PAGE_NO, new org.apache.thrift.meta_data.FieldMetaData("pageNo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUploadFiles_args.class, metaDataMap);
+    }
+
+    public getUploadFiles_args() {
+    }
+
+    public getUploadFiles_args(
+      java.lang.String unionId,
+      int pageSize,
+      int pageNo)
+    {
+      this();
+      this.unionId = unionId;
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      this.pageNo = pageNo;
+      setPageNoIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getUploadFiles_args(getUploadFiles_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      if (other.isSetUnionId()) {
+        this.unionId = other.unionId;
+      }
+      this.pageSize = other.pageSize;
+      this.pageNo = other.pageNo;
+    }
+
+    public getUploadFiles_args deepCopy() {
+      return new getUploadFiles_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.unionId = null;
+      setPageSizeIsSet(false);
+      this.pageSize = 0;
+      setPageNoIsSet(false);
+      this.pageNo = 0;
+    }
+
+    public java.lang.String getUnionId() {
+      return this.unionId;
+    }
+
+    public getUploadFiles_args setUnionId(java.lang.String unionId) {
+      this.unionId = unionId;
+      return this;
+    }
+
+    public void unsetUnionId() {
+      this.unionId = null;
+    }
+
+    /** Returns true if field unionId is set (has been assigned a value) and false otherwise */
+    public boolean isSetUnionId() {
+      return this.unionId != null;
+    }
+
+    public void setUnionIdIsSet(boolean value) {
+      if (!value) {
+        this.unionId = null;
+      }
+    }
+
+    public int getPageSize() {
+      return this.pageSize;
+    }
+
+    public getUploadFiles_args setPageSize(int pageSize) {
+      this.pageSize = pageSize;
+      setPageSizeIsSet(true);
+      return this;
+    }
+
+    public void unsetPageSize() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    /** Returns true if field pageSize is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageSize() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGESIZE_ISSET_ID);
+    }
+
+    public void setPageSizeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGESIZE_ISSET_ID, value);
+    }
+
+    public int getPageNo() {
+      return this.pageNo;
+    }
+
+    public getUploadFiles_args setPageNo(int pageNo) {
+      this.pageNo = pageNo;
+      setPageNoIsSet(true);
+      return this;
+    }
+
+    public void unsetPageNo() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PAGENO_ISSET_ID);
+    }
+
+    /** Returns true if field pageNo is set (has been assigned a value) and false otherwise */
+    public boolean isSetPageNo() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PAGENO_ISSET_ID);
+    }
+
+    public void setPageNoIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PAGENO_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case UNION_ID:
+        if (value == null) {
+          unsetUnionId();
+        } else {
+          setUnionId((java.lang.String)value);
+        }
+        break;
+
+      case PAGE_SIZE:
+        if (value == null) {
+          unsetPageSize();
+        } else {
+          setPageSize((java.lang.Integer)value);
+        }
+        break;
+
+      case PAGE_NO:
+        if (value == null) {
+          unsetPageNo();
+        } else {
+          setPageNo((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case UNION_ID:
+        return getUnionId();
+
+      case PAGE_SIZE:
+        return getPageSize();
+
+      case PAGE_NO:
+        return getPageNo();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case UNION_ID:
+        return isSetUnionId();
+      case PAGE_SIZE:
+        return isSetPageSize();
+      case PAGE_NO:
+        return isSetPageNo();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getUploadFiles_args)
+        return this.equals((getUploadFiles_args)that);
+      return false;
+    }
+
+    public boolean equals(getUploadFiles_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_unionId = true && this.isSetUnionId();
+      boolean that_present_unionId = true && that.isSetUnionId();
+      if (this_present_unionId || that_present_unionId) {
+        if (!(this_present_unionId && that_present_unionId))
+          return false;
+        if (!this.unionId.equals(that.unionId))
+          return false;
+      }
+
+      boolean this_present_pageSize = true;
+      boolean that_present_pageSize = true;
+      if (this_present_pageSize || that_present_pageSize) {
+        if (!(this_present_pageSize && that_present_pageSize))
+          return false;
+        if (this.pageSize != that.pageSize)
+          return false;
+      }
+
+      boolean this_present_pageNo = true;
+      boolean that_present_pageNo = true;
+      if (this_present_pageNo || that_present_pageNo) {
+        if (!(this_present_pageNo && that_present_pageNo))
+          return false;
+        if (this.pageNo != that.pageNo)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetUnionId()) ? 131071 : 524287);
+      if (isSetUnionId())
+        hashCode = hashCode * 8191 + unionId.hashCode();
+
+      hashCode = hashCode * 8191 + pageSize;
+
+      hashCode = hashCode * 8191 + pageNo;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getUploadFiles_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetUnionId()).compareTo(other.isSetUnionId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUnionId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.unionId, other.unionId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPageSize()).compareTo(other.isSetPageSize());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageSize()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageSize, other.pageSize);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetPageNo()).compareTo(other.isSetPageNo());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetPageNo()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pageNo, other.pageNo);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUploadFiles_args(");
+      boolean first = true;
+
+      sb.append("unionId:");
+      if (this.unionId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.unionId);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageSize:");
+      sb.append(this.pageSize);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("pageNo:");
+      sb.append(this.pageNo);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getUploadFiles_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUploadFiles_argsStandardScheme getScheme() {
+        return new getUploadFiles_argsStandardScheme();
+      }
+    }
+
+    private static class getUploadFiles_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getUploadFiles_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUploadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // UNION_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.unionId = iprot.readString();
+                struct.setUnionIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PAGE_SIZE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageSize = iprot.readI32();
+                struct.setPageSizeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // PAGE_NO
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.pageNo = iprot.readI32();
+                struct.setPageNoIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUploadFiles_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.unionId != null) {
+          oprot.writeFieldBegin(UNION_ID_FIELD_DESC);
+          oprot.writeString(struct.unionId);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldBegin(PAGE_SIZE_FIELD_DESC);
+        oprot.writeI32(struct.pageSize);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(PAGE_NO_FIELD_DESC);
+        oprot.writeI32(struct.pageNo);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getUploadFiles_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUploadFiles_argsTupleScheme getScheme() {
+        return new getUploadFiles_argsTupleScheme();
+      }
+    }
+
+    private static class getUploadFiles_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getUploadFiles_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUploadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetUnionId()) {
+          optionals.set(0);
+        }
+        if (struct.isSetPageSize()) {
+          optionals.set(1);
+        }
+        if (struct.isSetPageNo()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetUnionId()) {
+          oprot.writeString(struct.unionId);
+        }
+        if (struct.isSetPageSize()) {
+          oprot.writeI32(struct.pageSize);
+        }
+        if (struct.isSetPageNo()) {
+          oprot.writeI32(struct.pageNo);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUploadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(3);
+        if (incoming.get(0)) {
+          struct.unionId = iprot.readString();
+          struct.setUnionIdIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.pageSize = iprot.readI32();
+          struct.setPageSizeIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.pageNo = iprot.readI32();
+          struct.setPageNoIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getUploadFiles_result implements org.apache.thrift.TBase<getUploadFiles_result, getUploadFiles_result._Fields>, java.io.Serializable, Cloneable, Comparable<getUploadFiles_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUploadFiles_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getUploadFiles_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getUploadFiles_resultTupleSchemeFactory();
+
+    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles.class))));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUploadFiles_result.class, metaDataMap);
+    }
+
+    public getUploadFiles_result() {
+    }
+
+    public getUploadFiles_result(
+      java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getUploadFiles_result(getUploadFiles_result other) {
+      if (other.isSetSuccess()) {
+        java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> __this__success = new java.util.ArrayList<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>(other.success.size());
+        for (com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles other_element : other.success) {
+          __this__success.add(new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles(other_element));
+        }
+        this.success = __this__success;
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public getUploadFiles_result deepCopy() {
+      return new getUploadFiles_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public int getSuccessSize() {
+      return (this.success == null) ? 0 : this.success.size();
+    }
+
+    public java.util.Iterator<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getSuccessIterator() {
+      return (this.success == null) ? null : this.success.iterator();
+    }
+
+    public void addToSuccess(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles elem) {
+      if (this.success == null) {
+        this.success = new java.util.ArrayList<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>();
+      }
+      this.success.add(elem);
+    }
+
+    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getSuccess() {
+      return this.success;
+    }
+
+    public getUploadFiles_result setSuccess(java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public getUploadFiles_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getUploadFiles_result)
+        return this.equals((getUploadFiles_result)that);
+      return false;
+    }
+
+    public boolean equals(getUploadFiles_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getUploadFiles_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUploadFiles_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getUploadFiles_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUploadFiles_resultStandardScheme getScheme() {
+        return new getUploadFiles_resultStandardScheme();
+      }
+    }
+
+    private static class getUploadFiles_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getUploadFiles_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUploadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>(_list32.size);
+                  com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles _elem33;
+                  for (int _i34 = 0; _i34 < _list32.size; ++_i34)
+                  {
+                    _elem33 = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
+                    _elem33.read(iprot);
+                    struct.success.add(_elem33);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUploadFiles_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
+            for (com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles _iter35 : struct.success)
+            {
+              _iter35.write(oprot);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getUploadFiles_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getUploadFiles_resultTupleScheme getScheme() {
+        return new getUploadFiles_resultTupleScheme();
+      }
+    }
+
+    private static class getUploadFiles_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getUploadFiles_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUploadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          {
+            oprot.writeI32(struct.success.size());
+            for (com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles _iter36 : struct.success)
+            {
+              _iter36.write(oprot);
+            }
+          }
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUploadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>(_list37.size);
+            com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles _elem38;
+            for (int _i39 = 0; _i39 < _list37.size; ++_i39)
+            {
+              _elem38 = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
+              _elem38.read(iprot);
+              struct.success.add(_elem38);
+            }
+          }
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class downLoadFiles_args implements org.apache.thrift.TBase<downLoadFiles_args, downLoadFiles_args._Fields>, java.io.Serializable, Cloneable, Comparable<downLoadFiles_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downLoadFiles_args");
+
+    private static final org.apache.thrift.protocol.TField SCENE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sceneId", org.apache.thrift.protocol.TType.STRING, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new downLoadFiles_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new downLoadFiles_argsTupleSchemeFactory();
+
+    public java.lang.String sceneId; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SCENE_ID((short)1, "sceneId");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // SCENE_ID
+            return SCENE_ID;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(downLoadFiles_args.class, metaDataMap);
+    }
+
+    public downLoadFiles_args() {
+    }
+
+    public downLoadFiles_args(
+      java.lang.String sceneId)
+    {
+      this();
+      this.sceneId = sceneId;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public downLoadFiles_args(downLoadFiles_args other) {
+      if (other.isSetSceneId()) {
+        this.sceneId = other.sceneId;
+      }
+    }
+
+    public downLoadFiles_args deepCopy() {
+      return new downLoadFiles_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.sceneId = null;
+    }
+
+    public java.lang.String getSceneId() {
+      return this.sceneId;
+    }
+
+    public downLoadFiles_args setSceneId(java.lang.String sceneId) {
+      this.sceneId = sceneId;
+      return this;
+    }
+
+    public void unsetSceneId() {
+      this.sceneId = null;
+    }
+
+    /** Returns true if field sceneId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSceneId() {
+      return this.sceneId != null;
+    }
+
+    public void setSceneIdIsSet(boolean value) {
+      if (!value) {
+        this.sceneId = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SCENE_ID:
+        if (value == null) {
+          unsetSceneId();
+        } else {
+          setSceneId((java.lang.String)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SCENE_ID:
+        return getSceneId();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SCENE_ID:
+        return isSetSceneId();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof downLoadFiles_args)
+        return this.equals((downLoadFiles_args)that);
+      return false;
+    }
+
+    public boolean equals(downLoadFiles_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_sceneId = true && this.isSetSceneId();
+      boolean that_present_sceneId = true && that.isSetSceneId();
+      if (this_present_sceneId || that_present_sceneId) {
+        if (!(this_present_sceneId && that_present_sceneId))
+          return false;
+        if (!this.sceneId.equals(that.sceneId))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSceneId()) ? 131071 : 524287);
+      if (isSetSceneId())
+        hashCode = hashCode * 8191 + sceneId.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(downLoadFiles_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSceneId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sceneId, other.sceneId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("downLoadFiles_args(");
+      boolean first = true;
+
+      sb.append("sceneId:");
+      if (this.sceneId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sceneId);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class downLoadFiles_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public downLoadFiles_argsStandardScheme getScheme() {
+        return new downLoadFiles_argsStandardScheme();
+      }
+    }
+
+    private static class downLoadFiles_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<downLoadFiles_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, downLoadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // SCENE_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sceneId = iprot.readString();
+                struct.setSceneIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, downLoadFiles_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sceneId != null) {
+          oprot.writeFieldBegin(SCENE_ID_FIELD_DESC);
+          oprot.writeString(struct.sceneId);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class downLoadFiles_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public downLoadFiles_argsTupleScheme getScheme() {
+        return new downLoadFiles_argsTupleScheme();
+      }
+    }
+
+    private static class downLoadFiles_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<downLoadFiles_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, downLoadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSceneId()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSceneId()) {
+          oprot.writeString(struct.sceneId);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, downLoadFiles_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.sceneId = iprot.readString();
+          struct.setSceneIdIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class downLoadFiles_result implements org.apache.thrift.TBase<downLoadFiles_result, downLoadFiles_result._Fields>, java.io.Serializable, Cloneable, Comparable<downLoadFiles_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downLoadFiles_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new downLoadFiles_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new downLoadFiles_resultTupleSchemeFactory();
+
+    public java.lang.String success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(downLoadFiles_result.class, metaDataMap);
+    }
+
+    public downLoadFiles_result() {
+    }
+
+    public downLoadFiles_result(
+      java.lang.String success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public downLoadFiles_result(downLoadFiles_result other) {
+      if (other.isSetSuccess()) {
+        this.success = other.success;
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public downLoadFiles_result deepCopy() {
+      return new downLoadFiles_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public java.lang.String getSuccess() {
+      return this.success;
+    }
+
+    public downLoadFiles_result setSuccess(java.lang.String success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public downLoadFiles_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((java.lang.String)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof downLoadFiles_result)
+        return this.equals((downLoadFiles_result)that);
+      return false;
+    }
+
+    public boolean equals(downLoadFiles_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(downLoadFiles_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("downLoadFiles_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class downLoadFiles_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public downLoadFiles_resultStandardScheme getScheme() {
+        return new downLoadFiles_resultStandardScheme();
+      }
+    }
+
+    private static class downLoadFiles_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<downLoadFiles_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, downLoadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.success = iprot.readString();
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, downLoadFiles_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          oprot.writeString(struct.success);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class downLoadFiles_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public downLoadFiles_resultTupleScheme getScheme() {
+        return new downLoadFiles_resultTupleScheme();
+      }
+    }
+
+    private static class downLoadFiles_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<downLoadFiles_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, downLoadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          oprot.writeString(struct.success);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, downLoadFiles_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = iprot.readString();
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class referralResumeInfo_args implements org.apache.thrift.TBase<referralResumeInfo_args, referralResumeInfo_args._Fields>, java.io.Serializable, Cloneable, Comparable<referralResumeInfo_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("referralResumeInfo_args");
+
+    private static final org.apache.thrift.protocol.TField SCENE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sceneId", org.apache.thrift.protocol.TType.STRING, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new referralResumeInfo_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new referralResumeInfo_argsTupleSchemeFactory();
+
+    public java.lang.String sceneId; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SCENE_ID((short)1, "sceneId");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // SCENE_ID
+            return SCENE_ID;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(referralResumeInfo_args.class, metaDataMap);
+    }
+
+    public referralResumeInfo_args() {
+    }
+
+    public referralResumeInfo_args(
+      java.lang.String sceneId)
+    {
+      this();
+      this.sceneId = sceneId;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public referralResumeInfo_args(referralResumeInfo_args other) {
+      if (other.isSetSceneId()) {
+        this.sceneId = other.sceneId;
+      }
+    }
+
+    public referralResumeInfo_args deepCopy() {
+      return new referralResumeInfo_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.sceneId = null;
+    }
+
+    public java.lang.String getSceneId() {
+      return this.sceneId;
+    }
+
+    public referralResumeInfo_args setSceneId(java.lang.String sceneId) {
+      this.sceneId = sceneId;
+      return this;
+    }
+
+    public void unsetSceneId() {
+      this.sceneId = null;
+    }
+
+    /** Returns true if field sceneId is set (has been assigned a value) and false otherwise */
+    public boolean isSetSceneId() {
+      return this.sceneId != null;
+    }
+
+    public void setSceneIdIsSet(boolean value) {
+      if (!value) {
+        this.sceneId = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SCENE_ID:
+        if (value == null) {
+          unsetSceneId();
+        } else {
+          setSceneId((java.lang.String)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SCENE_ID:
+        return getSceneId();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SCENE_ID:
+        return isSetSceneId();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof referralResumeInfo_args)
+        return this.equals((referralResumeInfo_args)that);
+      return false;
+    }
+
+    public boolean equals(referralResumeInfo_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_sceneId = true && this.isSetSceneId();
+      boolean that_present_sceneId = true && that.isSetSceneId();
+      if (this_present_sceneId || that_present_sceneId) {
+        if (!(this_present_sceneId && that_present_sceneId))
+          return false;
+        if (!this.sceneId.equals(that.sceneId))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSceneId()) ? 131071 : 524287);
+      if (isSetSceneId())
+        hashCode = hashCode * 8191 + sceneId.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(referralResumeInfo_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSceneId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sceneId, other.sceneId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("referralResumeInfo_args(");
+      boolean first = true;
+
+      sb.append("sceneId:");
+      if (this.sceneId == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.sceneId);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class referralResumeInfo_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public referralResumeInfo_argsStandardScheme getScheme() {
+        return new referralResumeInfo_argsStandardScheme();
+      }
+    }
+
+    private static class referralResumeInfo_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<referralResumeInfo_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, referralResumeInfo_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // SCENE_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.sceneId = iprot.readString();
+                struct.setSceneIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, referralResumeInfo_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.sceneId != null) {
+          oprot.writeFieldBegin(SCENE_ID_FIELD_DESC);
+          oprot.writeString(struct.sceneId);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class referralResumeInfo_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public referralResumeInfo_argsTupleScheme getScheme() {
+        return new referralResumeInfo_argsTupleScheme();
+      }
+    }
+
+    private static class referralResumeInfo_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<referralResumeInfo_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, referralResumeInfo_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSceneId()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSceneId()) {
+          oprot.writeString(struct.sceneId);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, referralResumeInfo_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.sceneId = iprot.readString();
+          struct.setSceneIdIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class referralResumeInfo_result implements org.apache.thrift.TBase<referralResumeInfo_result, referralResumeInfo_result._Fields>, java.io.Serializable, Cloneable, Comparable<referralResumeInfo_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("referralResumeInfo_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new referralResumeInfo_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new referralResumeInfo_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(referralResumeInfo_result.class, metaDataMap);
+    }
+
+    public referralResumeInfo_result() {
+    }
+
+    public referralResumeInfo_result(
+      com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public referralResumeInfo_result(referralResumeInfo_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public referralResumeInfo_result deepCopy() {
+      return new referralResumeInfo_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles getSuccess() {
+      return this.success;
+    }
+
+    public referralResumeInfo_result setSuccess(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public referralResumeInfo_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof referralResumeInfo_result)
+        return this.equals((referralResumeInfo_result)that);
+      return false;
+    }
+
+    public boolean equals(referralResumeInfo_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(referralResumeInfo_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("referralResumeInfo_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class referralResumeInfo_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public referralResumeInfo_resultStandardScheme getScheme() {
+        return new referralResumeInfo_resultStandardScheme();
+      }
+    }
+
+    private static class referralResumeInfo_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<referralResumeInfo_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, referralResumeInfo_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, referralResumeInfo_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class referralResumeInfo_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public referralResumeInfo_resultTupleScheme getScheme() {
+        return new referralResumeInfo_resultTupleScheme();
+      }
+    }
+
+    private static class referralResumeInfo_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<referralResumeInfo_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, referralResumeInfo_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, referralResumeInfo_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
           struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
           struct.e.read(iprot);
           struct.setEIsSet(true);

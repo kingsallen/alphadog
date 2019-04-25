@@ -76,6 +76,7 @@ service ProfileServices {
     i32 parseText(1: string profile, 2: i32 reference, 3: i32 appid) throws (1: common_struct.BIZException e);
     //员工简历解析
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+    profile_struct.ProfileParseResult parseFileProfileByFilePath(1: string filePath, 2:i32 userId)throws (1: common_struct.BIZException e)
      //用户简历解析
      profile_struct.ProfileParseResult parseUserFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
     //简历解析
@@ -136,6 +137,7 @@ service BasicServices {
     common_struct.Response putResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response delResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response reCalculateBasicCompleteness(1: i32 userId) throws (1: common_struct.BIZException e);
+
 }
 
 service CredentialsServices {

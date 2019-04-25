@@ -26,6 +26,13 @@ public interface ReferralService {
     ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException;
 
     /**
+     * 员工
+     * @param filePath
+     * @return
+     * @throws ProfileException
+     */
+    ProfileDocParseResult parseFileProfileByFilePath(String filePath) throws ProfileException;
+    /**
      * 员工上传简历
      * @param employeeId 员工编辑
      * @param fileOriginName 原始文件名称
