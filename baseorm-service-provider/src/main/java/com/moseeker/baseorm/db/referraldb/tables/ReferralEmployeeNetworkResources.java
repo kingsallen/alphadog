@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeNetworkResources extends TableImpl<ReferralEmployeeNetworkResourcesRecord> {
 
-    private static final long serialVersionUID = 421205633;
+    private static final long serialVersionUID = -377939989;
 
     /**
      * The reference instance of <code>referraldb.referral_employee_network_resources</code>
@@ -67,21 +67,6 @@ public class ReferralEmployeeNetworkResources extends TableImpl<ReferralEmployee
     public final TableField<ReferralEmployeeNetworkResourcesRecord, Integer> PRESENTEE_USER_ID = createField("presentee_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id 人脉候选人的C端账号");
 
     /**
-     * The column <code>referraldb.referral_employee_network_resources.position_id</code>. 职位编号
-     */
-    public final TableField<ReferralEmployeeNetworkResourcesRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位编号");
-
-    /**
-     * The column <code>referraldb.referral_employee_network_resources.disable</code>. 是否有效 0有效 1 无效
-     */
-    public final TableField<ReferralEmployeeNetworkResourcesRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效 0有效 1 无效");
-
-    /**
-     * The column <code>referraldb.referral_employee_network_resources.company_id</code>. 公司编号
-     */
-    public final TableField<ReferralEmployeeNetworkResourcesRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司编号");
-
-    /**
      * The column <code>referraldb.referral_employee_network_resources.create_time</code>. 创建时间
      */
     public final TableField<ReferralEmployeeNetworkResourcesRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
@@ -90,6 +75,21 @@ public class ReferralEmployeeNetworkResources extends TableImpl<ReferralEmployee
      * The column <code>referraldb.referral_employee_network_resources.update_time</code>. 更新时间
      */
     public final TableField<ReferralEmployeeNetworkResourcesRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>referraldb.referral_employee_network_resources.disable</code>. 是否有效 0有效 1 无效
+     */
+    public final TableField<ReferralEmployeeNetworkResourcesRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效 0有效 1 无效");
+
+    /**
+     * The column <code>referraldb.referral_employee_network_resources.company_id</code>.
+     */
+    public final TableField<ReferralEmployeeNetworkResourcesRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>referraldb.referral_employee_network_resources.position_id</code>.
+     */
+    public final TableField<ReferralEmployeeNetworkResourcesRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>referraldb.referral_employee_network_resources</code> table reference

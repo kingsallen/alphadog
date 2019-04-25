@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 推荐人推荐理由信息
+ * 候选人查看职位详情次数
  */
 @Generated(
     value = {
@@ -94,13 +94,6 @@ public class ReferralRecomEvaluationDao extends DAOImpl<ReferralRecomEvaluationR
     }
 
     /**
-     * Fetch records that have <code>position_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation> fetchByPositionId(Integer... values) {
-        return fetch(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID, values);
-    }
-
-    /**
      * Fetch records that have <code>recom_reason_tag IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation> fetchByRecomReasonTag(String... values) {
@@ -133,5 +126,12 @@ public class ReferralRecomEvaluationDao extends DAOImpl<ReferralRecomEvaluationR
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation> fetchByUpdateTime(Timestamp... values) {
         return fetch(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>position_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation> fetchByPositionId(Integer... values) {
+        return fetch(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID, values);
     }
 }

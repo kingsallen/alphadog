@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralCompanyConf extends TableImpl<ReferralCompanyConfRecord> {
 
-    private static final long serialVersionUID = 578157457;
+    private static final long serialVersionUID = -907828240;
 
     /**
      * The reference instance of <code>referraldb.referral_company_conf</code>
@@ -64,7 +64,7 @@ public class ReferralCompanyConf extends TableImpl<ReferralCompanyConfRecord> {
     /**
      * The column <code>referraldb.referral_company_conf.position_points_flag</code>. 是否只针对内推职位开启积分奖励  1 是0否
      */
-    public final TableField<ReferralCompanyConfRecord, Byte> POSITION_POINTS_FLAG = createField("position_points_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否只针对内推职位开启积分奖励  1 是0否");
+    public final TableField<ReferralCompanyConfRecord, Byte> POSITION_POINTS_FLAG = createField("position_points_flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否只针对内推职位开启积分奖励  1 是0否");
 
     /**
      * The column <code>referraldb.referral_company_conf.create_time</code>. 创建时间

@@ -101,6 +101,13 @@ public class ReferralConnectionLogDao extends DAOImpl<ReferralConnectionLogRecor
     }
 
     /**
+     * Fetch records that have <code>degree IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralConnectionLog> fetchByDegree(Byte... values) {
+        return fetch(ReferralConnectionLog.REFERRAL_CONNECTION_LOG.DEGREE, values);
+    }
+
+    /**
      * Fetch records that have <code>state IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralConnectionLog> fetchByState(Byte... values) {

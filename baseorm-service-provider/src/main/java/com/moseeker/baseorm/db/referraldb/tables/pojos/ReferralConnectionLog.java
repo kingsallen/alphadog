@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionLog implements Serializable {
 
-    private static final long serialVersionUID = -341566567;
+    private static final long serialVersionUID = -922769891;
 
     private Integer   id;
     private Integer   rootChainId;
@@ -31,6 +31,7 @@ public class ReferralConnectionLog implements Serializable {
     private Integer   positionId;
     private Integer   rootUserId;
     private Integer   endUserId;
+    private Byte      degree;
     private Byte      state;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -44,6 +45,7 @@ public class ReferralConnectionLog implements Serializable {
         this.positionId = value.positionId;
         this.rootUserId = value.rootUserId;
         this.endUserId = value.endUserId;
+        this.degree = value.degree;
         this.state = value.state;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
@@ -56,6 +58,7 @@ public class ReferralConnectionLog implements Serializable {
         Integer   positionId,
         Integer   rootUserId,
         Integer   endUserId,
+        Byte      degree,
         Byte      state,
         Timestamp createTime,
         Timestamp updateTime
@@ -66,6 +69,7 @@ public class ReferralConnectionLog implements Serializable {
         this.positionId = positionId;
         this.rootUserId = rootUserId;
         this.endUserId = endUserId;
+        this.degree = degree;
         this.state = state;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -119,6 +123,14 @@ public class ReferralConnectionLog implements Serializable {
         this.endUserId = endUserId;
     }
 
+    public Byte getDegree() {
+        return this.degree;
+    }
+
+    public void setDegree(Byte degree) {
+        this.degree = degree;
+    }
+
     public Byte getState() {
         return this.state;
     }
@@ -153,6 +165,7 @@ public class ReferralConnectionLog implements Serializable {
         sb.append(", ").append(positionId);
         sb.append(", ").append(rootUserId);
         sb.append(", ").append(endUserId);
+        sb.append(", ").append(degree);
         sb.append(", ").append(state);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);

@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.referraldb;
 
 
+import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
+import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain;
@@ -14,6 +16,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
@@ -35,6 +38,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 员工内推记录
+     */
+    public static final EmployeeReferralRecord EMPLOYEE_REFERRAL_RECORD = com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD;
+
+    /**
+     * The table <code>referraldb.history_referral_position_rel</code>.
+     */
+    public static final HistoryReferralPositionRel HISTORY_REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL;
 
     /**
      * 红包活动职位申请状态统计
@@ -87,17 +100,22 @@ public class Tables {
     public static final ReferralPositionBonusStageDetail REFERRAL_POSITION_BONUS_STAGE_DETAIL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
 
     /**
+     * The table <code>referraldb.referral_position_rel</code>.
+     */
+    public static final ReferralPositionRel REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel.REFERRAL_POSITION_REL;
+
+    /**
      * 分享推荐进度页面用于存储候选人查看推荐进度时的申请状态
      */
     public static final ReferralProgress REFERRAL_PROGRESS = com.moseeker.baseorm.db.referraldb.tables.ReferralProgress.REFERRAL_PROGRESS;
 
     /**
-     * 推荐人推荐理由信息
+     * 候选人查看职位详情次数
      */
     public static final ReferralRecomEvaluation REFERRAL_RECOM_EVALUATION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION;
 
     /**
-     * 推荐类红包与被推荐人关系表
+     * 推荐类红包与被推荐职位关系表
      */
     public static final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
 

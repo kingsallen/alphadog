@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
 
-    private static final long serialVersionUID = -1234976395;
+    private static final long serialVersionUID = -1708140779;
 
     /**
      * The reference instance of <code>referraldb.referral_progress</code>
@@ -74,12 +74,12 @@ public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
     /**
      * The column <code>referraldb.referral_progress.create_time</code>.
      */
-    public final TableField<ReferralProgressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReferralProgressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>referraldb.referral_progress.update_time</code>.
      */
-    public final TableField<ReferralProgressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReferralProgressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>referraldb.referral_progress</code> table reference
