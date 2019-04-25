@@ -103,6 +103,12 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
+    public void handlerShouldTerm(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.termQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).should(cityfilter);
+        }
+    }
 
     public void handleTagMatch(List<String> condition,QueryBuilder query,String conditionField){
         if (condition!=null&&condition.size()>0) {
