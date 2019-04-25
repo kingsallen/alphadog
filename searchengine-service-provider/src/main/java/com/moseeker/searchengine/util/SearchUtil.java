@@ -544,7 +544,7 @@ public class SearchUtil {
     public void shouldTermsQuery(List<String>dataIdList, QueryBuilder query,String conditionField) {
         if (dataIdList!=null&&dataIdList.size()>0) {
             QueryBuilder fullf = QueryBuilders.termsQuery(conditionField, dataIdList);
-            ((BoolQueryBuilder) query).must(fullf);
+            ((BoolQueryBuilder) query).should(fullf);
         }
     }
 
