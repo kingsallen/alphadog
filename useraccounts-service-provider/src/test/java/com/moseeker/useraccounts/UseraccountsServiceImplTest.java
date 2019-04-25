@@ -63,7 +63,7 @@ public class UseraccountsServiceImplTest {
 	@Test
 	public void testAliyunNationalSms (){
 		try {
-			// smsSender.sendSMS("9727501705",1,"1" );
+			smsSender.sendSMS("9727501705",1,"1" );
 			smsSender.sendSMS("4389210935",1,"1" );
 
 

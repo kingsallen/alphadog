@@ -246,7 +246,7 @@ public class SmsSender {
      *
      * */
     private boolean alibabaNationalSmsSend(String countryCode, String mobile, String templateCode, Map<String, String> params){
-        // initTaobaoClientInstance();
+        initTaobaoClientInstance();
 
         if (StringUtils.isNullOrEmpty(mobile)){
             return false;
