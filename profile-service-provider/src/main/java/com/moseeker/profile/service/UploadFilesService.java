@@ -17,7 +17,7 @@ public interface UploadFilesService {
      * @param fileData 文件二进制流
      * @return
      */
-    UploadFilesResult uploadFiles(int unionId, int fileId, String fileName, ByteBuffer fileData) throws ProfileException;
+    UploadFilesResult uploadFiles(String unionId, String fileId, String fileName, ByteBuffer fileData) throws ProfileException;
 
 
 

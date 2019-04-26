@@ -257,10 +257,10 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public ReferralUploadFiles uploadFiles(String sceneId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+    public ReferralUploadFiles uploadFiles(String sceneId, String unionId, String fileName, ByteBuffer fileData) throws BIZException, TException {
         try {
 
-            return uploadFilesService.uploadFiles(sceneId, fileName, fileData);
+            return uploadFilesService.uploadFiles(unionId, sceneId, fileName, fileData);
         } catch (ProfileException e) {
             throw ExceptionUtils.convertException(e);
         }

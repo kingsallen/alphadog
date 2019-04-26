@@ -4,7 +4,9 @@ import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.UploadFilesService;
@@ -51,7 +53,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
      * @throws ProfileException
      */
     @Override
-    public UploadFilesResult uploadFiles(int unionId, int fileId, String fileName, ByteBuffer fileData) throws ProfileException {
+    public UploadFilesResult uploadFiles(String unionId, String fileId, String fileName, ByteBuffer fileData) throws ProfileException {
         logger.info("上传文件参数："+"unionId"+unionId+"fileId:"+fileId+"fileName"+fileName+"fileData"+fileData);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
 
@@ -65,6 +67,19 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
             logger.info("保存文件到磁盘返回的文件名称"+fileNameData.toString());
             fileNameData.setOriginName(fileName);
+            if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
+                String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
+                        + Constant.WORD_PDF;
+                int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
+                        fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                if(status == 1) {
+                    fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                    fileNameData.setFileName(pdfName);
+                    fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
+                            .replace(".doc", Constant.WORD_PDF));
+                }
+            }
+
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
