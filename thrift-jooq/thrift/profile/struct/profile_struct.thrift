@@ -296,3 +296,17 @@ struct RequiredFieldInfo{
     5: optional bool position,
     6: optional bool city
 }
+
+
+struct ReferralUploadFiles{
+    1: optional i32 id,
+    2: optional string fileId,
+    3: optional string uniname,
+    4: optional string unionId;
+    5: optional string type;
+    6: optional string filename,
+    7: optional string url,
+    8: optional string create_time,
+    9: optional string update_time,
+    10: optional i32 status
+}
