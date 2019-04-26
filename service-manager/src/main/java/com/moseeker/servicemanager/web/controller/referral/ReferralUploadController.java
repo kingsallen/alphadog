@@ -106,7 +106,7 @@ public class ReferralUploadController {
         try {
             params = parseRequestParam(request);
             String sceneId = (String) params.get("sceneId");
-            url = referralService.downLoadFiles();
+            url = referralService.downLoadFiles(sceneId);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -56,6 +56,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
 import org.apache.thrift.TException;
@@ -72,6 +73,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -121,6 +125,7 @@ public class ReferralServiceImpl implements ReferralService {
     @Autowired
     private JobPositionDao jobPositionDao;
 
+
     @Resource(type=ReferralProfileParser.class)
     private AbstractResumeFileParser abstractResumeFileParser;
 
@@ -158,6 +163,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @return 解析结果
      * @throws ProfileException 业务异常
      */
+    @Override
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
         return abstractResumeFileParser.parseResume(employeeId,fileName,fileData);
 //        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
@@ -200,6 +206,36 @@ public class ReferralServiceImpl implements ReferralService {
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", profilePojo.toJson(), 24*60*60);
         return profileDocParseResult;*/
+    }
+
+    @Override
+    public ProfileDocParseResult parseFileProfileByFilePath(String filePath, int userId) throws ProfileException {
+        UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if (employeeDO == null) {
+            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+        }
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw ProfileException.REFERRAL_FILE_NOT_EXIST;
+        }
+        byte[] fileData = new byte[(int)file.length()];
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(fileData);
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String data = new String(Base64.encodeBase64(fileData), Consts.UTF_8);
+        FileNameData fileNameData = new FileNameData();
+        fileNameData.setFileName(file.getName());
+        fileNameData.setFileAbsoluteName(filePath);
+        fileNameData.setOriginName(file.getName());
+
+        return parseResult(employeeDO.getId(), file.getName(), data, fileNameData);
     }
 
     @Override

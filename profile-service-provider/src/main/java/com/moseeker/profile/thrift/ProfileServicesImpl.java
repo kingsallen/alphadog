@@ -145,10 +145,10 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public ProfileParseResult parseFileProfileByFilePath(String filePath) throws BIZException, TException {
+    public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId) throws BIZException, TException {
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
-                    referralService.parseFileProfileByFilePath(filePath);
+                    referralService.parseFileProfileByFilePath(filePath, userId);
             ProfileParseResult profileParseResult = new ProfileParseResult();
             BeanUtils.copyProperties(result, profileParseResult);
             return profileParseResult;
