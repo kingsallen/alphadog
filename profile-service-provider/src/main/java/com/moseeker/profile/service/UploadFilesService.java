@@ -62,5 +62,11 @@ public interface UploadFilesService {
      */
     UploadFilesResult profile(String sceneId);
 
-
+    /**
+     * 检查指定内推简历的操作是否完成
+     * @param employeeId 员工编号
+     * @return true 完成 false 未完成
+     * @throws ProfileException 业务异常
+     */
+    boolean getSpecifyProfileResult(int employeeId) throws ProfileException;
 }

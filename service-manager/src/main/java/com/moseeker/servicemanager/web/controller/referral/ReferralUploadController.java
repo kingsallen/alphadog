@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class ReferralUploadController {
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
 
-            referralService.uploadFiles(sceneId, filename, byteBuffer);
+            profileService.uploadFiles(sceneId, filename, byteBuffer);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,7 +80,7 @@ public class ReferralUploadController {
             pageSize = (Integer) params.get("pageSize");
             pageNo = (Integer) params.get("pageNo");
             logger.info("分页查询上传文件列表参数：unionId"+unionid+"pageSize"+pageSize+"pageNo"+pageNo);
-            List<ReferralUploadFiles> uploadFilesResultList = referralService.getUploadFiles(unionid, pageNo, pageSize);
+            List<ReferralUploadFiles> uploadFilesResultList = profileService.getUploadFiles(unionid, pageNo, pageSize);
             //传给app-mini
             result = JSON.toJSONString(uploadFilesResultList);
         } catch (Exception e) {
@@ -102,7 +101,7 @@ public class ReferralUploadController {
         try {
             params = parseRequestParam(request);
             String sceneId = (String) params.get("sceneId");
-            url = referralService.downLoadFiles(sceneId);
+            url = profileService.downLoadFiles(sceneId);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,32 +110,31 @@ public class ReferralUploadController {
     }
 
     /**
-     *查询简历上传结果(解析对应简历)
-     * @return
+     * 指定文件做推荐
+     * @return 指定结果
+     * @throws Exception
      */
     @RequestMapping(value = "/v1.2/referral/upload/resume/info",method = RequestMethod.GET)
-    public String parseFileProfile(String userId,String sceneId) throws Exception {
-        //找到保存url
-        ReferralUploadFiles uploadFilesResult = referralService.referralResumeInfo(sceneId);
-        String url = uploadFilesResult.getUrl();
-        profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
-        File file = new File(url);
-        InputStream fis = null;
-        try {
-            fis = new BufferedInputStream(new FileInputStream(url));
-            byte[] buffer = new byte[fis.available()];
-            fis.read(buffer);
-            fis.close();
-            //解析文件
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public String parseFileProfile(HttpServletRequest request) throws Exception {
+        Params<String, Object> params = parseRequestParam(request);
+        String sceneId = (String) params.get("sceneId");
+        Integer userId = (Integer) params.get("userId");
+        ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(sceneId);
+        com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
+                profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
+        return Result.success(result).toJson();
     }
 
-
+    /**
+     * 轮询是否已经指定推荐的简历
+     * @return true 已经指定号推荐的简历；false位置定好推荐的简历
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1.2/resuem/upload/complete",method = RequestMethod.GET)
+    public String getSpecifyProfileResult(HttpServletRequest request) throws Exception {
+        Params<String, Object> params = parseRequestParam(request);
+        int employeeId = params.getInt("employeeId");
+        boolean flag = profileService.getSpecifyProfileResult(employeeId);
+        return Result.success(flag).toJson();
+    }
 }
