@@ -287,25 +287,4 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-
-    @Override
-    public ReferralUploadFiles uploadFiles(String sceneId, String fileName, ByteBuffer fileData) throws BIZException, TException {
-        return null;
-    }
-
-    @Override
-    public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
-        return null;
-    }
-
-    @Override
-    public String downLoadFiles(String sceneId) throws BIZException, TException {
-        return null;
-    }
-
-    @Override
-    public ReferralUploadFiles referralResumeInfo(String sceneId) throws BIZException, TException {
-        return null;
-    }
-
 }

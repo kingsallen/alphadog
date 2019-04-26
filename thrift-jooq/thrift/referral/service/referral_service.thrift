@@ -52,12 +52,4 @@ service ReferralService {
     i32 checkSeekReferral(1: i32 userId, 2:i32 presenteeId, 3:i32 positionId, 4: i32 companyId, 5: i32 parentChainId) throws (1: common_struct.BIZException e);
     // 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
     void handleCandidateState(1:referral_struct.ReferralStateInfo stateInfo) throws (1: common_struct.BIZException e);
-    //人员上传文件时，调用此接口返回上传记录
-    referral_struct.ReferralUploadFiles uploadFiles(1:string sceneId , 2:string fileName, 3 :binary fileData) throws (1:common_struct.BIZException e);
-    //上传文件分页列表
-    list<referral_struct.ReferralUploadFiles> getUploadFiles(1:string unionId,2:i32 pageSize,3:i32 pageNo ) throws (1:common_struct.BIZException e);
-    //下载文件
-    string downLoadFiles(1:string sceneId) throws (1:common_struct.BIZException e);
-    //解析上传文件，返回结果
-    referral_struct.ReferralUploadFiles referralResumeInfo(1:string sceneId) throws (1:common_struct.BIZException e);
 }

@@ -365,6 +365,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @RadarSwitchLimit
+    @Override
     public void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("候选人编号", userId, 1, null);
@@ -414,6 +415,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @RadarSwitchLimit
+    @Override
     public ContactPushInfo fetchSeekRecommend(int companyId, int referralId, int postUserId) throws CommonException {
         ContactPushInfo info = new ContactPushInfo();
         ReferralSeekRecommendRecord record = recommendDao.fetchByIdAndPostUserId(referralId, postUserId);
@@ -443,6 +445,7 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Transactional(rollbackFor = RuntimeException.class)
     @RadarSwitchLimit
+    @Override
     public void employeeReferralReason(int companyId, int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) {
 
@@ -483,6 +486,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @RadarSwitchLimit
+    @Override
     public void employeeReferralRecomEvaluation(int companyId, int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException {
         ReferralRecomEvaluationRecord record = recomEvaluationDao.fetchByPostPresenteePosition(postUserId, presenteeId, positionId);
         if (record == null) {

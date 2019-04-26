@@ -7,7 +7,9 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
+import com.moseeker.profile.service.UploadFilesService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
@@ -21,6 +23,8 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
+import com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +51,9 @@ public class ProfileServicesImpl implements Iface {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+    @Autowired
+    private UploadFilesService uploadFilesService;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -244,6 +251,52 @@ public class ProfileServicesImpl implements Iface {
     public String getMobotReferralCache(int employeeId) throws BIZException, TException {
         try {
             return referralService.getMobotReferralCache(employeeId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ReferralUploadFiles uploadFiles(String sceneId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+        try {
+
+            return uploadFilesService.uploadFiles(sceneId, fileName, fileData);
+        } catch (ProfileException e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
+        try {
+            return uploadFilesService.getUploadFiles(unionId, pageSize, pageSize);
+        } catch (BIZException e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String downLoadFiles(String sceneId) throws BIZException, TException {
+        try {
+            return uploadFilesService.downLoadFiles(sceneId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ReferralUploadFiles referralResumeInfo(String sceneId) throws BIZException, TException {
+        try {
+            return uploadFilesService.resumeInfo(sceneId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public boolean getSpecifyProfileResult(int employeeId) throws BIZException, TException {
+        try {
+            return uploadFilesService.getSpecifyProfileResult(employeeId);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

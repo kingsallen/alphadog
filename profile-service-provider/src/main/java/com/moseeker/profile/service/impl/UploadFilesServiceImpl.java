@@ -2,6 +2,9 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.UploadFilesService;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
+import javax.annotation.Resource;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +38,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     @Autowired
     AbstractResumeFileParser abstractResumeFileParser;
 
-
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     /**
      * 文件保存
@@ -90,7 +95,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public Integer insertUpFiles(UploadFilesResult uploadFilesResult) {
         ReferralUploadFilesRecord referralUploadFilesRecord =new ReferralUploadFilesRecord();
         referralUploadFilesRecord.setFileid(uploadFilesResult.getFileID());
-        referralUploadFilesRecord.setUniname();
+        referralUploadFilesRecord.setUniname(uploadFilesResult.getName());
         referralUploadFilesRecord.setUnionid(String.valueOf(uploadFilesResult.getUserId()));
         referralUploadFilesRecord.setFilename(uploadFilesResult.getFileName());
         referralUploadFilesRecord.setUrl(uploadFilesResult.getSaveUrl());
@@ -135,6 +140,12 @@ public class UploadFilesServiceImpl implements UploadFilesService {
 
 
         return null;
+    }
+
+    @Override
+    public boolean getSpecifyProfileResult(int employeeId) throws ProfileException {
+        return client.exists(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
     }
 
 }
