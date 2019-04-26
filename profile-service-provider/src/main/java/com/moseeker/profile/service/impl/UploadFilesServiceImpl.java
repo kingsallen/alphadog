@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -130,8 +133,11 @@ public class UploadFilesServiceImpl implements UploadFilesService {
 
     @Override
     public UploadFilesResult profile(String sceneId) {
-
-
+        String url = downLoadFiles(sceneId);
+        //读取文件并解析
+        File file = new File(url);
+        FileReader fileReader = null;
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
 
 
         return null;

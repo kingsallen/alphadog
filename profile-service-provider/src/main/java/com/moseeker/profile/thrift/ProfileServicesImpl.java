@@ -17,16 +17,17 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.*;
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProfileServicesImpl implements Iface {
@@ -47,6 +48,8 @@ public class ProfileServicesImpl implements Iface {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
