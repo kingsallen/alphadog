@@ -1,0 +1,57 @@
+package com.moseeker.baseorm.dao.referraldb;
+
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
+import org.jooq.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+import static com.moseeker.baseorm.db.referraldb.Tables.REFERRAL_UPLOAD_FILES;
+import static org.jooq.impl.DSL.using;
+
+@Repository
+public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.tables.daos.ReferralUploadFilesDao {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    public ReferralUploadFilesDao(Configuration configuration){
+        super(configuration);
+    }
+
+    public List<ReferralUploadFilesRecord> fetchByunionid(String unionid, int pageSize, int pagetNo){
+
+        return   using(configuration())
+                .selectFrom(REFERRAL_UPLOAD_FILES)
+                .where(REFERRAL_UPLOAD_FILES.UNIONID.eq(unionid))
+                .orderBy(REFERRAL_UPLOAD_FILES.CREATETIME.desc())
+                .limit((pagetNo-1)*pageSize, pageSize)
+                .fetchInto(ReferralUploadFilesRecord.class);
+
+    }
+
+    public ReferralUploadFilesRecord fetchByfileId(String fileId){
+
+        return   using(configuration())
+                .selectFrom(REFERRAL_UPLOAD_FILES)
+                .where(REFERRAL_UPLOAD_FILES.FILEID.eq(fileId))
+                .and(REFERRAL_UPLOAD_FILES.STATUS.eq(0))
+                .fetchOne();
+
+    }
+
+
+    public int insertInto(ReferralUploadFilesRecord referralUploadFilesRecord){
+        int i = using(configuration())
+                .insertInto(REFERRAL_UPLOAD_FILES)
+                .values(referralUploadFilesRecord)
+                .onDuplicateKeyIgnore()
+                .execute();
+        return i;
+    }
+
+
+}
