@@ -22,7 +22,8 @@ public class SensorSend {
     public SensorSend() throws IOException {
         sa = new SensorsAnalytics(
                 new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
-        Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCProduction");}};
+       // Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCProduction");}};//线上环境专用
+        Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCTest");}};//沙盒环境专用
         sa.registerSuperProperties(properties);
 
         Runtime.getRuntime().addShutdownHook(new Thread(()-> {
@@ -34,7 +35,9 @@ public class SensorSend {
         tp.startTast(()->{
             try {
                 Map<String, Object> properties = new HashMap<>();
-                properties.put("$project", "ToCTest");
+              //  properties.put("$project", "ToCProduction");//线上环境专用
+                properties.put("$project", "ToCTest");//沙盒环境专用
+
                 sa.track(distinctId, true, eventName, properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
@@ -46,7 +49,8 @@ public class SensorSend {
     public void send(String distinctId, String eventName, Map<String, Object> properties){
         tp.startTast(()->{
             try {
-                properties.put("$project", "ToCTest");
+               // properties.put("$project", "ToCProduction");//线上环境专用
+                properties.put("$project", "ToCTest");//沙盒环境专用
                 sa.track(distinctId, true, eventName,properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
@@ -59,7 +63,8 @@ public class SensorSend {
         tp.startTast(()->{
             try {
                 Map<String, Object> properties = new HashMap<>();
-                properties.put("$project", "ToCTest");
+             //   properties.put("$project", "ToCProduction");//线上环境专用
+                properties.put("$project", "ToCTest");//沙盒环境专用
                 properties.put(property, value);
                 sa.profileSet(distinctId, true, properties);
             }catch (Exception e){
