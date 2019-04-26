@@ -11,13 +11,11 @@ public interface UploadFilesService {
 
     /**
      * 人员上传文件
-     * @param unionId 上传人ID
-     * @param fileId 上传文件id
      * @param fileName 上传文件名称
      * @param fileData 文件二进制流
      * @return
      */
-    UploadFilesResult uploadFiles(int unionId, int fileId, String fileName, ByteBuffer fileData) throws ProfileException;
+    UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException;
 
 
 

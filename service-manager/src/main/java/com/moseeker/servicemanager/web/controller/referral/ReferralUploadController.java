@@ -45,8 +45,9 @@ public class ReferralUploadController {
         String result = new String();
         try {
             params = ParamUtils.parseequestParameter(request);
-            String filename = (String) params.get("filename");
             String sceneId = (String) params.get("sceneId");
+            String unionId = (String) params.get("unionId");
+            String fileName = (String) params.get("fileName");
             if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
@@ -54,9 +55,7 @@ public class ReferralUploadController {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
-            profileService.uploadFiles(sceneId, filename, byteBuffer);
-
+            profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
         } catch (Exception e) {
             e.printStackTrace();
         }
