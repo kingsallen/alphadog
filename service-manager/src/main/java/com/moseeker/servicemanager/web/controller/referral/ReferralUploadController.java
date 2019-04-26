@@ -9,6 +9,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
@@ -115,15 +116,19 @@ public class ReferralUploadController {
     }
 
     /**
-     *查询简历上传结果(解析对应简历)
-     * @return
+     * 指定文件做推荐
+     * @param userId 用户编号
+     * @param sceneId 场景编号
+     * @return 指定结果
+     * @throws Exception
      */
     @RequestMapping(value = "/v1.2/referral/upload/resume/info",method = RequestMethod.GET)
     public String parseFileProfile(String userId,String sceneId) throws Exception {
         //找到保存url
         ReferralUploadFiles uploadFilesResult = referralService.referralResumeInfo(sceneId);
         String url = uploadFilesResult.getUrl();
-        profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
+        com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
+                profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
         File file = new File(url);
         InputStream fis = null;
         try {

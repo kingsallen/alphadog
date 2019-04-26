@@ -219,14 +219,10 @@ public class ReferralServiceImpl implements ReferralService {
             throw ProfileException.REFERRAL_FILE_NOT_EXIST;
         }
         byte[] fileData = new byte[(int)file.length()];
-        try {
-            FileInputStream in = new FileInputStream(file);
+        try(FileInputStream in = new FileInputStream(file);) {
             in.read(fileData);
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
 
         String data = new String(Base64.encodeBase64(fileData), Consts.UTF_8);
