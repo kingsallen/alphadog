@@ -2861,6 +2861,127 @@ public class ProfileServices {
       }
     }
 
+    public static class uploadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, uploadFiles_args> {
+      public uploadFiles() {
+        super("uploadFiles");
+      }
+
+      public uploadFiles_args getEmptyArgsInstance() {
+        return new uploadFiles_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public uploadFiles_result getResult(I iface, uploadFiles_args args) throws org.apache.thrift.TException {
+        uploadFiles_result result = new uploadFiles_result();
+        try {
+          result.success = iface.uploadFiles(args.sceneId, args.fileName, args.fileData);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class getUploadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getUploadFiles_args> {
+      public getUploadFiles() {
+        super("getUploadFiles");
+      }
+
+      public getUploadFiles_args getEmptyArgsInstance() {
+        return new getUploadFiles_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getUploadFiles_result getResult(I iface, getUploadFiles_args args) throws org.apache.thrift.TException {
+        getUploadFiles_result result = new getUploadFiles_result();
+        try {
+          result.success = iface.getUploadFiles(args.unionId, args.pageSize, args.pageNo);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class downLoadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, downLoadFiles_args> {
+      public downLoadFiles() {
+        super("downLoadFiles");
+      }
+
+      public downLoadFiles_args getEmptyArgsInstance() {
+        return new downLoadFiles_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public downLoadFiles_result getResult(I iface, downLoadFiles_args args) throws org.apache.thrift.TException {
+        downLoadFiles_result result = new downLoadFiles_result();
+        try {
+          result.success = iface.downLoadFiles(args.sceneId);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class referralResumeInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, referralResumeInfo_args> {
+      public referralResumeInfo() {
+        super("referralResumeInfo");
+      }
+
+      public referralResumeInfo_args getEmptyArgsInstance() {
+        return new referralResumeInfo_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public referralResumeInfo_result getResult(I iface, referralResumeInfo_args args) throws org.apache.thrift.TException {
+        referralResumeInfo_result result = new referralResumeInfo_result();
+        try {
+          result.success = iface.referralResumeInfo(args.sceneId);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class getSpecifyProfileResult<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getSpecifyProfileResult_args> {
+      public getSpecifyProfileResult() {
+        super("getSpecifyProfileResult");
+      }
+
+      public getSpecifyProfileResult_args getEmptyArgsInstance() {
+        return new getSpecifyProfileResult_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getSpecifyProfileResult_result getResult(I iface, getSpecifyProfileResult_args args) throws org.apache.thrift.TException {
+        getSpecifyProfileResult_result result = new getSpecifyProfileResult_result();
+        try {
+          result.success = iface.getSpecifyProfileResult(args.employeeId);
+          result.setSuccessIsSet(true);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {

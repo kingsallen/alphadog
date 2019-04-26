@@ -56,14 +56,6 @@ public class ReferralService {
 
     public void handleCandidateState(com.moseeker.thrift.gen.referral.struct.ReferralStateInfo stateInfo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
-
-    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
-
-    public java.lang.String downLoadFiles(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
-
-    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles referralResumeInfo(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
-
   }
 
   public interface AsyncIface {
@@ -724,114 +716,6 @@ public class ReferralService {
         throw result.e;
       }
       return;
-    }
-
-    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      send_uploadFiles(sceneId, fileName, fileData);
-      return recv_uploadFiles();
-    }
-
-    public void send_uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws org.apache.thrift.TException
-    {
-      uploadFiles_args args = new uploadFiles_args();
-      args.setSceneId(sceneId);
-      args.setFileName(fileName);
-      args.setFileData(fileData);
-      sendBase("uploadFiles", args);
-    }
-
-    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles recv_uploadFiles() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      uploadFiles_result result = new uploadFiles_result();
-      receiveBase(result, "uploadFiles");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      if (result.e != null) {
-        throw result.e;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "uploadFiles failed: unknown result");
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      send_getUploadFiles(unionId, pageSize, pageNo);
-      return recv_getUploadFiles();
-    }
-
-    public void send_getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws org.apache.thrift.TException
-    {
-      getUploadFiles_args args = new getUploadFiles_args();
-      args.setUnionId(unionId);
-      args.setPageSize(pageSize);
-      args.setPageNo(pageNo);
-      sendBase("getUploadFiles", args);
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> recv_getUploadFiles() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      getUploadFiles_result result = new getUploadFiles_result();
-      receiveBase(result, "getUploadFiles");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      if (result.e != null) {
-        throw result.e;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getUploadFiles failed: unknown result");
-    }
-
-    public java.lang.String downLoadFiles(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      send_downLoadFiles(sceneId);
-      return recv_downLoadFiles();
-    }
-
-    public void send_downLoadFiles(java.lang.String sceneId) throws org.apache.thrift.TException
-    {
-      downLoadFiles_args args = new downLoadFiles_args();
-      args.setSceneId(sceneId);
-      sendBase("downLoadFiles", args);
-    }
-
-    public java.lang.String recv_downLoadFiles() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      downLoadFiles_result result = new downLoadFiles_result();
-      receiveBase(result, "downLoadFiles");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      if (result.e != null) {
-        throw result.e;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "downLoadFiles failed: unknown result");
-    }
-
-    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles referralResumeInfo(java.lang.String sceneId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      send_referralResumeInfo(sceneId);
-      return recv_referralResumeInfo();
-    }
-
-    public void send_referralResumeInfo(java.lang.String sceneId) throws org.apache.thrift.TException
-    {
-      referralResumeInfo_args args = new referralResumeInfo_args();
-      args.setSceneId(sceneId);
-      sendBase("referralResumeInfo", args);
-    }
-
-    public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles recv_referralResumeInfo() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
-    {
-      referralResumeInfo_result result = new referralResumeInfo_result();
-      receiveBase(result, "referralResumeInfo");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      if (result.e != null) {
-        throw result.e;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "referralResumeInfo failed: unknown result");
     }
 
   }
@@ -1655,146 +1539,6 @@ public class ReferralService {
       }
     }
 
-    public void uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      uploadFiles_call method_call = new uploadFiles_call(sceneId, fileName, fileData, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class uploadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
-      private java.lang.String sceneId;
-      private java.lang.String fileName;
-      private java.nio.ByteBuffer fileData;
-      public uploadFiles_call(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.sceneId = sceneId;
-        this.fileName = fileName;
-        this.fileData = fileData;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("uploadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        uploadFiles_args args = new uploadFiles_args();
-        args.setSceneId(sceneId);
-        args.setFileName(fileName);
-        args.setFileData(fileData);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_uploadFiles();
-      }
-    }
-
-    public void getUploadFiles(java.lang.String unionId, int pageSize, int pageNo, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      getUploadFiles_call method_call = new getUploadFiles_call(unionId, pageSize, pageNo, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class getUploadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> {
-      private java.lang.String unionId;
-      private int pageSize;
-      private int pageNo;
-      public getUploadFiles_call(java.lang.String unionId, int pageSize, int pageNo, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.unionId = unionId;
-        this.pageSize = pageSize;
-        this.pageNo = pageNo;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getUploadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getUploadFiles_args args = new getUploadFiles_args();
-        args.setUnionId(unionId);
-        args.setPageSize(pageSize);
-        args.setPageNo(pageNo);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getUploadFiles();
-      }
-    }
-
-    public void downLoadFiles(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      downLoadFiles_call method_call = new downLoadFiles_call(sceneId, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class downLoadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.String> {
-      private java.lang.String sceneId;
-      public downLoadFiles_call(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.sceneId = sceneId;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("downLoadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        downLoadFiles_args args = new downLoadFiles_args();
-        args.setSceneId(sceneId);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public java.lang.String getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_downLoadFiles();
-      }
-    }
-
-    public void referralResumeInfo(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      referralResumeInfo_call method_call = new referralResumeInfo_call(sceneId, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class referralResumeInfo_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
-      private java.lang.String sceneId;
-      public referralResumeInfo_call(java.lang.String sceneId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.sceneId = sceneId;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("referralResumeInfo", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        referralResumeInfo_args args = new referralResumeInfo_args();
-        args.setSceneId(sceneId);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_referralResumeInfo();
-      }
-    }
-
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -1830,10 +1574,6 @@ public class ReferralService {
       processMap.put("employeeReferralRecomEvaluation", new employeeReferralRecomEvaluation());
       processMap.put("checkSeekReferral", new checkSeekReferral());
       processMap.put("handleCandidateState", new handleCandidateState());
-      processMap.put("uploadFiles", new uploadFiles());
-      processMap.put("getUploadFiles", new getUploadFiles());
-      processMap.put("downLoadFiles", new downLoadFiles());
-      processMap.put("referralResumeInfo", new referralResumeInfo());
       return processMap;
     }
 
@@ -2367,102 +2107,6 @@ public class ReferralService {
       }
     }
 
-    public static class uploadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, uploadFiles_args> {
-      public uploadFiles() {
-        super("uploadFiles");
-      }
-
-      public uploadFiles_args getEmptyArgsInstance() {
-        return new uploadFiles_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public uploadFiles_result getResult(I iface, uploadFiles_args args) throws org.apache.thrift.TException {
-        uploadFiles_result result = new uploadFiles_result();
-        try {
-          result.success = iface.uploadFiles(args.sceneId, args.fileName, args.fileData);
-        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
-          result.e = e;
-        }
-        return result;
-      }
-    }
-
-    public static class getUploadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getUploadFiles_args> {
-      public getUploadFiles() {
-        super("getUploadFiles");
-      }
-
-      public getUploadFiles_args getEmptyArgsInstance() {
-        return new getUploadFiles_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public getUploadFiles_result getResult(I iface, getUploadFiles_args args) throws org.apache.thrift.TException {
-        getUploadFiles_result result = new getUploadFiles_result();
-        try {
-          result.success = iface.getUploadFiles(args.unionId, args.pageSize, args.pageNo);
-        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
-          result.e = e;
-        }
-        return result;
-      }
-    }
-
-    public static class downLoadFiles<I extends Iface> extends org.apache.thrift.ProcessFunction<I, downLoadFiles_args> {
-      public downLoadFiles() {
-        super("downLoadFiles");
-      }
-
-      public downLoadFiles_args getEmptyArgsInstance() {
-        return new downLoadFiles_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public downLoadFiles_result getResult(I iface, downLoadFiles_args args) throws org.apache.thrift.TException {
-        downLoadFiles_result result = new downLoadFiles_result();
-        try {
-          result.success = iface.downLoadFiles(args.sceneId);
-        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
-          result.e = e;
-        }
-        return result;
-      }
-    }
-
-    public static class referralResumeInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, referralResumeInfo_args> {
-      public referralResumeInfo() {
-        super("referralResumeInfo");
-      }
-
-      public referralResumeInfo_args getEmptyArgsInstance() {
-        return new referralResumeInfo_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public referralResumeInfo_result getResult(I iface, referralResumeInfo_args args) throws org.apache.thrift.TException {
-        referralResumeInfo_result result = new referralResumeInfo_result();
-        try {
-          result.success = iface.referralResumeInfo(args.sceneId);
-        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
-          result.e = e;
-        }
-        return result;
-      }
-    }
-
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -2498,10 +2142,6 @@ public class ReferralService {
       processMap.put("employeeReferralRecomEvaluation", new employeeReferralRecomEvaluation());
       processMap.put("checkSeekReferral", new checkSeekReferral());
       processMap.put("handleCandidateState", new handleCandidateState());
-      processMap.put("uploadFiles", new uploadFiles());
-      processMap.put("getUploadFiles", new getUploadFiles());
-      processMap.put("downLoadFiles", new downLoadFiles());
-      processMap.put("referralResumeInfo", new referralResumeInfo());
       return processMap;
     }
 
@@ -3927,266 +3567,6 @@ public class ReferralService {
 
       public void start(I iface, handleCandidateState_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
         iface.handleCandidateState(args.stateInfo,resultHandler);
-      }
-    }
-
-    public static class uploadFiles<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, uploadFiles_args, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
-      public uploadFiles() {
-        super("uploadFiles");
-      }
-
-      public uploadFiles_args getEmptyArgsInstance() {
-        return new uploadFiles_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>() { 
-          public void onComplete(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles o) {
-            uploadFiles_result result = new uploadFiles_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            uploadFiles_result result = new uploadFiles_result();
-            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
-              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
-              result.setEIsSet(true);
-              msg = result;
-            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, uploadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
-        iface.uploadFiles(args.sceneId, args.fileName, args.fileData,resultHandler);
-      }
-    }
-
-    public static class getUploadFiles<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getUploadFiles_args, java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> {
-      public getUploadFiles() {
-        super("getUploadFiles");
-      }
-
-      public getUploadFiles_args getEmptyArgsInstance() {
-        return new getUploadFiles_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>>() { 
-          public void onComplete(java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> o) {
-            getUploadFiles_result result = new getUploadFiles_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            getUploadFiles_result result = new getUploadFiles_result();
-            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
-              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
-              result.setEIsSet(true);
-              msg = result;
-            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, getUploadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>> resultHandler) throws org.apache.thrift.TException {
-        iface.getUploadFiles(args.unionId, args.pageSize, args.pageNo,resultHandler);
-      }
-    }
-
-    public static class downLoadFiles<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, downLoadFiles_args, java.lang.String> {
-      public downLoadFiles() {
-        super("downLoadFiles");
-      }
-
-      public downLoadFiles_args getEmptyArgsInstance() {
-        return new downLoadFiles_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<java.lang.String> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.String>() { 
-          public void onComplete(java.lang.String o) {
-            downLoadFiles_result result = new downLoadFiles_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            downLoadFiles_result result = new downLoadFiles_result();
-            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
-              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
-              result.setEIsSet(true);
-              msg = result;
-            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, downLoadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException {
-        iface.downLoadFiles(args.sceneId,resultHandler);
-      }
-    }
-
-    public static class referralResumeInfo<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, referralResumeInfo_args, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> {
-      public referralResumeInfo() {
-        super("referralResumeInfo");
-      }
-
-      public referralResumeInfo_args getEmptyArgsInstance() {
-        return new referralResumeInfo_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles>() { 
-          public void onComplete(com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles o) {
-            referralResumeInfo_result result = new referralResumeInfo_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            referralResumeInfo_result result = new referralResumeInfo_result();
-            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
-              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
-              result.setEIsSet(true);
-              msg = result;
-            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, referralResumeInfo_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
-        iface.referralResumeInfo(args.sceneId,resultHandler);
       }
     }
 
@@ -25234,11 +24614,11 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.FILE_NAME, new org.apache.thrift.meta_data.FieldMetaData("fileName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.FILE_NAME, new org.apache.thrift.meta_data.FieldMetaData("fileName", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.FILE_DATA, new org.apache.thrift.meta_data.FieldMetaData("fileData", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.FILE_DATA, new org.apache.thrift.meta_data.FieldMetaData("fileData", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(uploadFiles_args.class, metaDataMap);
@@ -25615,7 +24995,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -25623,7 +25003,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.sceneId = iprot.readString();
                 struct.setSceneIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25631,7 +25011,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.fileName = iprot.readString();
                 struct.setFileNameIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25639,7 +25019,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.fileData = iprot.readBinary();
                 struct.setFileDataIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -25813,9 +25193,9 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(uploadFiles_result.class, metaDataMap);
@@ -26107,7 +25487,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -26116,7 +25496,7 @@ public class ReferralService {
                 struct.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26125,7 +25505,7 @@ public class ReferralService {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26294,11 +25674,11 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.UNION_ID, new org.apache.thrift.meta_data.FieldMetaData("unionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.UNION_ID, new org.apache.thrift.meta_data.FieldMetaData("unionId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_SIZE, new org.apache.thrift.meta_data.FieldMetaData("pageSize", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.PAGE_NO, new org.apache.thrift.meta_data.FieldMetaData("pageNo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.PAGE_NO, new org.apache.thrift.meta_data.FieldMetaData("pageNo", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUploadFiles_args.class, metaDataMap);
@@ -26650,7 +26030,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -26658,7 +26038,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.unionId = iprot.readString();
                 struct.setUnionIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26666,7 +26046,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageSize = iprot.readI32();
                 struct.setPageSizeIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26674,7 +26054,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
                 struct.pageNo = iprot.readI32();
                 struct.setPageNoIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -26844,10 +26224,10 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles.class))));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUploadFiles_result.class, metaDataMap);
@@ -27155,7 +26535,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -27174,7 +26554,7 @@ public class ReferralService {
                   iprot.readListEnd();
                 }
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27183,7 +26563,7 @@ public class ReferralService {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27361,7 +26741,7 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(downLoadFiles_args.class, metaDataMap);
@@ -27576,7 +26956,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -27584,7 +26964,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.sceneId = iprot.readString();
                 struct.setSceneIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -27728,9 +27108,9 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(downLoadFiles_result.class, metaDataMap);
@@ -28019,7 +27399,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -28027,7 +27407,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.success = iprot.readString();
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28036,7 +27416,7 @@ public class ReferralService {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28191,7 +27571,7 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(referralResumeInfo_args.class, metaDataMap);
@@ -28406,7 +27786,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -28414,7 +27794,7 @@ public class ReferralService {
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.sceneId = iprot.readString();
                 struct.setSceneIdIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28558,9 +27938,9 @@ public class ReferralService {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles.class)));
-      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT,
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(referralResumeInfo_result.class, metaDataMap);
@@ -28852,7 +28232,7 @@ public class ReferralService {
         while (true)
         {
           schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
             break;
           }
           switch (schemeField.id) {
@@ -28861,7 +28241,7 @@ public class ReferralService {
                 struct.success = new com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
@@ -28870,7 +28250,7 @@ public class ReferralService {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
                 struct.e.read(iprot);
                 struct.setEIsSet(true);
-              } else { 
+              } else {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
