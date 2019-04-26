@@ -3,8 +3,6 @@ package com.moseeker.servicemanager.web.controller.referral;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
-import com.moseeker.profile.service.UploadFilesService;
-import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
@@ -15,7 +13,6 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.Map;
 
 import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 

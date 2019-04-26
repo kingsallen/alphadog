@@ -90,7 +90,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public Integer insertUpFiles(UploadFilesResult uploadFilesResult) {
         ReferralUploadFilesRecord referralUploadFilesRecord =new ReferralUploadFilesRecord();
         referralUploadFilesRecord.setFileid(uploadFilesResult.getFileID());
-        referralUploadFilesRecord.setUniname();
+        referralUploadFilesRecord.setUniname(uploadFilesResult.getName());
         referralUploadFilesRecord.setUnionid(String.valueOf(uploadFilesResult.getUserId()));
         referralUploadFilesRecord.setFilename(uploadFilesResult.getFileName());
         referralUploadFilesRecord.setUrl(uploadFilesResult.getSaveUrl());
