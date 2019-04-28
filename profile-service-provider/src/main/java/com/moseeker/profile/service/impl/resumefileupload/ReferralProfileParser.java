@@ -70,6 +70,11 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
     }
 
     @Override
+    protected String getHunterRedisKey() {
+        return KeyIdentifier.HEADHUNTER_REFERRAL_PROFILE.toString();
+    }
+
+    @Override
     protected void toPDF(String suffix, FileNameData fileNameData, Integer id) {
         if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
             String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
