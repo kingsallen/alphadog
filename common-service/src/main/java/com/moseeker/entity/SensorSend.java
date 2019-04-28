@@ -30,9 +30,7 @@ public class SensorSend {
     private static ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
     public SensorSend() throws IOException {
         sa = new SensorsAnalytics(
-       //    new SensorsAnalytics.ConcurrentLoggingConsumer(configUtils.get("sensor_path",String.class).trim(),null,configUtils.get("sensor_size",Integer.class)));
-            new SensorsAnalytics.ConcurrentLoggingConsumer(configUtils.get("sensor_path",String.class).trim(),null,8*1024));
-
+          new SensorsAnalytics.ConcurrentLoggingConsumer(configUtils.get("sensor_path",String.class).trim(),null,configUtils.get("sensor_size",Integer.class)));
         // Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCProduction");}};//线上环境专用
        // Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCTest");}};//沙盒环境专用
         Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", configUtils.get("sensor_env", String.class).trim());}};//动态加载环境
