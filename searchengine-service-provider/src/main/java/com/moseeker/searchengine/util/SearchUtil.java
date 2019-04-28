@@ -97,6 +97,28 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
+    public void handleTerm(List<String> condition,QueryBuilder query,String conditionField){
+        if (condition!=null&&condition.size()>0) {
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).must(cityfilter);
+        }
+    }
+    public void handlerShouldTerm(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.termQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).should(cityfilter);
+        }
+    }
+
+    public void handleTagMatch(List<String> condition,QueryBuilder query,String conditionField){
+        if (condition!=null&&condition.size()>0) {
+            for(String items:condition){
+                QueryBuilder cityfilter = QueryBuilders.matchQuery(conditionField, items);
+                ((BoolQueryBuilder) query).must(cityfilter);
+            }
+
+        }
+    }
     public void handleTermShould(String condition,QueryBuilder query,String conditionField){
         if (StringUtils.isNotEmpty(condition)) {
             QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
@@ -523,6 +545,12 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldTermsQuery(List<String>dataIdList, QueryBuilder query,String conditionField) {
+        if (dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder fullf = QueryBuilders.termsQuery(conditionField, dataIdList);
+            ((BoolQueryBuilder) query).should(fullf);
+        }
+    }
 
     public void exitsisQuery(List<String> list, QueryBuilder query) {
        if(list!=null&&list.size()>0){
@@ -934,16 +962,22 @@ public class SearchUtil {
         List<String> tagIdList=this.stringConvertList(CompanyTag);
 
         if(tagIdList != null && tagIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.termsQuery("user.company_tag.id",tagIdList);
-            ((BoolQueryBuilder) builder).must(query2);
+            for(String item:tagIdList){
+                QueryBuilder query2=QueryBuilders.matchQuery("user.company_tag.id",item);
+                ((BoolQueryBuilder) builder).must(query2);
+            }
+
         }
     }
 
     public void handlerHrAutoTag(String hrAutoTag,QueryBuilder builder){
         List<String> tagIdList=this.stringConvertList(hrAutoTag);
         if(tagIdList != null && tagIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.termsQuery("user.hr_auto_tag.id",tagIdList);
-            ((BoolQueryBuilder) builder).must(query2);
+            for(String item:tagIdList){
+                QueryBuilder query2=QueryBuilders.matchQuery("user.hr_auto_tag.id",item);
+                ((BoolQueryBuilder) builder).must(query2);
+            }
+
         }
     }
 
@@ -1054,8 +1088,11 @@ public class SearchUtil {
     public void handlerCompanyManualTag(String companyManualTag, QueryBuilder queryBuilder) {
         List<String> tagIdList=this.stringConvertList(companyManualTag);
         if(tagIdList != null && tagIdList.size() >0){
-            QueryBuilder query2=QueryBuilders.matchQuery("user.company_manual_tag_user.tag_id",tagIdList);
-            ((BoolQueryBuilder) queryBuilder).must(query2);
+            for(String item:tagIdList){
+                QueryBuilder query2=QueryBuilders.matchQuery("user.company_manual_tag_user.tag_id",item);
+                ((BoolQueryBuilder) queryBuilder).must(query2);
+            }
+
         }
     }
 }
