@@ -28,7 +28,7 @@ public class SensorSend {
     @Autowired
     public SensorSend() throws IOException {
         sa = new SensorsAnalytics(
-                new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
+                new SensorsAnalytics.ConcurrentLoggingConsumer(env.getProperty("sensor_path").trim(),null,Integer.parseInt(env.getProperty("sensor_size"))));
        // Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCProduction");}};//线上环境专用
        // Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCTest");}};//沙盒环境专用
         Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", env.getProperty("sensor_env").trim());}};//动态加载环境
