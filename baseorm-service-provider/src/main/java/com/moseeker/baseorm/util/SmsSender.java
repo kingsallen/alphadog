@@ -11,7 +11,6 @@ import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.baseorm.pojo.CLSmsSendRequest;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.SmsChannelType;
 import com.moseeker.common.constants.SmsNationUtil;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.CommonException;
@@ -90,14 +89,14 @@ public class SmsSender {
     }
 
     /**
-     * 发送短信
+     * 发送253国内短信
      *
-     * @param mobile 手机号
+     * @param mobile 手机号，不带国家
      * @param templateCode 模板code
      * @param params 需要的变量map
      *
      * */
-    public boolean sendCLSMS(String mobile, String templateCode, Map<String, String> params, ConfigSmsTemplateRecord templateRecord){
+    public boolean sendCLDomesticSMS(String mobile, String templateCode, Map<String, String> params, ConfigSmsTemplateRecord templateRecord){
 
         if (StringUtils.isNullOrEmpty(mobile)){
             return false;
@@ -158,9 +157,9 @@ public class SmsSender {
     }
 
     /**
-     * 发送短信
+     * 发送国内短信，支持双通道（阿里云和253），在 config_sms_template 中配置。
      *
-     * @param mobile 手机号
+     * @param mobile 手机号，不带国家号码
      * @param templateCode 模板code
      * @param params 需要的变量map
      *
@@ -170,19 +169,27 @@ public class SmsSender {
         logger.info("sendCLSMS record:{}",record);
         logger.info("sendCLSMS mobile:{}, templateCode:{}, params:{}",mobile,templateCode,params);
         if(record == null){
-            return this.alibabaSmsSend(mobile, templateCode, params);
+            return this.alibabaSmsDomesticSend(mobile, templateCode, params);
         }else {
             switch (record.getChannelType()) {
                 case 2:
-                    return this.sendCLSMS(mobile, templateCode, params, record);
+                    return this.sendCLDomesticSMS(mobile, templateCode, params, record);
                 default:
-                    return this.alibabaSmsSend(mobile, templateCode, params);
+                    return this.alibabaSmsDomesticSend(mobile, templateCode, params);
             }
         }
 
     }
 
-    private boolean alibabaSmsSend(String mobile, String templateCode, Map<String, String> params){
+    /**
+     * 发送阿里云国内短信
+     *
+     * @param mobile 手机号
+     * @param templateCode 模板code
+     * @param params 需要的变量map
+     *
+     * */
+    private boolean alibabaSmsDomesticSend(String mobile, String templateCode, Map<String, String> params){
         initTaobaoClientInstance();
 
         if (StringUtils.isNullOrEmpty(mobile)){
@@ -233,6 +240,67 @@ public class SmsSender {
         }
         return false;
     }
+
+    /**
+     * 发送阿里云国际短信
+     *
+     * @param mobile 手机号
+     * @param templateCode 模板code
+     * @param params 需要的变量map
+     *
+     * */
+    private boolean alibabaNationalSmsSend(String countryCode, String mobile, String templateCode, Map<String, String> params){
+        initTaobaoClientInstance();
+
+        if (StringUtils.isNullOrEmpty(mobile)){
+            return false;
+        }
+
+        if (!isMoreThanUpperLimit(mobile.trim())) {
+            return false;
+        }
+
+        AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
+        req.setExtend(countryCode+mobile);
+        req.setSmsType("normal");
+        req.setSmsFreeSignName("MoSeeker");
+
+        if (params != null){
+            req.setSmsParamString(JSON.toJSONString(params));
+        }
+
+        req.setRecNum(countryCode+mobile);
+        req.setSmsTemplateCode(templateCode);
+        AlibabaAliqinFcSmsNumSendResponse rsp;
+
+        try {
+            rsp = taobaoclient.execute(req);
+            if (rsp.getBody().indexOf("success")>-1) {
+//                LogSmsSendrecordEntity record = new LogSmsSendrecordEntity();
+//                record.setMobile(Long.valueOf(mobile));
+//                record.setSys((byte)Constant.APPID_ALPHACLOUD);
+//                JSONObject json = new JSONObject();
+//                json.put("extend", mobile);
+//                json.put("sms_type", "nomal");
+//                json.put("sms_free_sign_name", "MoSeeker");
+//                json.put("template_code", templateCode);
+//                json.put("params", params);
+//                record.setMsg(json.toJSONString());
+//                smsRecordDao.save(record);
+//                logger.info(json.toJSONString());
+                return true;
+            }
+            else{
+                logger.warn("短信发送失败:{}   手机号码:{}",rsp.getBody(), countryCode + mobile);
+            }
+        } catch (ApiException e) {
+            logger.warn("短信发送失败:{},  手机号码:{}", e.getMessage(), countryCode + mobile);
+        } catch (Exception e) {
+            logger.warn("短信发送失败:" + e.getMessage(), e);
+        }
+        return false;
+    }
+
 
     /**
      *      SMS_5755096
@@ -334,7 +402,18 @@ public class SmsSender {
 
         return sendSMS(mobile, "SMS_5755096", params);
     }
-    
+
+    /**
+     *
+     *    发送验证码(国内+国外)
+     *
+     * @param mobile
+     * @param scene     验证码类型
+     * @param countryCode
+     * @return
+     * @throws Exception
+     *
+     */
     public boolean sendSMS(String mobile, int scene,String countryCode) throws Exception {
         SMSScene smsScene = SMSScene.instanceFromValue(scene);
     	if (smsScene == null) {
@@ -440,16 +519,29 @@ public class SmsSender {
 //        redisClient.set(0, event, countryCode+mobile, passwordforgotcode);
 //        return sendNationalSMS(countryCode,mobile,"SMS_5755096",params);
 //    }
-    /*
-       发送国际短信验证码
-      */
+
+    /**
+     *
+     *  发送国际短信验证码,目前只发送注册验证码
+     *
+     * @param countryCode
+     * @param mobile
+     * @param smsType
+     * @param map
+     * @return
+     * @throws Exception
+     */
     public boolean sendNationalSMS(String countryCode,String mobile,String smsType,Map<String,String >map) throws Exception{
         boolean result=false;
         String content=getNationalSmsContent(smsType,map);
         if(StringUtils.isNullOrEmpty(content)){
             return result;
         }
-        result=this.sendRequestSms(countryCode+mobile,content);
+        // result=this.sendI5NationalSms(countryCode+mobile,content);
+
+        // SMS_163058105是 国际短信验证的模板。
+        result=this.alibabaNationalSmsSend(countryCode,mobile,"SMS_163058105", map);
+
         if(result){
             this.addNationRecord(mobile,content,countryCode);
         }
@@ -479,8 +571,15 @@ public class SmsSender {
         }
         return content;
     }
-    //发送短讯请求
-    private boolean sendRequestSms(String mobile,String content) throws Exception{
+
+    /**
+     * 美联软通的国际短信。
+     * @param mobile  国家代码+手机号
+     * @param content
+     * @return
+     * @throws Exception
+     */
+    private boolean sendI5NationalSms(String mobile, String content) throws Exception{
         StringBuffer buffer = new StringBuffer();
         String encode = "GBK"; //页面编码和短信内容编码为GBK。重要说明：如提交短信后收到乱码，请将GBK改为UTF-8测试。如本程序页面为编码格式为：ASCII/GB2312/GBK则该处为GBK。如本页面编码为UTF-8或需要支持繁体，阿拉伯文等Unicode，请将此处写为：UTF-8
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
