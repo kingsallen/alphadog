@@ -42,6 +42,8 @@ public class ReferralUploadController {
     @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
     @ResponseBody
     public String weChatUploadProfile(MultipartFile file, HttpServletRequest request){
+        logger.info("ReferralUploadController weChatUploadProfile");
+        logger.info("ReferralUploadController weChatUploadProfile file.length:{},  file.name:{}",file.getSize(), file.getName());
         Params<String, Object> params = null;
         String result = new String();
         try {
@@ -60,7 +62,7 @@ public class ReferralUploadController {
             ReferralUploadFiles referralUploadFiles =  profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
             logger.info("上传文件存储参数： referralUploadFiles:{}", JSONObject.toJSONString(referralUploadFiles));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return result;
     }
