@@ -4,7 +4,6 @@ include "../struct/profile_struct.thrift"
 include "../../dao/struct/db/profiledb_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 include "../../config/struct/config_struct.thrift"
-include "../../referral/struct/referral_struct.thrift"
 namespace java com.moseeker.thrift.gen.profile.service
 
 /**
@@ -98,8 +97,9 @@ service ProfileServices {
     // 点击告诉ta时回填推荐信息，从缓存中取
     string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
 
+    //小程序上传简历
     //人员上传文件时，调用此接口返回上传记录
-    referral_struct.ReferralUploadFiles uploadFiles(1:string sceneId, 2:string unionid, 3:string fileName, 4 :binary fileData) throws (1:common_struct.BIZException e);
+    referral_struct.ReferralUploadFiles uploadFiles(1:string sceneId , 2:string fileName, 3 :binary fileData) throws (1:common_struct.BIZException e);
     //上传文件分页列表
     list<referral_struct.ReferralUploadFiles> getUploadFiles(1:string unionId,2:i32 pageSize,3:i32 pageNo ) throws (1:common_struct.BIZException e);
     //下载文件
