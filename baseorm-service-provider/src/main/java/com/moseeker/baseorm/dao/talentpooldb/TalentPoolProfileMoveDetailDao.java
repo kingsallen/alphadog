@@ -27,9 +27,10 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
         super(table, talentPoolProfileMoveDetailDOClass);
     }
 
-    public TalentpoolProfileMoveDetailRecord getByMobile(long mobile) {
+    public TalentpoolProfileMoveDetailRecord getByHrIdAndMobile(int hrId, long mobile) {
         return create.selectFrom(TALENTPOOL_PROFILE_MOVE_DETAIL)
                 .where(TALENTPOOL_PROFILE_MOVE_DETAIL.MOBILE.eq(mobile))
+                .and(TALENTPOOL_PROFILE_MOVE_DETAIL.HR_ID.eq(hrId))
                 .fetchOne();
     }
 
@@ -43,11 +44,13 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
      */
     public int addWhereExistStatus(TalentpoolProfileMoveDetailRecord record, byte value) {
         return create.insertInto(TALENTPOOL_PROFILE_MOVE_DETAIL,
+                TALENTPOOL_PROFILE_MOVE_DETAIL.HR_ID,
                 TALENTPOOL_PROFILE_MOVE_DETAIL.MOBILE,
                 TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID,
                 TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS)
                 .select(
                         select(
+                                value(record.getHrId()),
                                 value(record.getMobile()),
                                 value(record.getProfileMoveRecordId()),
                                 value(record.getProfileMoveStatus())

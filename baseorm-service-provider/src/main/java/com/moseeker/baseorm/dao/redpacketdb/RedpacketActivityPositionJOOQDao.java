@@ -3,11 +3,9 @@ package com.moseeker.baseorm.dao.redpacketdb;/**
  */
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.db.redpacketdb.tables.daos.RedpacketActivityPositionDao;
 import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketActivityPositionRecord;
 import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;

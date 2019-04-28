@@ -10,10 +10,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
 import com.moseeker.common.log.ReqParams;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.MessageTemplateEntity;
-import com.moseeker.entity.PersonaRecomEntity;
-import com.moseeker.entity.RedPacketEntity;
+import com.moseeker.entity.SensorSend;
+import com.moseeker.entity.*;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
 import com.moseeker.entity.pojo.readpacket.RedPacketData;
 import com.moseeker.mq.service.impl.TemplateMsgHttp;
@@ -21,6 +19,7 @@ import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.rabbitmq.client.Channel;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -36,6 +35,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 
@@ -80,6 +81,9 @@ public class ReceiverHandler {
     public ReceiverHandler() {
         config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
+
+    @Autowired
+    private SensorSend sensorSend;
 
     @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -135,15 +139,31 @@ public class ReceiverHandler {
             Integer positionId = jsonObject.getIntValue("position_id");
             Integer referralId = jsonObject.getIntValue("referral_id");
             log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            log.info("seekReferralReceive jsonObject:{}", jsonObject);
             if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
-                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+                Date now = new Date();
+                long sendTime=  now.getTime();
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put("sendTime",sendTime);
+                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
+                String distinctId = String.valueOf(postUserId);
+                sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
-                templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
-            }
+                Date now = new Date();
+                now.getTime();
+                Map<String, Object> properties = new HashMap<String, Object>();
 
+                Date nowTime= new Date();
+                long  sendTime= nowTime.getTime();
+                properties.put("sendTime",sendTime);
+                log.info("神策-----》》sendtime"+sendTime);
+                templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
+                String distinctId = String.valueOf(userId);
+                sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+            }
         } catch (CommonException e) {
             log.info(e.getMessage(), e);
         } catch (Exception e) {
@@ -195,6 +215,7 @@ public class ReceiverHandler {
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("addAwardHandler jsonObject:{}", jsonObject.toJSONString());
             employeeEntity.addAwardBefore(jsonObject.getIntValue("employeeId"),
                     jsonObject.getIntValue("companyId"), jsonObject.getIntValue("positionId"),
                     jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"),
@@ -232,12 +253,15 @@ public class ReceiverHandler {
         long startTime=System.currentTimeMillis();
         LogVO logVo=this.handlerLogVO();
         try{
+            log.info("message:{}", JSON.toJSONString(message));
             msgBody = new String(message.getBody(), "UTF-8");
+            log.info("msgBody:{}", JSON.toJSONString(msgBody));
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int positionId = jsonObject.getIntValue("positionId");
                 String msg = jsonObject.getString("message");
                 int channal = jsonObject.getIntValue("channal");
+                log.info("positionTemplateJson:{}", JSON.toJSONString(jsonObject));
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
@@ -253,6 +277,13 @@ public class ReceiverHandler {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
                         logVo.setStatus_code(0);
+                        if(type==2){
+                            String distinctId = String.valueOf(params.getUserId());
+                            String templateId=String.valueOf(params.getTemplateId());
+                            Map<String, Object> properties = new HashMap<String, Object>();
+                            properties.put("templateId", templateId);
+                            sensorSend.send(distinctId,"sendTemplateMessage",properties);
+                        }
                     } else {
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
                         logVo.setStatus_code(1);

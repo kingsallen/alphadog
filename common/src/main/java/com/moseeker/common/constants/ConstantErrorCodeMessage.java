@@ -86,6 +86,8 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_ORIGIN_UPSUPORT = "{'status':31029,'message':'简历搬家不支持的简历来源!'}";
     public static final String REFERRAL_DATA_OVERTIME = "{'status':31030,'message':'推荐信息已失效，请重新推荐!'}";
 
+    public static final String PROFILE_CALL_RESUMESDK_RESULT_ERROR = "{'status':31024,'message':'调用ResumeSDK返回结果错误,log id:{}'}";
+
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
     public static final String COMPANY_SCALE_ELLEGAL = "{'status':33002,'message':'公司规模不合法!'}";
@@ -163,7 +165,6 @@ public final class ConstantErrorCodeMessage {
     public static final String THIRD_PARTY_ACCOUNT_58_REQUEST_ERROR="{'status':43006,'message':'http请求58返回结果为空！'}";
     public static final String THIRD_PARTY_ACCOUNT_58_ADDRESS_FAILED="{'status':43007,'message':'获取工作地址失败！'}";
     public static final String THIRD_PARTY_ACCOUNT_58_TOKEN_EXPIRE="{'status':43008,'message':'用户信息过期，请解绑后重新绑定58账号！'}";
-
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";

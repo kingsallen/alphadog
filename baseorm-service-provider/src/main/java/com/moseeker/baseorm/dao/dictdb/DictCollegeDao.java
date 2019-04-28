@@ -10,7 +10,6 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dict.struct.College;
 import com.moseeker.thrift.gen.dict.struct.CollegeBasic;
 import com.moseeker.thrift.gen.dict.struct.CollegeProvince;
@@ -18,14 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 /**
+ * @author xxx
  * @author xxx
  *         DictCollegeDao 实现类 （groovy 生成）
  *         2017-03-21
  */
-@Repository
+@Service
 public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecord> {
 
     public DictCollegeDao() {

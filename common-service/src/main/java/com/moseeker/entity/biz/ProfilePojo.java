@@ -94,6 +94,7 @@ public class ProfilePojo {
 		//解析附件信息
 		List<ProfileAttachmentRecord> attachmentRecords = null;
 		try {
+			logger.info("ProfilePojo attachments:{}", resume.get("attachments"));
 			attachmentRecords = profileUtils
 					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
 			pojo.setAttachmentRecords(attachmentRecords);

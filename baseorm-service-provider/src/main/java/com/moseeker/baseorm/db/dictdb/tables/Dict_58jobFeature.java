@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_58jobFeature extends TableImpl<Dict_58jobFeatureRecord> {
 
-    private static final long serialVersionUID = -753341107;
+    private static final long serialVersionUID = 165631531;
 
     /**
      * The reference instance of <code>dictdb.dict_58job_feature</code>
@@ -55,9 +55,9 @@ public class Dict_58jobFeature extends TableImpl<Dict_58jobFeatureRecord> {
     public final TableField<Dict_58jobFeatureRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "58同城福利特色id");
 
     /**
-     * The column <code>dictdb.dict_58job_feature.name</code>.
+     * The column <code>dictdb.dict_58job_feature.name</code>. 58福利特色
      */
-    public final TableField<Dict_58jobFeatureRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
+    public final TableField<Dict_58jobFeatureRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "58福利特色");
 
     /**
      * Create a <code>dictdb.dict_58job_feature</code> table reference

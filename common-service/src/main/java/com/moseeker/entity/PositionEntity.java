@@ -9,12 +9,14 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityPositionJOOQDao;
 import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -70,7 +72,10 @@ public class PositionEntity {
 
     @Autowired
     private HrCompanyDao companyDao;
-    ;
+
+    @Autowired
+    private RedpacketActivityPositionJOOQDao activityPositionDao;
+
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -151,20 +156,26 @@ public class PositionEntity {
      */
     public List<JobPositionRecordWithCityName> getPositions(Query query) {
 
+        logger.info("PositionEntity getPositions query:{}", JSON.toJSONString(query));
         List<JobPositionRecordWithCityName> positionRecordWithCityNameList = new ArrayList<>();
         List<JobPositionRecord> positionRecordList = positionDao.getRecords(query);
+        logger.info("PositionEntity getPositions positionRecordList.size:{}", positionRecordList == null?0:positionRecordList.size());
         if (positionRecordList != null && positionRecordList.size() > 0) {
             positionRecordList.forEach(jobPositionRecord -> {
                 positionRecordWithCityNameList.add(JobPositionRecordWithCityName.clone(jobPositionRecord));
             });
         }
 
+
         if (positionRecordList != null) {
             List<Integer> pidList = positionRecordList.stream()
                     .map(JobPositionRecord::getId).collect(Collectors.toList());
 
             query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("pid", pidList, ValueOp.IN)).buildQuery();
+            logger.info("PositionEntity getPositions positionCity-query:{}", JSON.toJSONString(query));
             List<JobPositionCityRecord> jobPositionCityRecordList = positionCityDao.getRecords(query);
+
+            logger.info("PositionEntity getPositions jobPositionCityRecordList.size:{}", jobPositionCityRecordList == null?0:jobPositionCityRecordList.size());
 
             if (jobPositionCityRecordList == null || jobPositionCityRecordList.size() == 0) {
 
@@ -177,9 +188,11 @@ public class PositionEntity {
                 cityIds.add(positionCityRecord.getCode());
             }
             query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
+            logger.info("PositionEntity getPositions dict-query:{}", JSON.toJSONString(query));
             List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
 
-
+            logger.info("PositionEntity getPositions dict-query:{}", JSON.toJSONString(query));
+            logger.info("PositionEntity getPositions dictCityRecordList.size:{}", dictCityRecordList == null?0:dictCityRecordList.size());
             if (dictCityRecordList == null || dictCityRecordList.size() == 0) {
                 return positionRecordWithCityNameList;
             }

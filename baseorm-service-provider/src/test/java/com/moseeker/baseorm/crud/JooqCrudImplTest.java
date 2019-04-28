@@ -3,6 +3,7 @@ package com.moseeker.baseorm.crud;
 import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,9 @@ public class JooqCrudImplTest {
         });
 
         list1.forEach(System.out::println);
+
+
+        UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
+
     }
 }

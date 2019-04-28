@@ -600,6 +600,16 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 	}
 
+	@Override
+	public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
+
+		try {
+			return service.ifViewPrivacyProtocol(userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
 
 
 	@Override
@@ -633,15 +643,6 @@ public class UseraccountsServiceImpl implements Iface {
 			throw new SysBIZException();
 		}
 	}
-
-			public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
-
-				try {
-					return service.ifViewPrivacyProtocol(userId);
-				} catch (Exception e) {
-					throw ExceptionUtils.convertException(e);
-				}
-			}
 
 
 }

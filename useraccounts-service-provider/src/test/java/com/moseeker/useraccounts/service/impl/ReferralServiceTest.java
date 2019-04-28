@@ -45,7 +45,7 @@ public class ReferralServiceTest {
         inviteInfo.setPid(19501370);
         inviteInfo.setTimestamp(1545034217595L);
         inviteInfo.setUserId(5283788);
-        referralService.inviteApplication(inviteInfo);
+//        referralService.inviteApplication(inviteInfo);
     }
 
     @Test
@@ -56,13 +56,13 @@ public class ReferralServiceTest {
         ignoreInfo.setPid(19501370);
         ignoreInfo.setTimestamp(1545034217595L);
         ignoreInfo.setUserId(5283788);
-        referralService.ignoreCurrentViewer(ignoreInfo);
+//        referralService.ignoreCurrentViewer(ignoreInfo);
     }
 
     @Test
     public void connectRadarTest() throws TException {
         ConnectRadarInfo radarInfo = new ConnectRadarInfo();
-        referralService.connectRadar(radarInfo);
+//        referralService.connectRadar(radarInfo);
     }
 
     @Test
@@ -71,6 +71,6 @@ public class ReferralServiceTest {
         checkInfo.setParentChainId(5044);
         checkInfo.setPid(19501370);
         checkInfo.setRecomUserId(5291680);
-        referralService.checkEmployee(checkInfo);
+//        referralService.checkEmployee(checkInfo);
     }
 }

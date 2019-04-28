@@ -4,7 +4,6 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
-import org.jooq.Record12;
 import org.jooq.Record13;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;

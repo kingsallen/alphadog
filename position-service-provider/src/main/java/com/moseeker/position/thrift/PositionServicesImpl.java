@@ -207,6 +207,8 @@ public class PositionServicesImpl implements Iface {
     @Override
     public List<WechatRpPositionListData> getRpPositionList(int hb_config_id,int pageNum,int pageSize) throws TException {
         try {
+            logger.info("PositionServicesImpl getRpPositionList hb_config_id:{}, pageNum:{}, pageSize:{}",
+                    hb_config_id, pageNum, pageSize);
             return service.getRpPositionList(hb_config_id,pageNum,pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

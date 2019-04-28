@@ -223,6 +223,10 @@ public class SearchUtil {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
     }
+    public void hanleRangeLTFilter(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).lt(conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
+    }
 
     public void hanleRangeFilter(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
@@ -924,7 +928,7 @@ public class SearchUtil {
                 }
                 if(tagIdList.size()>0){
                     QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.tags.id",tagIdList);
-                    ((BoolQueryBuilder) keyand).should(query2);
+                    ((BoolQueryBuilder) keyand).must(query2);
 
                 }
                 ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
@@ -1030,7 +1034,7 @@ public class SearchUtil {
 
     public void convertSearchNameScript(String condition,QueryBuilder query){
         StringBuffer sb=new StringBuffer();
-        sb.append("user=_source.user; if(user){profiles=user.user;if(profiles){basic=profiles.basic;if(basic){name=basic.name;if(name&&name=='"+condition+"'){return true;}}};return false;}");
+        sb.append("user=_source.user; if(user){profiles=user.profiles;if(profiles){basic=profiles.basic;if(basic){name=basic.name;if(name&&name=='"+condition+"'){return true;}}};return false;}");
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         ((BoolQueryBuilder) query).filter(script);
     }
