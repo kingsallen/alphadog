@@ -666,13 +666,16 @@ public class PositionService {
      */
     @CounterIface
     public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
+        logger.info("PositionService batchHandlerJobPostion");
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
         if (batchHandlerJobPosition == null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
+            logger.info("PositionService batchHandlerJobPostion 数据不存在");
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_BLANK);
         }
         // 提交的数据
         List<JobPostrionObj> jobPositionHandlerDates = batchHandlerJobPosition.getData();
+        logger.info("PositionService batchHandlerJobPostion jobPositionHandlerDates:{}", JSONObject.toJSONString(jobPositionHandlerDates));
         //过滤职位信息中的emoji表情
         PositionUtil.refineEmoji(jobPositionHandlerDates);
 
