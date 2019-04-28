@@ -1079,8 +1079,16 @@ public class TemplateMsgHttp {
                 + "&from_template_message="+Constant.POSITION_VIEW_TPL;
         String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
         // 发送十分钟消息模板
+        logger.info(" 1.开始发送十分钟消息模板");
+
         HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                 hrWxWechatDO.getId()).and("sys_template_id", inviteTemplateVO.getIntValue("templateId")).and("disable","0").buildQuery());
+
+        logger.info("2. hrWxTemplateMessageDO{}---》" + hrWxTemplateMessageDO);
+
+        logger.info("3 hrWxWechatDO.getId{}---》" +hrWxWechatDO.getId());
+
+        logger.info("4 inviteTemplateVO.getIntValue(\"templateId\")" +inviteTemplateVO.getIntValue("templateId"));
         if(hrWxTemplateMessageDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
         }
