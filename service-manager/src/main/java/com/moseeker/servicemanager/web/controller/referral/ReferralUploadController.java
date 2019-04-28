@@ -74,10 +74,13 @@ public class ReferralUploadController {
         Integer pageNo = 1;
         String result = new String();
         try {
-            Params<String, Object> params = parseRequestParam(request);
+            unionid = request.getParameter("unionid");
+            pageSize = Integer.valueOf(request.getParameter("pageSize"));
+            pageNo = Integer.valueOf(request.getParameter("pageNo"));
+            /*Params<String, Object> params = parseRequestParam(request);
             unionid = (String) params.get("unionid");
             pageSize = (Integer) params.get("pageSize");
-            pageNo = (Integer) params.get("pageNo");
+            pageNo = (Integer) params.get("pageNo");*/
             logger.info("分页查询上传文件列表参数：unionId"+unionid+"pageSize"+pageSize+"pageNo"+pageNo);
             List<ReferralUploadFiles> uploadFilesResultList = profileService.getUploadFiles(unionid, pageNo, pageSize);
             //传给app-mini
@@ -117,7 +120,7 @@ public class ReferralUploadController {
     public String parseFileProfile(HttpServletRequest request) throws Exception {
         Params<String, Object> params = parseRequestParam(request);
         String sceneId = (String) params.get("sceneId");
-        Integer userId = (Integer) params.get("userId");
+        String userId = (String) params.get("userId");
         ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(sceneId);
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
