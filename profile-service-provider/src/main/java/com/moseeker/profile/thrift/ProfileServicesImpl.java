@@ -262,6 +262,7 @@ public class ProfileServicesImpl implements Iface {
     public ReferralUploadFiles uploadFiles(String sceneId, String unionId, String fileName, ByteBuffer fileData) throws BIZException, TException {
         try {
             UploadFilesResult uploadFilesResult = uploadFilesService.uploadFiles(fileName, fileData);
+            logger.info("上传文件返回结果： uploadFilesResult:{}",uploadFilesResult);
             ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());

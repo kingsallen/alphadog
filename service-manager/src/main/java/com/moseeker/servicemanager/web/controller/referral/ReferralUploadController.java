@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -48,6 +49,7 @@ public class ReferralUploadController {
             String sceneId = (String) params.get("sceneId");
             String unionId = (String) params.get("unionId");
             String fileName = (String) params.get("fileName");
+            logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
             if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
@@ -55,7 +57,8 @@ public class ReferralUploadController {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-            profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
+            ReferralUploadFiles referralUploadFiles =  profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
+            logger.info("上传文件存储参数： referralUploadFiles:{}", JSONObject.toJSONString(referralUploadFiles));
         } catch (Exception e) {
             e.printStackTrace();
         }
