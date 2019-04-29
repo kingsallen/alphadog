@@ -142,8 +142,8 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
         profileDocParseResult.setName(profilePojo.toJson());
         logger.info("AbstractResumeFileParser after parseProfile");
-        client.set(AppId.APPID_ALPHADOG.getValue(), getHunterRedisKey(), String.valueOf(headhunterId),
-                "", profilePojo.toJson(), 24*60*60);
+        /*client.set(AppId.APPID_ALPHADOG.getValue(), getHunterRedisKey(), String.valueOf(headhunterId),
+                "", profilePojo.toJson(), 24*60*60);*/
         logger.info("AbstractResumeFileParser after store redis");
         return profileDocParseResult;
     }
