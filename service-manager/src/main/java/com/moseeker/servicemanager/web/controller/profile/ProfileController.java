@@ -807,13 +807,14 @@ public class ProfileController {
         Params<String, Object> params = ParamUtils.parseequestParameter(request);
         int headhunterId = params.getInt("headhunterId", 0);
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("简历", file);
+        String fileStr = params.getString("file");
+        validateUtil.addRequiredValidate("简历", fileStr);
         validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
         validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
         validateUtil.addRequiredValidate("appid", params.getInt("appid"));
         logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
         try {
-            logger.info( "++++++++++++++++++file [ " + file.toString() + " ] ========");
+            logger.info( "++++++++++++++++++file [ " + fileStr.toString() + " ] ========");
         } catch (Exception e) {}
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
@@ -821,11 +822,11 @@ public class ProfileController {
             if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+            /*if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
+            }*/
 
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
+            ByteBuffer byteBuffer = ByteBuffer.wrap(fileStr.getBytes());
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     service.parseHunterFileProfile(headhunterId, params.getString("file_name"), byteBuffer);
