@@ -811,8 +811,8 @@ public class ProfileController {
         validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
         validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
         validateUtil.addRequiredValidate("appid", params.getInt("appid"));
-        logger.info("++++++++++++[----猎头简历上传 >>>file---]+++++++++++++++", file);
-        logger.info("++++++++++++[----猎头简历上传 params ---]+++++++++++++++", params);
+        logger.info( "++++++++++++++++++file [ " + file.toString() + " ] ========");
+        logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
