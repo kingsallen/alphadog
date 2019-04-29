@@ -301,9 +301,9 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public String downLoadFiles(String sceneId) throws BIZException, TException {
+    public String downLoadFiles(String fileId) throws BIZException, TException {
         try {
-            return uploadFilesService.downLoadFiles(sceneId);
+            return uploadFilesService.downLoadFiles(fileId);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

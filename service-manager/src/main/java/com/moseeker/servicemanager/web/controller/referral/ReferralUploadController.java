@@ -113,13 +113,15 @@ public class ReferralUploadController {
      * @return 上传文件保存地址
      */
     @RequestMapping(value = "/v1.2/download",method = RequestMethod.GET)
+    @ResponseBody
     public String downloadResume(HttpServletRequest request){
         Params<String, Object> params = null;
         String url = new String();
         try {
-            params = parseRequestParam(request);
-            String sceneId = (String) params.get("sceneId");
-            url = profileService.downLoadFiles(sceneId);
+            //params = parseRequestParam(request);
+            String fileId = request.getParameter("fileId");
+            url = profileService.downLoadFiles(fileId);
+            logger.info("downloadResume url{}",url);
 
         } catch (Exception e) {
             e.printStackTrace();

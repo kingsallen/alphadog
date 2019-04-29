@@ -45,12 +45,30 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
 
 
     public int insertInto(ReferralUploadFilesRecord referralUploadFilesRecord){
-        int i = using(configuration())
+
+       /* int i = using(configuration())
                 .insertInto(REFERRAL_UPLOAD_FILES)
                 .values(referralUploadFilesRecord)
                 .onDuplicateKeyIgnore()
-                .execute();
-        return i;
+                .execute();*/
+         int j= using(configuration())
+                .insertInto(REFERRAL_UPLOAD_FILES)
+                .columns(REFERRAL_UPLOAD_FILES.FILEID,REFERRAL_UPLOAD_FILES.UNINAME,
+                        REFERRAL_UPLOAD_FILES.UNIONID,
+                        REFERRAL_UPLOAD_FILES.TYPE,
+                        REFERRAL_UPLOAD_FILES.FILENAME,
+                        REFERRAL_UPLOAD_FILES.URL,
+                        REFERRAL_UPLOAD_FILES.STATUS)
+                 .values(referralUploadFilesRecord.getFileid(),
+                         referralUploadFilesRecord.getUniname(),
+                         referralUploadFilesRecord.getUnionid(),
+                         referralUploadFilesRecord.getType(),
+                         referralUploadFilesRecord.getFilename(),
+                         referralUploadFilesRecord.getUrl(),
+                         referralUploadFilesRecord.getStatus())
+                 .execute();
+
+        return j;
     }
 
 

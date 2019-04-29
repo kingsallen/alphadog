@@ -21,10 +21,10 @@ public interface UploadFilesService {
 
     /**
      * 下载上传过的文件
-     * @param sceneId 文件唯一id
+     * @param fileId 文件唯一id
      * @return 文件保存地址
      */
-    String downLoadFiles(String sceneId);
+    String downLoadFiles(String fileId);
 
     /**
      * 插入上传文件记录
