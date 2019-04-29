@@ -12,6 +12,15 @@ public class UploadControllerVO {
     private String fileID;
     private String createTime;
     private String saveUrl;
+    private String ext;
+
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
 
     public Integer getEmployeeId() {
         return employeeId;

@@ -290,6 +290,7 @@ public class ProfileServicesImpl implements Iface {
                     referralUploadFiles.setFilename(uploadFilesResult.getFileName());
                     referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
                     referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
+                    referralUploadFiles.setFileId(uploadFilesResult.getFileID());
                     referralUploadFilesList.add(referralUploadFiles);
                 }
             }

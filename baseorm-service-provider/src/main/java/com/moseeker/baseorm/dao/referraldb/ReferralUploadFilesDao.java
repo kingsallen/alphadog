@@ -33,11 +33,11 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
 
     }
 
-    public ReferralUploadFilesRecord fetchByfileId(String fileId){
+    public ReferralUploadFilesRecord fetchByfileId(String id){
 
         return   using(configuration())
                 .selectFrom(REFERRAL_UPLOAD_FILES)
-                .where(REFERRAL_UPLOAD_FILES.FILEID.eq(fileId))
+                .where(REFERRAL_UPLOAD_FILES.ID.eq(Integer.parseInt(id)))
                 .and(REFERRAL_UPLOAD_FILES.STATUS.eq(0))
                 .fetchOne();
 

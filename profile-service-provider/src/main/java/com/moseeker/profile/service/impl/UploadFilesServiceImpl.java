@@ -62,9 +62,6 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
         //保存文件到磁盘
         try {
-            //String local_url = "D:\\SoftwareSave\\docSave";
-            //FileNameData fileNameData = StreamUtils.persistFile(dataArray, local_url, suffix);
-            //fileNameData.setSaveUrl(local_url);
             FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
             logger.info("保存文件到磁盘返回的文件名称"+fileNameData.toString());
             fileNameData.setSaveUrl(env.getProperty("profile.persist.url"));
@@ -148,6 +145,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 uploadFilesResult.setSaveUrl(referralUploadFilesRecord.getUrl());
                 uploadFilesResult.setCreateTime(sf.format( referralUploadFilesRecord.getCreatetime() ));
                 uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
+                uploadFilesResult.setFileID(String.valueOf(referralUploadFilesRecord.getId()));
                 uploadFilesResultList.add(uploadFilesResult);
             }
         }
