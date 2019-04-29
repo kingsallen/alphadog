@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
@@ -48,20 +47,24 @@ public class ReferralUploadController {
         Params<String, Object> params = null;
         UploadControllerVO result = new UploadControllerVO();
         try {
-            params = ParamUtils.parseequestParameter(request);
-            String sceneId = (String) params.get("sceneId");
-            String unionId = (String) params.get("unionId");
-            String fileName = (String) params.get("fileName");
+            //params = ParamUtils.parseequestParameter(request);
+            String sceneId =  request.getParameter("sceneId");
+            String unionId =  request.getParameter("unionId");
+            String fileName = request.getParameter("fileName");
             logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                result.setFileName(Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson());
+            /*if (!ProfileDocCheckTool.checkFileName(fileName)) {
+                result.setFileName(Result.fail(MessageType.PR
+
+                OGRAM_FILE_NOT_SUPPORT).toJson());
                 return result;
-            }
+            }*/
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
+                logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return result;
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
+            logger.info("uploadProfile byteBuffer{}",byteBuffer);
             ReferralUploadFiles referralUploadFiles =  profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
             logger.info("uploadProfile： referralUploadFiles:{}", JSONObject.toJSONString(referralUploadFiles));
             result.setName(referralUploadFiles.getFilename());
@@ -131,9 +134,9 @@ public class ReferralUploadController {
      */
     @RequestMapping(value = "/v1.2/referral/upload/resume/info",method = RequestMethod.GET)
     public String parseFileProfile(HttpServletRequest request) throws Exception {
-        Params<String, Object> params = parseRequestParam(request);
-        String sceneId = (String) params.get("sceneId");
-        String userId = (String) params.get("userId");
+        //Params<String, Object> params = parseRequestParam(request);
+        String sceneId = request.getParameter("sceneId");
+        String userId = request.getParameter("userId");
         ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(sceneId);
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));

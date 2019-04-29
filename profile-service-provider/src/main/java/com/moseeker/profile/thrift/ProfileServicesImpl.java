@@ -281,7 +281,7 @@ public class ProfileServicesImpl implements Iface {
     @Override
     public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
         try {
-            List<UploadFilesResult> list = uploadFilesService.getUploadFiles(unionId, pageSize, pageSize);
+            List<UploadFilesResult> list = uploadFilesService.getUploadFiles(unionId, pageSize, pageNo);
             logger.info("getUploadFiles list{}",list.toString());
             List<ReferralUploadFiles> referralUploadFilesList = new ArrayList<>();
             if (list != null && list.size() >0){
@@ -317,8 +317,9 @@ public class ProfileServicesImpl implements Iface {
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
             referralUploadFiles.setFilename(uploadFilesResult.getFileName());
-            referralUploadFiles.setId(uploadFilesResult.getUserId());
-
+            if (uploadFilesResult.getUserId() != null){
+                referralUploadFiles.setId(uploadFilesResult.getUserId());
+            }
             return referralUploadFiles;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);

@@ -22,7 +22,7 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
         super(configuration);
     }
 
-    public List<ReferralUploadFilesRecord> fetchByunionid(String unionid, int pageSize, int pagetNo){
+    public List<ReferralUploadFilesRecord> fetchByunionid(String unionid, int pagetNo, int pageSize){
 
         return   using(configuration())
                 .selectFrom(REFERRAL_UPLOAD_FILES)

@@ -127,7 +127,6 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByfileId(sceneId);
         uploadFilesResult.setSaveUrl(referralUploadFilesRecord.getUrl());
         uploadFilesResult.setFileName(uploadFilesResult.getFileName());
-
         return uploadFilesResult;
     }
 
