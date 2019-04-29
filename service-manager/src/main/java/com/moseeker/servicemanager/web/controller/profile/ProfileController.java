@@ -811,6 +811,10 @@ public class ProfileController {
         validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
         validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
         validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
+        try {
+            logger.info( "++++++++++++++++++file [ " + file.toString() + " ] ========");
+        } catch (Exception e) {}
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
