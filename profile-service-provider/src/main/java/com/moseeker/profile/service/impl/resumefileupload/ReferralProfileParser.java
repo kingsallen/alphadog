@@ -79,8 +79,11 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
         if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
             String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
                     + Constant.WORD_PDF;
+            logger.info(".........FileName[" + fileNameData.getFileName() + "] --------------pdf file ");
+            logger.info(".........pdfName[" + pdfName + " ]--------------pdf file ");
             int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
                     fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+            logger.info("........." + pdfName + " --------------pdf file ---> status = " + status);
             if(status == 1) {
                 fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
                 fileNameData.setFileName(pdfName);
