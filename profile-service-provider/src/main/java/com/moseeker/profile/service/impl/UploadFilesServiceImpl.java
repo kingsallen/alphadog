@@ -115,7 +115,9 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         referralUploadFilesRecord.setUrl(uploadFilesResult.getSaveUrl());
         referralUploadFilesRecord.setStatus(0);
         uploadFilesResult.getCompanyId();
+        logger.info("insertUpFiles uploadFilesResult{}",uploadFilesResult);
         Integer integer = referralUploadFilesDao.insertInto(referralUploadFilesRecord);
+        logger.info("insertUpFiles referralUploadFilesDao  integer{}",integer);
         return integer;
     }
 
@@ -134,6 +136,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public List<UploadFilesResult> getUploadFiles(String unionid, Integer pageSize, Integer pageNo) throws BIZException {
         List<UploadFilesResult> uploadFilesResultList = new ArrayList<>();
         List<ReferralUploadFilesRecord> list = referralUploadFilesDao.fetchByunionid(unionid,pageSize,pageNo);
+        logger.info("getUploadFiles referralUploadFilesDao  list{}",list);
         if (list != null && list.size() != 0){
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             for(ReferralUploadFilesRecord referralUploadFilesRecord : list){
@@ -147,14 +150,14 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         return uploadFilesResultList;
     }
 
-    @Override
+    /*@Override
     public UploadFilesResult profile(String sceneId) {
 
 
 
 
         return null;
-    }
+    }*/
 
     @Override
     public boolean getSpecifyProfileResult(int employeeId) throws ProfileException {

@@ -8,6 +8,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
@@ -41,11 +42,11 @@ public class ReferralUploadController {
      */
     @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
     @ResponseBody
-    public String weChatUploadProfile(MultipartFile file, HttpServletRequest request){
+    public UploadControllerVO uploadProfile(MultipartFile file, HttpServletRequest request){
         logger.info("ReferralUploadController weChatUploadProfile");
         logger.info("ReferralUploadController weChatUploadProfile file.length:{},  file.name:{}",file.getSize(), file.getName());
         Params<String, Object> params = null;
-        String result = new String();
+        UploadControllerVO result = new UploadControllerVO();
         try {
             params = ParamUtils.parseequestParameter(request);
             String sceneId = (String) params.get("sceneId");
@@ -53,14 +54,20 @@ public class ReferralUploadController {
             String fileName = (String) params.get("fileName");
             logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
             if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+                result.setFileName(Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson());
+                return result;
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+                result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
+                return result;
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
             ReferralUploadFiles referralUploadFiles =  profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
-            logger.info("上传文件存储参数： referralUploadFiles:{}", JSONObject.toJSONString(referralUploadFiles));
+            logger.info("uploadProfile： referralUploadFiles:{}", JSONObject.toJSONString(referralUploadFiles));
+            result.setName(referralUploadFiles.getFilename());
+            result.setSaveUrl(referralUploadFiles.getUrl());
+            result.setFileID(referralUploadFiles.getFileId());
+            result.setCreateTime(referralUploadFiles.getCreate_time());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -90,6 +97,7 @@ public class ReferralUploadController {
             List<ReferralUploadFiles> uploadFilesResultList = profileService.getUploadFiles(unionid, pageNo, pageSize);
             //传给app-mini
             result = JSON.toJSONString(uploadFilesResultList);
+            logger.info("weChatUploadProfile result{}",result);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -58,7 +58,7 @@ public interface UploadFilesService {
      * @param sceneId
      * @return
      */
-    UploadFilesResult profile(String sceneId);
+    /*UploadFilesResult profile(String sceneId);*/
 
     /**
      * 检查指定内推简历的操作是否完成
