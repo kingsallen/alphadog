@@ -822,9 +822,9 @@ public class ProfileController {
             if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+            /*if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
+            }*/
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(fileStr.getBytes());
 
