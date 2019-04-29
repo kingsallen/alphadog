@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl.resumefileupload.iface;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
@@ -126,22 +127,29 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
         profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
-        ResumeObj resumeObj;
+        /*ResumeObj resumeObj;
         try {
             resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
         } catch (TException | IOException e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        logger.info("AbstractResumeFileParser after profileParserAdaptor");
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
+        }*/
+//        logger.info("AbstractResumeFileParser after profileParserAdaptor");
+//        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
         logger.info("AbstractResumeFileParser after handlerParseData");
-        profileDocParseResult = setProfileDocParseResult(profileDocParseResult,profileObj.getUser(),headhunterId);
-        profileObj.setResumeObj(null);
-        JSONObject jsonObject = getProfileObject(profileObj,fileNameData,profileDocParseResult);
+//        profileDocParseResult = setProfileDocParseResult(profileDocParseResult,profileObj.getUser(),headhunterId);
+//        profileObj.setResumeObj(null);
+//        JSONObject jsonObject = getProfileObject(profileObj,fileNameData,profileDocParseResult);
+        JSONObject jsonObject = new JSONObject();
+        JSONArray attachments = new JSONArray();
+        JSONObject attachment = new JSONObject();
+        attachment.put("name", fileNameData.getOriginName());
+        attachment.put("path", fileNameData.getFileAbsoluteName());
+        attachments.add(attachment);
+        jsonObject.put("attachments", attachments);
 //        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
         profileDocParseResult.setName(jsonObject.toJSONString());
-        logger.info("AbstractResumeFileParser after parseProfile");
+//        logger.info("AbstractResumeFileParser after parseProfile");
         /*client.set(AppId.APPID_ALPHADOG.getValue(), getHunterRedisKey(), String.valueOf(headhunterId),
                 "", profilePojo.toJson(), 24*60*60);*/
 //        logger.info("AbstractResumeFileParser after store redis");
