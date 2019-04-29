@@ -173,4 +173,9 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
             return profileProfileDO.getId();
         }
     }
+
+    @Override
+    public ProfileDocParseResult parseHunterFileProfile(int headhunterId, String fileName, ByteBuffer fileData) {
+        return abstractResumeFileParser.parseHunterResume(headhunterId,fileName,fileData);
+    }
 }

@@ -95,6 +95,8 @@ service ProfileServices {
     i32 saveMobotReferralProfileCache(1:i32 employeeId, 2:string mobile, 3: string name, 4:list<string> referralReasons, 5: i8 referralType, 6: string fileName, 7: i32 relationship, 8: string recomReasonText)throws (1: common_struct.BIZException e)
     // 点击告诉ta时回填推荐信息，从缓存中取
     string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
+    //猎头简历解析上传
+    profile_struct.ProfileParseResult parseHunterFileProfile(1:i32 headhunterId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
 }
 
 service AttachmentServices {
