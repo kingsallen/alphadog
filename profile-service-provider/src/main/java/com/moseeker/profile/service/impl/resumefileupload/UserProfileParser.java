@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.profile.User;
@@ -63,7 +64,21 @@ public class UserProfileParser extends AbstractResumeFileParser {
 
     @Override
     protected void toPDF(String suffix, FileNameData fileNameData, Integer id) {
-
+        if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
+            String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
+                    + Constant.WORD_PDF;
+            logger.info(".........FileName[" + fileNameData.getFileName() + "] --------------pdf file ");
+            logger.info(".........pdfName[" + pdfName + " ]--------------pdf file ");
+            int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
+                    fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+            logger.info("........." + pdfName + " --------------pdf file ---> status = " + status);
+            if(status == 1) {
+                fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                fileNameData.setFileName(pdfName);
+                fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
+                        .replace(".doc", Constant.WORD_PDF));
+            }
+        }
     }
 
     @Override
