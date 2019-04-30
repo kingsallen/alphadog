@@ -815,6 +815,7 @@ public class ProfileController {
         String file_path = params.getString("file_path");
         validateUtil.addRequiredValidate("简历", fileStr);
         validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addRequiredStringValidate("简历路径", params.getString("file_path"));
         validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
         validateUtil.addRequiredValidate("appid", params.getInt("appid"));
         logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
