@@ -153,7 +153,7 @@ public class ReferralUploadController {
     @RequestMapping(value = "/v1.2/resuem/upload/complete",method = RequestMethod.GET)
     public String getSpecifyProfileResult(HttpServletRequest request) throws Exception {
         Params<String, Object> params = parseRequestParam(request);
-        int employeeId = params.getInt("employeeId");
+        int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         boolean flag = profileService.getSpecifyProfileResult(employeeId);
         return Result.success(flag).toJson();
     }
