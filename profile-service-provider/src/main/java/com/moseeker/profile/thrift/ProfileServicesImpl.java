@@ -1,5 +1,6 @@
 package com.moseeker.profile.thrift;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -264,11 +265,11 @@ public class ProfileServicesImpl implements Iface {
         ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
         try {
             UploadFilesResult uploadFilesResult = uploadFilesService.uploadFiles(fileName, fileData);
-            logger.info("上传文件返回结果： uploadFilesResult:{}uploadFiles",uploadFilesResult);
+            logger.info("上传文件返回结果： uploadFilesResult:{}uploadFiles", JSONObject.toJSONString(uploadFilesResult));
             uploadFilesResult.setFileID(sceneId);
-            uploadFilesResult.setUserId(Integer.valueOf(unionId));
+            uploadFilesResult.setUnionId(unionId);
             Integer integer = uploadFilesService.insertUpFiles(uploadFilesResult);
-            logger.info("uploadFiles上传简历保存记录: integer{}"+integer);
+            logger.info("uploadFiles上传简历保存记录: integer{}",integer);
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
             referralUploadFiles.setFilename(uploadFilesResult.getFileName());
