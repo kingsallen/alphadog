@@ -8,6 +8,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FileUtil;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -44,6 +45,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -785,6 +789,65 @@ public class ProfileController {
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     service.parseUserFileProfile(userId, params.getString("file_name"), byteBuffer);
+            ProfileDocParseResult parseResult = new ProfileDocParseResult();
+            org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
+            return Result.success(parseResult).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 猎头上传简历
+     * @param file 简历文件
+     * @param request 请求数据
+     * @return 解析结果
+     * @throws Exception 异常信息
+     */
+    @RequestMapping(value = "/headhunter/file-parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String parseHunterProfileFile(@RequestParam(value = "file", required = false) MultipartFile file,
+                                   HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        int headhunterId = params.getInt("headhunterId", 0);
+        ValidateUtil validateUtil = new ValidateUtil();
+        String fileStr = params.getString("file");
+        String file_path = params.getString("file_path");
+        validateUtil.addRequiredValidate("简历", fileStr);
+        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addRequiredStringValidate("简历路径", params.getString("file_path"));
+        validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
+        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
+        try {
+            logger.info( "++++++++++++++++++file_path [ " + file_path + " ] ========");
+        } catch (Exception e) {}
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
+            /*if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+            }*/
+
+            byte [] array ;
+            try {
+                File file1 = new File(file_path);
+                if (file1.exists()) {
+                    array = FileUtil.convertToBytes(file1);
+                } else {
+                    array = fileStr.getBytes();
+                }
+            } catch (IOException e) {
+                array = fileStr.getBytes();
+            }
+
+            ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+
+            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
+                    service.parseHunterFileProfile(headhunterId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
