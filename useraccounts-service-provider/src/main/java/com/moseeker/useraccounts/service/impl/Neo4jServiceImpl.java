@@ -25,14 +25,19 @@ import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 /**
  * Created by moseeker on 2018/12/17.
@@ -80,7 +85,6 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     ThreadPool tp =ThreadPool.Instance;
 
-
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
         UserNode firstUserStatus = addUserNode(startUserId);
@@ -114,9 +118,28 @@ public class Neo4jServiceImpl implements Neo4jService {
             conn.setStartNode(firstUserStatus);
             conn.setEndNode(secordUserStatus);
             conn.setPosition_id(positionId);
-            List<Connection> conns = connNeo4jDao.getTwoUserConn(startUserId, endUserId, positionId);
+            LocalDateTime.now().toString();
+            logger.info("neo4j 调用日志 before connNeo4jDao.getTwoUserConn datetime:{}", LocalDateTime.now().toString());
+            Future<List<Connection>> connFuture = tp.startTast(() -> connNeo4jDao.getTwoUserConn(startUserId, endUserId, positionId));
+            List<Connection> conns = new ArrayList<>();
+            try {
+                conns = connFuture.get(3, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                throw CommonException.PROGRAM_EXCEPTION;
+            }
+            logger.info("neo4j 调用日志 after connNeo4jDao.getTwoUserConn datetime:{}", LocalDateTime.now().toString());
             if (StringUtils.isEmptyList(conns)) {
-                Connection connection = connNeo4jDao.save(conn);
+                logger.info("neo4j 调用日志 before connNeo4jDao.save datetime:{}", LocalDateTime.now().toString());
+                Future<Connection> connectionFuture = tp.startTast(() -> connNeo4jDao.save(conn));
+                Connection connection = null;
+                try {
+                    connection = connectionFuture.get(3, TimeUnit.SECONDS);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    throw CommonException.PROGRAM_EXCEPTION;
+                }
+                logger.info("neo4j 调用日志 after connNeo4jDao.save datetime:{}", LocalDateTime.now().toString());
                 kafkaSender.sendConnectionLink(conn, endUserId);
                 logger.info("proceed forward:" + JSON.toJSONString(connection));
             }
