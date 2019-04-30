@@ -66,7 +66,7 @@ public class ReferralController {
      * @return 解析结果
      * @throws Exception 异常信息
      */
-    @RequestMapping(value = "   /v1/referral/file-parser", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/referral/file-parser", method = RequestMethod.POST)
     @ResponseBody
     public String parseFileProfile(@RequestParam(value = "file", required = false) MultipartFile file,
                                 HttpServletRequest request) throws Exception {
