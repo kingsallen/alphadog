@@ -82,9 +82,11 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            uploadFilesResult.setFileName(fileName);
+            //后台生成文件名称
+            uploadFilesResult.setFileName(fileNameData.getFileName());
             uploadFilesResult.setCreateTime(sf.format(date));
-            uploadFilesResult.setSaveUrl(fileNameData.getSaveUrl());
+            uploadFilesResult.setSaveUrl(fileNameData.getFileAbsoluteName());
+            //原始文件名称
             uploadFilesResult.setName(fileNameData.getOriginName());
             logger.info("保存文件返回结果"+uploadFilesResult.toString());
         }catch (Exception e){
@@ -99,10 +101,10 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     @Override
     public String downLoadFiles(String fileId) {
         String url = new String();
-        String filename = new String();
+        //String filename = new String();
         ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByfileId(fileId);
         url = referralUploadFilesRecord.getUrl();
-        filename = referralUploadFilesRecord.getFilename();
+        //filename = referralUploadFilesRecord.getFilename();
         return url;
     }
 
@@ -110,10 +112,10 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public Integer insertUpFiles(UploadFilesResult uploadFilesResult) {
         ReferralUploadFilesRecord referralUploadFilesRecord =new ReferralUploadFilesRecord();
         referralUploadFilesRecord.setFileid(uploadFilesResult.getFileID());
-        referralUploadFilesRecord.setUniname(uploadFilesResult.getName());
+        referralUploadFilesRecord.setUniname(uploadFilesResult.getFileName());
         referralUploadFilesRecord.setUnionid(String.valueOf(uploadFilesResult.getUserId()));
         referralUploadFilesRecord.setType(1);
-        referralUploadFilesRecord.setFilename(uploadFilesResult.getFileName());
+        referralUploadFilesRecord.setFilename(uploadFilesResult.getName());
         referralUploadFilesRecord.setUrl(uploadFilesResult.getSaveUrl());
         referralUploadFilesRecord.setStatus(0);
         uploadFilesResult.getCompanyId();

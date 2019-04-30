@@ -1,7 +1,5 @@
 package com.moseeker.profile.service.impl.serviceutils;
 
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import org.apache.http.Consts;

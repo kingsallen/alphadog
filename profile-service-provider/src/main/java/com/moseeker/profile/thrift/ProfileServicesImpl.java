@@ -265,6 +265,8 @@ public class ProfileServicesImpl implements Iface {
         try {
             UploadFilesResult uploadFilesResult = uploadFilesService.uploadFiles(fileName, fileData);
             logger.info("上传文件返回结果： uploadFilesResult:{}uploadFiles",uploadFilesResult);
+            uploadFilesResult.setFileID(sceneId);
+            uploadFilesResult.setUserId(Integer.valueOf(unionId));
             Integer integer = uploadFilesService.insertUpFiles(uploadFilesResult);
             logger.info("uploadFiles上传简历保存记录: integer{}"+integer);
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
