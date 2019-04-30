@@ -2,7 +2,6 @@ package com.moseeker.servicemanager.web.controller.referral;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.web.controller.MessageType;
@@ -27,7 +26,7 @@ import java.util.List;
 import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 
 @Controller
-@CounterIface
+@ResponseBody
 public class ReferralUploadController {
 
     private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
@@ -40,7 +39,6 @@ public class ReferralUploadController {
      * @return
      */
     @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
-    @ResponseBody
     public UploadControllerVO uploadProfile(MultipartFile file, HttpServletRequest request){
         logger.info("ReferralUploadController weChatUploadProfile");
         logger.info("ReferralUploadController weChatUploadProfile file.length:{},  file.name:{}",file.getSize(), file.getName());
@@ -82,7 +80,6 @@ public class ReferralUploadController {
      */
     Logger logger = LoggerFactory.getLogger(ReferralUploadController.class);
     @RequestMapping(value = "/v1.2/show/list/resumeFiles",method = RequestMethod.GET)
-    @ResponseBody
     public String weChatUploadProfile(HttpServletRequest request){
         String unionid = new String();
         Integer pageSize = 10;
@@ -113,7 +110,6 @@ public class ReferralUploadController {
      * @return 上传文件保存地址
      */
     @RequestMapping(value = "/v1.2/download",method = RequestMethod.GET)
-    @ResponseBody
     public String downloadResume(HttpServletRequest request){
         Params<String, Object> params = null;
         String url = new String();
