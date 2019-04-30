@@ -12,6 +12,15 @@ public class UploadFilesResult {
     private String fileID;
     private String createTime;
     private String saveUrl;
+    private String unionId;
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
 
     public Integer getEmployeeId() {
         return employeeId;
