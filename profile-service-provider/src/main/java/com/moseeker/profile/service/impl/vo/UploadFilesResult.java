@@ -1,7 +1,5 @@
 package com.moseeker.profile.service.impl.vo;
 
-import java.sql.Timestamp;
-
 public class UploadFilesResult {
     private Integer employeeId;
     private Integer companyId;
@@ -12,8 +10,17 @@ public class UploadFilesResult {
     private Integer userId;
     private String fileName;
     private String fileID;
-    private Timestamp createTime;
+    private String createTime;
     private String saveUrl;
+    private String unionId;
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
+    }
 
     public Integer getEmployeeId() {
         return employeeId;
@@ -87,11 +94,11 @@ public class UploadFilesResult {
         this.fileID = fileID;
     }
 
-    public Timestamp getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Timestamp createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
