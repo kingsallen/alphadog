@@ -99,34 +99,6 @@ public class ReferralController {
         }
     }
 
-    @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
-    @ResponseBody
-    public String weChatUploadProfile(MultipartFile file,HttpServletRequest request){
-        Params<String, Object> params = null;
-        String result = new String();
-        try {
-            params = ParamUtils.parseequestParameter(request);
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
-            }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
-            //生成对应的Ifac，调用对应的接口,调用传入上传业务存储数据
-            ReferralService referralService = new ReferralService();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-
-    }
-
-
     /**
      * 员工推荐简历
      * @param id 员工编号
