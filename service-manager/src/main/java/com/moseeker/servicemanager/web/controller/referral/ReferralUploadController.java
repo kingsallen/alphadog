@@ -9,6 +9,7 @@ import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
 import com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import org.slf4j.Logger;
@@ -29,7 +30,6 @@ import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 @ResponseBody
 public class ReferralUploadController {
 
-    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
 
     /**
@@ -152,5 +152,24 @@ public class ReferralUploadController {
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         boolean flag = profileService.getSpecifyProfileResult(employeeId);
         return Result.success(flag).toJson();
+    }
+
+    /**
+     *  返回解析的简历内容
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "v1.2/referral/upload/candidate/info",method = RequestMethod.GET)
+    public UploadControllerVO getCandidateInfo(HttpServletRequest request) throws Exception {
+        Params<String,Object> params = parseRequestParam(request);
+        int employeeId = Integer.parseInt(request.getParameter("employeeId"));
+        logger.info("getCandidateInfo  employeeId{}",employeeId);
+        ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
+        UploadControllerVO uploadControllerVO = new UploadControllerVO();
+        uploadControllerVO.setFileName(profileParseResult.getName());
+        uploadControllerVO.setMobile(profileParseResult.getMobile());
+        uploadControllerVO.setName(profileParseResult.getName());
+        return uploadControllerVO;
     }
 }

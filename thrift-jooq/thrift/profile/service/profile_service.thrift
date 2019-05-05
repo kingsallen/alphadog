@@ -100,7 +100,7 @@ service ProfileServices {
     profile_struct.ProfileParseResult parseHunterFileProfile(1:i32 headhunterId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
 
     //人员上传文件时，调用此接口返回上传记录
-    profile_struct.ReferralUploadFiles uploadFiles(1:string sceneId, 2: string unionid, 3:string fileName, 4 :binary fileData) throws (1:common_struct.BIZException e);
+    profile_struct.ReferralUploadFiles uploadFiles(1:string sceneId, 2: string unionid, 3:string fileName, 4:binary fileData) throws (1:common_struct.BIZException e);
     //上传文件分页列表
     list<profile_struct.ReferralUploadFiles> getUploadFiles(1:string unionId,2:i32 pageSize,3:i32 pageNo ) throws (1:common_struct.BIZException e);
     //下载文件
@@ -109,6 +109,8 @@ service ProfileServices {
     profile_struct.ReferralUploadFiles referralResumeInfo(1:string sceneId) throws (1:common_struct.BIZException e);
     //查找选择简历做内推的操作是否结束
     bool getSpecifyProfileResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
+    //解析结果返回并确认
+    profile_struct.ProfileParseResult checkResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
 }
 
 service AttachmentServices {
