@@ -1,5 +1,7 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
@@ -18,6 +20,7 @@ import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,19 +192,15 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         String value = client.get(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),String.valueOf(employeeId));
         logger.info("checkResult redis对应的value{}",value);
-        Map<String,Object> map = JsonToMap.parseJSON2Map(value);
-        logger.info("checkResult map{}",map);
-        UserUserRecord user = (UserUserRecord) map.get("user");
-        logger.info("checkResult user{}",user);
-        uploadFilesResult.setName(user.getName());
-        uploadFilesResult.setMobile(String.valueOf(user.getMobile()));
-        List<Map<String, Object>> mapList = (List<Map<String, Object>>) map.get("attachments");
-        String filename = "";
-        if (mapList.size() > 0 && mapList!= null){
-            filename = (String) mapList.get(0).get("Name");
+        JSONObject jsonObject = JSON.parseObject(value);
+        JSONObject user = jsonObject.getJSONObject("user");
+        uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
+        uploadFilesResult.setMobile(user.get("mobile").toString());
+        JSONArray attachments = jsonObject.getJSONArray("attachments");
+        if (attachments != null && attachments.size() > 0) {
+            String fileName = ((JSONObject)attachments.get(0)).getString("name");
+            uploadFilesResult.setFileName(fileName);
         }
-        logger.info("checkResult filename{}",filename);
-        uploadFilesResult.setFileName(filename);
         return uploadFilesResult;
     }
 
