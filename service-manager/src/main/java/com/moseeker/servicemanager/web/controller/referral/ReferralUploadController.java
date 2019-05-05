@@ -6,6 +6,7 @@ import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.referral.vo.ParseResult;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
@@ -163,15 +164,15 @@ public class ReferralUploadController {
      * @throws Exception
      */
     @RequestMapping(value = "v1.2/referral/upload/candidate/info",method = RequestMethod.GET)
-    public UploadControllerVO getCandidateInfo(HttpServletRequest request) throws Exception {
+    public String getCandidateInfo(HttpServletRequest request) throws Exception {
         Params<String,Object> params = parseRequestParam(request);
+        ParseResult parseResult = new ParseResult();
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         logger.info("getCandidateInfo  employeeId{}",employeeId);
         ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
-        UploadControllerVO uploadControllerVO = new UploadControllerVO();
-        uploadControllerVO.setFileName(profileParseResult.getName());
-        uploadControllerVO.setMobile(profileParseResult.getMobile());
-        uploadControllerVO.setName(profileParseResult.getName());
-        return uploadControllerVO;
+        parseResult.setFilename(profileParseResult.getFile());
+        parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
+        parseResult.setName(profileParseResult.getName());
+        return Result.success(parseResult).toJson();
     }
 }
