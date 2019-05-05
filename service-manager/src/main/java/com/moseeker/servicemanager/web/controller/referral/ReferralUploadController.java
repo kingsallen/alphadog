@@ -153,4 +153,19 @@ public class ReferralUploadController {
         boolean flag = profileService.getSpecifyProfileResult(employeeId);
         return Result.success(flag).toJson();
     }
+
+    /**
+     *  返回解析的简历内容
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "v1.2/referral/upload/candidate/info",method = RequestMethod.GET)
+    public UploadControllerVO getCandidateInfo(HttpServletRequest request) throws Exception {
+        Params<String,Object> params = parseRequestParam(request);
+        int employeeId = Integer.parseInt(request.getParameter("employeeId"));
+        logger.info("getCandidateInfo  employeeId{}",employeeId);
+
+        return null;
+    }
 }

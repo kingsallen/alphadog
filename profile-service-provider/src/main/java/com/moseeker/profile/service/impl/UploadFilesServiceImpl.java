@@ -2,11 +2,13 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
@@ -27,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 @Service
 @CounterIface
 public class UploadFilesServiceImpl implements UploadFilesService {
@@ -167,6 +171,29 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public boolean getSpecifyProfileResult(int employeeId) throws ProfileException {
         return client.exists(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+    }
+
+    @Override
+    public UploadFilesResult checkResult(int employeeId) throws ProfileException {
+        logger.info("checkResult employeeId{}",employeeId);
+        UploadFilesResult uploadFilesResult = new UploadFilesResult();
+        String value = client.get(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),String.valueOf(employeeId));
+        logger.info("checkResult redis对应的value{}",value);
+        Map<String,Object> map = JsonToMap.parseJSON2Map(value);
+        logger.info("checkResult map{}",map);
+        UserUserRecord user = (UserUserRecord) map.get("user");
+        logger.info("checkResult user{}",user);
+        uploadFilesResult.setName(user.getName());
+        uploadFilesResult.setMobile(String.valueOf(user.getMobile()));
+        List<Map<String, Object>> mapList = (List<Map<String, Object>>) map.get("attachments");
+        String filename = "";
+        if (mapList.size() > 0 && mapList!= null){
+            filename = (String) mapList.get(0).get("Name");
+        }
+        logger.info("checkResult filename{}",filename);
+        uploadFilesResult.setFileName(filename);
+        return uploadFilesResult;
     }
 
 }

@@ -96,6 +96,9 @@ service ProfileServices {
     i32 saveMobotReferralProfileCache(1:i32 employeeId, 2:string mobile, 3: string name, 4:list<string> referralReasons, 5: i8 referralType, 6: string fileName, 7: i32 relationship, 8: string recomReasonText)throws (1: common_struct.BIZException e)
     // 点击告诉ta时回填推荐信息，从缓存中取
     string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
+    //猎头简历解析上传
+    profile_struct.ProfileParseResult parseHunterFileProfile(1:i32 headhunterId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+
 
     //小程序上传简历
     //人员上传文件时，调用此接口返回上传记录
@@ -108,6 +111,8 @@ service ProfileServices {
     referral_struct.ReferralUploadFiles referralResumeInfo(1:string sceneId) throws (1:common_struct.BIZException e);
     //查找选择简历做内推的操作是否结束
     bool getSpecifyProfileResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
+    //解析结果返回并确认
+    ProfileParseResult checkResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
 }
 
 service AttachmentServices {
@@ -149,6 +154,7 @@ service BasicServices {
     common_struct.Response putResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response delResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response reCalculateBasicCompleteness(1: i32 userId) throws (1: common_struct.BIZException e);
+    common_struct.Response uploadFiles(1 :profile_struct.PrfileUploadFiles query) throws (1:common_struct.BIZException);
 
 }
 

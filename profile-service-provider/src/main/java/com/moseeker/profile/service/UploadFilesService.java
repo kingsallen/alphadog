@@ -67,4 +67,12 @@ public interface UploadFilesService {
      * @throws ProfileException 业务异常
      */
     boolean getSpecifyProfileResult(int employeeId) throws ProfileException;
+
+    /**
+     * 返回解析对应参数
+     * @param employeeId
+     * @return
+     * @throws ProfileException
+     */
+    UploadFilesResult checkResult(int employeeId) throws  ProfileException;
 }
