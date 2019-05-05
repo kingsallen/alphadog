@@ -143,7 +143,6 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public List<UploadFilesResult> getUploadFiles(String unionid, Integer pageSize, Integer pageNo) throws BIZException {
         List<UploadFilesResult> uploadFilesResultList = new ArrayList<>();
         List<ReferralUploadFilesRecord> list = referralUploadFilesDao.fetchByunionid(unionid,pageSize,pageNo);
-        logger.info("getUploadFiles referralUploadFilesDao  list{}",list);
         if (list != null && list.size() != 0){
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             for(ReferralUploadFilesRecord referralUploadFilesRecord : list){
@@ -152,6 +151,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 uploadFilesResult.setCreateTime(sf.format( referralUploadFilesRecord.getCreatetime() ));
                 uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
                 uploadFilesResult.setFileID(String.valueOf(referralUploadFilesRecord.getId()));
+                uploadFilesResult.setId(referralUploadFilesRecord.getId());
                 uploadFilesResultList.add(uploadFilesResult);
             }
         }
