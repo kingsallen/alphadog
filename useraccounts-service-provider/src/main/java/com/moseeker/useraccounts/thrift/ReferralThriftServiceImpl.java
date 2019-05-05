@@ -14,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -281,25 +280,5 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-
-    @Override
-    public ReferralUploadFiles uploadFiles(String sceneId, String fileName, ByteBuffer fileData) throws BIZException, TException {
-        return null;
-    }
-
-    @Override
-    public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
-        return null;
-    }
-
-    @Override
-    public String downLoadFiles(String sceneId) throws BIZException, TException {
-        return null;
-    }
-
-    @Override
-    public ReferralUploadFiles referralResumeInfo(String sceneId) throws BIZException, TException {
-        return null;
-    }
-
+    
 }

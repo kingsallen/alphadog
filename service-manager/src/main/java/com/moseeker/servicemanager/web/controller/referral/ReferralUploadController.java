@@ -10,6 +10,7 @@ import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
+import com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
