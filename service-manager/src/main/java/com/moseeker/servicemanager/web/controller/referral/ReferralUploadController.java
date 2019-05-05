@@ -9,8 +9,8 @@ import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
-import com.moseeker.thrift.gen.referral.struct.ReferralUploadFiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -165,7 +165,11 @@ public class ReferralUploadController {
         Params<String,Object> params = parseRequestParam(request);
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         logger.info("getCandidateInfo  employeeId{}",employeeId);
-
-        return null;
+        ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
+        UploadControllerVO uploadControllerVO = new UploadControllerVO();
+        uploadControllerVO.setFileName(profileParseResult.getName());
+        uploadControllerVO.setMobile(profileParseResult.getMobile());
+        uploadControllerVO.setName(profileParseResult.getName());
+        return uploadControllerVO;
     }
 }

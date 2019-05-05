@@ -340,6 +340,21 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public ProfileParseResult checkResult(int employeeId) throws BIZException, TException {
+        ProfileParseResult profileParseResult = new ProfileParseResult();
+        try {
+            UploadFilesResult uploadFilesResult = uploadFilesService.checkResult(employeeId);
+            profileParseResult.setMobile(uploadFilesResult.getMobile());
+            profileParseResult.setFile(uploadFilesResult.getFileName());
+            profileParseResult.setName(uploadFilesResult.getName());
+            logger.info("checkResult profileParseResult",profileParseResult);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return profileParseResult;
+    }
+
+    @Override
     public int upsertProfile(int userId, String profile) throws BIZException, TException {
         try {
             int result= profileService.upsertProfile(userId, profile);
