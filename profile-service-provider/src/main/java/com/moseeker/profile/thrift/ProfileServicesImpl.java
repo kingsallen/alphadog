@@ -290,6 +290,7 @@ public class ProfileServicesImpl implements Iface {
         } catch (ProfileException e) {
             logger.error(e.getMessage());
             referralUploadFiles.setStatus(e.getCode());
+            referralUploadFiles.setType(e.getMessage());
             return referralUploadFiles;
         }
     }
