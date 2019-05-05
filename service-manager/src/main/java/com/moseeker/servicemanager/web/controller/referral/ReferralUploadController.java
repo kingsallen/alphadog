@@ -40,7 +40,7 @@ public class ReferralUploadController {
      * @return
      */
     @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
-    public UploadControllerVO uploadProfile(MultipartFile file, HttpServletRequest request){
+    public String uploadProfile(MultipartFile file, HttpServletRequest request){
         logger.info("ReferralUploadController weChatUploadProfile");
         logger.info("ReferralUploadController weChatUploadProfile file.length:{},  file.name:{}",file.getSize(), file.getName());
         Params<String, Object> params = null;
@@ -60,7 +60,7 @@ public class ReferralUploadController {
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
-                return result;
+                return Result.fail(99999, "文件太长！").toJson();
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
             logger.info("uploadProfile byteBuffer{}",byteBuffer);
@@ -72,8 +72,9 @@ public class ReferralUploadController {
             result.setCreateTime(referralUploadFiles.getCreate_time());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            return Result.fail(99999, "业务异常！").toJson();
         }
-        return result;
+        return Result.success(request).toJson();
     }
 
     /**
