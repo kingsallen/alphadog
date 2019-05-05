@@ -203,6 +203,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             String fileName = ((JSONObject)attachments.get(0)).getString("name");
             uploadFilesResult.setFileName(fileName);
         }
+        logger.info("UploadFilesServiceImpl checkResult uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
         return uploadFilesResult;
     }
 

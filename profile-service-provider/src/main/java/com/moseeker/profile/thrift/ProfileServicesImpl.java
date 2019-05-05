@@ -364,7 +364,7 @@ public class ProfileServicesImpl implements Iface {
             profileParseResult.setMobile(uploadFilesResult.getMobile());
             profileParseResult.setFile(uploadFilesResult.getFileName());
             profileParseResult.setName(uploadFilesResult.getName());
-            logger.info("checkResult profileParseResult",profileParseResult);
+            logger.info("checkResult profileParseResult:{}",JSONObject.toJSONString(profileParseResult));
         }catch (Exception e){
             logger.error(e.getMessage(),e);
         }
