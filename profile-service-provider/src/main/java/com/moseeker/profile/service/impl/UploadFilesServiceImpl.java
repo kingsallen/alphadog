@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -56,10 +57,12 @@ public class UploadFilesServiceImpl implements UploadFilesService {
      */
     @Override
     public UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException {
-        logger.info("上传文件参数："+"fileName"+fileName+"fileData"+fileData);
+        logger.info("UploadFilesServiceImpl uploadFiles");
+        logger.info("UploadFilesServiceImpl uploadFiles fileName:{}", fileName);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
 
         if(!ProfileDocCheckTool.checkFileName(fileName)){
+            logger.error("UploadFilesServiceImpl uploadFiles 不支持的文件类型");
             throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
         }
         byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
@@ -82,7 +85,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                             .replace(".doc", Constant.WORD_PDF));
                 }
             }
-
+            logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -92,11 +95,10 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             uploadFilesResult.setSaveUrl(fileNameData.getFileAbsoluteName());
             //原始文件名称
             uploadFilesResult.setName(fileNameData.getOriginName());
-            logger.info("保存文件返回结果"+uploadFilesResult.toString());
+            logger.info("UploadFilesServiceImpl uploadFiles uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
         }catch (Exception e){
             logger.error(e.getMessage());
         }
-
         return uploadFilesResult;
     }
 
@@ -143,7 +145,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public List<UploadFilesResult> getUploadFiles(String unionid, Integer pageSize, Integer pageNo) throws BIZException {
         List<UploadFilesResult> uploadFilesResultList = new ArrayList<>();
         List<ReferralUploadFilesRecord> list = referralUploadFilesDao.fetchByunionid(unionid,pageSize,pageNo);
-        logger.info("getUploadFiles referralUploadFilesDao  list{}",list);
+        logger.info("UploadFilesServiceImpl getUploadFiles  list.size:{}",list == null?0:list.size());
         if (list != null && list.size() != 0){
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             for(ReferralUploadFilesRecord referralUploadFilesRecord : list){
@@ -152,9 +154,11 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 uploadFilesResult.setCreateTime(sf.format( referralUploadFilesRecord.getCreatetime() ));
                 uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
                 uploadFilesResult.setFileID(String.valueOf(referralUploadFilesRecord.getId()));
+                logger.info("UploadFilesServiceImpl getUploadFiles  referralUploadFilesRecord:{}",referralUploadFilesRecord);
                 uploadFilesResultList.add(uploadFilesResult);
             }
         }
+        logger.info("UploadFilesServiceImpl getUploadFiles  uploadFilesResultList:{}",JSONObject.toJSONString(uploadFilesResultList));
         return uploadFilesResultList;
     }
 

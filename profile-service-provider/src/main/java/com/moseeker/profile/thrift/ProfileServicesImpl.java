@@ -277,14 +277,15 @@ public class ProfileServicesImpl implements Iface {
         ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
         try {
             UploadFilesResult uploadFilesResult = uploadFilesService.uploadFiles(fileName, fileData);
-            logger.info("上传文件返回结果： uploadFilesResult:{}uploadFiles", JSONObject.toJSONString(uploadFilesResult));
+            logger.info("ProfileServicesImpl uploadFiles uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
             uploadFilesResult.setFileID(sceneId);
             uploadFilesResult.setUnionId(unionId);
             Integer integer = uploadFilesService.insertUpFiles(uploadFilesResult);
-            logger.info("uploadFiles上传简历保存记录: integer{}",integer);
+            logger.info("ProfileServicesImpl uploadFiles integer:{}",integer);
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
             referralUploadFiles.setFilename(uploadFilesResult.getFileName());
+            logger.info("ProfileServicesImpl uploadFiles referralUploadFiles:{}",referralUploadFiles);
             return referralUploadFiles;
         } catch (ProfileException e) {
             logger.error(e.getMessage());
@@ -295,9 +296,10 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
+        logger.info("ProfileServicesImpl getUploadFiles unionId:{}, pageSize:{}, pageNo:{}", unionId, pageSize, pageNo);
         try {
             List<UploadFilesResult> list = uploadFilesService.getUploadFiles(unionId, pageSize, pageNo);
-            logger.info("getUploadFiles list{}",list.toString());
+            logger.info("ProfileServicesImpl getUploadFiles list:{}", JSONObject.toJSONString(list));
             List<ReferralUploadFiles> referralUploadFilesList = new ArrayList<>();
             if (list != null && list.size() >0){
                 for (UploadFilesResult uploadFilesResult : list){
@@ -309,6 +311,7 @@ public class ProfileServicesImpl implements Iface {
                     referralUploadFilesList.add(referralUploadFiles);
                 }
             }
+            logger.info("ProfileServicesImpl getUploadFiles referralUploadFilesList:{}", JSONObject.toJSONString(referralUploadFilesList));
             return referralUploadFilesList;
         } catch (BIZException e) {
             logger.error(e.getMessage());
