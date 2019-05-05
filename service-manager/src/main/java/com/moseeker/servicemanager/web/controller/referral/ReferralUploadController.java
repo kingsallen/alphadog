@@ -71,7 +71,7 @@ public class ReferralUploadController {
             result.setCreateTime(referralUploadFiles.getCreate_time());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return Result.fail(99999, "业务异常！").toJson();
+            return Result.fail(99999, e.getMessage()).toJson();
         }
         return Result.success(request).toJson();
     }
