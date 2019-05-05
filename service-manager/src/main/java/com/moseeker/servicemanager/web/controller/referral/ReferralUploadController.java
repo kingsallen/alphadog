@@ -74,7 +74,7 @@ public class ReferralUploadController {
             logger.error(e.getMessage(), e);
             return Result.fail(99999, e.getMessage()).toJson();
         }
-        return Result.success(request).toJson();
+        return Result.success(result).toJson();
     }
 
     /**
