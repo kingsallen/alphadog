@@ -11,7 +11,6 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
 import com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles;
-import com.moseeker.thrift.gen.referral.service.ReferralService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -149,9 +148,12 @@ public class ReferralUploadController {
      */
     @RequestMapping(value = "/v1.2/resuem/upload/complete",method = RequestMethod.GET)
     public String getSpecifyProfileResult(HttpServletRequest request) throws Exception {
+        logger.info("ReferralUploadController getSpecifyProfileResult");
         Params<String, Object> params = parseRequestParam(request);
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
+        logger.info("ReferralUploadController getSpecifyProfileResult employeeId:{}", employeeId);
         boolean flag = profileService.getSpecifyProfileResult(employeeId);
+        logger.info("ReferralUploadController getSpecifyProfileResult flag:{}", flag);
         return Result.success(flag).toJson();
     }
 

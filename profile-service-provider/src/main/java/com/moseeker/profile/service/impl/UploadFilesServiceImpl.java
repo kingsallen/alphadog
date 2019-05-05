@@ -173,6 +173,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
 
     @Override
     public boolean getSpecifyProfileResult(int employeeId) throws ProfileException {
+        logger.info("UploadFilesServiceImpl getSpecifyProfileResult");
+        logger.info("UploadFilesServiceImpl getSpecifyProfileResult employeeId:{}", employeeId);
         return client.exists(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
     }
