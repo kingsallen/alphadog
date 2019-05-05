@@ -135,9 +135,9 @@ public class ReferralUploadController {
     @RequestMapping(value = "/v1.2/referral/upload/resume/info",method = RequestMethod.GET)
     public String parseFileProfile(HttpServletRequest request) throws Exception {
         //Params<String, Object> params = parseRequestParam(request);
-        String sceneId = request.getParameter("sceneId");
+        String fileId = request.getParameter("fileId");
         String userId = request.getParameter("userId");
-        ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(sceneId);
+        ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(fileId);
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
         return Result.success(result).toJson();
