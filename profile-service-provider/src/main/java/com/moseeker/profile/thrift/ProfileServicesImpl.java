@@ -330,7 +330,9 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public ReferralUploadFiles referralResumeInfo(String sceneId) throws BIZException, TException {
+        logger.info("UploadFilesServiceImpl resumeInfo");
         try {
+            logger.info("UploadFilesServiceImpl resumeInfo sceneId:{}", sceneId);
             UploadFilesResult uploadFilesResult = uploadFilesService.resumeInfo(sceneId);
             ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());

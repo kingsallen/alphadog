@@ -133,6 +133,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
 
     @Override
     public UploadFilesResult resumeInfo(String sceneId) {
+        logger.info("UploadFilesServiceImpl resumeInfo");
+        logger.info("UploadFilesServiceImpl resumeInfo sceneId:{}", sceneId);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
         ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByfileId(sceneId);
         uploadFilesResult.setSaveUrl(referralUploadFilesRecord.getUrl());
