@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -91,8 +92,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             uploadFilesResult.setCreateTime(sf.format(date));
             uploadFilesResult.setSaveUrl(fileNameData.getFileAbsoluteName());
             //原始文件名称
-            uploadFilesResult.setName(fileNameData.getOriginName());
-            logger.info("保存文件返回结果"+uploadFilesResult.toString());
+            uploadFilesResult.setName(fileName);
+            logger.info("UploadFilesServiceImpl uploadFiles uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
         }catch (Exception e){
             logger.error(e.getMessage());
         }
