@@ -2,6 +2,8 @@ package com.moseeker.position.service.fundationbs;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.position.pojo.JobPostionResponse;
+import com.moseeker.position.thrift.PositionServicesImpl;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +24,7 @@ public class PositionAsyncHandler {
     private Logger logger= LoggerFactory.getLogger(PositionAsyncHandler.class);
 
     @Autowired
-    private PositionService positionService;
+    private PositionServicesImpl positionService;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -37,7 +39,7 @@ public class PositionAsyncHandler {
             logger.info("async batch handle position receive json {}", json);
 
             BatchHandlerJobPostion batchHandlerJobPosition = JSON.parseObject(json,BatchHandlerJobPostion.class);
-            JobPostionResponse response = positionService.batchHandlerJobPostionAdapter(batchHandlerJobPosition);
+            Response response = positionService.saveAndSync(batchHandlerJobPosition);
 
             String jsonResponse = JSON.toJSONString(response);
             try {
