@@ -134,10 +134,10 @@ public class ReferralUploadController {
     public String parseFileProfile(HttpServletRequest request) throws Exception {
         logger.info("ReferralUploadController parseFileProfile");
         //Params<String, Object> params = parseRequestParam(request);
-        String sceneId = request.getParameter("sceneId");
+        String fileId = request.getParameter("fileId");
         String userId = request.getParameter("userId");
-        logger.info("ReferralUploadController parseFileProfile sceneId:{}, userId:{}", sceneId, userId);
-        ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(sceneId);
+        logger.info("ReferralUploadController parseFileProfile sceneId:{}, userId:{}", fileId, userId);
+        ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(fileId);
         logger.info("ReferralUploadController parseFileProfile:{}", JSONObject.toJSONString(uploadFilesResult));
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId));
