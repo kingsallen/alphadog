@@ -287,11 +287,9 @@ public class ProfileServicesImpl implements Iface {
             referralUploadFiles.setFilename(uploadFilesResult.getFileName());
             logger.info("ProfileServicesImpl uploadFiles referralUploadFiles:{}",referralUploadFiles);
             return referralUploadFiles;
-        } catch (ProfileException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
-            referralUploadFiles.setStatus(e.getCode());
-            referralUploadFiles.setType(e.getMessage());
-            return referralUploadFiles;
+            throw ExceptionUtils.convertException(e);
         }
     }
 
