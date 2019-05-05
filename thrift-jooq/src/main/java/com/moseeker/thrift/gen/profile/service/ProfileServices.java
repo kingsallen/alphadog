@@ -74,7 +74,7 @@ public class ProfileServices {
 
     public java.lang.String getMobotReferralCache(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String unionid, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public java.util.List<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> getUploadFiles(java.lang.String unionId, int pageSize, int pageNo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -152,7 +152,7 @@ public class ProfileServices {
 
     public void getMobotReferralCache(int employeeId, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException;
 
-    public void uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException;
+    public void uploadFiles(java.lang.String sceneId, java.lang.String unionid, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException;
 
     public void getUploadFiles(java.lang.String unionId, int pageSize, int pageNo, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles>> resultHandler) throws org.apache.thrift.TException;
 
@@ -1000,16 +1000,17 @@ public class ProfileServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getMobotReferralCache failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles uploadFiles(java.lang.String sceneId, java.lang.String unionid, java.lang.String fileName, java.nio.ByteBuffer fileData) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_uploadFiles(sceneId, fileName, fileData);
+      send_uploadFiles(sceneId, unionid, fileName, fileData);
       return recv_uploadFiles();
     }
 
-    public void send_uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData) throws org.apache.thrift.TException
+    public void send_uploadFiles(java.lang.String sceneId, java.lang.String unionid, java.lang.String fileName, java.nio.ByteBuffer fileData) throws org.apache.thrift.TException
     {
       uploadFiles_args args = new uploadFiles_args();
       args.setSceneId(sceneId);
+      args.setUnionid(unionid);
       args.setFileName(fileName);
       args.setFileData(fileData);
       sendBase("uploadFiles", args);
@@ -2284,20 +2285,22 @@ public class ProfileServices {
       }
     }
 
-    public void uploadFiles(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
+    public void uploadFiles(java.lang.String sceneId, java.lang.String unionid, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      uploadFiles_call method_call = new uploadFiles_call(sceneId, fileName, fileData, resultHandler, this, ___protocolFactory, ___transport);
+      uploadFiles_call method_call = new uploadFiles_call(sceneId, unionid, fileName, fileData, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class uploadFiles_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> {
       private java.lang.String sceneId;
+      private java.lang.String unionid;
       private java.lang.String fileName;
       private java.nio.ByteBuffer fileData;
-      public uploadFiles_call(java.lang.String sceneId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public uploadFiles_call(java.lang.String sceneId, java.lang.String unionid, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.sceneId = sceneId;
+        this.unionid = unionid;
         this.fileName = fileName;
         this.fileData = fileData;
       }
@@ -2306,6 +2309,7 @@ public class ProfileServices {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("uploadFiles", org.apache.thrift.protocol.TMessageType.CALL, 0));
         uploadFiles_args args = new uploadFiles_args();
         args.setSceneId(sceneId);
+        args.setUnionid(unionid);
         args.setFileName(fileName);
         args.setFileData(fileData);
         args.write(prot);
@@ -3271,7 +3275,7 @@ public class ProfileServices {
       public uploadFiles_result getResult(I iface, uploadFiles_args args) throws org.apache.thrift.TException {
         uploadFiles_result result = new uploadFiles_result();
         try {
-          result.success = iface.uploadFiles(args.sceneId, args.fileName, args.fileData);
+          result.success = iface.uploadFiles(args.sceneId, args.unionid, args.fileName, args.fileData);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -5498,7 +5502,7 @@ public class ProfileServices {
       }
 
       public void start(I iface, uploadFiles_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles> resultHandler) throws org.apache.thrift.TException {
-        iface.uploadFiles(args.sceneId, args.fileName, args.fileData,resultHandler);
+        iface.uploadFiles(args.sceneId, args.unionid, args.fileName, args.fileData,resultHandler);
       }
     }
 
@@ -34955,21 +34959,24 @@ public class ProfileServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("uploadFiles_args");
 
     private static final org.apache.thrift.protocol.TField SCENE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("sceneId", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField FILE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("fileName", org.apache.thrift.protocol.TType.STRING, (short)2);
-    private static final org.apache.thrift.protocol.TField FILE_DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("fileData", org.apache.thrift.protocol.TType.STRING, (short)3);
+    private static final org.apache.thrift.protocol.TField UNIONID_FIELD_DESC = new org.apache.thrift.protocol.TField("unionid", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField FILE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("fileName", org.apache.thrift.protocol.TType.STRING, (short)3);
+    private static final org.apache.thrift.protocol.TField FILE_DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("fileData", org.apache.thrift.protocol.TType.STRING, (short)4);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new uploadFiles_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new uploadFiles_argsTupleSchemeFactory();
 
     public java.lang.String sceneId; // required
+    public java.lang.String unionid; // required
     public java.lang.String fileName; // required
     public java.nio.ByteBuffer fileData; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SCENE_ID((short)1, "sceneId"),
-      FILE_NAME((short)2, "fileName"),
-      FILE_DATA((short)3, "fileData");
+      UNIONID((short)2, "unionid"),
+      FILE_NAME((short)3, "fileName"),
+      FILE_DATA((short)4, "fileData");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -34986,9 +34993,11 @@ public class ProfileServices {
         switch(fieldId) {
           case 1: // SCENE_ID
             return SCENE_ID;
-          case 2: // FILE_NAME
+          case 2: // UNIONID
+            return UNIONID;
+          case 3: // FILE_NAME
             return FILE_NAME;
-          case 3: // FILE_DATA
+          case 4: // FILE_DATA
             return FILE_DATA;
           default:
             return null;
@@ -35035,6 +35044,8 @@ public class ProfileServices {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SCENE_ID, new org.apache.thrift.meta_data.FieldMetaData("sceneId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.UNIONID, new org.apache.thrift.meta_data.FieldMetaData("unionid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.FILE_NAME, new org.apache.thrift.meta_data.FieldMetaData("fileName", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.FILE_DATA, new org.apache.thrift.meta_data.FieldMetaData("fileData", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -35048,11 +35059,13 @@ public class ProfileServices {
 
     public uploadFiles_args(
       java.lang.String sceneId,
+      java.lang.String unionid,
       java.lang.String fileName,
       java.nio.ByteBuffer fileData)
     {
       this();
       this.sceneId = sceneId;
+      this.unionid = unionid;
       this.fileName = fileName;
       this.fileData = org.apache.thrift.TBaseHelper.copyBinary(fileData);
     }
@@ -35063,6 +35076,9 @@ public class ProfileServices {
     public uploadFiles_args(uploadFiles_args other) {
       if (other.isSetSceneId()) {
         this.sceneId = other.sceneId;
+      }
+      if (other.isSetUnionid()) {
+        this.unionid = other.unionid;
       }
       if (other.isSetFileName()) {
         this.fileName = other.fileName;
@@ -35079,6 +35095,7 @@ public class ProfileServices {
     @Override
     public void clear() {
       this.sceneId = null;
+      this.unionid = null;
       this.fileName = null;
       this.fileData = null;
     }
@@ -35104,6 +35121,30 @@ public class ProfileServices {
     public void setSceneIdIsSet(boolean value) {
       if (!value) {
         this.sceneId = null;
+      }
+    }
+
+    public java.lang.String getUnionid() {
+      return this.unionid;
+    }
+
+    public uploadFiles_args setUnionid(java.lang.String unionid) {
+      this.unionid = unionid;
+      return this;
+    }
+
+    public void unsetUnionid() {
+      this.unionid = null;
+    }
+
+    /** Returns true if field unionid is set (has been assigned a value) and false otherwise */
+    public boolean isSetUnionid() {
+      return this.unionid != null;
+    }
+
+    public void setUnionidIsSet(boolean value) {
+      if (!value) {
+        this.unionid = null;
       }
     }
 
@@ -35175,6 +35216,14 @@ public class ProfileServices {
         }
         break;
 
+      case UNIONID:
+        if (value == null) {
+          unsetUnionid();
+        } else {
+          setUnionid((java.lang.String)value);
+        }
+        break;
+
       case FILE_NAME:
         if (value == null) {
           unsetFileName();
@@ -35203,6 +35252,9 @@ public class ProfileServices {
       case SCENE_ID:
         return getSceneId();
 
+      case UNIONID:
+        return getUnionid();
+
       case FILE_NAME:
         return getFileName();
 
@@ -35222,6 +35274,8 @@ public class ProfileServices {
       switch (field) {
       case SCENE_ID:
         return isSetSceneId();
+      case UNIONID:
+        return isSetUnionid();
       case FILE_NAME:
         return isSetFileName();
       case FILE_DATA:
@@ -35254,6 +35308,15 @@ public class ProfileServices {
           return false;
       }
 
+      boolean this_present_unionid = true && this.isSetUnionid();
+      boolean that_present_unionid = true && that.isSetUnionid();
+      if (this_present_unionid || that_present_unionid) {
+        if (!(this_present_unionid && that_present_unionid))
+          return false;
+        if (!this.unionid.equals(that.unionid))
+          return false;
+      }
+
       boolean this_present_fileName = true && this.isSetFileName();
       boolean that_present_fileName = true && that.isSetFileName();
       if (this_present_fileName || that_present_fileName) {
@@ -35283,6 +35346,10 @@ public class ProfileServices {
       if (isSetSceneId())
         hashCode = hashCode * 8191 + sceneId.hashCode();
 
+      hashCode = hashCode * 8191 + ((isSetUnionid()) ? 131071 : 524287);
+      if (isSetUnionid())
+        hashCode = hashCode * 8191 + unionid.hashCode();
+
       hashCode = hashCode * 8191 + ((isSetFileName()) ? 131071 : 524287);
       if (isSetFileName())
         hashCode = hashCode * 8191 + fileName.hashCode();
@@ -35308,6 +35375,16 @@ public class ProfileServices {
       }
       if (isSetSceneId()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sceneId, other.sceneId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetUnionid()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.unionid, other.unionid);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -35357,6 +35434,14 @@ public class ProfileServices {
         sb.append("null");
       } else {
         sb.append(this.sceneId);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("unionid:");
+      if (this.unionid == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.unionid);
       }
       first = false;
       if (!first) sb.append(", ");
@@ -35426,7 +35511,15 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // FILE_NAME
+            case 2: // UNIONID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.unionid = iprot.readString();
+                struct.setUnionidIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // FILE_NAME
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.fileName = iprot.readString();
                 struct.setFileNameIsSet(true);
@@ -35434,7 +35527,7 @@ public class ProfileServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 3: // FILE_DATA
+            case 4: // FILE_DATA
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
                 struct.fileData = iprot.readBinary();
                 struct.setFileDataIsSet(true);
@@ -35460,6 +35553,11 @@ public class ProfileServices {
         if (struct.sceneId != null) {
           oprot.writeFieldBegin(SCENE_ID_FIELD_DESC);
           oprot.writeString(struct.sceneId);
+          oprot.writeFieldEnd();
+        }
+        if (struct.unionid != null) {
+          oprot.writeFieldBegin(UNIONID_FIELD_DESC);
+          oprot.writeString(struct.unionid);
           oprot.writeFieldEnd();
         }
         if (struct.fileName != null) {
@@ -35493,15 +35591,21 @@ public class ProfileServices {
         if (struct.isSetSceneId()) {
           optionals.set(0);
         }
-        if (struct.isSetFileName()) {
+        if (struct.isSetUnionid()) {
           optionals.set(1);
         }
-        if (struct.isSetFileData()) {
+        if (struct.isSetFileName()) {
           optionals.set(2);
         }
-        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetFileData()) {
+          optionals.set(3);
+        }
+        oprot.writeBitSet(optionals, 4);
         if (struct.isSetSceneId()) {
           oprot.writeString(struct.sceneId);
+        }
+        if (struct.isSetUnionid()) {
+          oprot.writeString(struct.unionid);
         }
         if (struct.isSetFileName()) {
           oprot.writeString(struct.fileName);
@@ -35514,16 +35618,20 @@ public class ProfileServices {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, uploadFiles_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(3);
+        java.util.BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
           struct.sceneId = iprot.readString();
           struct.setSceneIdIsSet(true);
         }
         if (incoming.get(1)) {
+          struct.unionid = iprot.readString();
+          struct.setUnionidIsSet(true);
+        }
+        if (incoming.get(2)) {
           struct.fileName = iprot.readString();
           struct.setFileNameIsSet(true);
         }
-        if (incoming.get(2)) {
+        if (incoming.get(3)) {
           struct.fileData = iprot.readBinary();
           struct.setFileDataIsSet(true);
         }
