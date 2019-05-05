@@ -94,7 +94,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             uploadFilesResult.setCreateTime(sf.format(date));
             uploadFilesResult.setSaveUrl(fileNameData.getFileAbsoluteName());
             //原始文件名称
-            uploadFilesResult.setName(fileNameData.getOriginName());
+            uploadFilesResult.setName(fileName);
             logger.info("UploadFilesServiceImpl uploadFiles uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
         }catch (Exception e){
             logger.error(e.getMessage());
