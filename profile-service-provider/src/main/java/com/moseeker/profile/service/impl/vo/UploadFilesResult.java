@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl.vo;
 
 public class UploadFilesResult {
+    private int id;
     private Integer employeeId;
     private Integer companyId;
     private String name;
@@ -108,5 +109,13 @@ public class UploadFilesResult {
 
     public void setSaveUrl(String saveUrl) {
         this.saveUrl = saveUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

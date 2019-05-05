@@ -154,6 +154,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 uploadFilesResult.setCreateTime(sf.format( referralUploadFilesRecord.getCreatetime() ));
                 uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
                 uploadFilesResult.setFileID(String.valueOf(referralUploadFilesRecord.getId()));
+                uploadFilesResult.setId(referralUploadFilesRecord.getId());
                 logger.info("UploadFilesServiceImpl getUploadFiles  referralUploadFilesRecord:{}",referralUploadFilesRecord);
                 uploadFilesResultList.add(uploadFilesResult);
             }
