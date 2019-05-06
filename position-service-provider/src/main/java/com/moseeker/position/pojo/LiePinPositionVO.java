@@ -15,6 +15,7 @@ public class LiePinPositionVO {
     private String ejob_salarydiscuss;//职位薪资面议状态(面议="1",非面议="0")默认：非面议
     private Float ejob_salarylow;//年薪，薪资下限，单位是万，默认值：11
     private Float ejob_salaryhigh;//年薪，薪资上限，单位是万，默认值：11
+    private Integer ejob_salary_month;
     private String detail_workyears;//工作年限，阿拉伯数字，默认值：1
     private String detail_sex;//性别 男，女  默认：不限
     private Integer detail_agelow;//最低年龄要求 默认：0  范围（20--65）
@@ -42,6 +43,14 @@ public class LiePinPositionVO {
     private Integer count;//招聘人数，0为不限
     private Integer ejob_id;//猎聘企业职位id
     private Integer companyId;// 公司id
+
+    public Integer getEjob_salary_month() {
+        return ejob_salary_month;
+    }
+
+    public void setEjob_salary_month(Integer ejob_salary_month) {
+        this.ejob_salary_month = ejob_salary_month;
+    }
 
     public Integer getCompanyId() {
         return companyId;
