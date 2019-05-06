@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -18,6 +19,7 @@ import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +46,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     @Autowired
     private ReferralUploadFilesDao referralUploadFilesDao;
 
+    @Autowired
+    private UserEmployeeDao employeeDao;
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -173,8 +177,12 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public boolean getSpecifyProfileResult(int employeeId,String syncId) throws ProfileException {
         logger.info("UploadFilesServiceImpl getSpecifyProfileResult");
         logger.info("UploadFilesServiceImpl getSpecifyProfileResult employeeId:{}", employeeId);
-        String key = String.valueOf(employeeId)+"&"+syncId;
-        logger.info("getSpecifyProfileResult employeeId{}&syncId{}",employeeId,syncId);
+        UserEmployeeDO employeeDO = employeeDao.getEmployeeById(employeeId);
+        if (employeeDO == null) {
+            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+        }
+        String key = String.valueOf(employeeDO.getSysuserId())+"&"+syncId;
+        logger.info("getSpecifyProfileResult userId{}&syncId{}",employeeDO.getSysuserId(),syncId);
         return client.exists(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),key);
     }
