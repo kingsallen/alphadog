@@ -154,6 +154,8 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId, String syncId) throws BIZException, TException {
+        logger.info("ProfileServicesImpl parseFileProfileByFilePath");
+        logger.info("ProfileServicesImpl parseFileProfileByFilePath filePath:{}, userId:{}, syncId:{}", filePath, userId, syncId);
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
                     referralService.parseFileProfileByFilePath(filePath, userId);
@@ -162,7 +164,7 @@ public class ProfileServicesImpl implements Iface {
             BeanUtils.copyProperties(result, profileParseResult);
 
             //uploadFilesService.setRedisKey(userId,sceneId);
-
+            logger.info("ProfileServicesImpl parseFileProfileByFilePath profileParseResult:{}", JSONObject.toJSONString(profileParseResult));
             return profileParseResult;
         } catch (Exception e) {
             logger.error(e.getMessage());
