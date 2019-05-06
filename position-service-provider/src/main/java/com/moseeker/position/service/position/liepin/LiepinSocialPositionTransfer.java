@@ -133,8 +133,8 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         liePinPositionVO.setEjob_privacyreq(null);
         liePinPositionVO.setEjob_salarydiscuss(positionForm.isSalaryDiscuss() ? "1" : "0");
         // 单位 : 万/年
-        liePinPositionVO.setEjob_salarylow((float) positionForm.getSalaryBottom());
-        liePinPositionVO.setEjob_salaryhigh((float) positionForm.getSalaryTop());
+        liePinPositionVO.setEjob_monthlysalary_low((float) positionForm.getSalaryBottom());
+        liePinPositionVO.setEjob_monthlysalary_high((float) positionForm.getSalaryTop());
         liePinPositionVO.setEjob_salary_month(positionForm.getSalaryMonth());
         liePinPositionVO.setDetail_workyears(moseekerJobPosition.getExperience());
         liePinPositionVO.setDetail_sex(moseekerJobPosition.getGender() == 0 ? "女" : moseekerJobPosition.getGender() == 1 ? "男" : null);
