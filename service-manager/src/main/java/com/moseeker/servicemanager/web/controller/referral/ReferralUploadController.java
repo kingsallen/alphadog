@@ -148,6 +148,7 @@ public class ReferralUploadController {
         logger.info("ReferralUploadController parseFileProfile:{}", JSONObject.toJSONString(uploadFilesResult));
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId), sceneId);
+        logger.info("ReferralUploadController result:{}", JSONObject.toJSONString(result));
         return Result.success(result).toJson();
     }
 
