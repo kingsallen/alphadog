@@ -51,7 +51,7 @@ public class ReferralUploadController {
             String unionId =  request.getParameter("unionId");
             String fileName = request.getParameter("fileName");
             logger.info("ReferralUploadController uploadProfile params:{}", JSONObject.toJSONString(params));
-            
+
             logger.info("utf-8 -> utf-8:{}", new String(fileName.getBytes("UTF-8"), "UTF-8"));
             logger.info("ISO-8859-1 -> utf-8:{}", new String(fileName.getBytes("ISO-8859-1"), "UTF-8"));
             logger.info("GBK -> utf-8:{}", new String(fileName.getBytes("gbk"), "UTF-8"));
