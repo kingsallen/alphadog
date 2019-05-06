@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -132,9 +133,9 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         logger.info("insertUpFiles uploadFilesResult{}",uploadFilesResult);
         ReferralUploadFilesRecord referralresult = referralUploadFilesDao.insertInto(referralUploadFilesRecord);
         logger.info("insertUpFiles referralUploadFilesDao  referralresult{}",referralresult);
-        uploadFilesResult.setId( referralresult.getId() );
-        uploadFilesResult.setFileName( referralresult.getFilename() );
-        uploadFilesResult.setSaveUrl( referralresult.getUrl() );
+        uploadFilesResult1.setId( referralresult.getId() );
+        uploadFilesResult1.setFileName( referralresult.getFilename() );
+        uploadFilesResult1.setSaveUrl( referralresult.getUrl() );
         return uploadFilesResult1;
     }
 
