@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.ParseResult;
@@ -45,10 +46,12 @@ public class ReferralUploadController {
         Params<String, Object> params = null;
         UploadControllerVO result = new UploadControllerVO();
         try {
-            //params = ParamUtils.parseequestParameter(request);
+            params = ParamUtils.parseequestParameter(request);
             String sceneId =  request.getParameter("sceneId");
             String unionId =  request.getParameter("unionId");
             String fileName = request.getParameter("fileName");
+            logger.info("ReferralUploadController uploadProfile params:{}", JSONObject.toJSONString(params));
+            
             logger.info("utf-8 -> utf-8:{}", new String(fileName.getBytes("UTF-8"), "UTF-8"));
             logger.info("ISO-8859-1 -> utf-8:{}", new String(fileName.getBytes("ISO-8859-1"), "UTF-8"));
             logger.info("GBK -> utf-8:{}", new String(fileName.getBytes("gbk"), "UTF-8"));
