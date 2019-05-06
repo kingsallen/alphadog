@@ -26,8 +26,10 @@ public class SensorSend {
     private final static String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
     private final static boolean SA_WRITE_DATA = true;
     private static SensorsAnalytics sa;
-    @Autowired
+
     private static ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+
+    @Autowired
     public SensorSend() throws IOException {
         sa = new SensorsAnalytics(
            new SensorsAnalytics.ConcurrentLoggingConsumer(configUtils.get("sensor_path",String.class).trim(),null,configUtils.get("sensor_size",Integer.class)));
