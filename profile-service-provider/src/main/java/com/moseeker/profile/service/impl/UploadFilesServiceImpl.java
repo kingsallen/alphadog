@@ -137,6 +137,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         uploadFilesResult1.setId( referralresult.getId() );
         uploadFilesResult1.setFileName( referralresult.getFilename() );
         uploadFilesResult1.setSaveUrl( referralresult.getUrl() );
+        logger.info("insertUpFiles referralUploadFilesDao uploadFilesResult1:{}", JSONObject.toJSONString(uploadFilesResult1));
         return uploadFilesResult1;
     }
 
