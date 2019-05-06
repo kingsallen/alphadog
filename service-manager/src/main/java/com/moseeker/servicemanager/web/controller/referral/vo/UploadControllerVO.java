@@ -9,7 +9,7 @@ public class UploadControllerVO {
     private Boolean employee;
     private Integer userId;
     private String fileName;
-    private String fileID;
+    private String fileId;
     private String createTime;
     private String saveUrl;
     private String ext;
@@ -86,12 +86,12 @@ public class UploadControllerVO {
         this.fileName = fileName;
     }
 
-    public String getFileID() {
-        return fileID;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setFileID(String fileID) {
-        this.fileID = fileID;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     public String getCreateTime() {
