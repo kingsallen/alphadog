@@ -76,7 +76,7 @@ service ProfileServices {
     i32 parseText(1: string profile, 2: i32 reference, 3: i32 appid) throws (1: common_struct.BIZException e);
     //员工简历解析
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
-    profile_struct.ProfileParseResult parseFileProfileByFilePath(1: string filePath, 2:i32 userId)throws (1: common_struct.BIZException e)
+    profile_struct.ProfileParseResult parseFileProfileByFilePath(1: string filePath, 2:i32 userId, 3: string syncId)throws (1: common_struct.BIZException e)
      //用户简历解析
      profile_struct.ProfileParseResult parseUserFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
     //简历解析
@@ -108,7 +108,7 @@ service ProfileServices {
     //解析上传文件，返回结果
     profile_struct.ReferralUploadFiles referralResumeInfo(1:string sceneId) throws (1:common_struct.BIZException e);
     //查找选择简历做内推的操作是否结束
-    bool getSpecifyProfileResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
+    bool getSpecifyProfileResult(1: i32 employeeId,2:string syncId) throws (1:common_struct.BIZException e);
     //解析结果返回并确认
     profile_struct.ProfileParseResult checkResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
 }

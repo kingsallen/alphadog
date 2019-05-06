@@ -44,14 +44,10 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
     }
 
 
-    public int insertInto(ReferralUploadFilesRecord referralUploadFilesRecord){
+    public ReferralUploadFilesRecord insertInto(ReferralUploadFilesRecord referralUploadFilesRecord){
 
-       /* int i = using(configuration())
-                .insertInto(REFERRAL_UPLOAD_FILES)
-                .values(referralUploadFilesRecord)
-                .onDuplicateKeyIgnore()
-                .execute();*/
-         int j= using(configuration())
+        ReferralUploadFilesRecord referralUploadFilesRecord1 =
+                 using(configuration())
                 .insertInto(REFERRAL_UPLOAD_FILES)
                 .columns(REFERRAL_UPLOAD_FILES.FILEID,REFERRAL_UPLOAD_FILES.UNINAME,
                         REFERRAL_UPLOAD_FILES.UNIONID,
@@ -66,9 +62,10 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
                          referralUploadFilesRecord.getFilename(),
                          referralUploadFilesRecord.getUrl(),
                          referralUploadFilesRecord.getStatus())
-                 .execute();
+                 .returning()
+                 .fetchOne();
 
-        return j;
+        return referralUploadFilesRecord1;
     }
 
 

@@ -207,7 +207,6 @@ public class ReferralServiceImpl implements ReferralService {
         fileNameData.setFileName(file.getName());
         fileNameData.setFileAbsoluteName(filePath);
         fileNameData.setOriginName(file.getName());
-
         return parseResult(employeeDO.getId(), file.getName(), data, fileNameData);
     }
 
