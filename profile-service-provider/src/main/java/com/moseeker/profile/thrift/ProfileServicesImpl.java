@@ -153,10 +153,11 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId) throws BIZException, TException {
+    public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId, String syncId) throws BIZException, TException {
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
                     referralService.parseFileProfileByFilePath(filePath, userId);
+            uploadFilesService.setRedisKey(String.valueOf(userId), syncId);
             ProfileParseResult profileParseResult = new ProfileParseResult();
             BeanUtils.copyProperties(result, profileParseResult);
 
@@ -259,6 +260,11 @@ public class ProfileServicesImpl implements Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public ProfileParseResult parseHunterFileProfile(int headhunterId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+        return null;
     }
 
     @Override

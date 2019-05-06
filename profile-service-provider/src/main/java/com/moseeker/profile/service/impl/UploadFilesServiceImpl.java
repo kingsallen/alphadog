@@ -163,22 +163,13 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         return uploadFilesResultList;
     }
 
-
     @Override
-    public boolean getSpecifyProfileResult(int employeeId) throws ProfileException {
-        String key = String.valueOf(employeeId);
-        logger.info("getSpecifyProfileResult employeeId{}&syncId{}",employeeId);
-        return client.exists(AppId.APPID_ALPHADOG.getValue(),
-                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),key);
-    }
-
-    /*@Override
     public boolean getSpecifyProfileResult(int employeeId,String syncId) throws ProfileException {
         String key = String.valueOf(employeeId)+"&"+syncId;
         logger.info("getSpecifyProfileResult employeeId{}&syncId{}",employeeId,syncId);
         return client.exists(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),key);
-    }*/
+    }
 
     @Override
     public UploadFilesResult checkResult(int employeeId) throws ProfileException {
