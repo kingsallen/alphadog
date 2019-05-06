@@ -74,6 +74,7 @@ public class ReferralUploadController {
             result.setSaveUrl(referralUploadFiles.getUrl());
             result.setFileID(String.valueOf(referralUploadFiles.getId()));
             result.setCreateTime(referralUploadFiles.getCreate_time());
+            logger.info("uploadProfile： result:{}", JSONObject.toJSONString(result));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return Result.fail(99999, e.getMessage()).toJson();
