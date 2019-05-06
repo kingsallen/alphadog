@@ -43,14 +43,11 @@ public class ReferralUploadController {
     public String uploadProfile(MultipartFile file, HttpServletRequest request){
         logger.info("ReferralUploadController weChatUploadProfile");
         logger.info("ReferralUploadController weChatUploadProfile file.length:{},  file.name:{}",file.getSize(), file.getName());
-        Params<String, Object> params = null;
         UploadControllerVO result = new UploadControllerVO();
         try {
-            params = ParamUtils.parseequestParameter(request);
             String sceneId =  request.getParameter("sceneId");
             String unionId =  request.getParameter("unionId");
             String fileName = request.getParameter("fileName");
-            logger.info("ReferralUploadController uploadProfile params:{}", JSONObject.toJSONString(params));
 
             logger.info("utf-8 -> utf-8:{}", new String(fileName.getBytes("UTF-8"), "UTF-8"));
             logger.info("ISO-8859-1 -> utf-8:{}", new String(fileName.getBytes("ISO-8859-1"), "UTF-8"));
