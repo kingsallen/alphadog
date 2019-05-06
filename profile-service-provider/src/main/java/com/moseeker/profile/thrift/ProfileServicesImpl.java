@@ -8,7 +8,6 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.UploadFilesService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
@@ -160,6 +159,9 @@ public class ProfileServicesImpl implements Iface {
                     referralService.parseFileProfileByFilePath(filePath, userId);
             ProfileParseResult profileParseResult = new ProfileParseResult();
             BeanUtils.copyProperties(result, profileParseResult);
+
+            //uploadFilesService.setRedisKey(userId,sceneId);
+
             return profileParseResult;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -267,11 +269,12 @@ public class ProfileServicesImpl implements Iface {
             logger.info("上传文件返回结果： uploadFilesResult:{}uploadFiles", JSONObject.toJSONString(uploadFilesResult));
             uploadFilesResult.setFileID(sceneId);
             uploadFilesResult.setUnionId(unionId);
-            Integer integer = uploadFilesService.insertUpFiles(uploadFilesResult);
-            logger.info("uploadFiles上传简历保存记录: integer{}",integer);
+            UploadFilesResult uploadResult = uploadFilesService.insertUpFiles(uploadFilesResult);
+            logger.info("uploadFiles上传简历保存记录: uploadResult{}",uploadResult);
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
             referralUploadFiles.setFilename(uploadFilesResult.getFileName());
+            referralUploadFiles.setId(uploadResult.getId());
             return referralUploadFiles;
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -313,9 +316,9 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public ReferralUploadFiles referralResumeInfo(String sceneId) throws BIZException, TException {
+    public ReferralUploadFiles referralResumeInfo(String fileId) throws BIZException, TException {
         try {
-            UploadFilesResult uploadFilesResult = uploadFilesService.resumeInfo(sceneId);
+            UploadFilesResult uploadFilesResult = uploadFilesService.resumeInfo(fileId);
             ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
@@ -329,10 +332,19 @@ public class ProfileServicesImpl implements Iface {
         }
     }
 
-    @Override
-    public boolean getSpecifyProfileResult(int employeeId) throws BIZException, TException {
+    /*@Override
+    public boolean getSpecifyProfileResult(int employeeId ) throws BIZException, TException {
         try {
             return uploadFilesService.getSpecifyProfileResult(employeeId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }*/
+
+    @Override
+    public boolean getSpecifyProfileResult(int employeeId,String syncId) throws BIZException, TException {
+        try {
+            return uploadFilesService.getSpecifyProfileResult(employeeId,syncId);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

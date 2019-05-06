@@ -31,15 +31,15 @@ public interface UploadFilesService {
      * @param uploadFilesResult
      * @return
      */
-    Integer insertUpFiles(UploadFilesResult uploadFilesResult);
+    UploadFilesResult insertUpFiles(UploadFilesResult uploadFilesResult);
 
     /**
      * 返回上传文件保存内容详细数据
      *
-     * @param sceneId
+     * @param fileId
      * @return
      */
-    UploadFilesResult resumeInfo(String sceneId);
+    UploadFilesResult resumeInfo(String fileId);
 
 
     /**
@@ -66,7 +66,8 @@ public interface UploadFilesService {
      * @return true 完成 false 未完成
      * @throws ProfileException 业务异常
      */
-    boolean getSpecifyProfileResult(int employeeId) throws ProfileException;
+    boolean getSpecifyProfileResult(int employeeId,String syncId) throws ProfileException;
+    /*boolean getSpecifyProfileResult(int employeeId) throws ProfileException;*/
 
     /**
      * 返回解析对应参数
@@ -75,4 +76,12 @@ public interface UploadFilesService {
      * @throws ProfileException
      */
     UploadFilesResult checkResult(int employeeId) throws  ProfileException;
+
+    /**
+     * 跟据用户id和场景值存放redis的key和value
+     * @param userId
+     * @param sceneId
+     * @return redi是存储结果
+     */
+    String setRedisKey(String userId, String sceneId);
 }

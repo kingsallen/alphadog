@@ -110,7 +110,7 @@ service ProfileServices {
     //解析上传文件，返回结果
     profile_struct.ReferralUploadFiles referralResumeInfo(1:string sceneId) throws (1:common_struct.BIZException e);
     //查找选择简历做内推的操作是否结束
-    bool getSpecifyProfileResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
+    bool getSpecifyProfileResult(1: i32 employeeId,2:string syncId) throws (1:common_struct.BIZException e);
     //解析结果返回并确认
     profile_struct.ProfileParseResult checkResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
 }

@@ -5,13 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.referraldb.ReferralUploadFilesDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
@@ -33,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @CounterIface
@@ -117,7 +114,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     }
 
     @Override
-    public Integer insertUpFiles(UploadFilesResult uploadFilesResult) {
+    public UploadFilesResult insertUpFiles(UploadFilesResult uploadFilesResult) {
+        UploadFilesResult uploadFilesResult1 = new UploadFilesResult();
         ReferralUploadFilesRecord referralUploadFilesRecord =new ReferralUploadFilesRecord();
         referralUploadFilesRecord.setFileid(uploadFilesResult.getFileID());
         referralUploadFilesRecord.setUniname(uploadFilesResult.getFileName());
@@ -128,15 +126,18 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         referralUploadFilesRecord.setStatus(0);
         uploadFilesResult.getCompanyId();
         logger.info("insertUpFiles uploadFilesResult{}",uploadFilesResult);
-        Integer integer = referralUploadFilesDao.insertInto(referralUploadFilesRecord);
-        logger.info("insertUpFiles referralUploadFilesDao  integer{}",integer);
-        return integer;
+        ReferralUploadFilesRecord referralresult = referralUploadFilesDao.insertInto(referralUploadFilesRecord);
+        logger.info("insertUpFiles referralUploadFilesDao  referralresult{}",referralresult);
+        uploadFilesResult.setId( referralresult.getId() );
+        uploadFilesResult.setFileName( referralresult.getFilename() );
+        uploadFilesResult.setSaveUrl( referralresult.getUrl() );
+        return uploadFilesResult1;
     }
 
     @Override
-    public UploadFilesResult resumeInfo(String sceneId) {
+    public UploadFilesResult resumeInfo(String fileId) {
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
-        ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByfileId(sceneId);
+        ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByfileId(fileId);
         uploadFilesResult.setSaveUrl(referralUploadFilesRecord.getUrl());
         uploadFilesResult.setFileName(uploadFilesResult.getFileName());
         return uploadFilesResult;
@@ -162,20 +163,22 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         return uploadFilesResultList;
     }
 
-    /*@Override
-    public UploadFilesResult profile(String sceneId) {
-
-
-
-
-        return null;
-    }*/
 
     @Override
     public boolean getSpecifyProfileResult(int employeeId) throws ProfileException {
+        String key = String.valueOf(employeeId);
+        logger.info("getSpecifyProfileResult employeeId{}&syncId{}",employeeId);
         return client.exists(AppId.APPID_ALPHADOG.getValue(),
-                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),key);
     }
+
+    /*@Override
+    public boolean getSpecifyProfileResult(int employeeId,String syncId) throws ProfileException {
+        String key = String.valueOf(employeeId)+"&"+syncId;
+        logger.info("getSpecifyProfileResult employeeId{}&syncId{}",employeeId,syncId);
+        return client.exists(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),key);
+    }*/
 
     @Override
     public UploadFilesResult checkResult(int employeeId) throws ProfileException {
@@ -195,6 +198,16 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         }
         logger.info("UploadFilesServiceImpl checkResult uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
         return uploadFilesResult;
+    }
+
+    @Override
+    public String setRedisKey(String userId, String sceneId) {
+        String key = userId+"&"+sceneId;
+        logger.info("UploadFilesServiceImpl userId{},sceneId{}",userId,sceneId);
+        String result = client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),
+                key,"","userId&sceneId对应的redis值",8*60*60);
+        logger.info("UploadFilesServiceImpl setRedisKey result{}",result);
+        return result;
     }
 
 }
