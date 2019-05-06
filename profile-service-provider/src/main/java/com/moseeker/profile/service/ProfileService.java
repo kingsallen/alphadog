@@ -44,4 +44,5 @@ public interface ProfileService {
      int updateUserProfile(int id, String name, String mobile);
 
 
+    ProfileDocParseResult parseHunterFileProfile(int headhunterId, String fileName, ByteBuffer fileData);
 }

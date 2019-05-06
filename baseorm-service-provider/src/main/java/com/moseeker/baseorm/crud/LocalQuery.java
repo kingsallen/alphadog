@@ -223,7 +223,7 @@ class LocalQuery<R extends Record> {
         if (query.getPageSize() > 0) {
             select.limit((getPage() - 1) * getPageSize(), getPageSize());
         }
-        logger.info("convertToResultLimit：{}"+select.getSQL());
+        logger.debug("convertToResultLimit：{}"+select.getSQL());
         return select;
     }
 

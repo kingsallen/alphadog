@@ -123,7 +123,7 @@ public class ResumeDeliveryService {
 
     private final int company_id_mars = 1134362;//玛氏校招 硬编码，产品经理的紧急需求
     private final String email_from_mars="marscampus@moseeker.com";
-    private final String email_name_mars="玛式中国(校招)";
+    private final String email_name_mars="玛氏中国(校招)";
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
