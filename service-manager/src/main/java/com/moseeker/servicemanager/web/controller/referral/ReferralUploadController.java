@@ -49,6 +49,11 @@ public class ReferralUploadController {
             String sceneId =  request.getParameter("sceneId");
             String unionId =  request.getParameter("unionId");
             String fileName = request.getParameter("fileName");
+            logger.info("utf-8 -> utf-8:{}", new String(fileName.getBytes("UTF-8"), "UTF-8"));
+            logger.info("ISO-8859-1 -> utf-8:{}", new String(fileName.getBytes("ISO-8859-1"), "UTF-8"));
+            logger.info("GBK -> utf-8:{}", new String(fileName.getBytes("gbk"), "UTF-8"));
+            logger.info("GB2312 -> utf-8:{}", new String(fileName.getBytes("gb2312"), "UTF-8"));
+            logger.info("GB18030 -> utf-8:{}", new String(fileName.getBytes("GB18030"), "UTF-8"));
             logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
             /*if (!ProfileDocCheckTool.checkFileName(fileName)) {
                 result.setFileName(Result.fail(MessageType.PR
