@@ -50,7 +50,6 @@ public class SensorSend {
               //  properties.put("$project", "ToCTest");//沙盒环境专用
                 properties.put("$project", configUtils.get("sensor_env",String.class).trim());//动态加载环境
                 sa.track(distinctId, true, eventName, properties);
-                sa.flush();
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
@@ -65,7 +64,6 @@ public class SensorSend {
                 //properties.put("$project", "ToCTest");//沙盒环境专用
                 properties.put("$project", configUtils.get("sensor_env",String.class).trim());//动态加载环境
                 sa.track(distinctId, true, eventName,properties);
-                sa.flush();
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
@@ -83,7 +81,6 @@ public class SensorSend {
                 properties.put(property, value);
                 logger.info("SensorSend send");
                 sa.profileSet(distinctId, true, properties);
-                sa.flush();
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
