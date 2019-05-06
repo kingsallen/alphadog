@@ -146,9 +146,11 @@ public class ReceiverHandler {
                 long sendTime=  now.getTime();
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("sendTime",sendTime);
+                properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
                 String distinctId = String.valueOf(postUserId);
-                sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+                // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
@@ -159,10 +161,12 @@ public class ReceiverHandler {
                 Date nowTime= new Date();
                 long  sendTime= nowTime.getTime();
                 properties.put("sendTime",sendTime);
+                properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
                 log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
                 String distinctId = String.valueOf(userId);
-                sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+               // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }
         } catch (CommonException e) {
             log.info(e.getMessage(), e);
