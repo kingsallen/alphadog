@@ -23,7 +23,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -62,12 +61,10 @@ public class UploadFilesServiceImpl implements UploadFilesService {
      */
     @Override
     public UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException {
-        logger.info("UploadFilesServiceImpl uploadFiles");
-        logger.info("UploadFilesServiceImpl uploadFiles fileName:{}", fileName);
+        logger.info("上传文件参数："+"fileName"+fileName+"fileData"+fileData);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
 
         if(!ProfileDocCheckTool.checkFileName(fileName)){
-            logger.error("UploadFilesServiceImpl uploadFiles 不支持的文件类型");
             throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
         }
         byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
@@ -90,7 +87,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                             .replace(".doc", Constant.WORD_PDF));
                 }
             }
-            logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
+
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -104,6 +101,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         }catch (Exception e){
             logger.error(e.getMessage());
         }
+
         return uploadFilesResult;
     }
 
@@ -137,18 +135,15 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         uploadFilesResult1.setId( referralresult.getId() );
         uploadFilesResult1.setFileName( referralresult.getFilename() );
         uploadFilesResult1.setSaveUrl( referralresult.getUrl() );
-        logger.info("insertUpFiles referralUploadFilesDao uploadFilesResult1:{}", JSONObject.toJSONString(uploadFilesResult1));
         return uploadFilesResult1;
     }
 
     @Override
     public UploadFilesResult resumeInfo(String fileId) {
-        logger.info("UploadFilesServiceImpl resumeInfo");
-        logger.info("UploadFilesServiceImpl resumeInfo sceneId:{}", fileId);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
         ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByfileId(fileId);
         uploadFilesResult.setSaveUrl(referralUploadFilesRecord.getUrl());
-        uploadFilesResult.setFileName(uploadFilesResult.getFileName());
+        uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
         return uploadFilesResult;
     }
 
@@ -157,7 +152,6 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public List<UploadFilesResult> getUploadFiles(String unionid, Integer pageSize, Integer pageNo) throws BIZException {
         List<UploadFilesResult> uploadFilesResultList = new ArrayList<>();
         List<ReferralUploadFilesRecord> list = referralUploadFilesDao.fetchByunionid(unionid,pageSize,pageNo);
-        logger.info("UploadFilesServiceImpl getUploadFiles  list.size:{}",list == null?0:list.size());
         if (list != null && list.size() != 0){
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             for(ReferralUploadFilesRecord referralUploadFilesRecord : list){
@@ -167,11 +161,9 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
                 uploadFilesResult.setFileID(String.valueOf(referralUploadFilesRecord.getId()));
                 uploadFilesResult.setId(referralUploadFilesRecord.getId());
-                logger.info("UploadFilesServiceImpl getUploadFiles  referralUploadFilesRecord:{}",referralUploadFilesRecord);
                 uploadFilesResultList.add(uploadFilesResult);
             }
         }
-        logger.info("UploadFilesServiceImpl getUploadFiles  uploadFilesResultList:{}",JSONObject.toJSONString(uploadFilesResultList));
         return uploadFilesResultList;
     }
 
@@ -198,11 +190,9 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         logger.info("checkResult redis对应的value{}",value);
         JSONObject jsonObject = JSON.parseObject(value);
         JSONObject user = jsonObject.getJSONObject("user");
-        logger.info("UploadFilesServiceImpl checkResult user:{}", user);
         uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
         uploadFilesResult.setMobile(user.get("mobile").toString());
         JSONArray attachments = jsonObject.getJSONArray("attachments");
-        logger.info("UploadFilesServiceImpl checkResult attachments:{}", attachments);
         if (attachments != null && attachments.size() > 0) {
             String fileName = ((JSONObject)attachments.get(0)).getString("name");
             uploadFilesResult.setFileName(fileName);
