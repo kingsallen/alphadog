@@ -172,7 +172,7 @@ public class ReferralUploadController {
         ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
         parseResult.setFilename(profileParseResult.getFile());
         if (profileParseResult.getMobile() != null){
-            parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
+            parseResult.setMobile(profileParseResult.getMobile());
         }
         parseResult.setName(profileParseResult.getName());
         return Result.success(parseResult).toJson();

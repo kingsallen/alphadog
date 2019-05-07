@@ -9,7 +9,7 @@ package com.moseeker.servicemanager.web.controller.referral.vo;
  */
 public class ParseResult {
     private String name;
-    private Long mobile;
+    private String mobile;
     private String filename;
 
     public String getName() {
@@ -20,11 +20,11 @@ public class ParseResult {
         this.name = name;
     }
 
-    public Long getMobile() {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(Long mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
