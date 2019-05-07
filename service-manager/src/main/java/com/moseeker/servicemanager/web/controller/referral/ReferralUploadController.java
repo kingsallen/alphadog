@@ -12,6 +12,7 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
 import com.moseeker.thrift.gen.profile.struct.ReferralUploadFiles;
+import com.moseeker.thrift.gen.referral.service.ReferralService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -30,6 +33,7 @@ import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 @ResponseBody
 public class ReferralUploadController {
 
+    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
 
     /**
@@ -63,8 +67,19 @@ public class ReferralUploadController {
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
-                return Result.fail(99999, "文件太长！").toJson();
+                return Result.fail(99999, "请上传小于2M的文件！").toJson();
             }
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            logger.info("uploadProfile image{}",JSON.toJSONString(image));
+            if (image != null){
+                byte[] bytes = file.getBytes();
+                int length = bytes.length;
+                logger.info("uploadProfile length{}",length);
+                if (length > 1024*1024*2){
+                    return Result.fail(99999, "请上传小于2M的文件！").toJson();
+                }
+            }
+
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
             logger.info("uploadProfile byteBuffer{}",byteBuffer);
             ReferralUploadFiles referralUploadFiles =  profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
@@ -148,7 +163,6 @@ public class ReferralUploadController {
         logger.info("ReferralUploadController parseFileProfile:{}", JSONObject.toJSONString(uploadFilesResult));
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId), sceneId);
-        logger.info("ReferralUploadController result:{}", JSONObject.toJSONString(result));
         return Result.success(result).toJson();
     }
 
