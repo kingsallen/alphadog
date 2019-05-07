@@ -26,7 +26,6 @@ public class SensorSend {
     private final static String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
     private final static boolean SA_WRITE_DATA = true;
     private static SensorsAnalytics sa;
-
     private static ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
     @Autowired
