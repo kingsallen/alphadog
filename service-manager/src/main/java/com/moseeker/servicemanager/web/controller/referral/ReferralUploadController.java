@@ -21,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -173,7 +171,9 @@ public class ReferralUploadController {
         logger.info("getCandidateInfo  employeeId{}",employeeId);
         ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
         parseResult.setFilename(profileParseResult.getFile());
-        parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
+        if (profileParseResult.getMobile() != null){
+            parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
+        }
         parseResult.setName(profileParseResult.getName());
         return Result.success(parseResult).toJson();
     }
