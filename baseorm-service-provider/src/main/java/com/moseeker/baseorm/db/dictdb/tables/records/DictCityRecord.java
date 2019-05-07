@@ -9,9 +9,9 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record6;
 import org.jooq.Row6;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityRecord extends UpdatableRecordImpl<DictCityRecord> implements Record6<Integer, String, Byte, Byte, String, Byte> {
 
-    private static final long serialVersionUID = 1770287837;
+    private static final long serialVersionUID = -947432580;
 
     /**
      * Setter for <code>dictdb.dict_city.code</code>. 字典code
@@ -112,6 +112,18 @@ public class DictCityRecord extends UpdatableRecordImpl<DictCityRecord> implemen
      */
     public Byte getIsUsing() {
         return (Byte) get(5);
+    }
+
+    // -------------------------------------------------------------------------
+    // Primary key information
+    // -------------------------------------------------------------------------
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Record1<Integer> key() {
+        return (Record1) super.key();
     }
 
     // -------------------------------------------------------------------------
