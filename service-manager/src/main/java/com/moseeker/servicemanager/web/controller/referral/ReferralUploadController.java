@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -61,8 +63,19 @@ public class ReferralUploadController {
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
-                return Result.fail(99999, "文件太长！").toJson();
+                return Result.fail(99999, "请上传小于2M的文件！").toJson();
             }
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            logger.info("uploadProfile image{}",JSON.toJSONString(image));
+            if (image != null){
+                byte[] bytes = file.getBytes();
+                int length = bytes.length;
+                logger.info("uploadProfile length{}",length);
+                if (length > 1024*1024*2){
+                    return Result.fail(99999, "请上传小于2M的文件！").toJson();
+                }
+            }
+
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
             logger.info("uploadProfile byteBuffer{}",byteBuffer);
             ReferralUploadFiles referralUploadFiles =  profileService.uploadFiles(sceneId,unionId,fileName,byteBuffer);
