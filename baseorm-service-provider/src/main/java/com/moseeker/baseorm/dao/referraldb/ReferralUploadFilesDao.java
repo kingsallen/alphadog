@@ -43,6 +43,16 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
 
     }
 
+    public ReferralUploadFilesRecord fetchByUrl(String url){
+
+        return   using(configuration())
+                .selectFrom(REFERRAL_UPLOAD_FILES)
+                .where(REFERRAL_UPLOAD_FILES.URL.eq(url))
+                .and(REFERRAL_UPLOAD_FILES.STATUS.eq(0))
+                .fetchOne();
+
+    }
+
 
     public ReferralUploadFilesRecord insertInto(ReferralUploadFilesRecord referralUploadFilesRecord){
 
