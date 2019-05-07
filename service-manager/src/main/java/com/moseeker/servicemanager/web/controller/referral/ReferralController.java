@@ -109,6 +109,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
     public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
+        logger.info("ReferralController referralProfile");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -121,6 +122,7 @@ public class ReferralController {
         if (StringUtils.isNotBlank(referralForm.getRecomReasonText())) {
             reasons.add(referralForm.getRecomReasonText());
         }
+        logger.info("ReferralController referralProfile reasons:{}", JSONObject.toJSONString(reasons));
         validateUtil.addRequiredOneValidate("推荐理由", reasons);
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
@@ -228,6 +230,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.POST)
     @ResponseBody
     public String postCandidateInfo(@PathVariable int id, @RequestBody CandidateInfo form) throws Exception {
+        logger.info("ReferralController postCandidateInfo");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredStringValidate("姓名", form.getName());
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
@@ -239,6 +242,7 @@ public class ReferralController {
         if (StringUtils.isNotBlank(form.getRecomReasonText())) {
             reasons.add(form.getRecomReasonText());
         }
+        logger.info("ReferralController postCandidateInfo reasons:{}", JSONObject.toJSONString(reasons));
         validateUtil.addRequiredOneValidate("推荐理由", reasons);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
@@ -676,7 +680,7 @@ public class ReferralController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/employee/referral/evaluate", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/employee/application/evaluate", method = RequestMethod.POST)
     @ResponseBody
     public String employeeReferralEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
 
@@ -712,7 +716,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/application/evaluate", method = RequestMethod.POST)
     @ResponseBody
     public String employeeReferralApplicationEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
-
+        logger.info("ReferralController employeeReferralApplicationEvaluate");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", form
                 .getAppid());
@@ -724,7 +728,16 @@ public class ReferralController {
         validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
                 "推荐理由文本长度过长",null, 201);
         validateUtil.addSensitiveValidate("推荐理由文本", form.getRecomReasonText(), null, null);
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
+
+        List<String> reasons1 = new ArrayList<>();
+        if (form.getReferralReasons() != null && form.getReferralReasons().size() > 0) {
+            reasons1.addAll(form.getReferralReasons());
+        }
+        if (StringUtils.isNotBlank(form.getRecomReasonText())) {
+            reasons1.add(form.getRecomReasonText());
+        }
+        validateUtil.addRequiredOneValidate("推荐理由", reasons1);
+        logger.info("ReferralController employeeReferralApplicationEvaluate reasons1:{}", JSONObject.toJSONString(reasons1));
         if (form.getReferralReasons() != null) {
             String reasons = form.getReferralReasons().stream().collect(Collectors.joining(","));
             validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
