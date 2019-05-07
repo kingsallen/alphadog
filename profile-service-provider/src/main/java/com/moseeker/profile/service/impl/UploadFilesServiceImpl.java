@@ -189,6 +189,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),String.valueOf(employeeId));
         logger.info("checkResult redis对应的value{}",value);
         JSONObject jsonObject = JSON.parseObject(value);
+        logger.info("UploadFilesServiceImpl checkResult jsonObject:{}", jsonObject.toJSONString());
         JSONObject user = jsonObject.getJSONObject("user");
         if (user != null){
             logger.info("UploadFilesServiceImpl checkResult user:{}", user.toJSONString());
