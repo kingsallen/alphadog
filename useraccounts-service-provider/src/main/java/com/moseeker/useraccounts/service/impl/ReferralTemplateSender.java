@@ -66,7 +66,7 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
-    private static final Integer TEN_MINUTE = 3*60*1000;
+    private static final Integer TEN_MINUTE = 10*60*1000;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -161,24 +161,28 @@ public class ReferralTemplateSender {
         long timestamp = System.currentTimeMillis();
         cardInfo.setTimestamp(timestamp);
         logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
-        Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
-        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
-        // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-        factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), factShareChainDOS);
-        List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
-        List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
-        List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        List<Integer> factShareChainIds = factShareChainDOS.stream().map(CandidateShareChainDO::getId).distinct().collect(Collectors.toList());
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainIds)));
-        factShareChainDOS.removeIf(record -> record.getType() != 0);
-        //
-        Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        try {
+            Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
+            Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
+            // 获取指定时间前十分钟内的职位浏览人
+            List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+            factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), factShareChainDOS);
+            List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+            List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
+            List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
+            List<Integer> factShareChainIds = factShareChainDOS.stream().map(CandidateShareChainDO::getId).distinct().collect(Collectors.toList());
+            shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainIds)));
+            factShareChainDOS.removeIf(record -> record.getType() != 0);
+            //
+            Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
 
-        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
+            List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
 
-        userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
-        int visitNum = userIds.size();
+            userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
+            int visitNum = userIds.size();
+        } catch (Exception e) {
+            logger.error("debug_10_min_message", e);
+        }
         logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
         if(visitNum > 0){
             UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
