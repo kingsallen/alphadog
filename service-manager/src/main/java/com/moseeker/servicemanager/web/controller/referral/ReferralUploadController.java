@@ -178,6 +178,7 @@ public class ReferralUploadController {
             parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
         }
         parseResult.setName(profileParseResult.getName());
+        logger.info("ReferralUploadController getCandidateInfo parseResult:{}", JSONObject.toJSONString(parseResult));
         return Result.success(parseResult).toJson();
     }
 }

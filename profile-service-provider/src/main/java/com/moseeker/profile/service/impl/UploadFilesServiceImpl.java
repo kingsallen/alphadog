@@ -193,7 +193,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         if (user != null){
             uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
             if (user.get("mobile") != null){
-                uploadFilesResult.setMobile(user.get("mobile").toString());
+                String mobile = user.get("mobile").toString();
+                uploadFilesResult.setMobile(mobile.trim().equals("0")?"":mobile);
             }
             if ("0".equals( uploadFilesResult.getMobile() ) ){
                 uploadFilesResult.setMobile("");
