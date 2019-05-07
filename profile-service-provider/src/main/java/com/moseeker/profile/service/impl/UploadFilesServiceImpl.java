@@ -87,7 +87,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                             .replace(".doc", Constant.WORD_PDF));
                 }
             }
-
+            logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -96,7 +96,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             uploadFilesResult.setCreateTime(sf.format(date));
             uploadFilesResult.setSaveUrl(fileNameData.getFileAbsoluteName());
             //原始文件名称
-            uploadFilesResult.setName(fileName);
+            uploadFilesResult.setName(fileNameData.getOriginName());
             logger.info("UploadFilesServiceImpl uploadFiles uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
         }catch (Exception e){
             logger.error(e.getMessage());

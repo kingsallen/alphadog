@@ -232,7 +232,14 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("姓名", form.getName());
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
         validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
+        List<String> reasons = new ArrayList<>();
+        if (form.getReferralReasons() != null && form.getReferralReasons().size() > 0) {
+            reasons.addAll(form.getReferralReasons());
+        }
+        if (StringUtils.isNotBlank(form.getRecomReasonText())) {
+            reasons.add(form.getRecomReasonText());
+        }
+        validateUtil.addRequiredOneValidate("推荐理由", reasons);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {

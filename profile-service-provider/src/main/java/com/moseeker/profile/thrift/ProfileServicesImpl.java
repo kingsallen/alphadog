@@ -279,7 +279,7 @@ public class ProfileServicesImpl implements Iface {
             logger.info("uploadFiles上传简历保存记录: uploadResult{}",uploadResult);
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
-            referralUploadFiles.setFilename(uploadFilesResult.getFileName());
+            referralUploadFiles.setFilename(uploadFilesResult.getName());
             referralUploadFiles.setId(uploadResult.getId());
             return referralUploadFiles;
         } catch (Exception e) {
