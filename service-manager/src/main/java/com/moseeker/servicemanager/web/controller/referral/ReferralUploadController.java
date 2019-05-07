@@ -180,6 +180,7 @@ public class ReferralUploadController {
         }
         parseResult.setName(profileParseResult.getName());
         logger.info("ReferralUploadController getCandidateInfo parseResult:{}", JSONObject.toJSONString(parseResult));
+        logger.info("ReferralUploadController  Result.success.toJson{}", Result.success(parseResult).toJson() );
         return Result.success(parseResult).toJson();
     }
 }
