@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictReferralEvaluateRecord extends UpdatableRecordImpl<DictReferralEvaluateRecord> implements Record4<Integer, Integer, String, String> {
 
-    private static final long serialVersionUID = 1314692979;
+    private static final long serialVersionUID = 1245019995;
 
     /**
      * Setter for <code>dictdb.dict_referral_evaluate.id</code>.
@@ -45,14 +45,14 @@ public class DictReferralEvaluateRecord extends UpdatableRecordImpl<DictReferral
     }
 
     /**
-     * Setter for <code>dictdb.dict_referral_evaluate.code</code>. dict_constant.code parent_code 3135
+     * Setter for <code>dictdb.dict_referral_evaluate.code</code>. dict_constant.code 做或运算 parent_code 3135
      */
     public void setCode(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_referral_evaluate.code</code>. dict_constant.code parent_code 3135
+     * Getter for <code>dictdb.dict_referral_evaluate.code</code>. dict_constant.code 做或运算 parent_code 3135
      */
     public Integer getCode() {
         return (Integer) get(1);
