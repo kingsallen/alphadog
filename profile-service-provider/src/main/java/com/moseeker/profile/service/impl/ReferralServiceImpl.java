@@ -14,6 +14,7 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.*;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.biz.ProfileParseUtil;
@@ -56,6 +57,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -495,6 +498,7 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte relationship, String referralText,   byte referralType) throws ProfileException, BIZException {
+        logger.info("=======================开始执行上传操作======employeeReferralProfile===");
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
                 .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
                 .buildPosition(position)

@@ -355,16 +355,19 @@ public class CompanyFilterTagValidation {
             return false;
 
         }
-        int profileCityCode=(int)basic.get("city_code");
-        if(profileCityCode==0){
-            return false;
-        }
-        String []array=cityCodes.split(",");
-        for(String item:array){
-            if(profileCityCode==Integer.parseInt(item)){
-                return true;
+        if(basic.get("city_code")!=null){
+            int profileCityCode=(int)basic.get("city_code");
+            if(profileCityCode==0){
+                return false;
+            }
+            String []array=cityCodes.split(",");
+            for(String item:array){
+                if(profileCityCode==Integer.parseInt(item)){
+                    return true;
+                }
             }
         }
+
         return false;
     }
     /*

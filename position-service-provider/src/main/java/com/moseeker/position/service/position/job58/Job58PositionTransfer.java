@@ -92,6 +92,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         // 职位描述超过2000字时截断到2000字
         if(content.length() > 2000){
             content = content.substring(0, 2000);
+            logger.info("content:{}", content);
         }
         job58PositionDTO.setContent(content);
         job58PositionDTO.setLocal_id(doGetCityCode(positionDB));

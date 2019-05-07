@@ -3,14 +3,10 @@ package com.moseeker.profile.service.impl.resumefileupload;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.commonservice.utils.ProfileDocCheckTool;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.entity.UserAccountEntity;
-import com.moseeker.entity.UserWxEntity;
-import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.profile.exception.ProfileException;
@@ -18,8 +14,8 @@ import com.moseeker.profile.service.impl.resumefileupload.iface.AbstractResumeFi
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +25,8 @@ import java.util.regex.Pattern;
 @Component
 public class UserProfileParser extends AbstractResumeFileParser {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     UserAccountEntity userAccountEntity;
 
@@ -37,7 +35,9 @@ public class UserProfileParser extends AbstractResumeFileParser {
 
     @Override
     public boolean checkUser(Integer id) {
+        logger.info("UserProfileParser checkUser id:{}", id);
         UserUserRecord userRecord = userAccountEntity.getUserRecordbyId(id);
+        logger.info("UserProfileParser checkUser id:{}", userRecord);
         if (userRecord == null || userRecord.getId() <= 0) {
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
@@ -58,8 +58,27 @@ public class UserProfileParser extends AbstractResumeFileParser {
     }
 
     @Override
-    protected void toPDF(String suffix, FileNameData fileNameData, Integer id) {
+    protected String getHunterRedisKey() {
+        return KeyIdentifier.HEADHUNTER_REFERRAL_PROFILE.toString();
+    }
 
+    @Override
+    protected void toPDF(String suffix, FileNameData fileNameData, Integer id) {
+        if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
+            String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
+                    + Constant.WORD_PDF;
+            logger.info(".........FileName[" + fileNameData.getFileName() + "] --------------pdf file ");
+            logger.info(".........pdfName[" + pdfName + " ]--------------pdf file ");
+            int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
+                    fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+            logger.info("........." + pdfName + " --------------pdf file ---> status = " + status);
+//            if(status == 1) {
+            fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+            fileNameData.setFileName(pdfName);
+            fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
+                    .replace(".doc", Constant.WORD_PDF));
+//            }
+        }
     }
 
     @Override

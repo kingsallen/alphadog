@@ -64,6 +64,7 @@ public class EmployeeBizTool {
         if(root2User != null){
             radar.setForwardName(root2User.getName());
         }
+
         if(data.getTimeMap().get(userId) != null) {
             String time = DateUtils.dateToMinuteDate(data.getTimeMap().get(userId));
             radar.setClickTime(time);

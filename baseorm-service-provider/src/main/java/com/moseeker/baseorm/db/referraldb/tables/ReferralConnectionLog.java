@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord> {
 
-    private static final long serialVersionUID = 587879995;
+    private static final long serialVersionUID = -1421396010;
 
     /**
      * The reference instance of <code>referraldb.referral_connection_log</code>
@@ -82,14 +82,9 @@ public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord
     public final TableField<ReferralConnectionLogRecord, Integer> END_USER_ID = createField("end_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路结束用户id");
 
     /**
-     * The column <code>referraldb.referral_connection_log.degree</code>. 候选人连连看度数
+     * The column <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中 3员工邀请投递生成，未发起连连看，当员工发起后，状态改为0
      */
-    public final TableField<ReferralConnectionLogRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "候选人连连看度数");
-
-    /**
-     * The column <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中
-     */
-    public final TableField<ReferralConnectionLogRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中");
+    public final TableField<ReferralConnectionLogRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中 3员工邀请投递生成，未发起连连看，当员工发起后，状态改为0");
 
     /**
      * The column <code>referraldb.referral_connection_log.create_time</code>.

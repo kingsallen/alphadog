@@ -264,7 +264,15 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public ProfileParseResult parseHunterFileProfile(int headhunterId, String fileName, ByteBuffer fileData) throws BIZException, TException {
-        return null;
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    profileService.parseHunterFileProfile(headhunterId, fileName, fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override

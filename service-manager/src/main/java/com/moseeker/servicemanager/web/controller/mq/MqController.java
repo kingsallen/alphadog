@@ -76,6 +76,7 @@ public class MqController {
         try {
             // 发送消息模板
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
+            logger.error("sendSms param:{}",param);
             Map<String, String> data = (Map<String, String>) param.get("data");
             int smsType = param.getInt("smsType");
             String mobile = param.getString("mobile");
@@ -92,6 +93,7 @@ public class MqController {
     }
 
     @RequestMapping(value = "/v4/email/sendAuthEMail", method = RequestMethod.POST)
+    @ResponseBody
     public String sendAuthEMail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
@@ -287,6 +289,4 @@ public class MqController {
         }
         return data;
     }
-
-
 }

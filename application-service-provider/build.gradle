@@ -16,8 +16,9 @@ dependencies {
     compile deps["spring-tx"]
     compile deps["jetty-support"]
     compile deps["commons-http"]
+    compile deps["SensorsAnalyticsSDK"]
     testCompile deps["spring-test"]
-   
+    
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -49,7 +50,7 @@ jar {
         attributes 'Main-Class': 'com.moseeker.application.JobApplicationServer'
     }
 
-
+    zip64 true
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

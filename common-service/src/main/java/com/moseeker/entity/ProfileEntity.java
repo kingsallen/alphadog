@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.moseeker.baseorm.constant.ReferralScene;
+import com.moseeker.baseorm.dao.logdb.LogResumeDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -19,7 +21,9 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.EmployeeOperationEntrance;
 import com.moseeker.common.constants.EmployeeOperationIsSuccess;
 import com.moseeker.common.constants.EmployeeOperationType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EmojiFilter;
@@ -53,10 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
 
@@ -74,10 +75,16 @@ public class ProfileEntity {
     ProfileParseUtil profileParseUtil;
 
     @Autowired
+    private LogResumeDao resumeDao;
+
+    @Autowired
     private ProfileMailUtil profileMailUtil;
 
     @Autowired
     LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+
+    @Autowired
+    private SensorSend sensorSend;
 
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
@@ -203,6 +210,16 @@ public class ProfileEntity {
         HttpResponse response = httpclient.execute(httpPost);
         // 处理返回结果
         String resCont = EntityUtils.toString(response.getEntity(), Consts.UTF_8);
+        if(StringUtils.isNullOrEmpty(resCont) || !resCont.startsWith("{")){     // 调用ResumeSDK会返回错误，即非Json格式结果，入库，并抛出异常
+            LogResumeRecordRecord logResumeRecordRecord = new LogResumeRecordRecord();
+            logResumeRecordRecord.setErrorLog("call ResumeSDK error");
+            logResumeRecordRecord.setFileName(fileName);
+            logResumeRecordRecord.setResultData(resCont);
+            logResumeRecordRecord.setText(file);
+            logResumeRecordRecord = resumeDao.addRecord(logResumeRecordRecord);
+            logger.error("call ResumeSDK error log id:{}",logResumeRecordRecord.getId());
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_CALL_RESUMESDK_RESULT_ERROR.replace("{}",logResumeRecordRecord.getId().toString()));
+        }
         // 参考博客：http://loveljy119.iteye.com/blog/2366623  反序列化的ASM代码问题：https://github.com/alibaba/fastjson/issues/383
         ParserConfig.getGlobalInstance().setAsmEnable(false);
         ResumeObj res = JSONObject.parseObject(resCont, ResumeObj.class);
@@ -639,6 +656,10 @@ public class ProfileEntity {
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userUserRecord, null);
+        String distinctId = profilePojo.getProfileRecord().getUserId().toString();
+        String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+        logger.info("ProfileEntity.createProfile661  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         return id;
     }
 
@@ -649,12 +670,20 @@ public class ProfileEntity {
      */
     public int storeProfile(ProfilePojo profilePojo) {
 
-        return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+        logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
+        logger.info("ProfileEntity storeProfile userId:{}", profilePojo.getUserRecord().getId());
+        int id= profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 profilePojo.getUserRecord(), null);
+        String distinctId = profilePojo.getUserRecord().getId().toString();
+        String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+        logger.info("ProfileEntity.storeProfile684  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+        return id;
     }
 
     /**

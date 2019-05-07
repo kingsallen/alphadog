@@ -26,7 +26,6 @@ import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
@@ -41,7 +40,6 @@ import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
-import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -133,9 +131,10 @@ public class UseraccountsService {
     private RedisClient redisClient;
 
     @Autowired
-    private JobPositionDao jobPositionDao;
-    @Autowired
     private UserPrivacyRecordDao userPrivacyRecordDao;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     @Autowired
     KafkaSender kafkaSender;
@@ -188,6 +187,10 @@ public class UseraccountsService {
                 if (userUserDO.getUnionid().equals(unionid)) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_SAME);
                 }
+
+                // 把之前的user_wx_user的sysuser_id置为0
+                wxuserdao.invalidOldWxUser(userUserDO.getUnionid());
+
                 // 更新user_user
                 userUserDO.setUnionid(unionid);
                 userdao.updateData(userUserDO);
@@ -1221,9 +1224,11 @@ public class UseraccountsService {
     public Response getUserSearchPositionHistory(int userId) throws BIZException {
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         List<String> history = null;
+        logger.info("getUserSearchPositionHistory info --------------:{}",info);
         if(StringUtils.isNotNullOrEmpty(info)){
             history = (List)JSONObject.parse(info);
         }
+        logger.info("getUserSearchPositionHistory history --------------:{}",history);
         return ResponseUtils.success(history);
     }
 
@@ -1248,8 +1253,10 @@ public class UseraccountsService {
         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
+
         List<ReferralLog> referralLogs = referralEntity.fetchReferralLogs(referralRecordIds);
         if (referralLogs == null) {
+
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
         // 检验推荐记录已认领
@@ -1279,8 +1286,6 @@ public class UseraccountsService {
         // 更新申请记录的申请人
 
         for(ReferralLog referralLog : referralLogs){
-            JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                    referralLog.getPositionId());
             pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferral_id(referralLog.getId());
@@ -1300,7 +1305,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
-                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId,referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
                     countDownLatch.countDown();
                 }
@@ -1315,17 +1320,25 @@ public class UseraccountsService {
         return claimResults;
     }
 
-    private void updateDataApplicationBatchItems(int positionId,int userId ){
-        JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
-        if (application!=null){
-            int app_id=application.getId();
+    private void updateDataApplicationBatchItems(int positionId,int userId,int applierId ){
             scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
-                logger.info("====================redis==============application更新=============");
-                logger.info("================app_id={}=================",app_id);
+                JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
+                if (application!=null) {
+                    int app_id=application.getId();
+                    redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                    logger.info("====================redis==============application更新=============");
+                    logger.info("================app_id={}=================", app_id);
+                }else{
+                    JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
+                    if(application1!=null){
+                        int app_id=application.getId();
+                        redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                        logger.info("====================redis==============application更新=============");
+                        logger.info("================app_id={}=================", app_id);
+                    }
+                }
             },3000);
         }
-    }
     /*
     这块主要是做兼容处理
     */
@@ -1337,8 +1350,8 @@ public class UseraccountsService {
             data.put("tableName","application_recom");
             data.put("user_id",applierId);
             scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(result));
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(data));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(result));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(data));
 
             },5000);
     }
@@ -1392,7 +1405,7 @@ public class UseraccountsService {
             userdao.updateRecord(userUserRecord);
         }
         referralEntity.claimReferralCard(userUserDO, referralLog);
-        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), repeatReferralLog.getPositionId());
+        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {
@@ -1421,7 +1434,7 @@ public class UseraccountsService {
 
     /**
      * 认领内推奖金
-     * @param(claimForm 参数)
+     * @param bonus_record_id 参数
      */
     @Transactional
     public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {

@@ -297,7 +297,6 @@ struct RequiredFieldInfo{
     6: optional bool city
 }
 
-
 struct ReferralUploadFiles{
     1: optional i32 id,
     2: optional string fileId,

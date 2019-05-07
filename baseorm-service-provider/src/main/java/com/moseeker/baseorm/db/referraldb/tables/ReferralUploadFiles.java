@@ -8,7 +8,7 @@ import com.moseeker.baseorm.db.referraldb.Keys;
 import com.moseeker.baseorm.db.referraldb.Referraldb;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
 
-    private static final long serialVersionUID = 945932693;
+    private static final long serialVersionUID = 1079682654;
 
     /**
      * The reference instance of <code>referraldb.referral_upload_files</code>
@@ -59,12 +59,12 @@ public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
     /**
      * The column <code>referraldb.referral_upload_files.fileId</code>. 前台传入文件id
      */
-    public final TableField<ReferralUploadFilesRecord, String> FILEID = createField("fileId", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false), this, "前台传入文件id");
+    public final TableField<ReferralUploadFilesRecord, String> FILEID = createField("fileId", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "前台传入文件id");
 
     /**
      * The column <code>referraldb.referral_upload_files.uniname</code>. 后台生成文件名称
      */
-    public final TableField<ReferralUploadFilesRecord, String> UNINAME = createField("uniname", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false), this, "后台生成文件名称");
+    public final TableField<ReferralUploadFilesRecord, String> UNINAME = createField("uniname", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "后台生成文件名称");
 
     /**
      * The column <code>referraldb.referral_upload_files.unionid</code>. 上传文件人id(可以是unionid)
@@ -74,7 +74,7 @@ public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
     /**
      * The column <code>referraldb.referral_upload_files.TYPE</code>. 上传渠道：1 微信小程序 2电脑扫码上传 
      */
-    public final TableField<ReferralUploadFilesRecord, Integer> TYPE = createField("TYPE", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "上传渠道：1 微信小程序 2电脑扫码上传 ");
+    public final TableField<ReferralUploadFilesRecord, Integer> TYPE = createField("TYPE", org.jooq.impl.SQLDataType.INTEGER, this, "上传渠道：1 微信小程序 2电脑扫码上传 ");
 
     /**
      * The column <code>referraldb.referral_upload_files.filename</code>. 文件名
@@ -87,19 +87,19 @@ public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
     public final TableField<ReferralUploadFilesRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "文件保存地址");
 
     /**
-     * The column <code>referraldb.referral_upload_files.createtime</code>. 上传日期
+     * The column <code>referraldb.referral_upload_files.createtime</code>. 创建时间
      */
-    public final TableField<ReferralUploadFilesRecord, Date> CREATETIME = createField("createtime", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "上传日期");
+    public final TableField<ReferralUploadFilesRecord, Timestamp> CREATETIME = createField("createtime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>referraldb.referral_upload_files.updatetime</code>. 修改日期
+     * The column <code>referraldb.referral_upload_files.updatetime</code>. 更新时间
      */
-    public final TableField<ReferralUploadFilesRecord, Date> UPDATETIME = createField("updatetime", org.jooq.impl.SQLDataType.DATE, this, "修改日期");
+    public final TableField<ReferralUploadFilesRecord, Timestamp> UPDATETIME = createField("updatetime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * The column <code>referraldb.referral_upload_files.STATUS</code>. 状态：0正常，1删除
      */
-    public final TableField<ReferralUploadFilesRecord, Integer> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "状态：0正常，1删除");
+    public final TableField<ReferralUploadFilesRecord, Integer> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.INTEGER, this, "状态：0正常，1删除");
 
     /**
      * Create a <code>referraldb.referral_upload_files</code> table reference

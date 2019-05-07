@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -73,7 +74,7 @@ public class StreamUtils {
         String fileName = uuid +"."+suffix;
         fileNameData.setFileName(fileName);
         fileNameData.setFileAbsoluteName(dirAddress+File.separator+monthFileName+File.separator+fileName);
-
+        fileNameData.setSaveUrl(dirAddress+File.separator+monthFileName);
         File file = new File(dirAddress+File.separator+monthFileName+File.separator+fileName);
         try (FileOutputStream fop = new FileOutputStream(file)) {
             if (!file.exists()) {

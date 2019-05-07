@@ -8,6 +8,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FileUtil;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -34,13 +35,6 @@ import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.moseeker.thrift.gen.profile.struct.RequiredFieldInfo;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
@@ -48,6 +42,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @CounterIface
@@ -403,7 +408,7 @@ public class ProfileController {
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return ResponseLogNotification.fail(request, result);
         } else {
-            int userId = service.parseText(profile, referenceId, appid);
+            int userId = service.parseText(profile, referenceId,appid);
             return Result.success(new HashMap<String,Integer>(){{put("user_id", userId);}}).toJson();
             //return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }
@@ -510,6 +515,7 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
+
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, result);
         } catch (Exception e) {
@@ -519,6 +525,31 @@ public class ProfileController {
             // do nothing
         }
     }
+
+    @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.POST)
+    @ResponseBody
+    public String otherFieldsCheck_post(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int profileId = form.getInt("profileId", 0);
+            String fields = form.getString("fields");
+            if (profileId != 0 && StringUtils.isNotNullOrEmpty(fields)) {
+                return ResponseLogNotification.success(request, profileOtherService.otherFieldsCheck(profileId, fields));
+            } else {
+                return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
+            }
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
     @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.GET)
     @ResponseBody
@@ -758,6 +789,65 @@ public class ProfileController {
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     service.parseUserFileProfile(userId, params.getString("file_name"), byteBuffer);
+            ProfileDocParseResult parseResult = new ProfileDocParseResult();
+            org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
+            return Result.success(parseResult).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 猎头上传简历
+     * @param file 简历文件
+     * @param request 请求数据
+     * @return 解析结果
+     * @throws Exception 异常信息
+     */
+    @RequestMapping(value = "/headhunter/file-parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String parseHunterProfileFile(@RequestParam(value = "file", required = false) MultipartFile file,
+                                   HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        int headhunterId = params.getInt("headhunterId", 0);
+        ValidateUtil validateUtil = new ValidateUtil();
+        String fileStr = params.getString("file");
+        String file_path = params.getString("file_path");
+        validateUtil.addRequiredValidate("简历", fileStr);
+        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addRequiredStringValidate("简历路径", params.getString("file_path"));
+        validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
+        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
+        try {
+            logger.info( "++++++++++++++++++file_path [ " + file_path + " ] ========");
+        } catch (Exception e) {}
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
+            /*if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+            }*/
+
+            byte [] array ;
+            try {
+                File file1 = new File(file_path);
+                if (file1.exists()) {
+                    array = FileUtil.convertToBytes(file1);
+                } else {
+                    array = fileStr.getBytes();
+                }
+            } catch (IOException e) {
+                array = fileStr.getBytes();
+            }
+
+            ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+
+            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
+                    service.parseHunterFileProfile(headhunterId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();

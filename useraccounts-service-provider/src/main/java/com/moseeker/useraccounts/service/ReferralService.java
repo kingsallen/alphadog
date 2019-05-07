@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.*;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 
 import java.net.ConnectException;
@@ -95,7 +96,7 @@ public interface ReferralService {
      * @param positionId 职位编号
      * @throws UserAccountException
      */
-    void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException;
+    void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException, InvalidArgumentException;
 
     /**
      * 获取联系内退候选人和职位信息

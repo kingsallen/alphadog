@@ -9,10 +9,6 @@ import java.util.Map;
 
 public enum  OmsSwitchEnum {
 
-    /*
-    * 应ai组要求，设计为中文参数
-    *
-    * */
     none(0,"无"),
     我是员工(1,"我是员工"),
     粉丝智能推荐(2,"粉丝智能推荐"),
@@ -27,8 +23,6 @@ public enum  OmsSwitchEnum {
     红包活动(11,"红包活动"),
     ATS招聘流程升级(12,"ATS招聘流程升级"),
     猎头管理(13,"猎头管理");
-
-
     private int value;
     private String name;
 

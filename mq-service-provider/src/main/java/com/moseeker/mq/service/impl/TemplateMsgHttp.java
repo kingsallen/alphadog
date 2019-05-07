@@ -30,6 +30,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.DecodeUtils;
 import com.moseeker.common.util.HttpClient;
@@ -61,6 +62,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -129,6 +132,9 @@ public class TemplateMsgHttp {
     @Autowired
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
 
+    @Autowired
+    private SensorSend sensorSend;
+
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
     //private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
 
@@ -140,7 +146,6 @@ public class TemplateMsgHttp {
     private static String NoticeEmployeeReferralBonusTitle = "简历推荐成功提醒";
     private static String PositionSyncFailFirst = "抱歉，您的职位同步到渠道失败";
     private static String PositionSyncFailKeyword3 = "如有疑问请联系您的客户成功经理";
-
     private static String SeekReferralFirst = "人脉无敌！有一位朋友求推荐，快去看看吧~\n";
     private static String ReferralEvaluateFirst = "恭喜您！內推大使【{0}】已成功帮您投递了简历，耐心等待好消息吧！";
     private static String ReferralEvaluateRemark = "请点击查看最新进度~";
@@ -250,7 +255,7 @@ public class TemplateMsgHttp {
         }
     }
 
-    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId) {
+    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId,long  dateTime) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
 
         UserUserDO user = userDao.getUser(userId);
@@ -346,7 +351,7 @@ public class TemplateMsgHttp {
         applierTemplate.put("topcolor", "#FF0000");
         String link = env.getProperty("message.template.delivery.applier.link")
                 .replace("{}", String.valueOf(applicationId))+"?wechat_signature="+wxWechatDO.getSignature()
-                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + new Date().getTime();
+                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + System.currentTimeMillis();
         applierTemplate.put("url",link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
@@ -363,7 +368,7 @@ public class TemplateMsgHttp {
 
     }
 
-    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId) {
+    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId,  long sendTime) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
         UserUserDO user = userDao.getUser(userId);
         if(user == null){
@@ -452,7 +457,9 @@ public class TemplateMsgHttp {
         applierTemplate.put("topcolor", "#FF0000");
         String link = env.getProperty("message.template.employee.recommend")
                 .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
-                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+            //    +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+            //new Date().getTime() 改成 now 神策埋点为了保持时间是一个唯一的uuid
+            +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + sendTime;
         applierTemplate.put("url", link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
@@ -1022,7 +1029,7 @@ public class TemplateMsgHttp {
         return wxMessageRecordDao.addData(messageRecord).getId();
     }
 
-    public void sendTenMinuteTemplate(JSONObject jsonObject) throws BIZException, ConnectException {
+    public void sendTenMinuteTemplate(JSONObject jsonObject) throws BIZException, ConnectException, InvalidArgumentException {
         int employeeId = jsonObject.getIntValue("employeeId");
         List<Integer> positionIds = JSONArray.parseArray(jsonObject.getString("pids")).toJavaList(Integer.class);
         int visitNum = jsonObject.getIntValue("visitNum");
@@ -1072,8 +1079,16 @@ public class TemplateMsgHttp {
                 + "&from_template_message="+Constant.POSITION_VIEW_TPL;
         String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
         // 发送十分钟消息模板
+        logger.info(" 1.开始发送十分钟消息模板");
+
         HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                 hrWxWechatDO.getId()).and("sys_template_id", inviteTemplateVO.getIntValue("templateId")).and("disable","0").buildQuery());
+
+        logger.info("2. hrWxTemplateMessageDO{}---》" + hrWxTemplateMessageDO);
+
+        logger.info("3 hrWxWechatDO.getId{}---》" +hrWxWechatDO.getId());
+
+        logger.info("4 inviteTemplateVO.getIntValue(\"templateId\")" +inviteTemplateVO.getIntValue("templateId"));
         if(hrWxTemplateMessageDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
         }
@@ -1090,7 +1105,22 @@ public class TemplateMsgHttp {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
+        //神策生成埋点时间
+        Date now = new Date();
+        long sendTime=  now.getTime();
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());
+        properties.put("companyId", hrWxWechatDO.getId());
+        properties.put("employeeId", employeeId);
+        properties.put("companyName", hrWxWechatDO.getName());
+        properties.put("sendTime", sendTime);
+
+        logger.info("神策--sendTemplateMessage---》》sendtime"+sendTime);
+
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
+        //String templateId=inviteTemplateVO.getString("templateId");
+        String distinctId = String.valueOf(userWxUserRecord.getSysuserId());
+        sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 
     private Map<String,JSONObject> createDataMap(JSONObject templateVO) {
@@ -1139,8 +1169,5 @@ public class TemplateMsgHttp {
         templateBaseVO.put("value", value);
         return templateBaseVO;
     }
-
-
-
 
 }

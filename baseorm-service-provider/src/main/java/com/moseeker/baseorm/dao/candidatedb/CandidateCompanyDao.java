@@ -43,6 +43,20 @@ public class CandidateCompanyDao extends JooqCrudImpl<CandidateCompanyDO, Candid
         return recordToData(candidateCompanyRecord);
     }
 
+    public void updateCandidateCompanySetPositionWxLayerQrcode(int id, byte status) throws CURDException {
+        create.update(CandidateCompany.CANDIDATE_COMPANY)
+                .set(CandidateCompany.CANDIDATE_COMPANY.POSITION_WX_LAYER_QRCODE, status)
+                .where(CandidateCompany.CANDIDATE_COMPANY.ID.eq(id))
+                .execute();
+    }
+
+    public void updateCandidateCompanySetPositionWxLayerProfile(int id, byte status) throws CURDException {
+        create.update(CandidateCompany.CANDIDATE_COMPANY)
+                .set(CandidateCompany.CANDIDATE_COMPANY.POSITION_WX_LAYER_PROFILE, status)
+                .where(CandidateCompany.CANDIDATE_COMPANY.ID.eq(id))
+                .execute();
+    }
+
     public CandidateCompanyDO saveCandidateCompany(CandidateCompanyDO candidateCompanyDO) throws CURDException {
         candidateCompanyDO = addData(candidateCompanyDO);
         return candidateCompanyDO;

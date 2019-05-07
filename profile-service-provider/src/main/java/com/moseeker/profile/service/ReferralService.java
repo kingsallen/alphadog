@@ -3,6 +3,7 @@ package com.moseeker.profile.service;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 
 import java.nio.ByteBuffer;
@@ -33,6 +34,7 @@ public interface ReferralService {
      * @throws ProfileException
      */
     ProfileDocParseResult parseFileProfileByFilePath(String filePath, int userId) throws ProfileException;
+
     /**
      * 员工上传简历
      * @param employeeId 员工编辑

@@ -8,8 +8,6 @@ import com.moseeker.mq.service.TemplateMsgFinder;
 import com.moseeker.mq.service.message.FlexibleField;
 import com.moseeker.mq.service.message.MessageBody;
 import org.apache.commons.lang.StringUtils;
-import org.jooq.Record11;
-import org.jooq.Record12;
 import org.jooq.Record13;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

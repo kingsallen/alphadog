@@ -81,6 +81,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -912,6 +913,7 @@ public class UserHrAccountService {
                 for (Map<String, Object> map : result) {
                     if (map.get("activation") != null) {
                         if ((Byte) map.get("activation") == 0) {
+                            logger.info("getListNum regcount:{}", cancelCount);
                             userEmployeeNumStatistic.setRegcount((Integer) map.get("activation_count"));
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
@@ -919,16 +921,19 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 5) {
                             cancelCount+=(Integer) map.get("activation_count");
                         } else if ((Byte) map.get("activation") == 3) {
+                            logger.info("getListNum unregcount:{}", map.get("activation_count"));
                             userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
                 }
+                logger.info("getListNum cancelCount:{}", cancelCount);
                 userEmployeeNumStatistic.setCancelcount(cancelCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getListNum userEmployeeNumStatistic:{}", JSON.toJSONString(userEmployeeNumStatistic));
         return userEmployeeNumStatistic;
     }
 
@@ -945,8 +950,11 @@ public class UserHrAccountService {
         if (employeeMap != null && employeeMap.size() > 0) {
             reward = true;
         }
+        Query query = queryBuilder.buildQuery();
+        logger.info("UserHrAccountService employeeList query:{}", query);
         // 员工数据
         userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        logger.info("UserHrAccountService employeeList userEmployeeDOS:{}", JSONArray.toJSONString(userEmployeeDOS));
 
         if (userEmployeeDOS != null && userEmployeeDOS.size() > 0) {
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
@@ -1057,6 +1065,7 @@ public class UserHrAccountService {
      * @param pageSize   每页的条数
      */
     public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan,String emailValidate) throws CommonException {
+        logger.info("UserHrAccountService employeeList filter:{}, order:{}, asc:{}, pageNumber:{}, pageSize:{}, timespan:{}, keyword:{}", filter, order, asc, pageNumber, pageSize, timespan, keyword);
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1164,13 +1173,14 @@ public class UserHrAccountService {
         userEmployeeVOPageVO.setTotalRow(counts);
         // 员工列表，不需要取排行榜
         if (StringUtils.isNullOrEmpty(timespan)) {
-            logger.info("timespan:{}", timespan);
+            logger.info("UserHrAccountService employeeList timespan:{}", timespan);
             userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
             return userEmployeeVOPageVO;
         }
         // 员工列表，从ES中获取积分月，季，年榜单数据
         Response response = null;
         try {
+            logger.info("UserHrAccountService employeeList queryAwardRanking companyIds:{}, timespan:{}, pageSize:{}, pageNumber:{}, keyword:{}, filter:{}", companyIds, timespan, pageSize, pageNumber, keyword, filter);
             response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber, keyword, filter);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
@@ -1233,6 +1243,7 @@ public class UserHrAccountService {
             keyword = keyword.toLowerCase();
         }
         try {
+            logger.info("getEmployees pageNum:{}, pageSize:{}", pageNumber, pageSize);
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
                     pageSize, pageNumber,balanceType, timeSpan);
         } catch (Exception e) {
@@ -1361,10 +1372,12 @@ public class UserHrAccountService {
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
+        logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
         userEmployeeMap.forEach((k, v) -> {
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
+        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
@@ -1384,6 +1397,7 @@ public class UserHrAccountService {
             }
             if (!StringUtils.isEmptyList(updateUserEmployee)) {
                 // 更新数据
+                logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
                 searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
                 // 去掉需要更新的数据
@@ -1391,6 +1405,7 @@ public class UserHrAccountService {
             }
         }
         // 新增数据
+        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         if (!StringUtils.isEmptyList(userEmployeeList)) {
             employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
 
@@ -1715,6 +1730,7 @@ public class UserHrAccountService {
                 }
             }
         }
+        logger.info("===============rewardVOPageVO:{}", JSON.toJSONString(rewardVOPageVO));
         return rewardVOPageVO;
     }
 
@@ -1722,15 +1738,17 @@ public class UserHrAccountService {
         List<Integer> appConfigCvIds = positionEntity.getAppCvConfigIdByCompany(companyId, hraccountId);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.orderBy("display_order");
+        Set<String> configFieldName=new HashSet<>();
         List<HrAppExportFieldsDO> hrAppExportFieldsDOList = exportFieldsDao.getDatas(query.buildQuery());
         boolean isReferral = positionEntity.isReferralByHr(companyId, hraccountId);
-        Set<String> configFieldName=new HashSet<>();
+        logger.info("getExportFields isReferral:{}", isReferral);
         if (!appConfigCvIds.isEmpty()) {
             query.clear();
             query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = appCvConfDao.getDatas(query.buildQuery());
             if (hrAppCvConfDOList != null && !hrAppCvConfDOList.isEmpty()) {
 //                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+
                 for(HrAppCvConfDO hrAppCvConfDO:hrAppCvConfDOList){
                     String fieldValue=hrAppCvConfDO.getFieldValue();
                     if(StringUtils.isNotNullOrEmpty(fieldValue)){
@@ -2047,6 +2065,9 @@ public class UserHrAccountService {
                 //将绑定时间2018-10-09T18:09:09.766+08:00格式化成2018-10-09 18:09:09
                 if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
                     userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
+                if(userEmployeeVO.getAward()<0){
+                    userEmployeeVO.setAward(0);
                 }
                 List customFieldValues = new ArrayList();
                 if (userEmployeeDO.getCustomFieldValues() != null) {

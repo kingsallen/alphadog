@@ -181,6 +181,7 @@ class LocalQuery<R extends Record> {
         if (groups != null && groups.size() > 0) {
             select.groupBy(groups);
         }
+        logger.debug(select.getSQL());
         return select;
     }
 
@@ -222,6 +223,7 @@ class LocalQuery<R extends Record> {
         if (query.getPageSize() > 0) {
             select.limit((getPage() - 1) * getPageSize(), getPageSize());
         }
+        logger.debug("convertToResultLimit：{}"+select.getSQL());
         return select;
     }
 

@@ -176,6 +176,7 @@ public class MandrillMailListConsumer {
                             recordList.add(record);
                             logger.info("LogEmailProfileSendLogRecord record :{}",record.toString());
                         }
+
                     }
                     logger.info("List<LogEmailProfileSendLogRecord> recordList :{}",recordList.toString());
                     logEmailProfileSendLogDao.addAllRecord(recordList);

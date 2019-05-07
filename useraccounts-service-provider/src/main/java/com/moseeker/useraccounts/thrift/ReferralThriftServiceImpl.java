@@ -6,10 +6,20 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
+import com.moseeker.thrift.gen.referral.struct.Bonus;
+import com.moseeker.thrift.gen.referral.struct.BonusList;
+import com.moseeker.thrift.gen.referral.struct.ContactPushInfo;
+import com.moseeker.thrift.gen.referral.struct.RedPacket;
+import com.moseeker.thrift.gen.referral.struct.RedPackets;
+import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
+import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +34,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ReferralThriftServiceImpl implements ReferralService.Iface {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private com.moseeker.useraccounts.service.ReferralService referralService;
@@ -74,6 +86,21 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
+    public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
+        try {
+            ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
+            if(activityDTO.isSetRedpacket_theme()) {
+                activityVO.setTheme(activityDTO.getRedpacket_theme());
+            }
+            logger.info("ReferralThriftServiceImpl updateActivity activityDTO:{}", activityDTO);
+            logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
+            referralService.updateActivity(activityVO);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public List<ReferralProfileTab> getReferralProfileList(int userId, int companyId, int hrId) throws BIZException, TException {
         try {
             List<com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab> profileTabList = referralService
@@ -93,19 +120,6 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
-        try {
-            ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
-            if(activityDTO.isSetRedpacket_theme()) {
-                activityVO.setTheme(activityDTO.getRedpacket_theme());
-            }
-            referralService.updateActivity(activityVO);
-        } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
     public List<ReferralReasonInfo> getReferralReason(int userId, int companyId, int hrId) throws BIZException, TException {
         try {
             List<com.moseeker.useraccounts.service.impl.vo.ReferralReasonInfo> result = referralService.getReferralReasonInfo(userId, companyId, hrId);
@@ -117,6 +131,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
                     return info;
                 }).collect(Collectors.toList());
             }
+            logger.info("getReferralReasonInfo referralReasonInfos:{}",referralReasonInfos);
             return referralReasonInfos;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);

@@ -79,3 +79,4 @@ public class ViewApplicationWXMsgListener implements SmartApplicationListener {
         return 0;
     }
 }
+

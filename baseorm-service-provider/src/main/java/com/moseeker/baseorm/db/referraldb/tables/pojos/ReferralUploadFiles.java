@@ -5,7 +5,7 @@ package com.moseeker.baseorm.db.referraldb.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -23,18 +23,18 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralUploadFiles implements Serializable {
 
-    private static final long serialVersionUID = 761343937;
+    private static final long serialVersionUID = -201740065;
 
-    private Integer id;
-    private String  fileid;
-    private String  uniname;
-    private String  unionid;
-    private Integer type;
-    private String  filename;
-    private String  url;
-    private Date    createtime;
-    private Date    updatetime;
-    private Integer status;
+    private Integer   id;
+    private String    fileid;
+    private String    uniname;
+    private String    unionid;
+    private Integer   type;
+    private String    filename;
+    private String    url;
+    private Timestamp createtime;
+    private Timestamp updatetime;
+    private Integer   status;
 
     public ReferralUploadFiles() {}
 
@@ -52,16 +52,16 @@ public class ReferralUploadFiles implements Serializable {
     }
 
     public ReferralUploadFiles(
-        Integer id,
-        String  fileid,
-        String  uniname,
-        String  unionid,
-        Integer type,
-        String  filename,
-        String  url,
-        Date    createtime,
-        Date    updatetime,
-        Integer status
+        Integer   id,
+        String    fileid,
+        String    uniname,
+        String    unionid,
+        Integer   type,
+        String    filename,
+        String    url,
+        Timestamp createtime,
+        Timestamp updatetime,
+        Integer   status
     ) {
         this.id = id;
         this.fileid = fileid;
@@ -131,19 +131,19 @@ public class ReferralUploadFiles implements Serializable {
         this.url = url;
     }
 
-    public Date getCreatetime() {
+    public Timestamp getCreatetime() {
         return this.createtime;
     }
 
-    public void setCreatetime(Date createtime) {
+    public void setCreatetime(Timestamp createtime) {
         this.createtime = createtime;
     }
 
-    public Date getUpdatetime() {
+    public Timestamp getUpdatetime() {
         return this.updatetime;
     }
 
-    public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(Timestamp updatetime) {
         this.updatetime = updatetime;
     }
 

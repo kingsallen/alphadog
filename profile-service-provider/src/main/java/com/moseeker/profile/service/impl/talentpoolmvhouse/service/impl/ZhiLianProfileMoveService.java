@@ -46,6 +46,7 @@ public class ZhiLianProfileMoveService extends AbstractProfileMoveService {
     public MvHouseVO handleRequestParams(List<ThirdpartyAccountCompanyDO> companyDOS, UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate,
                                          int profileMoveId, boolean isFirstMove) {
         String password = hrThirdPartyAccountDO.getPassword();
+        logger.info("======================word:{}", password);
         List<String> companyNames = companyDOS.stream().map(ThirdpartyAccountCompanyDO::getCompanyName).collect(Collectors.toList());
         ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();
         String startDateStr = "";

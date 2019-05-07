@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -16,12 +17,6 @@ import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
-import com.moseeker.servicemanager.web.controller.referral.vo.Bonus;
-import com.moseeker.servicemanager.web.controller.referral.vo.BonusList;
-import com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo;
-import com.moseeker.servicemanager.web.controller.referral.vo.RedPacket;
-import com.moseeker.servicemanager.web.controller.referral.vo.ReferralProfileTab;
-import com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
@@ -29,11 +24,9 @@ import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
-import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
-import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,7 +58,6 @@ public class ReferralController {
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     private Logger logger = LoggerFactory.getLogger(ReferralController.class);
-    DecimalFormat bonusFormat = new DecimalFormat("###################");
 
     /**
      * 员工上传简历
@@ -95,7 +88,7 @@ public class ReferralController {
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
+            logger.info("ReferralController parseFileProfile file_name:{}", params.getString("file_name"));
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     profileService.parseFileProfile(employeeId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
@@ -105,6 +98,34 @@ public class ReferralController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
+    @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
+    @ResponseBody
+    public String weChatUploadProfile(MultipartFile file,HttpServletRequest request){
+        Params<String, Object> params = null;
+        String result = new String();
+        try {
+            params = ParamUtils.parseequestParameter(request);
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
+            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+            }
+            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
+
+            //生成对应的Ifac，调用对应的接口,调用传入上传业务存储数据
+            ReferralService referralService = new ReferralService();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
+
 
     /**
      * 员工推荐简历
@@ -240,11 +261,12 @@ public class ReferralController {
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
         if (StringUtils.isBlank(result)) {
-
+            logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
             BeanUtils.copyProperties(form, candidateInfoStruct);
             candidateInfoStruct.setPosition(form.getPosition());
             candidateInfoStruct.setReasons(form.getReferralReasons());
+            logger.info("postCandidateInfo candidateInfoStruct gender:{}",candidateInfoStruct.getGender());
             int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
             return Result.success(referralLogId).toJson();
         } else {
@@ -461,6 +483,8 @@ public class ReferralController {
                     return profileTab;
                 }).collect(Collectors.toList());
             }
+            logger.info("ReferralProfileTab tab :{}",JSON.toJSONString(result));
+            logger.info("ReferralProfileTab tab :{}",JSON.toJSONString(tabList));
             return Result.success(tabList).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
@@ -552,6 +576,7 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getIds());
             if(idReasons.get("state") == null){
+                logger.info("idReasons:{}", JSON.toJSONString(idReasons));
                 return Result.success(JSONArray.parseArray(idReasons.get("list"))).toJson();
             }else {
                 return new Result(-1, "apply_limit", idReasons).toJson();
@@ -607,6 +632,7 @@ public class ReferralController {
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            logger.info("claimResults:{}", claimResults);
             return Result.success(JSONArray.parseArray(claimResults)).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();

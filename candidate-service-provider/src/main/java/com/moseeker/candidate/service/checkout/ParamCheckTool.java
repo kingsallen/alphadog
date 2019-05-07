@@ -21,7 +21,7 @@ public class ParamCheckTool {
         vu.addIntTypeValidate("推荐人信息", param.getPostUserId(), null, "缺少必要的参数“推荐人信息”", 0, Integer.MAX_VALUE);
         vu.addRequiredStringValidate("点击时间", param.getClickTime(), null, "缺少必要的参数“点击时间”");
         vu.addIntTypeValidate("部门信息", param.getCompanyId(), null, "缺少必要的参数“部门信息”", 0, Integer.MAX_VALUE);
-        vu.addDateValidate("点击时间", param.getClickTime(), DateType.shortDate, null, "“点击时间”格式不正确");
+        vu.addDateValidate("点击时间", param.getClickTime(), DateType.longDate, null, "“点击时间”格式不正确");
         return vu;
     }
 

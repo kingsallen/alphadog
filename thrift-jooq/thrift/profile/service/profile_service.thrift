@@ -98,8 +98,6 @@ service ProfileServices {
     string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //猎头简历解析上传
     profile_struct.ProfileParseResult parseHunterFileProfile(1:i32 headhunterId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
-
-
     //小程序上传简历
     //人员上传文件时，调用此接口返回上传记录
     profile_struct.ReferralUploadFiles uploadFiles(1:string sceneId, 2: string unionid, 3:string fileName, 4:binary fileData) throws (1:common_struct.BIZException e);
@@ -154,7 +152,6 @@ service BasicServices {
     common_struct.Response putResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response delResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response reCalculateBasicCompleteness(1: i32 userId) throws (1: common_struct.BIZException e);
-
 }
 
 service CredentialsServices {

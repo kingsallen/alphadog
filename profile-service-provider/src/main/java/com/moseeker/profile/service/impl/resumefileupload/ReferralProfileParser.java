@@ -20,6 +20,8 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -30,8 +32,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReferralProfileParser extends AbstractResumeFileParser {
 
-    Logger logger = LoggerFactory.getLogger(ReferralProfileParser.class);
-
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -46,7 +47,10 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
 
     @Override
     protected boolean checkUser(Integer id) {
+
+        logger.info("ReferralProfileParser checkUser id:{}", id);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(id);
+        logger.info("ReferralProfileParser checkUser employeeDO:{}", employeeDO);
         if (employeeDO == null || employeeDO.getId() <= 0) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
@@ -63,6 +67,11 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
     @Override
     protected String getRedisKey() {
         return KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString();
+    }
+
+    @Override
+    protected String getHunterRedisKey() {
+        return KeyIdentifier.HEADHUNTER_REFERRAL_PROFILE.toString();
     }
 
     @Override

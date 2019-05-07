@@ -7,7 +7,7 @@ package com.moseeker.baseorm.db.referraldb.tables.daos;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralUploadFilesRecord;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -110,14 +110,14 @@ public class ReferralUploadFilesDao extends DAOImpl<ReferralUploadFilesRecord, c
     /**
      * Fetch records that have <code>createtime IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByCreatetime(Date... values) {
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByCreatetime(Timestamp... values) {
         return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.CREATETIME, values);
     }
 
     /**
      * Fetch records that have <code>updatetime IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByUpdatetime(Date... values) {
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByUpdatetime(Timestamp... values) {
         return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.UPDATETIME, values);
     }
 
