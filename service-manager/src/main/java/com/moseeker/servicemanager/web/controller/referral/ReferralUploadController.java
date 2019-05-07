@@ -52,11 +52,6 @@ public class ReferralUploadController {
             String unionId =  request.getParameter("unionId");
             String fileName = request.getParameter("fileName");
 
-            logger.info("utf-8 -> utf-8:{}", new String(fileName.getBytes("UTF-8"), "UTF-8"));
-            logger.info("ISO-8859-1 -> utf-8:{}", new String(fileName.getBytes("ISO-8859-1"), "UTF-8"));
-            logger.info("GBK -> utf-8:{}", new String(fileName.getBytes("gbk"), "UTF-8"));
-            logger.info("GB2312 -> utf-8:{}", new String(fileName.getBytes("gb2312"), "UTF-8"));
-            logger.info("GB18030 -> utf-8:{}", new String(fileName.getBytes("GB18030"), "UTF-8"));
             logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
             /*if (!ProfileDocCheckTool.checkFileName(fileName)) {
                 result.setFileName(Result.fail(MessageType.PR
@@ -64,13 +59,13 @@ public class ReferralUploadController {
                 OGRAM_FILE_NOT_SUPPORT).toJson());
                 return result;
             }*/
+            logger.info("ReferralUploadController uploadProfile size:{}", file.getSize());
+            logger.info("ReferralUploadController uploadProfile bytes:{}", file.getBytes().length);
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return Result.fail(99999, "请上传小于2M的文件！").toJson();
             }
             BufferedImage image = ImageIO.read(file.getInputStream());
-            logger.info("uploadProfile image{}",JSON.toJSONString(image));
             if (image != null){
                 byte[] bytes = file.getBytes();
                 int length = bytes.length;
