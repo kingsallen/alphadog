@@ -191,6 +191,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         JSONObject jsonObject = JSON.parseObject(value);
         JSONObject user = jsonObject.getJSONObject("user");
         if (user != null){
+            logger.info("UploadFilesServiceImpl checkResult user:{}", user.toJSONString());
             uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
             if (user.get("mobile") != null){
                 String mobile = user.get("mobile").toString();

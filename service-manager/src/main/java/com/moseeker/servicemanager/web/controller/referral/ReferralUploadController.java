@@ -173,6 +173,7 @@ public class ReferralUploadController {
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         logger.info("getCandidateInfo  employeeId{}",employeeId);
         ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
+        logger.info("ReferralUploadController getCandidateInfo profileParseResult:{}", JSONObject.toJSONString(profileParseResult));
         parseResult.setFilename(profileParseResult.getFile());
         if (profileParseResult.getMobile() != null){
             parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
