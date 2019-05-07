@@ -680,7 +680,7 @@ public class ReferralController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/employee/application/evaluate", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/employee/referral/evaluate", method = RequestMethod.POST)
     @ResponseBody
     public String employeeReferralEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
 
