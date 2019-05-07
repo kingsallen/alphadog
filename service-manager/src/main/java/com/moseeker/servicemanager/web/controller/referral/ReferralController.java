@@ -121,18 +121,13 @@ public class ReferralController {
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
         validateUtil.addRequiredValidate("推荐关系", referralForm.getRelationship());
-        List<String> reasons = new ArrayList<>();
-        if (referralForm.getReferralReasons() != null && referralForm.getReferralReasons().size() > 0) {
-            reasons.addAll(referralForm.getReferralReasons());
-        }
-        if (StringUtils.isNotBlank(referralForm.getRecomReasonText())) {
-            reasons.add(referralForm.getRecomReasonText());
-        }
-        validateUtil.addRequiredOneValidate("推荐理由", reasons);
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
@@ -239,16 +234,11 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("姓名", form.getName());
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
         validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
-        List<String> reasons = new ArrayList<>();
-        if (form.getReferralReasons() != null && form.getReferralReasons().size() > 0) {
-            reasons.addAll(form.getReferralReasons());
-        }
-        if (StringUtils.isNotBlank(form.getRecomReasonText())) {
-            reasons.add(form.getRecomReasonText());
-        }
-        validateUtil.addRequiredOneValidate("推荐理由", reasons);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (StringUtils.isBlank(result)) {
 
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
