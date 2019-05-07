@@ -74,6 +74,9 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
             validateUtil.addRequiredValidate("性别", profileNotice.getGender());
         }
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(profileNotice.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(profileNotice.getReferralText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (StringUtils.isNotNullOrEmpty(result)) {
             throw ProfileException.validateFailed(result);
         }
