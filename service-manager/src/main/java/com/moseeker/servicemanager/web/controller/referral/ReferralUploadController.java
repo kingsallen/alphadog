@@ -53,26 +53,11 @@ public class ReferralUploadController {
             String fileName = request.getParameter("fileName");
 
             logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
-            /*if (!ProfileDocCheckTool.checkFileName(fileName)) {
-                result.setFileName(Result.fail(MessageType.PR
-
-                OGRAM_FILE_NOT_SUPPORT).toJson());
-                return result;
-            }*/
             logger.info("ReferralUploadController uploadProfile size:{}", file.getSize());
             logger.info("ReferralUploadController uploadProfile bytes:{}", file.getBytes().length);
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return Result.fail(99999, "请上传小于2M的文件！").toJson();
-            }
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            if (image != null){
-                byte[] bytes = file.getBytes();
-                int length = bytes.length;
-                logger.info("uploadProfile length{}",length);
-                if (length > 1024*1024*2){
-                    return Result.fail(99999, "请上传小于2M的文件！").toJson();
-                }
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
