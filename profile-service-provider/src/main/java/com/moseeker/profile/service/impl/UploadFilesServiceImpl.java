@@ -193,11 +193,18 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         if (user != null){
             uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
             uploadFilesResult.setMobile(user.get("mobile").toString());
+            if ("0".equals( uploadFilesResult.getMobile() ) ){
+                uploadFilesResult.setMobile("");
+            }
         }
         if (jsonObject.get("attachments") != null){
             JSONArray attachments = jsonObject.getJSONArray("attachments");
             if (attachments != null && attachments.size() > 0) {
-                String fileName = ((JSONObject)attachments.get(0)).getString("name");
+                String url = ((JSONObject)attachments.get(0)).getString("path");
+                ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByUrl(url);
+                String fileName = referralUploadFilesRecord.getFilename();
+                logger.info("UploadFilesServiceImpl  checkResult  fileName{}",fileName);
+                //String fileName = ((JSONObject)attachments.get(0)).getString("name");
                 uploadFilesResult.setFileName(fileName);
             }
         }
