@@ -158,10 +158,10 @@ public class ReferralTemplateSender {
 
     @Transactional(rollbackFor = Exception.class)
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
-        long timestamp = System.currentTimeMillis();
-        cardInfo.setTimestamp(timestamp);
-        logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
         try {
+            long timestamp = System.currentTimeMillis();
+            cardInfo.setTimestamp(timestamp);
+            logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
             Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
             Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
             // 获取指定时间前十分钟内的职位浏览人
@@ -180,30 +180,30 @@ public class ReferralTemplateSender {
 
             userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
             int visitNum = userIds.size();
+            logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
+            if(visitNum > 0){
+                UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
+                templateShareChainDao.addAllData(templateShareChainDOS);
+                List<Integer> newPositionIds = new ArrayList<>();
+                if(positionIds.size() > 2){
+                    newPositionIds.add(positionIds.get(0));
+                    newPositionIds.add(positionIds.get(1));
+                }else {
+                    newPositionIds = positionIds;
+                }
+                JSONObject request = new JSONObject();
+                request.put("pids", JSON.toJSONString(newPositionIds));
+                request.put("employeeId", employee.getId());
+                request.put("visitNum", visitNum);
+                request.put("companyId", cardInfo.getCompanyId());
+                request.put("timestamp", cardInfo.getTimestamp());
+                logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
+                amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
+                        REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+                                .build());
+            }
         } catch (Exception e) {
             logger.error("debug_10_min_message", e);
-        }
-        logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
-        if(visitNum > 0){
-            UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
-            templateShareChainDao.addAllData(templateShareChainDOS);
-            List<Integer> newPositionIds = new ArrayList<>();
-            if(positionIds.size() > 2){
-                newPositionIds.add(positionIds.get(0));
-                newPositionIds.add(positionIds.get(1));
-            }else {
-                newPositionIds = positionIds;
-            }
-            JSONObject request = new JSONObject();
-            request.put("pids", JSON.toJSONString(newPositionIds));
-            request.put("employeeId", employee.getId());
-            request.put("visitNum", visitNum);
-            request.put("companyId", cardInfo.getCompanyId());
-            request.put("timestamp", cardInfo.getTimestamp());
-            logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
-            amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
-                    REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
-                            .build());
         }
     }
 
