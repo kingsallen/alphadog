@@ -63,6 +63,7 @@ public class IndusteryService {
 					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
+					industryMap.put("ename", industry.getEname());
 					industryMaps.add(industryMap);
 				});
 			}
@@ -86,6 +87,7 @@ public class IndusteryService {
 					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
+					industryMap.put("ename", industry.getEname());
 					industryMaps.add(industryMap);
 				});
 			}
