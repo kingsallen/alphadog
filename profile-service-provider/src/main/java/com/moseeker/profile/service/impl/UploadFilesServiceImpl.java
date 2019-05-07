@@ -190,8 +190,10 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         logger.info("checkResult redis对应的value{}",value);
         JSONObject jsonObject = JSON.parseObject(value);
         JSONObject user = jsonObject.getJSONObject("user");
+        logger.info("UploadFilesServiceImpl checkResult user{}",user);
         if (user != null){
             uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
+            logger.info("UploadFilesServiceImpl checkResult ,user.getmobile{}",user.get("mobile"));
             if (user.get("mobile") != null){
                 uploadFilesResult.setMobile(user.get("mobile").toString());
             }
