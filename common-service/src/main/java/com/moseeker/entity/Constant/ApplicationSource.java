@@ -127,6 +127,9 @@ public enum ApplicationSource {
             case JOB58:
                 origin = 131072;
                 break;
+            case TW104:
+                origin = 33554432;
+                break;
             default:
         }
         return origin;
