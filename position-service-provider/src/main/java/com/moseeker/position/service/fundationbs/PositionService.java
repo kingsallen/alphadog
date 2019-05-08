@@ -666,13 +666,16 @@ public class PositionService {
      */
     @CounterIface
     public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
+        logger.info("PositionService batchHandlerJobPostion");
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
         if (batchHandlerJobPosition == null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
+            logger.info("PositionService batchHandlerJobPostion 数据不存在");
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_BLANK);
         }
         // 提交的数据
         List<JobPostrionObj> jobPositionHandlerDates = batchHandlerJobPosition.getData();
+        logger.info("PositionService batchHandlerJobPostion jobPositionHandlerDates:{}", JSONObject.toJSONString(jobPositionHandlerDates));
         //过滤职位信息中的emoji表情
         PositionUtil.refineEmoji(jobPositionHandlerDates);
 
@@ -2847,12 +2850,16 @@ public class PositionService {
     @CounterIface
     public List<WechatPositionListData> getReferralPositionList(Map<String,String> query) {
 
+        logger.info("PositionService getReferralPositionList");
+        logger.info("PositionService getReferralPositionList query:{}", JSONObject.toJSONString(query));
         List<WechatPositionListData> dataList = new ArrayList<>();
         try {
             WechatPositionListQuery searchParams=this.convertParams(query);
+            logger.info("PositionService getReferralPositionList searchParams:{}", JSONObject.toJSONString(searchParams));
             Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
+                logger.info("PositionService getReferralPositionList totalNum:{}", jobj.getLong("total"));
                 long totalNum = jobj.getLong("total");
                 List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
                 List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);

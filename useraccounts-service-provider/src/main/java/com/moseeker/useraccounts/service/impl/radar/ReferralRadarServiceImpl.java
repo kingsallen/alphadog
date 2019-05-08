@@ -35,9 +35,8 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.util.DateUtils;
-import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -67,7 +66,6 @@ import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
-import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -497,7 +495,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             logger.info("=======referralTypeMap:{}", end - start);
         }
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
+        logger.info("ReferralRadarServiceImpl getProgressBatch applyPids:{}", JSONObject.toJSONString(applyPids));
         Map<Integer, JobPositionDO> positionMap = getPositionIdMap(applyPids);
+        logger.info("ReferralRadarServiceImpl getProgressBatch positionMap:{}", JSONObject.toJSONString(positionMap));
         // 组装每种申请类型需要的数据
         long start = System.currentTimeMillis();
         Map<Integer, JSONObject> referralTypeMap = getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
@@ -512,6 +512,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             AbstractReferralTypeHandler handler = referralTypeFactory.getHandlerByType(referralType);
 
             JobPositionDO jobPositionDO = positionMap.get(jobApplicationDO.getPositionId());
+            logger.info("ReferralRadarServiceImpl getProgressBatch jobPositionDO:{}", JSONObject.toJSONString(jobPositionDO));
 
             List<HrOperationRecordRecord> hrOperations = hrOperationMap.get(jobApplicationDO.getId());
 

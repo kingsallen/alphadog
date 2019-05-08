@@ -27,16 +27,13 @@ public interface ReferralService {
     ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException;
 
     /**
-     * 人员上传文件
-     * @param unionId 上传人ID
-     * @param fileId 上传文件id
-     * @param fileName 上传文件名称
-     * @param fileData 文件二进制流
+     * 员工
+     * @param filePath
+     * @param userId
      * @return
+     * @throws ProfileException
      */
-    UploadFilesResult uploadFiles(int unionId,int fileId,String fileName,ByteBuffer fileData) throws ProfileException;
-
-
+    ProfileDocParseResult parseFileProfileByFilePath(String filePath, int userId) throws ProfileException;
     /**
      * 员工上传简历
      * @param employeeId 员工编辑

@@ -99,34 +99,6 @@ public class ReferralController {
         }
     }
 
-    @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
-    @ResponseBody
-    public String weChatUploadProfile(MultipartFile file,HttpServletRequest request){
-        Params<String, Object> params = null;
-        String result = new String();
-        try {
-            params = ParamUtils.parseequestParameter(request);
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
-            }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
-            //生成对应的Ifac，调用对应的接口,调用传入上传业务存储数据
-            ReferralService referralService = new ReferralService();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-
-    }
-
-
     /**
      * 员工推荐简历
      * @param id 员工编号
@@ -137,16 +109,19 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
     public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
+        logger.info("ReferralController referralProfile");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
         validateUtil.addRequiredValidate("推荐关系", referralForm.getRelationship());
-        validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
@@ -249,13 +224,16 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.POST)
     @ResponseBody
     public String postCandidateInfo(@PathVariable int id, @RequestBody CandidateInfo form) throws Exception {
+        logger.info("ReferralController postCandidateInfo");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredStringValidate("姓名", form.getName());
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
         validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (StringUtils.isBlank(result)) {
             logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
@@ -726,7 +704,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/application/evaluate", method = RequestMethod.POST)
     @ResponseBody
     public String employeeReferralApplicationEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
-
+        logger.info("ReferralController employeeReferralApplicationEvaluate");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", form
                 .getAppid());
@@ -738,7 +716,16 @@ public class ReferralController {
         validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
                 "推荐理由文本长度过长",null, 201);
         validateUtil.addSensitiveValidate("推荐理由文本", form.getRecomReasonText(), null, null);
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
+
+        List<String> reasons1 = new ArrayList<>();
+        if (form.getReferralReasons() != null && form.getReferralReasons().size() > 0) {
+            reasons1.addAll(form.getReferralReasons());
+        }
+        if (StringUtils.isNotBlank(form.getRecomReasonText())) {
+            reasons1.add(form.getRecomReasonText());
+        }
+        validateUtil.addRequiredOneValidate("推荐理由", reasons1);
+        logger.info("ReferralController employeeReferralApplicationEvaluate reasons1:{}", JSONObject.toJSONString(reasons1));
         if (form.getReferralReasons() != null) {
             String reasons = form.getReferralReasons().stream().collect(Collectors.joining(","));
             validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);

@@ -104,6 +104,7 @@ public class PositionBS {
      */
     @CounterIface
     public List<PositionSyncResultPojo> syncPositionToThirdParty(List<ThirdPartyPositionForm> positionForms) throws Exception {
+        logger.info("PositionBS syncPositionToThirdParty");
         if(StringUtils.isEmptyList(positionForms)){
             return new ArrayList<>();
         }
@@ -125,6 +126,7 @@ public class PositionBS {
 
         List<PositionSyncResultPojo> results=new ArrayList<>();
 
+        logger.info("PositionBS syncPositionToThirdParty positionForms:{}", JSONObject.toJSONString(positionForms));
         for(ThirdPartyPositionForm positionForm:positionForms){
             if(positionForm.getPositionId()==0 || StringUtils.isEmptyList(positionForm.getChannels())){
                 continue;
@@ -148,7 +150,7 @@ public class PositionBS {
             }
 
         }
-
+        logger.info("PositionBS syncPositionToThirdParty results:{}", JSONObject.toJSONString(results));
         return results;
     }
 

@@ -5,14 +5,12 @@ package com.moseeker.baseorm.db.dictdb.tables.records;
 
 
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record5;
 import org.jooq.Row5;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -28,7 +26,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollegeRecord extends UpdatableRecordImpl<DictCollegeRecord> implements Record5<Integer, String, Integer, String, Integer> {
 
-    private static final long serialVersionUID = 557007636;
+    private static final long serialVersionUID = 227597040;
 
     /**
      * Setter for <code>dictdb.dict_college.code</code>. 字典code
@@ -87,14 +85,14 @@ public class DictCollegeRecord extends UpdatableRecordImpl<DictCollegeRecord> im
     }
 
     /**
-     * Setter for <code>dictdb.dict_college.country_code</code>. dict_country.code , 861代表港澳台地区
+     * Setter for <code>dictdb.dict_college.country_code</code>. dict_country.id , 861代表港澳台地区
      */
     public void setCountryCode(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_college.country_code</code>. dict_country.code , 861代表港澳台地区
+     * Getter for <code>dictdb.dict_college.country_code</code>. dict_country.id , 861代表港澳台地区
      */
     public Integer getCountryCode() {
         return (Integer) get(4);
