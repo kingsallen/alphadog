@@ -126,7 +126,6 @@ public class EmployeeReferralProfileNotice {
         public EmployeeReferralProfileNotice buildEmployeeReferralProfileNotice() throws CommonException {
 
             ValidateUtil validateUtil = new ValidateUtil();
-            validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
             if (referralReasons != null) {
                 String reasons = referralReasons.stream().collect(Collectors.joining(","));
                 validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
@@ -141,6 +140,9 @@ public class EmployeeReferralProfileNotice {
             validateUtil.addStringLengthValidate("推荐理由文本", referralText, "推荐理由文本长度过长", "推荐理由文本长度过长",null, 201);
             validateUtil.addSensitiveValidate("推荐理由文本", referralText, null, null);
             String validateResult = validateUtil.validate();
+            if(com.moseeker.common.util.StringUtils.isEmptyList(referralReasons) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralText)){
+                validateResult =validateResult+ "推荐理由标签和文本必填任一一个；";
+            }
             if (StringUtils.isNotBlank(validateResult)) {
                 throw ProfileException.validateFailed(validateResult);
             }

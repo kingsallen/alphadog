@@ -76,6 +76,7 @@ service ProfileServices {
     i32 parseText(1: string profile, 2: i32 reference, 3: i32 appid) throws (1: common_struct.BIZException e);
     //员工简历解析
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+    profile_struct.ProfileParseResult parseFileProfileByFilePath(1: string filePath, 2:i32 userId, 3: string syncId)throws (1: common_struct.BIZException e)
      //用户简历解析
      profile_struct.ProfileParseResult parseUserFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
     //简历解析
@@ -97,6 +98,19 @@ service ProfileServices {
     string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //猎头简历解析上传
     profile_struct.ProfileParseResult parseHunterFileProfile(1:i32 headhunterId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+    //小程序上传简历
+    //人员上传文件时，调用此接口返回上传记录
+    profile_struct.ReferralUploadFiles uploadFiles(1:string sceneId, 2: string unionid, 3:string fileName, 4:binary fileData) throws (1:common_struct.BIZException e);
+    //上传文件分页列表
+    list<profile_struct.ReferralUploadFiles> getUploadFiles(1:string unionId,2:i32 pageSize,3:i32 pageNo ) throws (1:common_struct.BIZException e);
+    //下载文件
+    string downLoadFiles(1:string sceneId) throws (1:common_struct.BIZException e);
+    //解析上传文件，返回结果
+    profile_struct.ReferralUploadFiles referralResumeInfo(1:string sceneId) throws (1:common_struct.BIZException e);
+    //查找选择简历做内推的操作是否结束
+    bool getSpecifyProfileResult(1: i32 employeeId,2:string syncId) throws (1:common_struct.BIZException e);
+    //解析结果返回并确认
+    profile_struct.ProfileParseResult checkResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
 }
 
 service AttachmentServices {
@@ -138,7 +152,6 @@ service BasicServices {
     common_struct.Response putResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response delResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response reCalculateBasicCompleteness(1: i32 userId) throws (1: common_struct.BIZException e);
-    common_struct.Response uploadFiles(1 :profile_struct.PrfileUploadFiles query) throws (1:common_struct.BIZException);
 }
 
 service CredentialsServices {

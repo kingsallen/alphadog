@@ -1,7 +1,6 @@
-package com.moseeker.profile.service.impl.vo;
+package com.moseeker.servicemanager.web.controller.referral.vo;
 
-public class UploadFilesResult {
-    private int id;
+public class UploadControllerVO {
     private Integer employeeId;
     private Integer companyId;
     private String name;
@@ -10,17 +9,17 @@ public class UploadFilesResult {
     private Boolean employee;
     private Integer userId;
     private String fileName;
-    private String fileID;
+    private String fileId;
     private String createTime;
     private String saveUrl;
-    private String unionId;
+    private String ext;
 
-    public String getUnionId() {
-        return unionId;
+    public String getExt() {
+        return ext;
     }
 
-    public void setUnionId(String unionId) {
-        this.unionId = unionId;
+    public void setExt(String ext) {
+        this.ext = ext;
     }
 
     public Integer getEmployeeId() {
@@ -87,12 +86,12 @@ public class UploadFilesResult {
         this.fileName = fileName;
     }
 
-    public String getFileID() {
-        return fileID;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setFileID(String fileID) {
-        this.fileID = fileID;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
     public String getCreateTime() {
@@ -109,13 +108,5 @@ public class UploadFilesResult {
 
     public void setSaveUrl(String saveUrl) {
         this.saveUrl = saveUrl;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }
