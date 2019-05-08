@@ -87,7 +87,7 @@ public class ReferralUploadFilesDao extends DAOImpl<ReferralUploadFilesRecord, c
     }
 
     /**
-     * Fetch records that have <code>TYPE IN (values)</code>
+     * Fetch records that have <code>type IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByType(Integer... values) {
         return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.TYPE, values);
@@ -108,23 +108,23 @@ public class ReferralUploadFilesDao extends DAOImpl<ReferralUploadFilesRecord, c
     }
 
     /**
-     * Fetch records that have <code>createtime IN (values)</code>
+     * Fetch records that have <code>create_time IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByCreatetime(Timestamp... values) {
-        return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.CREATETIME, values);
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByCreateTime(Timestamp... values) {
+        return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.CREATE_TIME, values);
     }
 
     /**
-     * Fetch records that have <code>updatetime IN (values)</code>
+     * Fetch records that have <code>update_time IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByUpdatetime(Timestamp... values) {
-        return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.UPDATETIME, values);
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByUpdateTime(Timestamp... values) {
+        return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.UPDATE_TIME, values);
     }
 
     /**
-     * Fetch records that have <code>STATUS IN (values)</code>
+     * Fetch records that have <code>status IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByStatus(Integer... values) {
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralUploadFiles> fetchByStatus(Byte... values) {
         return fetch(ReferralUploadFiles.REFERRAL_UPLOAD_FILES.STATUS, values);
     }
 }
