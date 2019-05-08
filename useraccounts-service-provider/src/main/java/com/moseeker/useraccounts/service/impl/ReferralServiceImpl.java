@@ -51,19 +51,18 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.ReferralService;
-import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.activity.Activity;
 import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaAskReferralPojo;
 import com.moseeker.useraccounts.service.impl.vo.*;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -73,8 +72,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-
-import javax.annotation.Resource;
 
 /**
  * @Author: jack
@@ -385,6 +382,7 @@ public class ReferralServiceImpl implements ReferralService {
        return 1;
     }
 
+    @Override
     @RadarSwitchLimit
     public void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException {
         ValidateUtil vu = new ValidateUtil();
@@ -443,6 +441,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @RadarSwitchLimit
+    @Override
     public ContactPushInfo fetchSeekRecommend(int companyId, int referralId, int postUserId) throws CommonException {
         ContactPushInfo info = new ContactPushInfo();
         ReferralSeekRecommendRecord record = recommendDao.fetchByIdAndPostUserId(referralId, postUserId);
@@ -472,6 +471,7 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Transactional(rollbackFor = RuntimeException.class)
     @RadarSwitchLimit
+    @Override
     public void employeeReferralReason(int companyId, int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) {
 
@@ -512,6 +512,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @RadarSwitchLimit
+    @Override
     public void employeeReferralRecomEvaluation(int companyId, int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException {
         ReferralRecomEvaluationRecord record = recomEvaluationDao.fetchByPostPresenteePosition(postUserId, presenteeId, positionId);
         if (record == null) {

@@ -15,16 +15,18 @@ import com.moseeker.thrift.gen.referral.struct.RedPackets;
 import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
 import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
 import com.moseeker.useraccounts.service.ReferralRadarService;
-import com.moseeker.useraccounts.service.impl.vo.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
+import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -293,5 +295,5 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-
+    
 }
