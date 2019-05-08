@@ -46,6 +46,7 @@ public class IndusteryService {
 					industryMap.put("type", 0);
 					industryMap.put("code", industryType.getCode().intValue());
 					industryMap.put("name", industryType.getName());
+					industryMap.put("ename", industryType.getEname());
 					industryMaps.add(industryMap);
 				});
 			}
@@ -63,7 +64,7 @@ public class IndusteryService {
 					industryMap.put("type", industry.getType());
 					industryMap.put("code", industry.getCode().intValue());
 					industryMap.put("name", industry.getName());
-					industryMap.put("ename", industry.getEname());
+					industryMap.put("ename", industry.getEname());//英文字段支持
 					industryMaps.add(industryMap);
 				});
 			}
@@ -76,6 +77,7 @@ public class IndusteryService {
 					industryMap.put("type", 0);
 					industryMap.put("code", industryType.getCode().intValue());
 					industryMap.put("name", industryType.getName());
+					industryMap.put("ename", industryType.getEname());//英文字段支持
 					industryMaps.add(industryMap);
 				});
 			}
