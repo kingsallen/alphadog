@@ -80,14 +80,16 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
     /**
      * 修改推荐人
      * @param postUserId 历史推荐人
+     * @param positionId 职位编号
      * @param referenceId 被推荐人
      * @param id 新推荐人
      */
-    public void changePostUserId(int postUserId, Integer referenceId, int id) {
+    public void changePostUserId(int postUserId, int positionId, Integer referenceId, int id) {
         using(configuration()).update(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
                 .set(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID, id)
                 .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
                 .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(referenceId))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID.eq(positionId))
                 .execute();
     }
 
