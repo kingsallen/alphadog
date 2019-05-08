@@ -22,32 +22,32 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustry implements Serializable {
 
-    private static final long serialVersionUID = 2136151408;
+    private static final long serialVersionUID = 1608187436;
 
     private Integer code;
     private String  name;
-    private String  ename;
     private Integer type;
+    private String  ename;
 
     public DictIndustry() {}
 
     public DictIndustry(DictIndustry value) {
         this.code = value.code;
         this.name = value.name;
-        this.ename = value.ename;
         this.type = value.type;
+        this.ename = value.ename;
     }
 
     public DictIndustry(
         Integer code,
         String  name,
-        String  ename,
-        Integer type
+        Integer type,
+        String  ename
     ) {
         this.code = code;
         this.name = name;
-        this.ename = ename;
         this.type = type;
+        this.ename = ename;
     }
 
     public Integer getCode() {
@@ -66,14 +66,6 @@ public class DictIndustry implements Serializable {
         this.name = name;
     }
 
-    public String getEname() {
-        return this.ename;
-    }
-
-    public void setEname(String ename) {
-        this.ename = ename;
-    }
-
     public Integer getType() {
         return this.type;
     }
@@ -82,14 +74,22 @@ public class DictIndustry implements Serializable {
         this.type = type;
     }
 
+    public String getEname() {
+        return this.ename;
+    }
+
+    public void setEname(String ename) {
+        this.ename = ename;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DictIndustry (");
 
         sb.append(code);
         sb.append(", ").append(name);
-        sb.append(", ").append(ename);
         sb.append(", ").append(type);
+        sb.append(", ").append(ename);
 
         sb.append(")");
         return sb.toString();

@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictApplicationOrigin;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
@@ -13,10 +14,8 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
-import com.moseeker.baseorm.db.dictdb.tables.DictConstantCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
-import com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
@@ -75,6 +74,11 @@ public class Tables {
     public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
 
     /**
+     * The table <code>dictdb.dict_application_origin</code>.
+     */
+    public static final DictApplicationOrigin DICT_APPLICATION_ORIGIN = com.moseeker.baseorm.db.dictdb.tables.DictApplicationOrigin.DICT_APPLICATION_ORIGIN;
+
+    /**
      * 民航招聘的职位职能表
      */
     public static final DictCarnocOccupation DICT_CARNOC_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation.DICT_CARNOC_OCCUPATION;
@@ -110,11 +114,6 @@ public class Tables {
     public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
     /**
-     * The table <code>dictdb.dict_constant_copy1</code>.
-     */
-    public static final DictConstantCopy1 DICT_CONSTANT_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictConstantCopy1.DICT_CONSTANT_COPY1;
-
-    /**
      * 城市字典表
      */
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
@@ -123,11 +122,6 @@ public class Tables {
      * The table <code>dictdb.dict_industry</code>.
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
-
-    /**
-     * The table <code>dictdb.dict_industry_copy1</code>.
-     */
-    public static final DictIndustryCopy1 DICT_INDUSTRY_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1.DICT_INDUSTRY_COPY1;
 
     /**
      * 行业一级分类字典表

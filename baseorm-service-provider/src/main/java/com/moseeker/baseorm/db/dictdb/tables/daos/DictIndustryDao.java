@@ -72,16 +72,16 @@ public class DictIndustryDao extends DAOImpl<DictIndustryRecord, com.moseeker.ba
     }
 
     /**
-     * Fetch records that have <code>ename IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustry> fetchByEname(String... values) {
-        return fetch(DictIndustry.DICT_INDUSTRY.ENAME, values);
-    }
-
-    /**
      * Fetch records that have <code>type IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustry> fetchByType(Integer... values) {
         return fetch(DictIndustry.DICT_INDUSTRY.TYPE, values);
+    }
+
+    /**
+     * Fetch records that have <code>ename IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustry> fetchByEname(String... values) {
+        return fetch(DictIndustry.DICT_INDUSTRY.ENAME, values);
     }
 }
