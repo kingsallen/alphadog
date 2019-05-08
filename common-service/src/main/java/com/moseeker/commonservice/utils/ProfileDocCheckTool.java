@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class ProfileDocCheckTool {
 
-    private static List<String> fileSupport = new ArrayList<String>(){{add(".DOC");add(".DOCX");add(".PDF");add(".JPG");
+    private static List<String> fileSupport = new ArrayList<String>(){{add(".DOC");add(".DOCX");add(".PDF");add(".JPG");add(".JPEG");
     add(".PNG");}};
 
     private static long fileSize = 1024*1024*2;  //2M
