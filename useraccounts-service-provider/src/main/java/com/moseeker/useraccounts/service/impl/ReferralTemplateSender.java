@@ -66,7 +66,7 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
-    private static final Integer TEN_MINUTE = 3*60*1000;
+    private static final Integer TEN_MINUTE = 10*60*1000;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -158,48 +158,53 @@ public class ReferralTemplateSender {
 
     @Transactional(rollbackFor = Exception.class)
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
-        long timestamp = System.currentTimeMillis();
-        cardInfo.setTimestamp(timestamp);
-        logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
-        Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
-        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
-        // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-        factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), factShareChainDOS);
-        List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
-        List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
-        List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        List<Integer> factShareChainIds = factShareChainDOS.stream().map(CandidateShareChainDO::getId).distinct().collect(Collectors.toList());
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainIds)));
-        factShareChainDOS.removeIf(record -> record.getType() != 0);
-        //
-        Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        try {
+            long timestamp = System.currentTimeMillis();
+            cardInfo.setTimestamp(timestamp);
+            logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
+            Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
+            Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
+            // 获取指定时间前十分钟内的职位浏览人
+            List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+            factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), factShareChainDOS);
+            List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+            List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
+            List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
+            List<Integer> factShareChainIds = factShareChainDOS.stream().map(CandidateShareChainDO::getId).distinct().collect(Collectors.toList());
+            shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainIds)));
+            factShareChainDOS.removeIf(record -> record.getType() != 0);
+            //
+            Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
 
-        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
+            List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
 
-        userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
-        int visitNum = userIds.size();
-        logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
-        if(visitNum > 0){
-            UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
-            templateShareChainDao.addAllData(templateShareChainDOS);
-            List<Integer> newPositionIds = new ArrayList<>();
-            if(positionIds.size() > 2){
-                newPositionIds.add(positionIds.get(0));
-                newPositionIds.add(positionIds.get(1));
-            }else {
-                newPositionIds = positionIds;
+            userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
+            int visitNum = userIds.size();
+            logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
+            if(visitNum > 0){
+                UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
+                templateShareChainDao.addAllData(templateShareChainDOS);
+                List<Integer> newPositionIds = new ArrayList<>();
+                if(positionIds.size() > 2){
+                    newPositionIds.add(positionIds.get(0));
+                    newPositionIds.add(positionIds.get(1));
+                }else {
+                    newPositionIds = positionIds;
+                }
+                JSONObject request = new JSONObject();
+                request.put("pids", JSON.toJSONString(newPositionIds));
+                request.put("employeeId", employee.getId());
+                request.put("visitNum", visitNum);
+                request.put("companyId", cardInfo.getCompanyId());
+                request.put("timestamp", cardInfo.getTimestamp());
+                logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
+                amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
+                        REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+                                .build());
             }
-            JSONObject request = new JSONObject();
-            request.put("pids", JSON.toJSONString(newPositionIds));
-            request.put("employeeId", employee.getId());
-            request.put("visitNum", visitNum);
-            request.put("companyId", cardInfo.getCompanyId());
-            request.put("timestamp", cardInfo.getTimestamp());
-            logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
-            amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
-                    REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
-                            .build());
+        } catch (Exception e) {
+            logger.error("debug_10_min_message", e);
+            throw e;
         }
     }
 
