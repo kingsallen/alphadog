@@ -204,6 +204,7 @@ public class ReferralTemplateSender {
             }
         } catch (Exception e) {
             logger.error("debug_10_min_message", e);
+            throw e;
         }
     }
 
