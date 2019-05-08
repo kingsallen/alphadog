@@ -127,7 +127,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         referralUploadFilesRecord.setType(1);
         referralUploadFilesRecord.setFilename(uploadFilesResult.getName());
         referralUploadFilesRecord.setUrl(uploadFilesResult.getSaveUrl());
-        referralUploadFilesRecord.setStatus(0);
+        referralUploadFilesRecord.setStatus((byte) 0);
         uploadFilesResult.getCompanyId();
         logger.info("insertUpFiles uploadFilesResult{}",uploadFilesResult);
         ReferralUploadFilesRecord referralresult = referralUploadFilesDao.insertInto(referralUploadFilesRecord);
@@ -157,7 +157,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             for(ReferralUploadFilesRecord referralUploadFilesRecord : list){
                 UploadFilesResult uploadFilesResult = new UploadFilesResult();
                 uploadFilesResult.setSaveUrl(referralUploadFilesRecord.getUrl());
-                uploadFilesResult.setCreateTime(sf.format( referralUploadFilesRecord.getCreatetime() ));
+                uploadFilesResult.setCreateTime(sf.format( referralUploadFilesRecord.getCreateTime() ));
                 uploadFilesResult.setFileName(referralUploadFilesRecord.getFilename());
                 uploadFilesResult.setFileID(String.valueOf(referralUploadFilesRecord.getId()));
                 uploadFilesResult.setId(referralUploadFilesRecord.getId());

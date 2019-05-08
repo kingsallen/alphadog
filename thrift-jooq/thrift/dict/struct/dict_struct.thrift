@@ -77,6 +77,6 @@ struct DictConstant {
 struct IndustryConstant {
     1: optional i32 code,                // 常量code
     2: optional string name,             // 常量名称
-    3: optional i32 type		 // 字典分类
-    4: optional string ename,             // 英文名称
+    3: optional i32 type,		 // 字典分类
+    4: optional string ename           // 英文名称
 }

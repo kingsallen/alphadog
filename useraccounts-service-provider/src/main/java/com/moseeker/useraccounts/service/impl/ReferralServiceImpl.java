@@ -382,6 +382,7 @@ public class ReferralServiceImpl implements ReferralService {
        return 1;
     }
 
+    @Override
     @RadarSwitchLimit
     public void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException {
         ValidateUtil vu = new ValidateUtil();
@@ -470,6 +471,7 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Transactional(rollbackFor = RuntimeException.class)
     @RadarSwitchLimit
+    @Override
     public void employeeReferralReason(int companyId, int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) {
 

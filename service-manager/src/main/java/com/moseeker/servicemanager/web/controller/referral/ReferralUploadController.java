@@ -176,7 +176,7 @@ public class ReferralUploadController {
         logger.info("ReferralUploadController getCandidateInfo profileParseResult:{}", JSONObject.toJSONString(profileParseResult));
         parseResult.setFilename(profileParseResult.getFile());
         if (profileParseResult.getMobile() != null){
-            parseResult.setMobile(Long.valueOf(profileParseResult.getMobile()));
+            parseResult.setMobile(profileParseResult.getMobile());
         }
         parseResult.setName(profileParseResult.getName());
         logger.info("ReferralUploadController getCandidateInfo parseResult:{}", JSONObject.toJSONString(parseResult));

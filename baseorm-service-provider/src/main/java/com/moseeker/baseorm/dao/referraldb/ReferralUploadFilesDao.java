@@ -27,7 +27,7 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
         return   using(configuration())
                 .selectFrom(REFERRAL_UPLOAD_FILES)
                 .where(REFERRAL_UPLOAD_FILES.UNIONID.eq(unionid))
-                .orderBy(REFERRAL_UPLOAD_FILES.CREATETIME.desc())
+                .orderBy(REFERRAL_UPLOAD_FILES.CREATE_TIME.desc())
                 .limit((pagetNo-1)*pageSize, pageSize)
                 .fetchInto(ReferralUploadFilesRecord.class);
 
@@ -38,7 +38,7 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
         return   using(configuration())
                 .selectFrom(REFERRAL_UPLOAD_FILES)
                 .where(REFERRAL_UPLOAD_FILES.ID.eq(Integer.parseInt(id)))
-                .and(REFERRAL_UPLOAD_FILES.STATUS.eq(0))
+                .and(REFERRAL_UPLOAD_FILES.STATUS.eq((byte) 0))
                 .fetchOne();
 
     }
@@ -48,7 +48,7 @@ public class ReferralUploadFilesDao extends com.moseeker.baseorm.db.referraldb.t
         return   using(configuration())
                 .selectFrom(REFERRAL_UPLOAD_FILES)
                 .where(REFERRAL_UPLOAD_FILES.URL.eq(url))
-                .and(REFERRAL_UPLOAD_FILES.STATUS.eq(0))
+                .and(REFERRAL_UPLOAD_FILES.STATUS.eq((byte) 0))
                 .fetchOne();
 
     }

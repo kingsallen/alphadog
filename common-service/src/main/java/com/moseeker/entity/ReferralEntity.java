@@ -317,7 +317,7 @@ public class ReferralEntity {
             }
         }
         if (postUserId > 0) {
-            recomEvaluationDao.changePostUserId(postUserId, referralLog.getReferenceId(), userUserDO.getId());
+            recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
         }
         logger.info("ReferralEntity claimReferralCard end!");
     }
