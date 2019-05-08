@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralUploadFiles implements Serializable {
 
-    private static final long serialVersionUID = -201740065;
+    private static final long serialVersionUID = -501795111;
 
     private Integer   id;
     private String    fileid;
@@ -32,9 +32,9 @@ public class ReferralUploadFiles implements Serializable {
     private Integer   type;
     private String    filename;
     private String    url;
-    private Timestamp createtime;
-    private Timestamp updatetime;
-    private Integer   status;
+    private Timestamp createTime;
+    private Timestamp updateTime;
+    private Byte      status;
 
     public ReferralUploadFiles() {}
 
@@ -46,8 +46,8 @@ public class ReferralUploadFiles implements Serializable {
         this.type = value.type;
         this.filename = value.filename;
         this.url = value.url;
-        this.createtime = value.createtime;
-        this.updatetime = value.updatetime;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
         this.status = value.status;
     }
 
@@ -59,9 +59,9 @@ public class ReferralUploadFiles implements Serializable {
         Integer   type,
         String    filename,
         String    url,
-        Timestamp createtime,
-        Timestamp updatetime,
-        Integer   status
+        Timestamp createTime,
+        Timestamp updateTime,
+        Byte      status
     ) {
         this.id = id;
         this.fileid = fileid;
@@ -70,8 +70,8 @@ public class ReferralUploadFiles implements Serializable {
         this.type = type;
         this.filename = filename;
         this.url = url;
-        this.createtime = createtime;
-        this.updatetime = updatetime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
         this.status = status;
     }
 
@@ -131,27 +131,27 @@ public class ReferralUploadFiles implements Serializable {
         this.url = url;
     }
 
-    public Timestamp getCreatetime() {
-        return this.createtime;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
-        this.createtime = createtime;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
     }
 
-    public Timestamp getUpdatetime() {
-        return this.updatetime;
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
     }
 
-    public void setUpdatetime(Timestamp updatetime) {
-        this.updatetime = updatetime;
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
-    public Integer getStatus() {
+    public Byte getStatus() {
         return this.status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 
@@ -166,8 +166,8 @@ public class ReferralUploadFiles implements Serializable {
         sb.append(", ").append(type);
         sb.append(", ").append(filename);
         sb.append(", ").append(url);
-        sb.append(", ").append(createtime);
-        sb.append(", ").append(updatetime);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
         sb.append(", ").append(status);
 
         sb.append(")");

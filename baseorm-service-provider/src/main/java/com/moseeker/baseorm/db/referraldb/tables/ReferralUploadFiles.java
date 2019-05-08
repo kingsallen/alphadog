@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
 
-    private static final long serialVersionUID = 1079682654;
+    private static final long serialVersionUID = 439234241;
 
     /**
      * The reference instance of <code>referraldb.referral_upload_files</code>
@@ -72,9 +72,9 @@ public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
     public final TableField<ReferralUploadFilesRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "上传文件人id(可以是unionid)");
 
     /**
-     * The column <code>referraldb.referral_upload_files.TYPE</code>. 上传渠道：1 微信小程序 2电脑扫码上传 
+     * The column <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电脑扫码上传
      */
-    public final TableField<ReferralUploadFilesRecord, Integer> TYPE = createField("TYPE", org.jooq.impl.SQLDataType.INTEGER, this, "上传渠道：1 微信小程序 2电脑扫码上传 ");
+    public final TableField<ReferralUploadFilesRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER, this, "上传渠道：1 微信小程序 2电脑扫码上传");
 
     /**
      * The column <code>referraldb.referral_upload_files.filename</code>. 文件名
@@ -87,19 +87,19 @@ public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
     public final TableField<ReferralUploadFilesRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "文件保存地址");
 
     /**
-     * The column <code>referraldb.referral_upload_files.createtime</code>. 创建时间
+     * The column <code>referraldb.referral_upload_files.create_time</code>. 创建时间
      */
-    public final TableField<ReferralUploadFilesRecord, Timestamp> CREATETIME = createField("createtime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<ReferralUploadFilesRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>referraldb.referral_upload_files.updatetime</code>. 更新时间
+     * The column <code>referraldb.referral_upload_files.update_time</code>. 更新时间
      */
-    public final TableField<ReferralUploadFilesRecord, Timestamp> UPDATETIME = createField("updatetime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<ReferralUploadFilesRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>referraldb.referral_upload_files.STATUS</code>. 状态：0正常，1删除
+     * The column <code>referraldb.referral_upload_files.status</code>. 状态：0正常，1删除
      */
-    public final TableField<ReferralUploadFilesRecord, Integer> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.INTEGER, this, "状态：0正常，1删除");
+    public final TableField<ReferralUploadFilesRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT, this, "状态：0正常，1删除");
 
     /**
      * Create a <code>referraldb.referral_upload_files</code> table reference
