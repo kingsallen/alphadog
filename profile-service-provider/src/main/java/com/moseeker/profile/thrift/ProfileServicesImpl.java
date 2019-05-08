@@ -1,5 +1,6 @@
 package com.moseeker.profile.thrift;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -8,25 +9,29 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.ReferralService;
+import com.moseeker.profile.service.UploadFilesService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
+import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.*;
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProfileServicesImpl implements Iface {
@@ -47,6 +52,9 @@ public class ProfileServicesImpl implements Iface {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+    @Autowired
+    private UploadFilesService uploadFilesService;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -140,6 +148,24 @@ public class ProfileServicesImpl implements Iface {
             BeanUtils.copyProperties(result, profileParseResult);
             return profileParseResult;
         } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId, String syncId) throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    referralService.parseFileProfileByFilePath(filePath, userId);
+            uploadFilesService.setRedisKey(String.valueOf(userId), syncId);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+
+            //uploadFilesService.setRedisKey(userId,sceneId);
+
+            return profileParseResult;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -247,6 +273,110 @@ public class ProfileServicesImpl implements Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public ReferralUploadFiles uploadFiles(String sceneId, String unionId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+        ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
+        try {
+            UploadFilesResult uploadFilesResult = uploadFilesService.uploadFiles(fileName, fileData);
+            logger.info("上传文件返回结果： uploadFilesResult:{}uploadFiles", JSONObject.toJSONString(uploadFilesResult));
+            uploadFilesResult.setFileID(sceneId);
+            uploadFilesResult.setUnionId(unionId);
+            UploadFilesResult uploadResult = uploadFilesService.insertUpFiles(uploadFilesResult);
+            logger.info("uploadFiles上传简历保存记录: uploadResult{}",uploadResult);
+            referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
+            referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
+            referralUploadFiles.setFilename(uploadFilesResult.getName());
+            referralUploadFiles.setId(uploadResult.getId());
+            return referralUploadFiles;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
+        try {
+            List<UploadFilesResult> list = uploadFilesService.getUploadFiles(unionId, pageSize, pageNo);
+            logger.info("getUploadFiles list{}",list.toString());
+            List<ReferralUploadFiles> referralUploadFilesList = new ArrayList<>();
+            if (list != null && list.size() >0){
+                for (UploadFilesResult uploadFilesResult : list){
+                    ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
+                    referralUploadFiles.setFilename(uploadFilesResult.getFileName());
+                    referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
+                    referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
+                    referralUploadFiles.setFileId(uploadFilesResult.getFileID());
+                    referralUploadFiles.setId(uploadFilesResult.getId());
+                    referralUploadFilesList.add(referralUploadFiles);
+                }
+            }
+            return referralUploadFilesList;
+        } catch (BIZException e) {
+            logger.error(e.getMessage());
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String downLoadFiles(String fileId) throws BIZException, TException {
+        try {
+            return uploadFilesService.downLoadFiles(fileId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ReferralUploadFiles referralResumeInfo(String fileId) throws BIZException, TException {
+        try {
+            UploadFilesResult uploadFilesResult = uploadFilesService.resumeInfo(fileId);
+            ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
+            referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
+            referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
+            referralUploadFiles.setFilename(uploadFilesResult.getFileName());
+            if (uploadFilesResult.getUserId() != null){
+                referralUploadFiles.setId(uploadFilesResult.getUserId());
+            }
+            return referralUploadFiles;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    /*@Override
+    public boolean getSpecifyProfileResult(int employeeId ) throws BIZException, TException {
+        try {
+            return uploadFilesService.getSpecifyProfileResult(employeeId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }*/
+
+    @Override
+    public boolean getSpecifyProfileResult(int employeeId,String syncId) throws BIZException, TException {
+        try {
+            return uploadFilesService.getSpecifyProfileResult(employeeId,syncId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ProfileParseResult checkResult(int employeeId) throws BIZException, TException {
+        ProfileParseResult profileParseResult = new ProfileParseResult();
+        try {
+            UploadFilesResult uploadFilesResult = uploadFilesService.checkResult(employeeId);
+            profileParseResult.setMobile(uploadFilesResult.getMobile());
+            profileParseResult.setFile(uploadFilesResult.getFileName());
+            profileParseResult.setName(uploadFilesResult.getName());
+            logger.info("checkResult profileParseResult:{}",JSONObject.toJSONString(profileParseResult));
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return profileParseResult;
     }
 
     @Override

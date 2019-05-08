@@ -99,34 +99,6 @@ public class ReferralController {
         }
     }
 
-    @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
-    @ResponseBody
-    public String weChatUploadProfile(MultipartFile file,HttpServletRequest request){
-        Params<String, Object> params = null;
-        String result = new String();
-        try {
-            params = ParamUtils.parseequestParameter(request);
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
-            }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
-            //生成对应的Ifac，调用对应的接口,调用传入上传业务存储数据
-            ReferralService referralService = new ReferralService();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-
-    }
-
-
     /**
      * 员工推荐简历
      * @param id 员工编号
@@ -142,11 +114,13 @@ public class ReferralController {
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
         validateUtil.addRequiredValidate("推荐关系", referralForm.getRelationship());
-        validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
@@ -253,9 +227,11 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("姓名", form.getName());
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
         validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (StringUtils.isBlank(result)) {
             logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();

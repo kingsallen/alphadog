@@ -18,6 +18,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles;
 
 import javax.annotation.Generated;
 
@@ -104,4 +105,9 @@ public class Tables {
      * 候选人联系内推记录
      */
     public static final ReferralSeekRecommend REFERRAL_SEEK_RECOMMEND = com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
+
+    /**
+     * 用户上传文件记录表
+     */
+    public static final ReferralUploadFiles REFERRAL_UPLOAD_FILES = com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles.REFERRAL_UPLOAD_FILES;
 }

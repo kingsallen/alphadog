@@ -1,19 +1,20 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import static com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import org.jooq.Configuration;
+import org.jooq.Param;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.jooq.Configuration;
-import org.jooq.Param;
+import static com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
 import static org.jooq.impl.DSL.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 /**
  * @Author: jack

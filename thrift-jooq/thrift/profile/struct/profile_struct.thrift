@@ -297,14 +297,15 @@ struct RequiredFieldInfo{
     6: optional bool city
 }
 
-struct PrfileUploadFiles{
+struct ReferralUploadFiles{
     1: optional i32 id,
-    2: optional String fileId,
-    3: optional String uniname,
-    4: optional String unionId;
-    5: optional String filename,
-    6: optional String url,
-    7: optional Timestamp create_time,
-    8: optional Timestamp update_time,
-    9: optional i32 status
+    2: optional string fileId,
+    3: optional string uniname,
+    4: optional string unionId,
+    5: optional string type,
+    6: optional string filename,
+    7: optional string url,
+    8: optional string create_time,
+    9: optional string update_time,
+    10: optional i32 status
 }
