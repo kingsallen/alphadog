@@ -141,7 +141,15 @@ public class ReferralServiceImpl implements ReferralService {
      */
     @Override
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
-        return abstractResumeFileParser.parseResume(employeeId,fileName,fileData);
+        LocalDateTime anylisisStart = LocalDateTime.now();
+        logger.info("ReferralServiceImpl parseFileProfile 员工简历解析耗时：anylisisStart{}",anylisisStart);
+        ProfileDocParseResult profileDocParseResult = abstractResumeFileParser.parseResume(employeeId,fileName,fileData);
+        LocalDateTime anylisisEnd = LocalDateTime.now();
+        logger.info("ReferralServiceImpl parseFileProfile 员工简历解析耗时：anylisisEnd{}",anylisisEnd);
+        Duration duration = Duration.between(anylisisStart,anylisisEnd);
+        long millis = duration.toMillis();//相差毫秒数
+        logger.info("ReferralServiceImpl parseFileProfile 员工简历解析耗时：millis{}",millis);
+        return profileDocParseResult;
 //        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
 //
 //        if (!ProfileDocCheckTool.checkFileName(fileName)) {
