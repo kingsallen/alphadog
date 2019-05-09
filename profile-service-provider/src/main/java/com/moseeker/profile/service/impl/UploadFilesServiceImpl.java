@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +65,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException {
         logger.info("上传文件参数："+"fileName"+fileName+"fileData"+fileData);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
-
+        LocalDateTime anylisisStart = LocalDateTime.now();
+        logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：anylisisStart{}",anylisisStart);
         if(!ProfileDocCheckTool.checkFileName(fileName)){
             throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
         }
@@ -88,6 +91,11 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 }
             }
             logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
+            LocalDateTime anylisisEnd = LocalDateTime.now();
+            logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：anylisisEnd{}",anylisisEnd);
+            Duration duration = Duration.between(anylisisStart,anylisisEnd);
+            long millis = duration.toMillis();//相差毫秒数
+            logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：millis{}",millis);
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

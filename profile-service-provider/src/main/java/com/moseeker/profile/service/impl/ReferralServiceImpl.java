@@ -14,7 +14,6 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.*;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.biz.ProfileParseUtil;
@@ -57,8 +56,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -191,12 +190,14 @@ public class ReferralServiceImpl implements ReferralService {
         if (employeeDO == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
+        LocalDateTime parseFileStart = LocalDateTime.now();
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFileStart{}",parseFileStart);
         File file = new File(filePath);
         if (!file.exists()) {
             throw ProfileException.REFERRAL_FILE_NOT_EXIST;
         }
         byte[] fileData = new byte[(int)file.length()];
-        try(FileInputStream in = new FileInputStream(file);) {
+        try(FileInputStream in = new FileInputStream(file)) {
             in.read(fileData);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -207,7 +208,19 @@ public class ReferralServiceImpl implements ReferralService {
         fileNameData.setFileName(file.getName());
         fileNameData.setFileAbsoluteName(filePath);
         fileNameData.setOriginName(file.getName());
-        return parseResult(employeeDO.getId(), file.getName(), data, fileNameData);
+
+        LocalDateTime parseFileStartReadFile = LocalDateTime.now();
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFileStartReadFile{}",parseFileStartReadFile);
+        Duration duration = Duration.between(parseFileStart,parseFileStartReadFile);
+        long millis = duration.toMillis();//相差毫秒数
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath 读取文件时间差:millis{}",millis);
+        ProfileDocParseResult profileDocParseResult = parseResult(employeeDO.getId(), file.getName(), data, fileNameData);
+        LocalDateTime parseFileEnd = LocalDateTime.now();
+        Duration parseTimeDiffer = Duration.between(parseFileStart,parseFileEnd);
+        long parseTimeDifferMills = parseTimeDiffer.toMillis();//相差毫秒数
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFileEnd{}",parseFileEnd);
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath 解析简历时间差:parseTimeDifferMills{}",parseTimeDifferMills);
+        return profileDocParseResult;
     }
 
     @Override
