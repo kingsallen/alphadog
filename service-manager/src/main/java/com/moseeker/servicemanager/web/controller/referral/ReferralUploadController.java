@@ -54,7 +54,7 @@ public class ReferralUploadController {
             logger.info("ReferralUploadController uploadProfile bytes:{}", file.getBytes().length);
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
-                return Result.fail(99999, "请上传小于2M的文件！").toJson();
+                return Result.fail(99999, "请上传小于5M的文件！").toJson();
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
