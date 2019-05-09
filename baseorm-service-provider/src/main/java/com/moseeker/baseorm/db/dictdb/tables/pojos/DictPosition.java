@@ -22,10 +22,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictPosition implements Serializable {
 
-    private static final long serialVersionUID = -80963172;
+    private static final long serialVersionUID = 1380728120;
 
     private Integer code;
     private String  name;
+    private String  ename;
     private Integer parent;
     private Byte    level;
 
@@ -34,6 +35,7 @@ public class DictPosition implements Serializable {
     public DictPosition(DictPosition value) {
         this.code = value.code;
         this.name = value.name;
+        this.ename = value.ename;
         this.parent = value.parent;
         this.level = value.level;
     }
@@ -41,11 +43,13 @@ public class DictPosition implements Serializable {
     public DictPosition(
         Integer code,
         String  name,
+        String  ename,
         Integer parent,
         Byte    level
     ) {
         this.code = code;
         this.name = name;
+        this.ename = ename;
         this.parent = parent;
         this.level = level;
     }
@@ -64,6 +68,14 @@ public class DictPosition implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEname() {
+        return this.ename;
+    }
+
+    public void setEname(String ename) {
+        this.ename = ename;
     }
 
     public Integer getParent() {
@@ -88,6 +100,7 @@ public class DictPosition implements Serializable {
 
         sb.append(code);
         sb.append(", ").append(name);
+        sb.append(", ").append(ename);
         sb.append(", ").append(parent);
         sb.append(", ").append(level);
 

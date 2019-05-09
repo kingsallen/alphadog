@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictLiepinOccupationRecord extends UpdatableRecordImpl<DictLiepinOccupationRecord> implements Record10<Integer, Integer, Integer, String, Integer, Timestamp, Timestamp, Integer, String, Byte> {
 
-    private static final long serialVersionUID = 1705288505;
+    private static final long serialVersionUID = -886620159;
 
     /**
      * Setter for <code>dictdb.dict_liepin_occupation.id</code>.
@@ -145,14 +145,14 @@ public class DictLiepinOccupationRecord extends UpdatableRecordImpl<DictLiepinOc
     }
 
     /**
-     * Setter for <code>dictdb.dict_liepin_occupation.name</code>.
+     * Setter for <code>dictdb.dict_liepin_occupation.name</code>. 职能名称
      */
     public void setName(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_liepin_occupation.name</code>.
+     * Getter for <code>dictdb.dict_liepin_occupation.name</code>. 职能名称
      */
     public String getName() {
         return (String) get(8);
