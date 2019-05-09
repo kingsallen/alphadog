@@ -42,12 +42,13 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
                 .fetchInto(ReferralEmployeeNetworkResourcesRecord.class);
     }
 
-    public int fetchByPostUserIdCount(int postUserId, Set<Integer> presenteeUserId){
+    public int fetchByPostUserIdCount(int postUserId, Set<Integer> presenteeUserId,int companyId){
         return using(configuration()).selectCount().from(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.leftJoin(JOB_POSITION)
                 .on(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POSITION_ID.eq(JOB_POSITION.ID)))
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.DISABLE.eq((byte)0))
+                .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.COMPANY_ID.eq(companyId))
                 .and(JOB_POSITION.STATUS.eq((byte)0))
                 .fetchOne().value1();
     }
