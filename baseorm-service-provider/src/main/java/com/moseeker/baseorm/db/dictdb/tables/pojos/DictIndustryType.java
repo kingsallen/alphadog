@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustryType implements Serializable {
 
-    private static final long serialVersionUID = -1616806408;
+    private static final long serialVersionUID = -1850568498;
 
     private Integer code;
     private String  name;
@@ -30,6 +30,7 @@ public class DictIndustryType implements Serializable {
     private String  jobImg;
     private String  teamImg;
     private String  pcImg;
+    private String  ename;
 
     public DictIndustryType() {}
 
@@ -40,6 +41,7 @@ public class DictIndustryType implements Serializable {
         this.jobImg = value.jobImg;
         this.teamImg = value.teamImg;
         this.pcImg = value.pcImg;
+        this.ename = value.ename;
     }
 
     public DictIndustryType(
@@ -48,7 +50,8 @@ public class DictIndustryType implements Serializable {
         String  companyImg,
         String  jobImg,
         String  teamImg,
-        String  pcImg
+        String  pcImg,
+        String  ename
     ) {
         this.code = code;
         this.name = name;
@@ -56,6 +59,7 @@ public class DictIndustryType implements Serializable {
         this.jobImg = jobImg;
         this.teamImg = teamImg;
         this.pcImg = pcImg;
+        this.ename = ename;
     }
 
     public Integer getCode() {
@@ -106,6 +110,14 @@ public class DictIndustryType implements Serializable {
         this.pcImg = pcImg;
     }
 
+    public String getEname() {
+        return this.ename;
+    }
+
+    public void setEname(String ename) {
+        this.ename = ename;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DictIndustryType (");
@@ -116,6 +128,7 @@ public class DictIndustryType implements Serializable {
         sb.append(", ").append(jobImg);
         sb.append(", ").append(teamImg);
         sb.append(", ").append(pcImg);
+        sb.append(", ").append(ename);
 
         sb.append(")");
         return sb.toString();

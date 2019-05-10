@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictApplicationOrigin;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
@@ -22,6 +23,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
 import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
@@ -70,6 +72,11 @@ public class Tables {
      * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
     public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
+
+    /**
+     * The table <code>dictdb.dict_application_origin</code>.
+     */
+    public static final DictApplicationOrigin DICT_APPLICATION_ORIGIN = com.moseeker.baseorm.db.dictdb.tables.DictApplicationOrigin.DICT_APPLICATION_ORIGIN;
 
     /**
      * 民航招聘的职位职能表
@@ -150,6 +157,11 @@ public class Tables {
      * 职能分类字典表
      */
     public static final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
+
+    /**
+     * 职能分类字典表
+     */
+    public static final DictPositionCopy1 DICT_POSITION_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1.DICT_POSITION_COPY1;
 
     /**
      * 内推能力标签常量
