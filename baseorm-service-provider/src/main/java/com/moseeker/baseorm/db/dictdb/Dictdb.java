@@ -23,7 +23,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
-import com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
 import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
@@ -56,7 +55,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 778127726;
+    private static final long serialVersionUID = 436856067;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -174,11 +173,6 @@ public class Dictdb extends SchemaImpl {
     public final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
 
     /**
-     * 职能分类字典表
-     */
-    public final DictPositionCopy1 DICT_POSITION_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1.DICT_POSITION_COPY1;
-
-    /**
      * 内推能力标签常量
      */
     public final DictReferralEvaluate DICT_REFERRAL_EVALUATE = com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate.DICT_REFERRAL_EVALUATE;
@@ -245,7 +239,6 @@ public class Dictdb extends SchemaImpl {
             DictMajor.DICT_MAJOR,
             DictMarsMajor.DICT_MARS_MAJOR,
             DictPosition.DICT_POSITION,
-            DictPositionCopy1.DICT_POSITION_COPY1,
             DictReferralEvaluate.DICT_REFERRAL_EVALUATE,
             DictTestMobile.DICT_TEST_MOBILE,
             DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION,
