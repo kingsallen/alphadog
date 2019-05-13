@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityMapRecord extends UpdatableRecordImpl<DictCityMapRecord> implements Record6<Integer, Integer, String, Integer, Integer, Timestamp> {
 
-    private static final long serialVersionUID = -1904155601;
+    private static final long serialVersionUID = -912296559;
 
     /**
      * Setter for <code>dictdb.dict_city_map.id</code>. 主键id
@@ -75,14 +75,14 @@ public class DictCityMapRecord extends UpdatableRecordImpl<DictCityMapRecord> im
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_map.channel</code>. 渠道 1 51job 2 猎聘 3 智联 4 linkedin 11 job58
+     * Setter for <code>dictdb.dict_city_map.channel</code>. 渠道 1 51job 2 猎聘 3 智联 4 linkedin
      */
     public void setChannel(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_map.channel</code>. 渠道 1 51job 2 猎聘 3 智联 4 linkedin 11 job58
+     * Getter for <code>dictdb.dict_city_map.channel</code>. 渠道 1 51job 2 猎聘 3 智联 4 linkedin
      */
     public Integer getChannel() {
         return (Integer) get(3);
