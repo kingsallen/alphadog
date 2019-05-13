@@ -687,6 +687,7 @@ public class UseraccountsService {
                             || user.isSetHeadimg()) {
                         profileDao.updateUpdateTimeByUserId((int) user.getId());
                     }
+                    this.updateUserMessage((int)user.getId());
                     return ResponseUtils.success(null);
                 } else {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -699,6 +700,14 @@ public class UseraccountsService {
 
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    private void updateUserMessage(int userId){
+        Map<String, Object> result = new HashMap<>();
+        result.put("user_id", userId);
+        result.put("tableName","user_meassage");
+        redisClient.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(),JSON.toJSONString(result));
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
     }
 
     /**
