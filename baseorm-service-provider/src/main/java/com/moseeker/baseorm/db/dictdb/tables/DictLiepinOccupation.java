@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> {
 
-    private static final long serialVersionUID = -928652228;
+    private static final long serialVersionUID = -557033156;
 
     /**
      * The reference instance of <code>dictdb.dict_liepin_occupation</code>
@@ -92,9 +92,9 @@ public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> 
     public final TableField<DictLiepinOccupationRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态 0:有效，1:无效");
 
     /**
-     * The column <code>dictdb.dict_liepin_occupation.name</code>. 职能名称
+     * The column <code>dictdb.dict_liepin_occupation.name</code>.
      */
-    public final TableField<DictLiepinOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能名称");
+    public final TableField<DictLiepinOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>dictdb.dict_liepin_occupation.candidate_source</code>. 0:社招 1：校招

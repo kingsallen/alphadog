@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord> {
 
-    private static final long serialVersionUID = -547803647;
+    private static final long serialVersionUID = -1795307007;
 
     /**
      * The reference instance of <code>dictdb.dict_zhilian_occupation</code>
@@ -52,9 +52,9 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
     }
 
     /**
-     * The column <code>dictdb.dict_zhilian_occupation.code</code>. 职能id
+     * The column <code>dictdb.dict_zhilian_occupation.CODE</code>. 职能id
      */
-    public final TableField<DictZhilianOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职能id");
+    public final TableField<DictZhilianOccupationRecord, Integer> CODE = createField("CODE", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职能id");
 
     /**
      * The column <code>dictdb.dict_zhilian_occupation.parent_id</code>. 父Id，上一级职能的ID
@@ -62,9 +62,9 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
     public final TableField<DictZhilianOccupationRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "父Id，上一级职能的ID");
 
     /**
-     * The column <code>dictdb.dict_zhilian_occupation.name</code>. 职能名称
+     * The column <code>dictdb.dict_zhilian_occupation.NAME</code>. 职能名称
      */
-    public final TableField<DictZhilianOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能名称");
+    public final TableField<DictZhilianOccupationRecord, String> NAME = createField("NAME", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能名称");
 
     /**
      * The column <code>dictdb.dict_zhilian_occupation.code_other</code>. 第三方职能id
@@ -72,14 +72,14 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
     public final TableField<DictZhilianOccupationRecord, String> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "第三方职能id");
 
     /**
-     * The column <code>dictdb.dict_zhilian_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+     * The column <code>dictdb.dict_zhilian_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
      */
-    public final TableField<DictZhilianOccupationRecord, Short> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "职能级别 1是一级2是二级依次类推");
+    public final TableField<DictZhilianOccupationRecord, Short> LEVEL = createField("LEVEL", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "职能级别 1是一级2是二级依次类推");
 
     /**
-     * The column <code>dictdb.dict_zhilian_occupation.status</code>. 只能状态 0 是有效 1是无效
+     * The column <code>dictdb.dict_zhilian_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
      */
-    public final TableField<DictZhilianOccupationRecord, Short> STATUS = createField("status", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "只能状态 0 是有效 1是无效");
+    public final TableField<DictZhilianOccupationRecord, Short> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "只能状态 0 是有效 1是无效");
 
     /**
      * The column <code>dictdb.dict_zhilian_occupation.createTime</code>. 创建时间
