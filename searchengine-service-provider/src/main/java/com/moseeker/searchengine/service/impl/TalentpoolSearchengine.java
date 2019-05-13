@@ -1,7 +1,6 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -12,8 +11,10 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.domain.KeywordSearchParams;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
+import com.moseeker.searchengine.service.impl.keywordSearch.searchkeyword.KeywordSearchFactory;
 import com.moseeker.searchengine.util.SearTypeEnum;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
@@ -1070,6 +1071,11 @@ public class TalentpoolSearchengine {
         String companyManualTag=params.get("company_manual_tag");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
+        String hrId=params.get("hr_id");
+        String profilePoolId = params.get("profile_pool_id");
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
         if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag,companyManualTag) ){
             if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
                 if(!intentionCityCode.contains("111111")){
@@ -1080,7 +1086,10 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(keyword)){
 //                this.queryByKeyWord(keyword,query);
                 String cid=params.get("company_id");
-                this.queryNewKeyWords(keyword,cid,query,client);
+                KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,query,client,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
+                KeywordSearchFactory keywordSearchFactory=new KeywordSearchFactory();
+                keywordSearchFactory.search(keywordSearchParams);
+//                this.queryNewKeyWords(keyword,cid,query,client);
             }
 
             this.homeQuery(cityCode,query);
