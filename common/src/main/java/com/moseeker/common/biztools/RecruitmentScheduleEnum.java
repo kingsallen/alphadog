@@ -28,7 +28,9 @@ public enum RecruitmentScheduleEnum {
     OFFER_ACCEPT(Constant.RECRUIT_STATUS_OFFERACCEPTED),
     OFFERED(Constant.RECRUIT_STATUS_OFFERED),
     IMPROVE_CANDIDATE(Constant.RECRUIT_STATUS_FULL_RECOM_INFO),
-    EMPLOYEE_RECOMMEND(Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
+    EMPLOYEE_RECOMMEND(Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND),
+    RECRUIT_STATUS_WRITTEN_EXAMINATION(Constant.RECRUIT_STATUS_WRITTEN_EXAMINATION),
+    RECRUIT_STATUS_FINAL_INTERVIEW(Constant.RECRUIT_STATUS_FINAL_INTERVIEW);
 
     RecruitmentScheduleEnum(int value) {
         init(value);
@@ -65,6 +67,8 @@ public enum RecruitmentScheduleEnum {
             case 10: value = 3; break;
             case 2:
             case 5:
+            case 17:
+            case 18:
             case 12 : value = 4; break;
             case 3:
             case 11: value = 5; break;
@@ -84,6 +88,8 @@ public enum RecruitmentScheduleEnum {
                         case 10: value = 8; break;
                         case 2:
                         case 5:
+                        case 17:
+                        case 18:
                         case 12 : value = 9; break;
                         default: value = 0;
                     }
@@ -112,6 +118,8 @@ public enum RecruitmentScheduleEnum {
             case 10:
             case 2:
             case 12 :
+            case 17:
+            case 18:
             case 5: value = 2; break;
 
             case 11 :
@@ -130,6 +138,8 @@ public enum RecruitmentScheduleEnum {
                     case 5:
                     case 15:
                     case 16:
+                    case 17:
+                    case 18:
                         value = 2;
                         break;
                     case 12:
@@ -171,6 +181,8 @@ public enum RecruitmentScheduleEnum {
             case 3:
             case 16:
             case 15:
+            case 17:
+            case 18:
                 if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
                 } else {
@@ -346,6 +358,18 @@ public enum RecruitmentScheduleEnum {
                 this.priority = 4;
                 this.recuritOrder = 3;
                 this.applierView = "恭喜您已被內部员工推荐";
+                break;
+
+            case 18:
+            case 17:
+                this.id = value;
+                this.status = "HR已经安排面试";
+                this.award = 10;
+                this.description = "HR已经安排面试";
+                this.disable = true;
+                this.priority = 4;
+                this.recuritOrder = 3;
+                this.applierView = "HR已经安排面试";
                 break;
         }
     }
