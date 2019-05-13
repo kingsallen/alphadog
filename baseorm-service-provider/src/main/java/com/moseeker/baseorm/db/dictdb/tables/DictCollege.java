@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollege extends TableImpl<DictCollegeRecord> {
 
-    private static final long serialVersionUID = 1327248798;
+    private static final long serialVersionUID = -786520354;
 
     /**
      * The reference instance of <code>dictdb.dict_college</code>
@@ -70,9 +70,9 @@ public class DictCollege extends TableImpl<DictCollegeRecord> {
     public final TableField<DictCollegeRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "院校logo");
 
     /**
-     * The column <code>dictdb.dict_college.country_code</code>. dict_country.id , 861代表港澳台地区
+     * The column <code>dictdb.dict_college.country_code</code>. dict_country.code , 861代表港澳台地区
      */
-    public final TableField<DictCollegeRecord, Integer> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000043", org.jooq.impl.SQLDataType.INTEGER)), this, "dict_country.id , 861代表港澳台地区");
+    public final TableField<DictCollegeRecord, Integer> COUNTRY_CODE = createField("country_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000043", org.jooq.impl.SQLDataType.INTEGER)), this, "dict_country.code , 861代表港澳台地区");
 
     /**
      * Create a <code>dictdb.dict_college</code> table reference

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCity extends TableImpl<DictCityRecord> {
 
-    private static final long serialVersionUID = -548622044;
+    private static final long serialVersionUID = 535867883;
 
     /**
      * The reference instance of <code>dictdb.dict_city</code>
@@ -113,16 +113,8 @@ public class DictCity extends TableImpl<DictCityRecord> {
      * {@inheritDoc}
      */
     @Override
-    public UniqueKey<DictCityRecord> getPrimaryKey() {
-        return Keys.KEY_DICT_CITY_PRIMARY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<UniqueKey<DictCityRecord>> getKeys() {
-        return Arrays.<UniqueKey<DictCityRecord>>asList(Keys.KEY_DICT_CITY_PRIMARY, Keys.KEY_DICT_CITY_CODE);
+        return Arrays.<UniqueKey<DictCityRecord>>asList(Keys.KEY_DICT_CITY_CODE);
     }
 
     /**
