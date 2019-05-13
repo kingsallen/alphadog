@@ -1432,7 +1432,7 @@ public class JobApplicataionService {
             applications = apps.stream().map(app -> {
                 ApplicationRecord ar = new ApplicationRecord();
                 ar.setId(app.getId());
-                logger.info("JobApplicataionService getApplications appid:{}", app.getId());
+                logger.info("JobApplicataionService getApplications appid:{}, appTplId:{}", app.getId(), app.getAppTplId());
                 RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
                 logger.info("JobApplicataionService getApplications recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
                 ar.setStatusName(recruitmentScheduleEnum.getStatus());
