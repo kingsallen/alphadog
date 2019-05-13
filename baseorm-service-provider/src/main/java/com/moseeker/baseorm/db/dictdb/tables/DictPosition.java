@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictPosition extends TableImpl<DictPositionRecord> {
 
-    private static final long serialVersionUID = 1985303816;
+    private static final long serialVersionUID = 1436946134;
 
     /**
      * The reference instance of <code>dictdb.dict_position</code>
@@ -58,11 +58,6 @@ public class DictPosition extends TableImpl<DictPositionRecord> {
      * The column <code>dictdb.dict_position.name</code>. 字典name
      */
     public final TableField<DictPositionRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "字典name");
-
-    /**
-     * The column <code>dictdb.dict_position.ename</code>.
-     */
-    public final TableField<DictPositionRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(99), this, "");
 
     /**
      * The column <code>dictdb.dict_position.parent</code>. 父编码

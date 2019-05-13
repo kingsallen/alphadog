@@ -16,7 +16,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
-import com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
@@ -24,7 +23,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
-import com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
 import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
@@ -125,11 +123,6 @@ public class Tables {
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
     /**
-     * The table <code>dictdb.dict_industry_copy1</code>.
-     */
-    public static final DictIndustryCopy1 DICT_INDUSTRY_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1.DICT_INDUSTRY_COPY1;
-
-    /**
      * 行业一级分类字典表
      */
     public static final DictIndustryType DICT_INDUSTRY_TYPE = com.moseeker.baseorm.db.dictdb.tables.DictIndustryType.DICT_INDUSTRY_TYPE;
@@ -163,11 +156,6 @@ public class Tables {
      * 职能分类字典表
      */
     public static final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
-
-    /**
-     * 职能分类字典表
-     */
-    public static final DictPositionCopy1 DICT_POSITION_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1.DICT_POSITION_COPY1;
 
     /**
      * 内推能力标签常量
