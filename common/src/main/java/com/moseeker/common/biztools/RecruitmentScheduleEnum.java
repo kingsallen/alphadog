@@ -361,15 +361,24 @@ public enum RecruitmentScheduleEnum {
                 break;
 
             case 18:
-            case 17:
                 this.id = value;
-                this.status = "HR已经安排面试";
+                this.status = "您已进入终面";
                 this.award = 10;
-                this.description = "HR已经安排面试";
+                this.description = "您已进入终面";
                 this.disable = true;
                 this.priority = 4;
                 this.recuritOrder = 3;
-                this.applierView = "HR已经安排面试";
+                this.applierView = "您已进入终面";
+                break;
+            case 17:
+                this.id = value;
+                this.status = "您已进入笔试";
+                this.award = 10;
+                this.description = "您已进入笔试";
+                this.disable = true;
+                this.priority = 4;
+                this.recuritOrder = 3;
+                this.applierView = "您已进入笔试";
                 break;
         }
     }
