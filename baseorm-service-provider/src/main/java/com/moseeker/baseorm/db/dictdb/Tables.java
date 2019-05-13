@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
@@ -122,6 +123,11 @@ public class Tables {
      * The table <code>dictdb.dict_industry</code>.
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
+
+    /**
+     * The table <code>dictdb.dict_industry_copy1</code>.
+     */
+    public static final DictIndustryCopy1 DICT_INDUSTRY_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1.DICT_INDUSTRY_COPY1;
 
     /**
      * 行业一级分类字典表

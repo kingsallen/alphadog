@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
 import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
@@ -56,7 +57,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 778127726;
+    private static final long serialVersionUID = -364851533;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -137,6 +138,11 @@ public class Dictdb extends SchemaImpl {
      * The table <code>dictdb.dict_industry</code>.
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
+
+    /**
+     * The table <code>dictdb.dict_industry_copy1</code>.
+     */
+    public final DictIndustryCopy1 DICT_INDUSTRY_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictIndustryCopy1.DICT_INDUSTRY_COPY1;
 
     /**
      * 行业一级分类字典表
@@ -238,6 +244,7 @@ public class Dictdb extends SchemaImpl {
             DictConstant.DICT_CONSTANT,
             DictCountry.DICT_COUNTRY,
             DictIndustry.DICT_INDUSTRY,
+            DictIndustryCopy1.DICT_INDUSTRY_COPY1,
             DictIndustryType.DICT_INDUSTRY_TYPE,
             DictJob1001Occupation.DICT_JOB1001_OCCUPATION,
             DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION,
