@@ -59,6 +59,7 @@ public  class ValidatePositionSearch implements ValidateSearch{
     }
     private void convertPositionValidateSearch(String condition,QueryBuilder query){
         List<String> fieldNameList=new ArrayList<>();
+        searchUtil=new SearchUtil();
         fieldNameList.add("user.profiles.other_workexps.job_name");
         fieldNameList.add("user.profiles.recent_job.job_name");
         searchUtil.shouldWildCard(fieldNameList,condition,query);
