@@ -218,8 +218,8 @@ public class ReferralTemplateSender {
         Iterator<CandidateShareChainDO> iterator = factShareChainDOS.iterator();
         List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobPositionDO> positions = positionDao.getPositionListWithoutStatus(positionIds);
-        logger.error("获取十分钟内的职位浏览链路上的浏览职位ID>>>>>>>>>>>>>>>>>>>>>>>",positionIds);
-        logger.error("根据浏览职位ID获取对应职位>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",positions);
+        logger.error("获取十分钟内的职位浏览链路上的浏览职位ID>>>>>>>>>>>>>>>>>>>>>>> {}",positionIds);
+        logger.error("根据浏览职位ID获取对应职位>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {}",positions);
         positions = positions.stream().filter(record -> record.getCompanyId() == companyId).collect(Collectors.toList());
         positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());
         while(iterator.hasNext()){
