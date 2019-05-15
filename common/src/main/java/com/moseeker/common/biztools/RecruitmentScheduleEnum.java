@@ -237,7 +237,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 12;
                 this.recuritOrder = 12;
-                this.applierView = "您的简历已通过初筛";
+                this.applierView = "您已进入面试";
                 break;
             case 3:
                 this.id = value;
@@ -267,7 +267,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 9;
                 this.recuritOrder = 9;
-                this.applierView = "您的简历已通过初筛";
+                this.applierView = "您已进入面试";
                 break;
             case 6:
                 this.id = value;
@@ -317,7 +317,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 7;
                 this.recuritOrder = 7;
-                this.applierView = "您的简历已通过初筛";
+                this.applierView = "您已进入面试";
                 break;
             case 11:
                 this.id = value;
