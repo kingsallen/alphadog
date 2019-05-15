@@ -21,8 +21,6 @@ public class KeywordSearchFactory {
           factory=new CompanySearchBuilder();
        }else if(flag== SearTypeEnum.SEARCH_NAME.getValue()){
           factory=new NameSearchBuilder();
-       }else{
-           factory=new FullTextSearchBuilder();
        }
        factory.queryNewKeyWords(keywordSearchParams);
  }

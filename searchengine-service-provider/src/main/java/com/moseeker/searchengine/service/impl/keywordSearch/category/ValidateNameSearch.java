@@ -36,10 +36,11 @@ public class ValidateNameSearch implements ValidateSearch{
         searchUtil=new SearchUtil();
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        keywordSearchParams.setQueryBuilder(query);
+
         TransportClient client=keywordSearchParams.getClient();
         nameSearchBuilder=new NameSearchBuilder();
-        nameSearchBuilder.queryNewKeyWords(keywordSearchParams);
+        QueryBuilder nameSearch=nameSearchBuilder.queryNewKeyWords(keywordSearchParams);
+        ((BoolQueryBuilder) query).must(nameSearch);
 //        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
 
         searchUtil=new SearchUtil();

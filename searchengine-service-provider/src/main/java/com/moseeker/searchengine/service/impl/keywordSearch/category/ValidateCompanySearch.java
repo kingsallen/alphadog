@@ -37,10 +37,11 @@ public class ValidateCompanySearch implements ValidateSearch{
     public boolean getValidateSearch(KeywordSearchParams keywordSearchParams) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        keywordSearchParams.setQueryBuilder(query);
+
         TransportClient client=keywordSearchParams.getClient();
         companySearchBuilder=new CompanySearchBuilder();
-        companySearchBuilder.queryNewKeyWords(keywordSearchParams);
+        QueryBuilder companySearch=companySearchBuilder.queryNewKeyWords(keywordSearchParams);
+        ((BoolQueryBuilder) query).must(companySearch);
 //        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
         searchUtil=new SearchUtil();
         fieldSearchFactory=new FieldSearchFactory(searchUtil);

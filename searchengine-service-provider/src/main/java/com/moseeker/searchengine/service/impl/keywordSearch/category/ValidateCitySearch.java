@@ -37,10 +37,11 @@ public class ValidateCitySearch implements ValidateSearch{
     public boolean getValidateSearch(KeywordSearchParams keywordSearchParams) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        keywordSearchParams.setQueryBuilder(query);
+
         TransportClient client=keywordSearchParams.getClient();
         citySearchBuilder=new CitySearchBuilder();
-        citySearchBuilder.queryNewKeyWords(keywordSearchParams);
+        QueryBuilder citySearch=citySearchBuilder.queryNewKeyWords(keywordSearchParams);
+        ((BoolQueryBuilder) query).must(citySearch);
         searchUtil=new SearchUtil();
         fieldSearchFactory=new FieldSearchFactory(searchUtil);
         QueryBuilder fieldSearch=fieldSearchFactory.getSearchField(keywordSearchParams);

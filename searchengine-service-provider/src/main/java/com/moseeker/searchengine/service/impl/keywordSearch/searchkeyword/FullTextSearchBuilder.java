@@ -2,6 +2,7 @@ package com.moseeker.searchengine.service.impl.keywordSearch.searchkeyword;
 
 import com.moseeker.searchengine.domain.KeywordSearchParams;
 import com.moseeker.searchengine.util.SearchUtil;
+import org.apache.log4j.Logger;
 import org.elasticsearch.index.query.QueryBuilder;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 public class FullTextSearchBuilder implements KeywordSearch{
 
     private SearchUtil searchUtil;
-
+    private Logger logger = Logger.getLogger(this.getClass());
     public FullTextSearchBuilder() {
     }
 
@@ -20,13 +21,17 @@ public class FullTextSearchBuilder implements KeywordSearch{
 
 
     @Override
-    public void queryNewKeyWords(KeywordSearchParams keywordSearchParams) {
+    public QueryBuilder queryNewKeyWords(KeywordSearchParams keywordSearchParams) {
         searchUtil=new SearchUtil();
         String keyWord=keywordSearchParams.getKeyWord();
         QueryBuilder queryBuilder=keywordSearchParams.getQueryBuilder();
         List<String> fieldList=this.getFieldList();
         List<Integer> boostList=this.getBoostList();
         searchUtil.keyWordforQueryStringPropery(keyWord,queryBuilder,fieldList,boostList);
+        logger.info("==========第三种搜索方案============");
+        logger.info(queryBuilder.toString());
+        logger.info("====================================");
+        return queryBuilder;
     }
 
     /*

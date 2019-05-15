@@ -14,6 +14,8 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.domain.KeywordSearchParams;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
+import com.moseeker.searchengine.service.impl.keywordSearch.category.SecondCateGory;
+import com.moseeker.searchengine.service.impl.keywordSearch.searchkeyword.FullTextSearchBuilder;
 import com.moseeker.searchengine.service.impl.keywordSearch.searchkeyword.KeywordSearchFactory;
 import com.moseeker.searchengine.util.SearTypeEnum;
 import com.moseeker.searchengine.util.SearchMethodUtil;
@@ -56,7 +58,7 @@ public class TalentpoolSearchengine {
     @Resource(name="cacheClient")
     private RedisClient redis;
     @CounterIface
-    public Map<String, Object> talentSearch(Map<String, String> params) {
+    public Map<String, Object> talentSearchNew(Map<String, String> params) {
         logger.info("===================+++++++++++++++++++++++++++++++++++");
         logger.info(JSON.toJSONString(params));
         logger.info("===================+++++++++++++++++++++++++++++++++++");
@@ -82,6 +84,22 @@ public class TalentpoolSearchengine {
             }
         }
         return result;
+    }
+
+    public Map<String, Object> talentSearch(Map<String, String> params){
+        params.put("signal","0");
+        Map<String, Object> result1=talentSearchNew(params);
+        if(result1==null||(int)result1.get("total")==0){
+            params.put("signal","1");
+            Map<String, Object> result2=talentSearchNew(params);
+            if(result2==null||(int)result2.get("total")==0){
+                params.put("signal","2");
+                Map<String, Object> result3=talentSearchNew(params);
+                return result3;
+            }
+            return result2;
+        }
+        return result1;
     }
 
     private void handlerResultData( Map<String, Object> result,Map<String, String> params){
@@ -1076,6 +1094,7 @@ public class TalentpoolSearchengine {
         String tagIds=params.get("tag_ids");
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
+        String signal=params.get("signal");
         if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag,companyManualTag) ){
             if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
                 if(!intentionCityCode.contains("111111")){
@@ -1084,12 +1103,22 @@ public class TalentpoolSearchengine {
                 this.queryByIntentionCity(intentionCityCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
-//                this.queryByKeyWord(keyword,query);
                 String cid=params.get("company_id");
                 KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,query,client,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
-                KeywordSearchFactory keywordSearchFactory=new KeywordSearchFactory();
-                keywordSearchFactory.search(keywordSearchParams);
-//                this.queryNewKeyWords(keyword,cid,query,client);
+                if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==0){
+                    //执行方案一产生的语句结果 实质是返回一个QueryBuilder
+                    KeywordSearchFactory keywordSearchFactory = new KeywordSearchFactory();
+                    keywordSearchFactory.search(keywordSearchParams);
+                }else if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==1){
+                    //执行方案二产生的语句的QueryBuilder
+                    SecondCateGory secondCateGory=new SecondCateGory();
+                    secondCateGory.getQueryKeyWord(keywordSearchParams);
+                }else{
+                    //执行FullTextSearchBuilder产生的语句
+                    FullTextSearchBuilder fullTextSearchBuilder=new FullTextSearchBuilder();
+                    fullTextSearchBuilder.queryNewKeyWords(keywordSearchParams);
+                }
+
             }
 
             this.homeQuery(cityCode,query);
