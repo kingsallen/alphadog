@@ -40,6 +40,7 @@ import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,8 +154,24 @@ public class ReferralTemplateSender {
     }
 
     public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
-        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo), TEN_MINUTE);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId",cardInfo.getUserId());
+        jsonObject.put("companyId",cardInfo.getCompanyId());
+        jsonObject.put("pageNumber",cardInfo.getPageNumber());
+        jsonObject.put("pageSize",cardInfo.getPageSize());
+        jsonObject.put("timestamp",cardInfo.getTimestamp());
+        MessageProperties mp = new MessageProperties();
+        mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
+        mp.setReceivedExchange(ACTIVITY_DELAY_EXCHANGE);
+        Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp)
+                .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
+                .setHeaderIfAbsent("x-delay",1*60*1000).build();
+        amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
+
+//    public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
+//        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo), TEN_MINUTE);
+//    }
 
     @Transactional(rollbackFor = Exception.class)
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {

@@ -15,29 +15,38 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetwork
 import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
+import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.REFERRAL_RADAR_TEMPLATE;
 
 @Component
 public class RabbitReceivers {
@@ -62,6 +71,8 @@ public class RabbitReceivers {
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
+    @Autowired
+    private ReferralTemplateSender referralTemplateSender;
 
     @RabbitListener(queues = "handle_share_chain", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -132,6 +143,12 @@ public class RabbitReceivers {
         }catch (Exception e){
             logger.info("==========handleRadarSwitch:{}, msgBody:{}", e.getMessage(), msgBody);
         }
+    }
+
+    @RabbitListener(queues = Constant.ACTIVITY_DELAY_QUEUE,containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void handleTenMinutesMessageTemplate(ReferralCardInfo cardInfo){
+        referralTemplateSender.sendTenMinuteTemplateIfNecessary(cardInfo);
     }
 
     private void handleEmployeeNetwork(int companyId) {
