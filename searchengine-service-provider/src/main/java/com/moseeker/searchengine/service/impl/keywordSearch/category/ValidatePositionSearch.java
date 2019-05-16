@@ -31,11 +31,10 @@ public  class ValidatePositionSearch implements ValidateSearch{
         this.fieldSearchFactory = new FieldSearchFactory(searchUtil);
     }
     @Override
-    public boolean getValidateSearch(KeywordSearchParams keywordSearchParams) {
+    public boolean getValidateSearch(KeywordSearchParams keywordSearchParams, TransportClient client) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 
-        TransportClient client=keywordSearchParams.getClient();
         String keyword=keywordSearchParams.getKeyWord();
         this.convertPositionValidateSearch(keyword,query);
         searchUtil=new SearchUtil();

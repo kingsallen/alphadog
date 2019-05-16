@@ -11,22 +11,11 @@ import java.util.List;
 
 public class CompanySearchBuilder implements KeywordSearch{
 
-    private SearchUtil searchUtil;
-
-    public CompanySearchBuilder() {
-    }
-
-    public CompanySearchBuilder(SearchUtil searchUtil) {
-        this.searchUtil = searchUtil;
-    }
-
-
     @Override
-    public QueryBuilder queryNewKeyWords(KeywordSearchParams keywordSearchParams) {
-        searchUtil=new SearchUtil();
-        String keyword=keywordSearchParams.getKeyWord();
+    public QueryBuilder queryNewKeyWords(String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        SearchUtil searchUtil=new SearchUtil();
         List<String> fieldNameList=new ArrayList<>();
         fieldNameList.add("user.profiles.other_workexps.company_name_data");
         fieldNameList.add("user.profiles.recent_job.company_name_data");

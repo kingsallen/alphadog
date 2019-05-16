@@ -1104,19 +1104,19 @@ public class TalentpoolSearchengine {
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
                 String cid=params.get("company_id");
-                KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,query,client,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
+                KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
                 if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==0){
                     //执行方案一产生的语句结果 实质是返回一个QueryBuilder
                     KeywordSearchFactory keywordSearchFactory = new KeywordSearchFactory();
-                    keywordSearchFactory.search(keywordSearchParams);
+                    ((BoolQueryBuilder) query).must(keywordSearchFactory.search(keywordSearchParams,client));
                 }else if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==1){
                     //执行方案二产生的语句的QueryBuilder
                     SecondCateGory secondCateGory=new SecondCateGory();
-                    secondCateGory.getQueryKeyWord(keywordSearchParams);
+                    secondCateGory.getQueryKeyWord(keyword,query);
                 }else{
                     //执行FullTextSearchBuilder产生的语句
                     FullTextSearchBuilder fullTextSearchBuilder=new FullTextSearchBuilder();
-                    fullTextSearchBuilder.queryNewKeyWords(keywordSearchParams);
+                    ((BoolQueryBuilder) query).must(fullTextSearchBuilder.queryNewKeyWords(keyword));
                 }
 
             }

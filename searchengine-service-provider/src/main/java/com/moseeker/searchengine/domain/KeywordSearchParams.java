@@ -6,12 +6,14 @@ import org.elasticsearch.index.query.QueryBuilder;
 public class KeywordSearchParams {
     private String keyWord;
     private String companyId;
-
-    public KeywordSearchParams(String keyWord, String companyId, QueryBuilder queryBuilder, TransportClient client, String hrId, String profilePoolId, String tagIds, String favoriteHrs, String isPublic) {
+    private String hrId;
+    private String profilePoolId;
+    private String tagIds;
+    private String favoriteHrs;
+    private String isPublic;
+    public KeywordSearchParams(String keyWord, String companyId, String hrId, String profilePoolId, String tagIds, String favoriteHrs, String isPublic) {
         this.keyWord = keyWord;
         this.companyId = companyId;
-        this.queryBuilder = queryBuilder;
-        this.client = client;
         this.hrId = hrId;
         this.profilePoolId = profilePoolId;
         this.tagIds = tagIds;
@@ -19,13 +21,6 @@ public class KeywordSearchParams {
         this.isPublic = isPublic;
     }
 
-    private QueryBuilder queryBuilder;
-    private TransportClient client;
-    private String hrId;
-    private String profilePoolId;
-    private String tagIds;
-    private String favoriteHrs;
-    private String isPublic;
     public String getTagIds() {
         return tagIds;
     }
@@ -50,11 +45,6 @@ public class KeywordSearchParams {
         this.isPublic = isPublic;
     }
 
-
-
-
-
-
     public String getKeyWord() {
         return keyWord;
     }
@@ -71,21 +61,6 @@ public class KeywordSearchParams {
         this.companyId = companyId;
     }
 
-    public QueryBuilder getQueryBuilder() {
-        return queryBuilder;
-    }
-
-    public void setQueryBuilder(QueryBuilder queryBuilder) {
-        this.queryBuilder = queryBuilder;
-    }
-
-    public TransportClient getClient() {
-        return client;
-    }
-
-    public void setClient(TransportClient client) {
-        this.client = client;
-    }
     public String getProfilePoolId() {
         return profilePoolId;
     }

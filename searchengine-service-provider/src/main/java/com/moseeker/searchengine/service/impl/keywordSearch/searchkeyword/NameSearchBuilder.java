@@ -7,21 +7,11 @@ import org.elasticsearch.index.query.QueryBuilders;
 
 
 public class NameSearchBuilder implements KeywordSearch {
-
-    private SearchUtil searchUtil;
-    public NameSearchBuilder() {
-    }
-
-    public NameSearchBuilder(SearchUtil searchUtil) {
-        this.searchUtil = searchUtil;
-    }
-
     @Override
-    public QueryBuilder queryNewKeyWords(KeywordSearchParams keywordSearchParams) {
-        searchUtil=new SearchUtil();
-        String keyword=keywordSearchParams.getKeyWord();
+    public QueryBuilder queryNewKeyWords(String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        SearchUtil searchUtil=new SearchUtil();
         String fieldName="user.profiles.basic.name";
         searchUtil.queryMatchPrefixSingle(fieldName,keyword,query);
         searchUtil.convertSearchNameScript(keyword,query);

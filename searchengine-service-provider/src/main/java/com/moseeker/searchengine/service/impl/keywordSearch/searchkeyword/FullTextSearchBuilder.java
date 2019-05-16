@@ -4,34 +4,27 @@ import com.moseeker.searchengine.domain.KeywordSearchParams;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.log4j.Logger;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FullTextSearchBuilder implements KeywordSearch{
-
-    private SearchUtil searchUtil;
     private Logger logger = Logger.getLogger(this.getClass());
-    public FullTextSearchBuilder() {
-    }
-
-    public FullTextSearchBuilder(SearchUtil searchUtil) {
-        this.searchUtil = searchUtil;
-    }
-
-
+    private SearchUtil searchUtil;
     @Override
-    public QueryBuilder queryNewKeyWords(KeywordSearchParams keywordSearchParams) {
-        searchUtil=new SearchUtil();
-        String keyWord=keywordSearchParams.getKeyWord();
-        QueryBuilder queryBuilder=keywordSearchParams.getQueryBuilder();
+    public QueryBuilder queryNewKeyWords(String keyword) {
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        SearchUtil searchUtil=new SearchUtil();
+
         List<String> fieldList=this.getFieldList();
         List<Integer> boostList=this.getBoostList();
-        searchUtil.keyWordforQueryStringPropery(keyWord,queryBuilder,fieldList,boostList);
+        searchUtil.keyWordforQueryStringPropery(keyword,query,fieldList,boostList);
         logger.info("==========第三种搜索方案============");
-        logger.info(queryBuilder.toString());
+        logger.info(query.toString());
         logger.info("====================================");
-        return queryBuilder;
+        return query;
     }
 
     /*

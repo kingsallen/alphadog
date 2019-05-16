@@ -18,6 +18,7 @@ import org.elasticsearch.search.SearchHits;
 
 public class ValidateNameSearch implements ValidateSearch{
 
+
     private SearchUtil searchUtil;
     private NameSearchBuilder nameSearchBuilder;
     private FieldSearchFactory fieldSearchFactory;
@@ -32,14 +33,14 @@ public class ValidateNameSearch implements ValidateSearch{
     }
 
     @Override
-    public boolean getValidateSearch(KeywordSearchParams keywordSearchParams) {
+    public boolean getValidateSearch(KeywordSearchParams keywordSearchParams, TransportClient client) {
         searchUtil=new SearchUtil();
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 
-        TransportClient client=keywordSearchParams.getClient();
+        String keyword=keywordSearchParams.getKeyWord();
         nameSearchBuilder=new NameSearchBuilder();
-        QueryBuilder nameSearch=nameSearchBuilder.queryNewKeyWords(keywordSearchParams);
+        QueryBuilder nameSearch=nameSearchBuilder.queryNewKeyWords(keyword);
         ((BoolQueryBuilder) query).must(nameSearch);
 //        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
 

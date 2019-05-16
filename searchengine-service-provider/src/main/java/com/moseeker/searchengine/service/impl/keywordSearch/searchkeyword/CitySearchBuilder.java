@@ -10,21 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CitySearchBuilder implements KeywordSearch {
-    private SearchUtil searchUtil;
-
-    public CitySearchBuilder() {
-    }
-
-    public CitySearchBuilder(SearchUtil searchUtil) {
-        this.searchUtil = searchUtil;
-    }
 
     @Override
-    public QueryBuilder queryNewKeyWords(KeywordSearchParams keywordSearchParams) {
-        searchUtil=new SearchUtil();
-        String keyword=keywordSearchParams.getKeyWord();
+    public QueryBuilder queryNewKeyWords(String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        SearchUtil searchUtil =new SearchUtil();
         List<String> cityField=new ArrayList<>();
         cityField.add("user.profiles.basic.city_name");
         cityField.add("user.profiles.intentions.cities.city_name");
