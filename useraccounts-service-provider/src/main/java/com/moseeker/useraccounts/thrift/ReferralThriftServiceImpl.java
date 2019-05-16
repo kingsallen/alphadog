@@ -295,5 +295,5 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-    
+
 }
