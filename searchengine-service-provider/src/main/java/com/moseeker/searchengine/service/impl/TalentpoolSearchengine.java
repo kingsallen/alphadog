@@ -57,7 +57,36 @@ public class TalentpoolSearchengine {
     private DictCityDao dictCityDao;
     @Resource(name="cacheClient")
     private RedisClient redis;
+
     @CounterIface
+    public Map<String, Object> talentSearch(Map<String, String> params){
+        /*
+         当signal=0时的查询逻辑
+            1，查找关键词城市，若命中只返回城市的查询，停止后边的操作，组装所有的查询语句
+            2，查找工作经历中公司的关键字，若命中，停止后边的操作，返回公司的查询语句
+            3，查找曾任职位的关键字，若命中，停止后边的操作，返回曾任职位的查询语句
+            4，查找姓名的关键字，若命中，停止后边的操作，返回姓名的查询语句
+            5，若不行执行全文查找
+         当signal=1时的查询逻辑
+            1，查询城市，工作经历中公司，曾任职位，姓名中任意一个
+         当signal=2时的查询逻辑
+            1，全文查找
+         */
+        params.put("signal","1");
+        Map<String, Object> result1=talentSearchNew(params);
+        if(result1==null||(int)result1.get("total")==0){
+            params.put("signal","2");
+            Map<String, Object> result2=talentSearchNew(params);
+//            if(result2==null||(int)result2.get("total")==0){
+//                params.put("signal","2");
+//                Map<String, Object> result3=talentSearchNew(params);
+//                return result3;
+//            }
+            return result2;
+        }
+        return result1;
+    }
+
     public Map<String, Object> talentSearchNew(Map<String, String> params) {
         logger.info("===================+++++++++++++++++++++++++++++++++++");
         logger.info(JSON.toJSONString(params));
@@ -84,22 +113,6 @@ public class TalentpoolSearchengine {
             }
         }
         return result;
-    }
-
-    public Map<String, Object> talentSearch(Map<String, String> params){
-        params.put("signal","0");
-        Map<String, Object> result1=talentSearchNew(params);
-        if(result1==null||(int)result1.get("total")==0){
-            params.put("signal","1");
-            Map<String, Object> result2=talentSearchNew(params);
-            if(result2==null||(int)result2.get("total")==0){
-                params.put("signal","2");
-                Map<String, Object> result3=talentSearchNew(params);
-                return result3;
-            }
-            return result2;
-        }
-        return result1;
     }
 
     private void handlerResultData( Map<String, Object> result,Map<String, String> params){
