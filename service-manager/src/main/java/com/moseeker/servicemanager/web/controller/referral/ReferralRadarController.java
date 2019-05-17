@@ -197,7 +197,11 @@ public class ReferralRadarController {
      */
     @RequestMapping(value = "/v1/referral/radar/saveTemp", method = RequestMethod.POST)
     @ResponseBody
-    public String saveTenMinuteCandidateShareChain(@RequestBody CandidateTempForm tempForm) throws Exception {
+    public String saveTenMinuteCandidateShareChain(Integer appid,Integer userId,Integer companyId) throws Exception {
+        CandidateTempForm tempForm = new CandidateTempForm();
+        tempForm.setAppid(appid);
+        tempForm.setCompanyId(companyId);
+        tempForm.setUserId(userId);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("appid", tempForm.getAppid(), 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("companyId", tempForm.getCompanyId(), 1, Integer.MAX_VALUE);
@@ -212,6 +216,7 @@ public class ReferralRadarController {
             referralService.saveTenMinuteCandidateShareChain(cardInfo);
             return Result.success().toJson();
         } else {
+            logger.debug("tempForm>>>>>>>>>>>>>>>>> {}",tempForm);
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
