@@ -165,7 +165,7 @@ public class ReferralTemplateSender {
         mp.setReceivedExchange(ACTIVITY_DELAY_EXCHANGE);
         Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp)
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
-                .setHeaderIfAbsent("x-delay",1*60*1000).build();
+                .setHeaderIfAbsent("x-delay",10*60*1000).build();
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
 
