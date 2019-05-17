@@ -1,7 +1,6 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -12,8 +11,12 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.domain.KeywordSearchParams;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
+import com.moseeker.searchengine.service.impl.keywordSearch.category.SecondCateGory;
+import com.moseeker.searchengine.service.impl.keywordSearch.searchkeyword.FullTextSearchBuilder;
+import com.moseeker.searchengine.service.impl.keywordSearch.searchkeyword.KeywordSearchFactory;
 import com.moseeker.searchengine.util.SearTypeEnum;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
@@ -54,8 +57,37 @@ public class TalentpoolSearchengine {
     private DictCityDao dictCityDao;
     @Resource(name="cacheClient")
     private RedisClient redis;
+
     @CounterIface
-    public Map<String, Object> talentSearch(Map<String, String> params) {
+    public Map<String, Object> talentSearch(Map<String, String> params){
+        /*
+         当signal=0时的查询逻辑
+            1，查找关键词城市，若命中只返回城市的查询，停止后边的操作，组装所有的查询语句
+            2，查找工作经历中公司的关键字，若命中，停止后边的操作，返回公司的查询语句
+            3，查找曾任职位的关键字，若命中，停止后边的操作，返回曾任职位的查询语句
+            4，查找姓名的关键字，若命中，停止后边的操作，返回姓名的查询语句
+            5，若不行执行全文查找
+         当signal=1时的查询逻辑
+            1，查询城市，工作经历中公司，曾任职位，姓名中任意一个
+         当signal=2时的查询逻辑
+            1，全文查找
+         */
+        params.put("signal","1");
+        Map<String, Object> result1=talentSearchNew(params);
+        if(result1==null||(int)result1.get("total")==0){
+            params.put("signal","2");
+            Map<String, Object> result2=talentSearchNew(params);
+//            if(result2==null||(int)result2.get("total")==0){
+//                params.put("signal","2");
+//                Map<String, Object> result3=talentSearchNew(params);
+//                return result3;
+//            }
+            return result2;
+        }
+        return result1;
+    }
+
+    public Map<String, Object> talentSearchNew(Map<String, String> params) {
         logger.info("===================+++++++++++++++++++++++++++++++++++");
         logger.info(JSON.toJSONString(params));
         logger.info("===================+++++++++++++++++++++++++++++++++++");
@@ -1070,6 +1102,12 @@ public class TalentpoolSearchengine {
         String companyManualTag=params.get("company_manual_tag");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
+        String hrId=params.get("hr_id");
+        String profilePoolId = params.get("profile_pool_id");
+        String tagIds=params.get("tag_ids");
+        String favoriteHrs=params.get("favorite_hrs");
+        String isPublic=params.get("is_public");
+        String signal=params.get("signal");
         if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag,companyManualTag) ){
             if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
                 if(!intentionCityCode.contains("111111")){
@@ -1078,9 +1116,22 @@ public class TalentpoolSearchengine {
                 this.queryByIntentionCity(intentionCityCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
-//                this.queryByKeyWord(keyword,query);
                 String cid=params.get("company_id");
-                this.queryNewKeyWords(keyword,cid,query,client);
+                KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
+                if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==0){
+                    //执行方案一产生的语句结果 实质是返回一个QueryBuilder
+                    KeywordSearchFactory keywordSearchFactory = new KeywordSearchFactory();
+                    ((BoolQueryBuilder) query).must(keywordSearchFactory.search(keywordSearchParams,client));
+                }else if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==1){
+                    //执行方案二产生的语句的QueryBuilder
+                    SecondCateGory secondCateGory=new SecondCateGory();
+                    secondCateGory.getQueryKeyWord(keyword,query);
+                }else{
+                    //执行FullTextSearchBuilder产生的语句
+                    FullTextSearchBuilder fullTextSearchBuilder=new FullTextSearchBuilder();
+                    ((BoolQueryBuilder) query).must(fullTextSearchBuilder.queryNewKeyWords(keyword));
+                }
+
             }
 
             this.homeQuery(cityCode,query);
