@@ -74,7 +74,7 @@ public class TalentpoolSearchengine {
          */
         params.put("signal","1");
         Map<String, Object> result1=talentSearchNew(params);
-        if(result1==null||(int)result1.get("totalNum")==0){
+        if(result1==null||Integer.parseInt(String.valueOf(result1.get("totalNum")))==0){
             params.put("signal","2");
             Map<String, Object> result2=talentSearchNew(params);
 //            if(result2==null||(int)result2.get("total")==0){
