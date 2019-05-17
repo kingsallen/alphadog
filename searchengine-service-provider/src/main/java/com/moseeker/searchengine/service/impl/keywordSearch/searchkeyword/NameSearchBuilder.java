@@ -13,10 +13,6 @@ public class NameSearchBuilder implements KeywordSearch {
     public QueryBuilder queryNewKeyWords(String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        SearchUtil searchUtil=new SearchUtil();
-//        String fieldName="user.profiles.basic.user_name_new";
-//        searchUtil.queryMatchPrefixSingle(fieldName,keyword,query);
-//        searchUtil.convertSearchNameScript(keyword,query);
         String []array=keyword.split(",");
         for(String key:array){
             QueryBuilder keyand = QueryBuilders.wildcardQuery("user.profiles.basic.user_name_new","*"+key+"*");

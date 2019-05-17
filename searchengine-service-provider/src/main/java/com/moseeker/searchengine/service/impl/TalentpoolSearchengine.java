@@ -1116,6 +1116,7 @@ public class TalentpoolSearchengine {
                 this.queryByIntentionCity(intentionCityCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
+                keyword=keyword.toLowerCase();
                 String cid=params.get("company_id");
                 KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
                 if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==0){
