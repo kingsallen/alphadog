@@ -6,6 +6,7 @@ import com.moseeker.searchengine.util.SearchUtil;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WildcardQueryBuilder;
 
 
 public class NameSearchBuilder implements KeywordSearch {
@@ -17,9 +18,11 @@ public class NameSearchBuilder implements KeywordSearch {
         for(String key:array){
             QueryBuilder keyand = QueryBuilders.wildcardQuery("user.profiles.basic.user_name_new","*"+key+"*");
             ((BoolQueryBuilder) query).should(keyand);
+            QueryBuilder keyand1 = QueryBuilders.wildcardQuery("user.profiles.basic.name",key);
+            ((WildcardQueryBuilder) keyand1).boost(100);
+            ((BoolQueryBuilder) query).should(keyand1);
         }
         ((BoolQueryBuilder) query).minimumNumberShouldMatch(1);
-
         return query;
     }
 }
