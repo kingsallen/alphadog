@@ -219,16 +219,7 @@ public enum RecruitmentScheduleEnum {
                 this.recuritOrder = 3;
                 this.applierView = "简历提交成功";
                 break;
-            case 15:
-                this.id = value;
-                this.status = "员工上传人才简历";
-                this.award = 10;
-                this.description = "员工上传人才简历积分奖励";
-                this.disable = true;
-                this.priority = 4;
-                this.recuritOrder = 3;
-                this.applierView = "员工上传人才简历";
-                break;
+
             case 2:
                 this.id = value;
                 this.status = "入职";
@@ -348,6 +339,17 @@ public enum RecruitmentScheduleEnum {
                 this.priority = 2;
                 this.recuritOrder = 2;
                 this.applierView = "";
+                break;
+
+            case 15:
+                this.id = value;
+                this.status = "员工上传人才简历";
+                this.award = 10;
+                this.description = "员工上传人才简历积分奖励";
+                this.disable = true;
+                this.priority = 4;
+                this.recuritOrder = 3;
+                this.applierView = "员工上传人才简历";
                 break;
             case 16:
                 this.id = value;
