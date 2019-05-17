@@ -74,7 +74,7 @@ public class TalentpoolSearchengine {
          */
         params.put("signal","1");
         Map<String, Object> result1=talentSearchNew(params);
-        if(result1==null||(int)result1.get("total")==0){
+        if(result1==null||Integer.parseInt(String.valueOf(result1.get("totalNum")))==0){
             params.put("signal","2");
             Map<String, Object> result2=talentSearchNew(params);
 //            if(result2==null||(int)result2.get("total")==0){
@@ -1116,6 +1116,7 @@ public class TalentpoolSearchengine {
                 this.queryByIntentionCity(intentionCityCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
+                keyword=keyword.toLowerCase();
                 String cid=params.get("company_id");
                 KeywordSearchParams keywordSearchParams=new KeywordSearchParams(keyword,cid,hrId,profilePoolId,tagIds,favoriteHrs,isPublic);
                 if(StringUtils.isNotNullOrEmpty(signal)&&Integer.parseInt(signal)==0){
