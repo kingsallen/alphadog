@@ -175,12 +175,22 @@ public class ReferralTemplateSender {
         try {
             long timestamp = System.currentTimeMillis();
             cardInfo.setTimestamp(timestamp);
+            logger.info("开始执行消息队列中的发送十分钟模版消息任务 {}",timestamp);
             logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
             Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
             Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
             // 获取指定时间前十分钟内的职位浏览人
             List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-            factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), factShareChainDOS);
+            //对十分钟内的职位浏览人查询结果进行判空操作
+            if(factShareChainDOS==null){
+                logger.info("暂无任何人浏览该员工 {} 分享的 {} 公司的职位",cardInfo.getUserId(),cardInfo.getCompanyId());
+                return;
+            }
+            factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), cardInfo.getUserId(),factShareChainDOS);
+            if(factShareChainDOS==null){
+                logger.info("暂无任何人浏览该员工 {} 分享的 {} 公司的职位",cardInfo.getUserId(),cardInfo.getCompanyId());
+                return;
+            }
             List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
             List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
             List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
@@ -226,15 +236,22 @@ public class ReferralTemplateSender {
      * 过滤非本公司的职位分享点击链路
      * @param companyId 公司id
      * @param factShareChainDOS 本次十分钟消息模板中实际链路
+     *
      * @return 过滤非本公司的职位分享点击链路
      */
-    private List<CandidateShareChainDO> filterUnSelfCompanyJobShare(int companyId, List<CandidateShareChainDO> factShareChainDOS) {
+    private List<CandidateShareChainDO> filterUnSelfCompanyJobShare(int companyId, int userId , List<CandidateShareChainDO> factShareChainDOS) {
         Iterator<CandidateShareChainDO> iterator = factShareChainDOS.iterator();
+        //获取十分钟内的职位浏览链路上的浏览职位ID
         List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+        //根据浏览职位ID获取对应职位
         List<JobPositionDO> positions = positionDao.getPositionListWithoutStatus(positionIds);
-        logger.error("获取十分钟内的职位浏览链路上的浏览职位ID>>>>>>>>>>>>>>>>>>>>>>> {}",positionIds);
-        logger.error("根据浏览职位ID获取对应职位>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> {}",positions);
+        //过滤非本公司职位
         positions = positions.stream().filter(record -> record.getCompanyId() == companyId).collect(Collectors.toList());
+        if (positions==null){
+            logger.info("暂无任何人浏览该员工 {} 分享的 {} 公司的职位",userId,companyId);
+            return null;
+        }
+        //获取十分钟内的职位浏览链路上本公司的职位ID
         positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());
         while(iterator.hasNext()){
             CandidateShareChainDO candidateShareChainDO = iterator.next();

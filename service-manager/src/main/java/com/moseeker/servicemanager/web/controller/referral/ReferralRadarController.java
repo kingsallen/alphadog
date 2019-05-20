@@ -198,6 +198,7 @@ public class ReferralRadarController {
     @RequestMapping(value = "/v1/referral/radar/saveTemp", method = RequestMethod.POST)
     @ResponseBody
     public String saveTenMinuteCandidateShareChain(Integer appid,Integer userId,Integer companyId) throws Exception {
+        logger.info("开始调用发送十分钟模版接口 {}",System.currentTimeMillis());
         CandidateTempForm tempForm = new CandidateTempForm();
         tempForm.setAppid(appid);
         tempForm.setCompanyId(companyId);
