@@ -6,14 +6,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
-import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
-import com.moseeker.thrift.gen.referral.struct.Bonus;
-import com.moseeker.thrift.gen.referral.struct.BonusList;
-import com.moseeker.thrift.gen.referral.struct.ContactPushInfo;
-import com.moseeker.thrift.gen.referral.struct.RedPacket;
-import com.moseeker.thrift.gen.referral.struct.RedPackets;
-import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
-import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
@@ -236,6 +228,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
+            logger.info("开始调用十分钟模版消息任务 {}",System.currentTimeMillis());
             radarService.saveTenMinuteCandidateShareChain(cardInfo.getCompanyId(), cardInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -295,5 +288,4 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-    
 }
