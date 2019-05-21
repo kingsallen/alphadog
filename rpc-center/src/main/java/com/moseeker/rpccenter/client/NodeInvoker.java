@@ -78,7 +78,7 @@ public class NodeInvoker<T> implements Invoker {
         for (int i = 0; i < 1; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
-                LOGGER.info("NodeInvoker invoke node:{}", JSONObject.toJSONString(node));
+                LOGGER.info("NodeInvoker invoke node.name:{}, node.data:{}", JSONObject.toJSONString(node.getName()), JSONObject.toJSONString(node.getData()));
                 if (node == null) {
                 	LOGGER.error("retry:"+(i+1));
                 	LOGGER.error(parentName+"  Can't find node!");
@@ -86,7 +86,7 @@ public class NodeInvoker<T> implements Invoker {
                     continue;
                 }
                 client = pool.borrowObject(node);
-                LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
+                LOGGER.info("node:{}, getNumActive:{}",node,pool.getNumActive());
                 //LOGGER.info("NodeInvoker invoke client:{}, args:{}", JSONObject.toJSONString(client), args != null ? JSONObject.toJSONString(args):null);
                 Object result = method.invoke(client, args);
 
