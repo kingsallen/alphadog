@@ -87,6 +87,8 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     Neo4jThreadPool tp = Neo4jThreadPool.Instance;
 
+    private static final int timeout = 10;
+
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
         logger.info("neo4j 调用日志 method addFriendRelation  startUserId:{}, endUserId:{}, positionId:{}", startUserId, endUserId, shareChainId);
@@ -140,7 +142,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             Future<List<Integer>> listFuture = tp.startTast(() -> fetchShortestPathInner(startUserId, endUserId, companyId));
             List<Integer> list;
             try {
-                list = listFuture.get(5, TimeUnit.SECONDS);
+                list = listFuture.get(timeout, TimeUnit.SECONDS);
             } catch (Exception e) {
                 throw e;
             }
@@ -166,7 +168,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             Future<Boolean> booleanFuture = tp.startTast(() -> updateUserEmployeeCompanyInner(userId, companyId));
             boolean result;
             try {
-                result = booleanFuture.get(5, TimeUnit.SECONDS);
+                result = booleanFuture.get(timeout, TimeUnit.SECONDS);
             } catch (Exception e) {
                 throw e;
             }
@@ -219,7 +221,7 @@ public class Neo4jServiceImpl implements Neo4jService {
 
             List<EmployeeCompanyVO> list;
             try {
-                list = listFuture.get(5, TimeUnit.SECONDS);
+                list = listFuture.get(timeout, TimeUnit.SECONDS);
             } catch (Exception e) {
                 throw e;
             }
@@ -245,7 +247,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             Future< List<UserDepthVO>> listFuture = tp.startTast(() -> fetchEmployeeThreeDepthUserInner(userId));
             List<UserDepthVO> list;
             try {
-                list = listFuture.get(5, TimeUnit.SECONDS);
+                list = listFuture.get(timeout, TimeUnit.SECONDS);
             } catch (Exception e) {
                 throw e;
             }
@@ -271,7 +273,7 @@ public class Neo4jServiceImpl implements Neo4jService {
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList datetime:{}", beforeFetchDepthUserList.toString());
                 List<UserDepthVO> list;
                 Future<List<UserDepthVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId));
-                list = listFuture.get(5, TimeUnit.SECONDS);
+                list = listFuture.get(timeout, TimeUnit.SECONDS);
                 LocalDateTime afterFetchDepthUserList = LocalDateTime.now();
                 logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchDepthUserList datetime:{}, time:{}", afterFetchDepthUserList.toString(), Duration.between(beforeFetchDepthUserList, afterFetchDepthUserList).toMillis());
                 return list;
