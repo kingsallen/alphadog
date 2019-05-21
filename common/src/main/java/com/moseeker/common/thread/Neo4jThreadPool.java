@@ -51,7 +51,7 @@ public enum Neo4jThreadPool {
     }
 
     private void init() {
-        service = new ThreadPoolExecutor(1, 33,
+        service = new ThreadPoolExecutor(1, 200,
                 60L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(20000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
     }
