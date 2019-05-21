@@ -163,7 +163,7 @@ public class ReferralTemplateSender {
         jsonObject.put("timestamp",cardInfo.getTimestamp());
         Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
-                .setHeaderIfAbsent("x-delay",2*60*1000).build();
+                .setHeaderIfAbsent("x-delay",TEN_MINUTE).build();
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
 
