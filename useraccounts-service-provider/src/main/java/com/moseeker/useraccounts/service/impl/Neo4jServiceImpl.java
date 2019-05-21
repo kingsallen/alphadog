@@ -87,7 +87,7 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     Neo4jThreadPool tp = Neo4jThreadPool.Instance;
 
-    private static final int timeout = 10;
+    private static final int timeout = 60;
 
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
