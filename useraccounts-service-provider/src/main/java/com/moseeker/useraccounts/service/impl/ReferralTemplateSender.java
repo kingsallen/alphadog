@@ -154,6 +154,7 @@ public class ReferralTemplateSender {
     }
 
     public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
+        logger.info("ReferralTemplateSender发送消息到消息延时队列 ReferralCardInfo {}",cardInfo);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userId",cardInfo.getUserId());
         jsonObject.put("companyId",cardInfo.getCompanyId());

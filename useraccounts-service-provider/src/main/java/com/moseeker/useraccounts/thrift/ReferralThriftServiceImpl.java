@@ -228,7 +228,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
-            logger.info("开始调用十分钟模版消息任务 {}",System.currentTimeMillis());
+            logger.info("ReferralThriftServiceImpl开始调用十分钟模版消息任务 {} 转发者信息 {}",System.currentTimeMillis(),cardInfo);
             radarService.saveTenMinuteCandidateShareChain(cardInfo.getCompanyId(), cardInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
