@@ -475,5 +475,13 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIdList)).orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc(),UserEmployee.USER_EMPLOYEE.DISABLE.asc())
                 .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
     }
+    //查询sysuserid是否在该公司下;1)如果不在看custom_filed 是否有预埋数据，有数据则则把sysuserid更新为userid；
+    public void addSysUserId(int companyId , int sysuserId, String customFiled) {
+         create.update(table).set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID, sysuserId)
+            .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+            .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+            .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(Integer.valueOf(""))).execute();
+    }
+
 
 }

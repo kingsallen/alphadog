@@ -52,7 +52,6 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
 
             return ResponseUtils.success(result);
             } else{
-                //todo 执行员工认证 查看工号是否能查到员工；
 
                 return ResponseUtils.fail("没有到员工");
             }

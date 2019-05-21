@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -8,35 +7,39 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- *
- */
+
 @Service("auth_method_McdUatSysUserId")
 public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeBindAndUpdateByMcdUatSysUserId.class);
     private ThreadLocal<UserEmployeeDO> employeeThreadLocal = new ThreadLocal<>();
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         super.paramCheck(bindingParams, certConf);
+
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
-                .and("cname", bindingParams.getName())
-                .and("custom_field", bindingParams.getCustomField())
-                .and("activation", EmployeeActiveState.Init.getState())
-                .and("disable", "0");
-
+            .and("sysuser_id", bindingParams.getUserId())
+            .and("custom_field", bindingParams.getCustomField());
         employeeThreadLocal.set(employeeDao.getData(query.buildQuery()));
         if (employeeThreadLocal.get() == null || employeeThreadLocal.get().getId() == 0) {
-            throw new RuntimeException("员工认证信息不正确");
+            throw new RuntimeException("员工认证信息不正确!");
         } else if (employeeThreadLocal.get().getActivation() == 0) {
-            throw new RuntimeException("该员工已绑定");
+            throw new RuntimeException("该员工已绑定!");
+        }else if (org.apache.commons.lang.StringUtils.isNotBlank(employeeThreadLocal.get().getCustomField())) {
+            //查询sysuserid是否在该公司下;1)如果不在看custom_filed 是否有预埋数据，有数据则则把sysuserid更新为userid；
+            logger.info("查询到用户工号的记录，并将用户的sysuerid 回填回去，并开始执行");
+            employeeDao.addSysUserId(bindingParams.getCompanyId() , bindingParams.getUserId(),bindingParams.getCustomField());
         }
+
     }
 
     @Override
@@ -53,7 +56,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
             }
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
-            throw new RuntimeException("员工认证信息不匹配");
+            throw new RuntimeException("员工认证信息不匹配!");
         }
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
