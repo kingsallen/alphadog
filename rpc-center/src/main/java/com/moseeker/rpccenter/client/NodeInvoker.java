@@ -87,7 +87,7 @@ public class NodeInvoker<T> implements Invoker {
                 }
                 client = pool.borrowObject(node);
                 LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
-                LOGGER.info("NodeInvoker invoke client:{}, args:{}", JSONObject.toJSONString(client), args != null ? JSONObject.toJSONString(args):null);
+                //LOGGER.info("NodeInvoker invoke client:{}, args:{}", JSONObject.toJSONString(client), args != null ? JSONObject.toJSONString(args):null);
                 Object result = method.invoke(client, args);
 
                 return result;
