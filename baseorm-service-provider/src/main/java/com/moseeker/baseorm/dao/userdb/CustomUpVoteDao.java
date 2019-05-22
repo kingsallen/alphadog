@@ -114,7 +114,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                         upVoteParam
                 )
                 .onDuplicateKeyUpdate()
-                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL_TIME,upvoteTimeParam)
+                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME,upvoteTimeParam)
                 .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL,param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(),
                         upvote==cancel?unUpvote:upvote))
                 .execute();
