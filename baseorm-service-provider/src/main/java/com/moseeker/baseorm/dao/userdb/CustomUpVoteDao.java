@@ -81,11 +81,21 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
      */
     public int insert(int companyId, int receiver, int sender, long startTime, long endTime) {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        byte upvote = (byte)UpVoteState.UpVote.getValue();
+        byte unUpvote = (byte)UpVoteState.UnUpVote.getValue();
         Param<Integer> senderParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.getName(), sender);
         Param<Integer> receiverParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.getName(), receiver);
         Param<Integer> companyIdParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.getName(), companyId);
         Param<Timestamp> upvoteTimeParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.getName(), currentTime);
-        Param<Byte> upVoteParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(), (byte)0);
+        Param<Byte> upVoteParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(), upvote);
+
+        Record1<Byte> cancelRecord = using(configuration()).select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL)
+                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.eq(companyId))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver)).fetchOne();
+
+        byte cancel = null==cancelRecord?unUpvote:cancelRecord.value1();
 
         int execute = using(configuration())
                 .insertInto(
@@ -105,7 +115,8 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 )
                 .onDuplicateKeyUpdate()
                 .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL_TIME,upvoteTimeParam)
-                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL,param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(), (byte)UpVoteState.UnUpVote.getValue()))
+                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL,param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(),
+                        upvote==cancel?unUpvote:upvote))
                 .execute();
 
         return 0;
@@ -207,14 +218,14 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
 
         Result<Record2<Integer, Integer>> result =
                 using(configuration())
-                .select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID.count())
-                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
+                        .select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID.count())
+                        .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                        .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
+                        .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                        .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
                         .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
-                .groupBy(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER)
-                .fetch();
+                        .groupBy(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER)
+                        .fetch();
         if (result != null && result.size() > 0) {
             return result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2));
         } else {
