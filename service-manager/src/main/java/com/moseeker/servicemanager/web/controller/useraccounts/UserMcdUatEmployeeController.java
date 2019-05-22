@@ -30,11 +30,16 @@ public class UserMcdUatEmployeeController {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
 
-    @RequestMapping(value = "/mcdUser/bindUser", method = RequestMethod.GET)
+    @RequestMapping(value = "/mcdUser/bindUser", method = RequestMethod.POST)
     @ResponseBody
    /* public String getUserEmployeeByUserId(@RequestParam("appid") int appid,
         @RequestParam("sysuser_id") int sysuserId) throws Exception {*/
-    public String getUserEmployeeByUserId(@RequestParam("sysuser_id") int sysuserId) throws Exception {
+    public String getUserEmployeeByUserId(@RequestParam("user_id") int sysuserId,
+                                           String email,
+                                            String mobile,
+                                          String custom_field,
+                                          int company_id,
+                                          String cname) throws Exception {
         try{
             Response userInfo = mcduatservice.getUserEmployeeByuserId(sysuserId);
             logger.info("getUserEmployeeByUserId userInfo:{}", userInfo);

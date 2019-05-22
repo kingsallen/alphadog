@@ -492,6 +492,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyId))
                 .and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(email))
                 .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
                 .limit(1)
                 .fetchOneInto(UserEmployeeDO.class);
 
@@ -507,13 +508,64 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
                 .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
                 .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
                 .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId)).execute();
 
     }
 
-    public int deleteEmptyCustomFiledBy(Condition conditions) {
-        return create.deleteFrom(table).where(new LocalCondition<>(table).parseConditionUtil(conditions)).execute();
+    public int deleteEmptyCustomFiledBySysUuer(String customFiled, int sysUSerid) {
+        return create.deleteFrom(table).where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(Integer.valueOf("")))
+                .execute();
     }
+
+
+    public void updateUnActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
+                                     String email,String cname ) {
+               Byte source =11;//注册来源joywork
+        create.update(table).set(UserEmployee.USER_EMPLOYEE.EMAIL,email)
+                .set(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,customField)
+                .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID,sysuserId)
+                .set(UserEmployee.USER_EMPLOYEE.CNAME,cname)
+                .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
+                .set(UserEmployee.USER_EMPLOYEE.SOURCE, source)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION,(byte)0)
+                .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.gt((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId)).execute();
+
+    }
+
+    public void insertActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
+                                       String email,String cname ) {
+        Byte source =11;//来joywork；
+        Byte activation=0;//已经认证
+        byte authMeth= 1;
+
+        create.insertInto(table)
+                .columns(UserEmployee.USER_EMPLOYEE.EMAIL,
+                        UserEmployee.USER_EMPLOYEE.SYSUSER_ID,
+                        UserEmployee.USER_EMPLOYEE.CNAME,
+                        UserEmployee.USER_EMPLOYEE.MOBILE,
+                        UserEmployee.USER_EMPLOYEE.ACTIVATION,
+                        UserEmployee.USER_EMPLOYEE.SOURCE,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD
+                        )
+
+                .values(email,sysuserId,cname,mobile,activation,source,customField,authMeth).execute();
+
+
+
+
+
+
+
+
+    }
+
+
 
 
 }

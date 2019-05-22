@@ -40,7 +40,7 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
             bindingParams.setMobile(result.getMobile());
             bindingParams.setCustomField(result.getCustomField());
             bindingParams.setName(result.getCname());
-            bindingParams.setSource(result.getSource()); //这必须是11代表是来自joywork;
+            bindingParams.setSource(11); //这必须是11代表是来自joywork;
             bindingParams.setAnswer1(result.getCustomFieldValues());
             bindingParams.setAnswer2(result.getCustomFieldValues());
 

@@ -25,6 +25,30 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeBindAndUpdateByMcdUatSysUserId.class);
     private ThreadLocal<UserEmployeeDO> employeeThreadLocal = new ThreadLocal<>();
 
+@Override
+    public Result bind(BindingParams bindingParams,Integer bingSource) {
+    logger.info("bind param: BindingParams={}", bindingParams);
+        Result response = new Result();
+        try {
+
+            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(),
+                    bindingParams.getCompanyId()));
+            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
+                    && userEmployeeDOThreadLocal.get().getActivation() == 0) {
+                throw new RuntimeException("该员工已绑定");
+            }
+            UserEmployeeDO userEmployee = createEmployee(bindingParams);
+            response = doneBind(userEmployee,bingSource);
+        } catch (Exception e) {
+            logger.warn(e.getMessage(), e);
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+        }
+    logger.info("bind response: {}", response);
+        return response;
+    }
+
+
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         //目的：1.针对传入email和工号进行查重验证;
@@ -33,7 +57,6 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
             ResponseUtils.fail(ConstantErrorCodeMessage.MCD_USER_EMAIL_AND_CUSTOM_FIELD);
             //throw new RuntimeException("员工认证信息不正确!");
         } else if (employeeThreadLocal.get().getActivation() == 0) {
-
             ResponseUtils.fail(ConstantErrorCodeMessage.MCD_USER_BIND_DONE);
         }
 
@@ -42,7 +65,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get();
-        if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
+       /* if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
             } else {
@@ -54,7 +77,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
             }
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配!");
-        }
+        }*/
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployeeDO.setSysuserId(bindingParams.getUserId());
@@ -73,6 +96,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
             //设置注册来源来自自定义认证
             userEmployeeDO.setAuthMethod((byte) 0);
         }
+        userEmployeeDO.setSource(11);//设置用户注册来源于joywork
         userEmployeeDO.setActivation((byte) 0);
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -84,8 +108,6 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected Result doneBind(UserEmployeeDO useremployee, int bindSource) throws TException, InvalidArgumentException {
         Result result = new Result();
-        int source = 11;
-        BindingParams bindingParams = new BindingParams();
         //1)查询activation的员工在否存在如果存在则做 Update操作把用户更新
         UserEmployeeRecord getActiveEmployee = employeeDao.getActiveEmployee(useremployee.getSysuserId(),
                 useremployee.getCompanyId());
@@ -96,21 +118,35 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
                     useremployee.getMobile(),
                     useremployee.getEmail(),
                     useremployee.getCname());
+
+            //2查询新用户的预埋数据如果是则删除。
+            //并且重新插入一条新的数据
+            if (StringUtils.isNotNullOrEmpty(getActiveEmployee.getCustomField())){
+                employeeDao.deleteEmptyCustomFiledBySysUuer(useremployee.getCustomField(), useremployee.getSysuserId());
+
+                employeeDao.insertActiveUserInfo(useremployee.getSysuserId(),
+                        useremployee.getCompanyId(),
+                        useremployee.getCustomField(),
+                        useremployee.getMobile(),
+                        useremployee.getEmail(),
+                        useremployee.getCname());
+                result.setSuccess(true);
+                result.setMessage("success");
+            }
         }
 
-        //2查询新用户的预埋数据如果是则删除。
-        //没有更新的话就
-        if (StringUtils.isNotNullOrEmpty(getActiveEmployee.getCustomField())){
-            employeeDao.delete(useremployee.getSysuserId(),
-                    useremployee.getCompanyId());
+        if (getActiveEmployee.getActivation() > 0) {
+            employeeDao.updateUnActiveUserInfo(useremployee.getSysuserId(),
+                    useremployee.getCompanyId(),
+                    useremployee.getCustomField(),
+                    useremployee.getMobile(),
+                    useremployee.getEmail(),
+                    useremployee.getCname());
+            result.setSuccess(true);
+            result.setMessage("success");
         }
-
-        if (org.apache.commons.lang.StringUtils.isNotBlank(employeeThreadLocal.get().getCustomField())) {
-            //查询sysuserid在该公司下;1)如果不在看custom_filed 是否有预埋数据，有数据则则把sysuserid更新为userid；
-            logger.info("查询到用户工号的记录，并将用户的sysuerid 回填回去，并开始执行");
-            //   employeeDao.addSysUserId(bindingParams.getCompanyId() , bindingParams.getUserId(),bindingParams.getCustomField());
-        }
-
+        result.setSuccess(true);
+        result.setMessage("success");
 
         return result;
 
