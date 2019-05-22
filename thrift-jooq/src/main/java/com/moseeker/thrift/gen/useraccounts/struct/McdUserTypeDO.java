@@ -11,7 +11,7 @@ package com.moseeker.thrift.gen.useraccounts.struct;
 public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, McdUserTypeDO._Fields>, java.io.Serializable, Cloneable, Comparable<McdUserTypeDO> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("McdUserTypeDO");
 
-  private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)1);
+  private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("user_id", org.apache.thrift.protocol.TType.I32, (short)1);
   private static final org.apache.thrift.protocol.TField CNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("cname", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("email", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField CUSTOM_FIELD_FIELD_DESC = new org.apache.thrift.protocol.TField("custom_field", org.apache.thrift.protocol.TType.STRING, (short)4);
@@ -21,7 +21,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new McdUserTypeDOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new McdUserTypeDOTupleSchemeFactory();
 
-  public int userId; // optional
+  public int user_id; // optional
   public java.lang.String cname; // optional
   public java.lang.String email; // optional
   public java.lang.String custom_field; // optional
@@ -30,7 +30,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    USER_ID((short)1, "userId"),
+    USER_ID((short)1, "user_id"),
     CNAME((short)2, "cname"),
     EMAIL((short)3, "email"),
     CUSTOM_FIELD((short)4, "custom_field"),
@@ -102,25 +102,25 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
   }
 
   // isset id assignments
-  private static final int __USERID_ISSET_ID = 0;
+  private static final int __USER_ID_ISSET_ID = 0;
   private static final int __COMPANY_ID_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
   private static final _Fields optionals[] = {_Fields.USER_ID,_Fields.CNAME,_Fields.EMAIL,_Fields.CUSTOM_FIELD,_Fields.COMPANY_ID,_Fields.MOBILE};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.CNAME, new org.apache.thrift.meta_data.FieldMetaData("cname", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.EMAIL, new org.apache.thrift.meta_data.FieldMetaData("email", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.CUSTOM_FIELD, new org.apache.thrift.meta_data.FieldMetaData("custom_field", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.MOBILE, new org.apache.thrift.meta_data.FieldMetaData("mobile", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("user_id", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.CNAME, new org.apache.thrift.meta_data.FieldMetaData("cname", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.EMAIL, new org.apache.thrift.meta_data.FieldMetaData("email", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.CUSTOM_FIELD, new org.apache.thrift.meta_data.FieldMetaData("custom_field", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.MOBILE, new org.apache.thrift.meta_data.FieldMetaData("mobile", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(McdUserTypeDO.class, metaDataMap);
   }
@@ -133,7 +133,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
    */
   public McdUserTypeDO(McdUserTypeDO other) {
     __isset_bitfield = other.__isset_bitfield;
-    this.userId = other.userId;
+    this.user_id = other.user_id;
     if (other.isSetCname()) {
       this.cname = other.cname;
     }
@@ -155,8 +155,8 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
 
   @Override
   public void clear() {
-    setUserIdIsSet(false);
-    this.userId = 0;
+    setUser_idIsSet(false);
+    this.user_id = 0;
     this.cname = null;
     this.email = null;
     this.custom_field = null;
@@ -165,27 +165,27 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
     this.mobile = null;
   }
 
-  public int getUserId() {
-    return this.userId;
+  public int getUser_id() {
+    return this.user_id;
   }
 
-  public McdUserTypeDO setUserId(int userId) {
-    this.userId = userId;
-    setUserIdIsSet(true);
+  public McdUserTypeDO setUser_id(int user_id) {
+    this.user_id = user_id;
+    setUser_idIsSet(true);
     return this;
   }
 
-  public void unsetUserId() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USERID_ISSET_ID);
+  public void unsetUser_id() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USER_ID_ISSET_ID);
   }
 
-  /** Returns true if field userId is set (has been assigned a value) and false otherwise */
-  public boolean isSetUserId() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USERID_ISSET_ID);
+  /** Returns true if field user_id is set (has been assigned a value) and false otherwise */
+  public boolean isSetUser_id() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USER_ID_ISSET_ID);
   }
 
-  public void setUserIdIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
+  public void setUser_idIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USER_ID_ISSET_ID, value);
   }
 
   public java.lang.String getCname() {
@@ -309,76 +309,76 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
     switch (field) {
-    case USER_ID:
-      if (value == null) {
-        unsetUserId();
-      } else {
-        setUserId((java.lang.Integer)value);
-      }
-      break;
+      case USER_ID:
+        if (value == null) {
+          unsetUser_id();
+        } else {
+          setUser_id((java.lang.Integer)value);
+        }
+        break;
 
-    case CNAME:
-      if (value == null) {
-        unsetCname();
-      } else {
-        setCname((java.lang.String)value);
-      }
-      break;
+      case CNAME:
+        if (value == null) {
+          unsetCname();
+        } else {
+          setCname((java.lang.String)value);
+        }
+        break;
 
-    case EMAIL:
-      if (value == null) {
-        unsetEmail();
-      } else {
-        setEmail((java.lang.String)value);
-      }
-      break;
+      case EMAIL:
+        if (value == null) {
+          unsetEmail();
+        } else {
+          setEmail((java.lang.String)value);
+        }
+        break;
 
-    case CUSTOM_FIELD:
-      if (value == null) {
-        unsetCustom_field();
-      } else {
-        setCustom_field((java.lang.String)value);
-      }
-      break;
+      case CUSTOM_FIELD:
+        if (value == null) {
+          unsetCustom_field();
+        } else {
+          setCustom_field((java.lang.String)value);
+        }
+        break;
 
-    case COMPANY_ID:
-      if (value == null) {
-        unsetCompany_id();
-      } else {
-        setCompany_id((java.lang.Integer)value);
-      }
-      break;
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompany_id();
+        } else {
+          setCompany_id((java.lang.Integer)value);
+        }
+        break;
 
-    case MOBILE:
-      if (value == null) {
-        unsetMobile();
-      } else {
-        setMobile((java.lang.String)value);
-      }
-      break;
+      case MOBILE:
+        if (value == null) {
+          unsetMobile();
+        } else {
+          setMobile((java.lang.String)value);
+        }
+        break;
 
     }
   }
 
   public java.lang.Object getFieldValue(_Fields field) {
     switch (field) {
-    case USER_ID:
-      return getUserId();
+      case USER_ID:
+        return getUser_id();
 
-    case CNAME:
-      return getCname();
+      case CNAME:
+        return getCname();
 
-    case EMAIL:
-      return getEmail();
+      case EMAIL:
+        return getEmail();
 
-    case CUSTOM_FIELD:
-      return getCustom_field();
+      case CUSTOM_FIELD:
+        return getCustom_field();
 
-    case COMPANY_ID:
-      return getCompany_id();
+      case COMPANY_ID:
+        return getCompany_id();
 
-    case MOBILE:
-      return getMobile();
+      case MOBILE:
+        return getMobile();
 
     }
     throw new java.lang.IllegalStateException();
@@ -391,18 +391,18 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
     }
 
     switch (field) {
-    case USER_ID:
-      return isSetUserId();
-    case CNAME:
-      return isSetCname();
-    case EMAIL:
-      return isSetEmail();
-    case CUSTOM_FIELD:
-      return isSetCustom_field();
-    case COMPANY_ID:
-      return isSetCompany_id();
-    case MOBILE:
-      return isSetMobile();
+      case USER_ID:
+        return isSetUser_id();
+      case CNAME:
+        return isSetCname();
+      case EMAIL:
+        return isSetEmail();
+      case CUSTOM_FIELD:
+        return isSetCustom_field();
+      case COMPANY_ID:
+        return isSetCompany_id();
+      case MOBILE:
+        return isSetMobile();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -422,12 +422,12 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
     if (this == that)
       return true;
 
-    boolean this_present_userId = true && this.isSetUserId();
-    boolean that_present_userId = true && that.isSetUserId();
-    if (this_present_userId || that_present_userId) {
-      if (!(this_present_userId && that_present_userId))
+    boolean this_present_user_id = true && this.isSetUser_id();
+    boolean that_present_user_id = true && that.isSetUser_id();
+    if (this_present_user_id || that_present_user_id) {
+      if (!(this_present_user_id && that_present_user_id))
         return false;
-      if (this.userId != that.userId)
+      if (this.user_id != that.user_id)
         return false;
     }
 
@@ -483,9 +483,9 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
   public int hashCode() {
     int hashCode = 1;
 
-    hashCode = hashCode * 8191 + ((isSetUserId()) ? 131071 : 524287);
-    if (isSetUserId())
-      hashCode = hashCode * 8191 + userId;
+    hashCode = hashCode * 8191 + ((isSetUser_id()) ? 131071 : 524287);
+    if (isSetUser_id())
+      hashCode = hashCode * 8191 + user_id;
 
     hashCode = hashCode * 8191 + ((isSetCname()) ? 131071 : 524287);
     if (isSetCname())
@@ -518,12 +518,12 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
 
     int lastComparison = 0;
 
-    lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+    lastComparison = java.lang.Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetUserId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userId, other.userId);
+    if (isSetUser_id()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.user_id, other.user_id);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -598,9 +598,9 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
     java.lang.StringBuilder sb = new java.lang.StringBuilder("McdUserTypeDO(");
     boolean first = true;
 
-    if (isSetUserId()) {
-      sb.append("userId:");
-      sb.append(this.userId);
+    if (isSetUser_id()) {
+      sb.append("user_id:");
+      sb.append(this.user_id);
       first = false;
     }
     if (isSetCname()) {
@@ -690,15 +690,15 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
       while (true)
       {
         schemeField = iprot.readFieldBegin();
-        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
           break;
         }
         switch (schemeField.id) {
           case 1: // USER_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.userId = iprot.readI32();
-              struct.setUserIdIsSet(true);
-            } else { 
+              struct.user_id = iprot.readI32();
+              struct.setUser_idIsSet(true);
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -706,7 +706,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.cname = iprot.readString();
               struct.setCnameIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -714,7 +714,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.email = iprot.readString();
               struct.setEmailIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -722,7 +722,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.custom_field = iprot.readString();
               struct.setCustom_fieldIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -730,7 +730,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.company_id = iprot.readI32();
               struct.setCompany_idIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -738,7 +738,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.mobile = iprot.readString();
               struct.setMobileIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -757,9 +757,9 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.isSetUserId()) {
+      if (struct.isSetUser_id()) {
         oprot.writeFieldBegin(USER_ID_FIELD_DESC);
-        oprot.writeI32(struct.userId);
+        oprot.writeI32(struct.user_id);
         oprot.writeFieldEnd();
       }
       if (struct.cname != null) {
@@ -813,7 +813,7 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
     public void write(org.apache.thrift.protocol.TProtocol prot, McdUserTypeDO struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       java.util.BitSet optionals = new java.util.BitSet();
-      if (struct.isSetUserId()) {
+      if (struct.isSetUser_id()) {
         optionals.set(0);
       }
       if (struct.isSetCname()) {
@@ -832,8 +832,8 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
         optionals.set(5);
       }
       oprot.writeBitSet(optionals, 6);
-      if (struct.isSetUserId()) {
-        oprot.writeI32(struct.userId);
+      if (struct.isSetUser_id()) {
+        oprot.writeI32(struct.user_id);
       }
       if (struct.isSetCname()) {
         oprot.writeString(struct.cname);
@@ -857,8 +857,8 @@ public class McdUserTypeDO implements org.apache.thrift.TBase<McdUserTypeDO, Mcd
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       java.util.BitSet incoming = iprot.readBitSet(6);
       if (incoming.get(0)) {
-        struct.userId = iprot.readI32();
-        struct.setUserIdIsSet(true);
+        struct.user_id = iprot.readI32();
+        struct.setUser_idIsSet(true);
       }
       if (incoming.get(1)) {
         struct.cname = iprot.readString();
