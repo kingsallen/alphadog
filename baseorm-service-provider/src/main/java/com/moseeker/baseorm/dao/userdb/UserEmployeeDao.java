@@ -516,9 +516,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
     }
 
-    public int deleteEmptyCustomFiledBySysUuer(String customFiled, int sysUSerid) {
+    public int deleteEmptyCustomFiledBySysUuer(String customFiled) {
         return create.deleteFrom(table).where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
-                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(Integer.valueOf("")))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(0))
                 .execute();
     }
 
@@ -570,6 +570,16 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
 
 
+    }
+
+    public UserEmployeeRecord getActiveEmployeeByCustomFiled(String customFiled, int companyId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+            .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+            .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+            .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+            .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+            .fetchOne();
     }
 
 

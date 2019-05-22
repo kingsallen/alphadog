@@ -25,35 +25,36 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     private static final Logger logger = LoggerFactory.getLogger(EmployeeBindAndUpdateByMcdUatSysUserId.class);
     private ThreadLocal<UserEmployeeDO> employeeThreadLocal = new ThreadLocal<>();
 
-@Override
-    public Result bind(BindingParams bindingParams,Integer bingSource) {
-    logger.info("bind param: BindingParams={}", bindingParams);
+    @Override public Result bind(BindingParams bindingParams, Integer bingSource) {
+        logger.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
         try {
 
-            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(),
-                    bindingParams.getCompanyId()));
+            userEmployeeDOThreadLocal.set(employeeEntity
+                .getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId()));
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
-                    && userEmployeeDOThreadLocal.get().getActivation() == 0) {
-               // throw new RuntimeException("该员工已绑定");
+                && userEmployeeDOThreadLocal.get().getActivation() == 0) {
+                // throw new RuntimeException("该员工已绑定");
                 ResponseUtils.fail(ConstantErrorCodeMessage.MCD_IS_EXIT);
             }
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
-            response = doneBind(userEmployee,bingSource);
+            response = doneBind(userEmployee, bingSource);
         } catch (Exception e) {
             logger.warn(e.getMessage(), e);
             response.setSuccess(false);
             response.setMessage(e.getMessage());
         }
-    logger.info("bind response: {}", response);
+        logger.info("bind response: {}", response);
         return response;
     }
 
 
-    @Override
-    protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+    @Override protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf)
+        throws Exception {
         //目的：1.针对传入email和工号进行查重验证;
-        employeeThreadLocal.set(employeeDao.findbyCustomFiledAndEmail(bindingParams.getCompanyId(), bindingParams.getEmail(), bindingParams.getCustomField()));
+        employeeThreadLocal.set(employeeDao
+            .findbyCustomFiledAndEmail(bindingParams.getCompanyId(), bindingParams.getEmail(),
+                bindingParams.getCustomField()));
         if (employeeThreadLocal.get() != null) {
             ResponseUtils.fail(ConstantErrorCodeMessage.MCD_USER_EMAIL_AND_CUSTOM_FIELD);
             //throw new RuntimeException("员工认证信息不正确!");
@@ -63,16 +64,19 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
 
     }
 
-    @Override
-    protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
+    @Override protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get();
 
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
-        userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+        userEmployeeDO.setEmployeeid(
+            org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployeeDO.setSysuserId(bindingParams.getUserId());
-        userEmployeeDO.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployeeDO.getCname()));
-        userEmployeeDO.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployeeDO.getMobile()));
-        userEmployeeDO.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), userEmployeeDO.getEmail()));
+        userEmployeeDO.setCname(org.apache.commons.lang.StringUtils
+            .defaultIfBlank(bindingParams.getName(), userEmployeeDO.getCname()));
+        userEmployeeDO.setMobile(org.apache.commons.lang.StringUtils
+            .defaultIfBlank(bindingParams.getMobile(), userEmployeeDO.getMobile()));
+        userEmployeeDO.setEmail(org.apache.commons.lang.StringUtils
+            .defaultIfBlank(bindingParams.getEmail(), userEmployeeDO.getEmail()));
         if (!(StringUtils.isNotNullOrEmpty(bindingParams.getCustomField())) && (!(StringUtils.isNotNullOrEmpty(bindingParams.getEmail())))) {
             //设置注册来源来自eamil
             userEmployeeDO.setAuthMethod((byte) 0);
@@ -89,58 +93,57 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         userEmployeeDO.setActivation((byte) 0);
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils
+            .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         return userEmployeeDO;
     }
 
 
-    @Override
-    protected Result doneBind(UserEmployeeDO useremployee, int bindSource) throws TException, InvalidArgumentException {
+    @Override protected Result doneBind(UserEmployeeDO useremployee, int bindSource)
+        throws TException, InvalidArgumentException {
         Result result = new Result();
         //1)查询activation的员工在否存在如果存在则做 Update操作把用户更新
-        UserEmployeeRecord getActiveEmployee = employeeDao.getActiveEmployee(useremployee.getSysuserId(),
+        UserEmployeeRecord getActiveEmployee = employeeDao.getActiveEmployeeByCustomFiled(useremployee.getCustomField(),
                 useremployee.getCompanyId());
         if (getActiveEmployee.getActivation() == 0) {
-            employeeDao.updateActiveUserInfo(useremployee.getSysuserId(),
-                    useremployee.getCompanyId(),
-                    useremployee.getCustomField(),
-                    useremployee.getMobile(),
-                    useremployee.getEmail(),
-                    useremployee.getCname());
+            employeeDao.updateActiveUserInfo(useremployee.getSysuserId(), useremployee.getCompanyId(),
+                    useremployee.getCustomField(), useremployee.getMobile(),
+                    useremployee.getEmail(), useremployee.getCname());
 
             //2查询新用户的预埋数据如果是则删除。
             //并且重新插入一条新的数据
-            if (StringUtils.isNotNullOrEmpty(getActiveEmployee.getCustomField())){
-                employeeDao.deleteEmptyCustomFiledBySysUuer(useremployee.getCustomField(), useremployee.getSysuserId());
+            if (StringUtils.isNotNullOrEmpty(getActiveEmployee.getCustomField())) {
+                employeeDao.deleteEmptyCustomFiledBySysUuer(useremployee.getCustomField());
 
-                employeeDao.insertActiveUserInfo(useremployee.getSysuserId(),
-                        useremployee.getCompanyId(),
-                        useremployee.getCustomField(),
-                        useremployee.getMobile(),
-                        useremployee.getEmail(),
-                        useremployee.getCname());
+                employeeDao.insertActiveUserInfo(useremployee.getSysuserId(), useremployee.getCompanyId(),
+                        useremployee.getCustomField(), useremployee.getMobile(),
+                        useremployee.getEmail(), useremployee.getCname());
                 result.setSuccess(true);
                 result.setMessage("success");
             }
-        }
-
-        if (getActiveEmployee.getActivation() > 0) {
-            employeeDao.updateUnActiveUserInfo(useremployee.getSysuserId(),
-                    useremployee.getCompanyId(),
-                    useremployee.getCustomField(),
-                    useremployee.getMobile(),
-                    useremployee.getEmail(),
+            //根据通过邮箱认证但是工号为空的情况
+            if (StringUtils.isNotNullOrEmpty(getActiveEmployee.getEmail())) {
+                employeeDao.updateActiveUserInfo(useremployee.getSysuserId(), useremployee.getCompanyId(),
+                    useremployee.getCustomField(), useremployee.getMobile(), useremployee.getEmail(),
                     useremployee.getCname());
+                result.setSuccess(true);
+                result.setMessage("success");
+            }
+
+
+            result.setSuccess(true);
+            result.setMessage("success");
+
+        }
+        //查询工作人员是未认证的且有工号的员工
+        if ((getActiveEmployee.getActivation() > 0) && (StringUtils.isNotNullOrEmpty(getActiveEmployee.getCustomField()))) {
+            employeeDao.updateUnActiveUserInfo(useremployee.getSysuserId(),
+                useremployee.getCompanyId(), useremployee.getCustomField(),
+                useremployee.getMobile(), useremployee.getEmail(), useremployee.getCname());
             result.setSuccess(true);
             result.setMessage("success");
         }
-        result.setSuccess(true);
-        result.setMessage("success");
-
         return result;
 
-
     }
-
-
 }

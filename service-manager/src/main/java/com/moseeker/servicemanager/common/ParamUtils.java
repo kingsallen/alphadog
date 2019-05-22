@@ -72,11 +72,11 @@ public class ParamUtils {
         //logger.info("=====resuest========");
         data.putAll(initParamFromRequestParameter(request));
         data.putAll(initParamFromRequestBody(request));
-
+/*
         if (data.get("appid") == null) {
 
             throw CommonException.PROGRAM_APPID_LOST;
-        }
+        }*/
         return data;
     }
 

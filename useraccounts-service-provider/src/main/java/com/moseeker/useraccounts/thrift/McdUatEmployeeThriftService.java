@@ -53,6 +53,7 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
 
             return ResponseUtils.success(result);
         } else {
+            logger.info("没有查到未认证的员工信息" + result + "开始执行员工绑定");
             bindingParams.setUserId(userTypeDO.getUser_id());
             bindingParams.setCompanyId(userTypeDO.getCompany_id());
             bindingParams.setEmail(userTypeDO.getEmail());
