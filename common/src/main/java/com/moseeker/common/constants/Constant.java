@@ -63,6 +63,15 @@ public final class Constant {
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
     public static final String POSITION_SYNC_FAIL_ROUTINGKEY = "messagetemplate.position_sync_fail";
 
+    //延时交换机常量,以及队列常量
+    public static final String ACTIVITY_DELAY_EXCHANGE = "activity_delay_exchange_dog";
+    public static final String EXCHANGE_TYPE_DELAY = "x-delayed-type";
+    public static final String MESSAGE_TYPE_DELAY = "x-delayed-message";
+    public static final String ACTIVITY_DELAY_QUEUE = "activity_delay_queue_dog";
+    public static final String ACTIVITY_DELAY_ROUTING_KEY = "activity_delay_routing_key";
+
+
+
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
     public static final String REFERRAL_RADAR_TEMPLATE = "referral_radar.referral_radar_template";
@@ -98,6 +107,8 @@ public final class Constant {
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
     public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
     public static final int RECRUIT_STATUS_EMPLOYEE_RECOMMEND   = 16;      // 员工完成联系内推推荐评价
+    public static final int RECRUIT_STATUS_WRITTEN_EXAMINATION   = 17;      // 笔试
+    public static final int RECRUIT_STATUS_FINAL_INTERVIEW   = 18;      // 终极面试
 
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,

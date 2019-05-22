@@ -6,7 +6,6 @@ package com.moseeker.baseorm.db.dictdb;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
-import com.moseeker.baseorm.db.dictdb.tables.DictApplicationOrigin;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
@@ -23,7 +22,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
-import com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1;
 import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
 import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
@@ -56,7 +54,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 778127726;
+    private static final long serialVersionUID = 356159954;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -87,11 +85,6 @@ public class Dictdb extends SchemaImpl {
      * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
     public final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
-
-    /**
-     * The table <code>dictdb.dict_application_origin</code>.
-     */
-    public final DictApplicationOrigin DICT_APPLICATION_ORIGIN = com.moseeker.baseorm.db.dictdb.tables.DictApplicationOrigin.DICT_APPLICATION_ORIGIN;
 
     /**
      * 民航招聘的职位职能表
@@ -134,7 +127,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -172,11 +165,6 @@ public class Dictdb extends SchemaImpl {
      * 职能分类字典表
      */
     public final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
-
-    /**
-     * 职能分类字典表
-     */
-    public final DictPositionCopy1 DICT_POSITION_COPY1 = com.moseeker.baseorm.db.dictdb.tables.DictPositionCopy1.DICT_POSITION_COPY1;
 
     /**
      * 内推能力标签常量
@@ -228,7 +216,6 @@ public class Dictdb extends SchemaImpl {
             Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
-            DictApplicationOrigin.DICT_APPLICATION_ORIGIN,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,
             DictCityLiepin.DICT_CITY_LIEPIN,
@@ -245,7 +232,6 @@ public class Dictdb extends SchemaImpl {
             DictMajor.DICT_MAJOR,
             DictMarsMajor.DICT_MARS_MAJOR,
             DictPosition.DICT_POSITION,
-            DictPositionCopy1.DICT_POSITION_COPY1,
             DictReferralEvaluate.DICT_REFERRAL_EVALUATE,
             DictTestMobile.DICT_TEST_MOBILE,
             DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION,

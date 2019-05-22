@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictReferralEvaluate extends TableImpl<DictReferralEvaluateRecord> {
 
-    private static final long serialVersionUID = 1599964505;
+    private static final long serialVersionUID = 259544989;
 
     /**
      * The reference instance of <code>dictdb.dict_referral_evaluate</code>
@@ -56,9 +56,9 @@ public class DictReferralEvaluate extends TableImpl<DictReferralEvaluateRecord> 
     public final TableField<DictReferralEvaluateRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>dictdb.dict_referral_evaluate.code</code>. dict_constant.code 做或运算 parent_code 3135
+     * The column <code>dictdb.dict_referral_evaluate.code</code>. dict_constant.code parent_code 3135
      */
-    public final TableField<DictReferralEvaluateRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "dict_constant.code 做或运算 parent_code 3135");
+    public final TableField<DictReferralEvaluateRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "dict_constant.code parent_code 3135");
 
     /**
      * The column <code>dictdb.dict_referral_evaluate.tag</code>. 标签名称
