@@ -65,19 +65,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get();
-       /* if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
-            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                userEmployeeDO = userEmployeeDOThreadLocal.get();
-            } else {
-                userEmployeeDO = employeeThreadLocal.get();
-            }
-        } else if (employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()) {
-            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
-                userEmployeeDO = userEmployeeDOThreadLocal.get();
-            }
-        } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
-            throw new RuntimeException("员工认证信息不匹配!");
-        }*/
+
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployeeDO.setSysuserId(bindingParams.getUserId());

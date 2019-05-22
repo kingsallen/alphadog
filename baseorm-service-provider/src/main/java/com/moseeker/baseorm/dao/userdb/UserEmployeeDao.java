@@ -500,12 +500,15 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
     public void updateActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
                                          String email,String cname ) {
+        LocalDateTime nowDate = LocalDateTime.now();
+        Timestamp time = Timestamp.valueOf(nowDate);
 
         create.update(table).set(UserEmployee.USER_EMPLOYEE.EMAIL,email)
                 .set(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,customField)
                 .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID,sysuserId)
                 .set(UserEmployee.USER_EMPLOYEE.CNAME,cname)
                 .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
+                .set(UserEmployee.USER_EMPLOYEE.UPDATE_TIME,time)
                 .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
                 .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
@@ -523,6 +526,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     public void updateUnActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
                                      String email,String cname ) {
                Byte source =11;//注册来源joywork
+        LocalDateTime nowDate = LocalDateTime.now();
+        Timestamp time = Timestamp.valueOf(nowDate);
+
         create.update(table).set(UserEmployee.USER_EMPLOYEE.EMAIL,email)
                 .set(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,customField)
                 .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID,sysuserId)
@@ -530,6 +536,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
                 .set(UserEmployee.USER_EMPLOYEE.SOURCE, source)
                 .set(UserEmployee.USER_EMPLOYEE.ACTIVATION,(byte)0)
+                .set(UserEmployee.USER_EMPLOYEE.UPDATE_TIME,time)
                 .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.gt((byte)0))
                 .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
@@ -543,6 +550,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Byte activation=0;//已经认证
         byte authMeth= 1;
 
+        LocalDateTime nowDate = LocalDateTime.now();
+        Timestamp time = Timestamp.valueOf(nowDate);
+
         create.insertInto(table)
                 .columns(UserEmployee.USER_EMPLOYEE.EMAIL,
                         UserEmployee.USER_EMPLOYEE.SYSUSER_ID,
@@ -551,15 +561,12 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                         UserEmployee.USER_EMPLOYEE.ACTIVATION,
                         UserEmployee.USER_EMPLOYEE.SOURCE,
                         UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
-                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
+                        UserEmployee.USER_EMPLOYEE.CREATE_TIME
+
                         )
 
-                .values(email,sysuserId,cname,mobile,activation,source,customField,authMeth).execute();
-
-
-
-
-
+                .values(email,sysuserId,cname,mobile,activation,source,customField,authMeth,time).execute();
 
 
 
