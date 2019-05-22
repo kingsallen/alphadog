@@ -96,42 +96,18 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                         UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME,
                         UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL
                 )
-                .select(
-                        select(
-                                senderParam,
-                                receiverParam,
-                                companyIdParam,
-                                upvoteTimeParam,
-                                upVoteParam
-                        )
-                        .whereNotExists(
-                                selectOne()
-                                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
-                                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
-                                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
-                                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
-                        )
+                .values(
+                        senderParam,
+                        receiverParam,
+                        companyIdParam,
+                        upvoteTimeParam,
+                        upVoteParam
                 )
+                .onDuplicateKeyUpdate()
+                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL_TIME,upvoteTimeParam)
+                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL,param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(), (byte)UpVoteState.UnUpVote.getValue()))
                 .execute();
 
-        UserEmployeeUpvoteRecord result = using(configuration())
-                .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
-                .fetchOne();
-
-        if (result != null) {
-            if (execute == 0 && result.getCancel().byteValue() != UpVoteState.UpVote.getValue()) {
-                result.setCancel((byte) UpVoteState.UpVote.getValue());
-                result.setUpvoteTime(currentTime);
-                using(configuration()).attach(result);
-                result.update();
-            }
-            return result.getId();
-        }
         return 0;
     }
 
