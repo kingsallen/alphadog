@@ -218,14 +218,14 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
 
         Result<Record2<Integer, Integer>> result =
                 using(configuration())
-                        .select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID.count())
-                        .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                        .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
-                        .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
-                        .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
+                .select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID.count())
+                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
                         .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
-                        .groupBy(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER)
-                        .fetch();
+                .groupBy(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER)
+                .fetch();
         if (result != null && result.size() > 0) {
             return result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2));
         } else {
