@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
- * 推荐类红包与被推荐人关系表
+ * 推荐类红包与被推荐职位关系表
  */
 @Generated(
     value = {
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralRecomHbPositionRecord> implements Record5<Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 968512744;
+    private static final long serialVersionUID = -1285095723;
 
     /**
      * Setter for <code>referraldb.referral_recom_hb_position.id</code>. 序列ID

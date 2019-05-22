@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 推荐类红包与被推荐人关系表
+ * 推荐类红包与被推荐职位关系表
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomHbPosition implements Serializable {
 
-    private static final long serialVersionUID = -1743731057;
+    private static final long serialVersionUID = -1700218096;
 
     private Integer   id;
     private Integer   recomRecordId;

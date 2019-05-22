@@ -821,7 +821,7 @@ public class ProfileController {
         logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
         try {
             logger.info( "++++++++++++++++++file_path [ " + file_path + " ] ========");
-        } catch (Exception e) {}
+          } catch (Exception e) {}
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 

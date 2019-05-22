@@ -4,6 +4,13 @@
 package com.moseeker.baseorm.db.referraldb;
 
 
+import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
+import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCustomFields;
+import com.moseeker.baseorm.db.referraldb.tables.HrGroupCompany;
+import com.moseeker.baseorm.db.referraldb.tables.HrGroupCompanyRel;
+import com.moseeker.baseorm.db.referraldb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain;
@@ -14,11 +21,14 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles;
+import com.moseeker.baseorm.db.referraldb.tables.TestTable;
+import com.moseeker.baseorm.db.referraldb.tables.UserEmployee;
 
 import javax.annotation.Generated;
 
@@ -35,6 +45,41 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 员工内推记录
+     */
+    public static final EmployeeReferralRecord EMPLOYEE_REFERRAL_RECORD = com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD;
+
+    /**
+     * The table <code>referraldb.history_referral_position_rel</code>.
+     */
+    public static final HistoryReferralPositionRel HISTORY_REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL;
+
+    /**
+     * 部门员工配置表
+     */
+    public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+    /**
+     * 员工认证自定义字段表
+     */
+    public static final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
+
+    /**
+     * 集团公司
+     */
+    public static final HrGroupCompany HR_GROUP_COMPANY = com.moseeker.baseorm.db.referraldb.tables.HrGroupCompany.HR_GROUP_COMPANY;
+
+    /**
+     * 集团公司与公司的关系
+     */
+    public static final HrGroupCompanyRel HR_GROUP_COMPANY_REL = com.moseeker.baseorm.db.referraldb.tables.HrGroupCompanyRel.HR_GROUP_COMPANY_REL;
+
+    /**
+     * 企业用户导入数据异步处理监控操作表
+     */
+    public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.referraldb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
     /**
      * 红包活动职位申请状态统计
@@ -87,6 +132,11 @@ public class Tables {
     public static final ReferralPositionBonusStageDetail REFERRAL_POSITION_BONUS_STAGE_DETAIL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
 
     /**
+     * The table <code>referraldb.referral_position_rel</code>.
+     */
+    public static final ReferralPositionRel REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel.REFERRAL_POSITION_REL;
+
+    /**
      * 分享推荐进度页面用于存储候选人查看推荐进度时的申请状态
      */
     public static final ReferralProgress REFERRAL_PROGRESS = com.moseeker.baseorm.db.referraldb.tables.ReferralProgress.REFERRAL_PROGRESS;
@@ -97,7 +147,7 @@ public class Tables {
     public static final ReferralRecomEvaluation REFERRAL_RECOM_EVALUATION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION;
 
     /**
-     * 推荐类红包与被推荐人关系表
+     * 推荐类红包与被推荐职位关系表
      */
     public static final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
 
@@ -110,4 +160,14 @@ public class Tables {
      * 用户上传文件记录表
      */
     public static final ReferralUploadFiles REFERRAL_UPLOAD_FILES = com.moseeker.baseorm.db.referraldb.tables.ReferralUploadFiles.REFERRAL_UPLOAD_FILES;
+
+    /**
+     * 测试
+     */
+    public static final TestTable TEST_TABLE = com.moseeker.baseorm.db.referraldb.tables.TestTable.TEST_TABLE;
+
+    /**
+     * The table <code>referraldb.user_employee</code>.
+     */
+    public static final UserEmployee USER_EMPLOYEE = com.moseeker.baseorm.db.referraldb.tables.UserEmployee.USER_EMPLOYEE;
 }

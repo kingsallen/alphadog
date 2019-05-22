@@ -154,7 +154,6 @@ public class ReferralTemplateSender {
     }
 
     public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
-        logger.info("ReferralTemplateSender发送消息到消息延时队列 ReferralCardInfo {}",cardInfo);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userId",cardInfo.getUserId());
         jsonObject.put("companyId",cardInfo.getCompanyId());
@@ -163,7 +162,7 @@ public class ReferralTemplateSender {
         jsonObject.put("timestamp",cardInfo.getTimestamp());
         Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
-                .setHeaderIfAbsent("x-delay",2*60*1000).build();
+                .setHeaderIfAbsent("x-delay",TEN_MINUTE).build();
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
 
@@ -181,7 +180,7 @@ public class ReferralTemplateSender {
             List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
             //对十分钟内的职位浏览人查询结果进行判空操作
             if(factShareChainDOS.size()==0){
-                logger.info("暂无任何人浏览该员工 {} 分享的 {} 公司的职位",cardInfo.getUserId(),cardInfo.getCompanyId());
+                logger.info("暂无任何人浏览该员工 {} 分享的职位",cardInfo.getUserId());
                 return;
             }
             factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), cardInfo.getUserId(),factShareChainDOS);

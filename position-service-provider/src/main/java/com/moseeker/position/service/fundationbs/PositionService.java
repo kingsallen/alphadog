@@ -63,6 +63,7 @@ import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.schedule.PositionIndexSender;
 import com.moseeker.position.utils.CommonPositionUtils;
+import com.moseeker.position.utils.PositionStateAsyncHelper;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -85,6 +86,8 @@ import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +102,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.PositionSyncVerify.POSITION_OPERATE_LIEPIN_EXCHANGE;
+import static com.moseeker.common.constants.PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_DOWNSHELF;
+
 @Service
 @Transactional
 public class PositionService {
@@ -111,6 +117,8 @@ public class PositionService {
     private JobCustomDao jobCustomDao;
     @Autowired
     KafkaSender kafkaSender;
+    @Autowired
+    private PositionStateAsyncHelper positionStateAsyncHelper;
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
@@ -666,13 +674,16 @@ public class PositionService {
      */
     @CounterIface
     public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
+        logger.info("PositionService batchHandlerJobPostion");
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
         if (batchHandlerJobPosition == null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
+            logger.info("PositionService batchHandlerJobPostion 数据不存在");
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_BLANK);
         }
         // 提交的数据
         List<JobPostrionObj> jobPositionHandlerDates = batchHandlerJobPosition.getData();
+        logger.info("PositionService batchHandlerJobPostion jobPositionHandlerDates:{}", JSONObject.toJSONString(jobPositionHandlerDates));
         //过滤职位信息中的emoji表情
         PositionUtil.refineEmoji(jobPositionHandlerDates);
 
@@ -744,15 +755,16 @@ public class PositionService {
                 jobPositionDao.updateRecords(dbOnlineList);
 
                 // 猎聘api对接下架职位 todo 这行代码是新增
-                logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
+                /*logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
                 pool.startTast(() -> {
                     if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
                         return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
                     } else {
                         throw new RuntimeException("rabbitmq线程等待超时");
                     }
-                });
-
+                });*/
+                List<Integer> ids = dbOnlineList.stream().map(p -> p.getId()).collect(Collectors.toList());
+                positionStateAsyncHelper.downShelf(batchHandlerCountDown,ids);
             }
         }
         // 判断哪些数据不需要更新的
@@ -2847,12 +2859,16 @@ public class PositionService {
     @CounterIface
     public List<WechatPositionListData> getReferralPositionList(Map<String,String> query) {
 
+        logger.info("PositionService getReferralPositionList");
+        logger.info("PositionService getReferralPositionList query:{}", JSONObject.toJSONString(query));
         List<WechatPositionListData> dataList = new ArrayList<>();
         try {
             WechatPositionListQuery searchParams=this.convertParams(query);
+            logger.info("PositionService getReferralPositionList searchParams:{}", JSONObject.toJSONString(searchParams));
             Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
+                logger.info("PositionService getReferralPositionList totalNum:{}", jobj.getLong("total"));
                 long totalNum = jobj.getLong("total");
                 List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
                 List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);

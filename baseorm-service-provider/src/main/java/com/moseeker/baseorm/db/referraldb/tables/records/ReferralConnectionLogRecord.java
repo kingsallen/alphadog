@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionLogRecord extends UpdatableRecordImpl<ReferralConnectionLogRecord> implements Record9<Integer, Integer, Integer, Integer, Integer, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 872244728;
+    private static final long serialVersionUID = -318348048;
 
     /**
      * Setter for <code>referraldb.referral_connection_log.id</code>.
@@ -117,14 +117,14 @@ public class ReferralConnectionLogRecord extends UpdatableRecordImpl<ReferralCon
     }
 
     /**
-     * Setter for <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中 3员工邀请投递生成，未发起连连看，当员工发起后，状态改为0
+     * Setter for <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中 3员工未发起连连看，当员工发起后，状态改为0
      */
     public void setState(Byte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中 3员工邀请投递生成，未发起连连看，当员工发起后，状态改为0
+     * Getter for <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中 3员工未发起连连看，当员工发起后，状态改为0
      */
     public Byte getState() {
         return (Byte) get(6);

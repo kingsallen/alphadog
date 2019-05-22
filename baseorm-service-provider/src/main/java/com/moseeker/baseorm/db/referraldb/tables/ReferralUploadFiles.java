@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
 
-    private static final long serialVersionUID = 439234241;
+    private static final long serialVersionUID = -345396381;
 
     /**
      * The reference instance of <code>referraldb.referral_upload_files</code>
@@ -72,9 +72,9 @@ public class ReferralUploadFiles extends TableImpl<ReferralUploadFilesRecord> {
     public final TableField<ReferralUploadFilesRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "上传文件人id(可以是unionid)");
 
     /**
-     * The column <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电脑扫码上传
+     * The column <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电   扫码上传
      */
-    public final TableField<ReferralUploadFilesRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER, this, "上传渠道：1 微信小程序 2电脑扫码上传");
+    public final TableField<ReferralUploadFilesRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER, this, "上传渠道：1 微信小程序 2电   扫码上传");
 
     /**
      * The column <code>referraldb.referral_upload_files.filename</code>. 文件名

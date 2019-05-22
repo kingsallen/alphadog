@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.ParseResult;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
@@ -44,16 +43,16 @@ public class ReferralUploadController {
     public String uploadProfile(MultipartFile file, HttpServletRequest request){
         logger.info("ReferralUploadController weChatUploadProfile");
         logger.info("ReferralUploadController weChatUploadProfile file.length:{},  file.name:{}",file.getSize(), file.getName());
-        Params<String, Object> params = null;
         UploadControllerVO result = new UploadControllerVO();
         try {
-            //params = ParamUtils.parseequestParameter(request);
             String sceneId =  request.getParameter("sceneId");
             String unionId =  request.getParameter("unionId");
             String fileName = request.getParameter("fileName");
+
             logger.info("上传文件存储参数： sceneId:{}, unionId:{}, fileName:{}",sceneId, unionId, fileName);
+            logger.info("ReferralUploadController uploadProfile size:{}", file.getSize());
+            logger.info("ReferralUploadController uploadProfile bytes:{}", file.getBytes().length);
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                result.setFileName(Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson());
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return Result.fail(99999, "请上传小于5M的文件！").toJson();
             }
@@ -66,6 +65,7 @@ public class ReferralUploadController {
             result.setSaveUrl(referralUploadFiles.getUrl());
             result.setFileId(String.valueOf(referralUploadFiles.getId()));
             result.setCreateTime(referralUploadFiles.getCreate_time());
+            logger.info("uploadProfile： result:{}", JSONObject.toJSONString(result));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return Result.fail(99999, e.getMessage()).toJson();
@@ -130,15 +130,16 @@ public class ReferralUploadController {
      */
     @RequestMapping(value = "/v1.2/referral/upload/resume/info",method = RequestMethod.GET)
     public String parseFileProfile(HttpServletRequest request) throws Exception {
+        logger.info("ReferralUploadController parseFileProfile");
         //Params<String, Object> params = parseRequestParam(request);
         String fileId = request.getParameter("fileId");
         String userId = request.getParameter("userId");
         String sceneId = request.getParameter("sceneId");
         logger.info("ReferralUploadController  parseFileProfile  fileId{},userId{},sceneId{}",fileId,userId,sceneId);
         ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(fileId);
+        logger.info("ReferralUploadController parseFileProfile:{}", JSONObject.toJSONString(uploadFilesResult));
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId), sceneId);
-        result.setFile(uploadFilesResult.getFilename());
         return Result.success(result).toJson();
     }
 
@@ -149,11 +150,13 @@ public class ReferralUploadController {
      */
     @RequestMapping(value = "/v1.2/resuem/upload/complete",method = RequestMethod.GET)
     public String getSpecifyProfileResult(HttpServletRequest request) throws Exception {
+        logger.info("ReferralUploadController getSpecifyProfileResult");
         Params<String, Object> params = parseRequestParam(request);
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         String syncId = request.getParameter("syncId");
-        //boolean flag = profileService.getSpecifyProfileResult(employeeId,syncId);
+        logger.info("ReferralUploadController getSpecifyProfileResult employeeId:{}, syncId:{}", employeeId, syncId);
         boolean flag = profileService.getSpecifyProfileResult(employeeId, syncId);
+        logger.info("ReferralUploadController getSpecifyProfileResult flag:{}", flag);
         return Result.success(flag).toJson();
     }
 
@@ -170,11 +173,14 @@ public class ReferralUploadController {
         int employeeId = Integer.parseInt(request.getParameter("employeeId"));
         logger.info("getCandidateInfo  employeeId{}",employeeId);
         ProfileParseResult profileParseResult = profileService.checkResult(employeeId);
+        logger.info("ReferralUploadController getCandidateInfo profileParseResult:{}", JSONObject.toJSONString(profileParseResult));
         parseResult.setFilename(profileParseResult.getFile());
         if (profileParseResult.getMobile() != null){
             parseResult.setMobile(profileParseResult.getMobile());
         }
         parseResult.setName(profileParseResult.getName());
+        logger.info("ReferralUploadController getCandidateInfo parseResult:{}", JSONObject.toJSONString(parseResult));
+        logger.info("ReferralUploadController  Result.success.toJson{}", Result.success(parseResult).toJson() );
         return Result.success(parseResult).toJson();
     }
 }

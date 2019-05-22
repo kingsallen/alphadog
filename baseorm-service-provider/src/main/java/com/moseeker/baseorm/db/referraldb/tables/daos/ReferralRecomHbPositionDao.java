@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 推荐类红包与被推荐人关系表
+ * 推荐类红包与被推荐职位关系表
  */
 @Generated(
     value = {
