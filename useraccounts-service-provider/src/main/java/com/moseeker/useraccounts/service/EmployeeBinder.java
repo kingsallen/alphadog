@@ -199,7 +199,6 @@ public abstract class EmployeeBinder {
         log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
         log.info("doneBind persist employee:{}", useremployee);
 
-
         UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                 useremployee.getCompanyId());
         if (unActiveEmployee != null) {

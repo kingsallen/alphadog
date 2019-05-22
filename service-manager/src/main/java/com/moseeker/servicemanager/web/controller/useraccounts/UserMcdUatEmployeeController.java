@@ -30,7 +30,7 @@ public class UserMcdUatEmployeeController {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
 
-    @RequestMapping(value = "/v4/mcdUat/user", method = RequestMethod.GET)
+    @RequestMapping(value = "/mcdUser/bindUser", method = RequestMethod.GET)
     @ResponseBody
    /* public String getUserEmployeeByUserId(@RequestParam("appid") int appid,
         @RequestParam("sysuser_id") int sysuserId) throws Exception {*/

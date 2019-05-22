@@ -2,6 +2,7 @@ package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.crud.LocalCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -11,6 +12,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -481,6 +483,36 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
             .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
             .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(Integer.valueOf(""))).execute();
+    }
+
+
+   //根据用户的工号和email判重
+    public UserEmployeeDO findbyCustomFiledAndEmail(int companyId ,String email,String customFiled) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(email))
+                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+                .limit(1)
+                .fetchOneInto(UserEmployeeDO.class);
+
+    }
+
+    public void updateActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
+                                         String email,String cname ) {
+
+        create.update(table).set(UserEmployee.USER_EMPLOYEE.EMAIL,email)
+                .set(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,customField)
+                .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID,sysuserId)
+                .set(UserEmployee.USER_EMPLOYEE.CNAME,cname)
+                .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
+                .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId)).execute();
+
+    }
+
+    public int deleteEmptyCustomFiledBy(Condition conditions) {
+        return create.deleteFrom(table).where(new LocalCondition<>(table).parseConditionUtil(conditions)).execute();
     }
 
 
