@@ -33,7 +33,7 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
 
     @Override
     public Response getUserEmployeeInfoByUserType(McdUserTypeDO userTypeDO) throws TException {
-        UserEmployee result = mcdUatService.getSingleUserEmployee(userTypeDO.getUserId());
+        UserEmployee result = mcdUatService.getSingleUserEmployee(userTypeDO.getUser_id());
         BindingParams bindingParams = new BindingParams();
 
         if (result != null) {
@@ -53,7 +53,7 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
 
             return ResponseUtils.success(result);
         } else {
-            bindingParams.setUserId(userTypeDO.getUserId());
+            bindingParams.setUserId(userTypeDO.getUser_id());
             bindingParams.setCompanyId(userTypeDO.getCompany_id());
             bindingParams.setEmail(userTypeDO.getEmail());
             bindingParams.setMobile(userTypeDO.getMobile());
