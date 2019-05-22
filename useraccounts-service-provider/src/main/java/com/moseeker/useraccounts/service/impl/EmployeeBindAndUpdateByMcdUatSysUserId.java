@@ -35,7 +35,8 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
                     bindingParams.getCompanyId()));
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
                     && userEmployeeDOThreadLocal.get().getActivation() == 0) {
-                throw new RuntimeException("该员工已绑定");
+               // throw new RuntimeException("该员工已绑定");
+                ResponseUtils.fail(ConstantErrorCodeMessage.MCD_IS_EXIT);
             }
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
