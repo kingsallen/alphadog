@@ -142,9 +142,13 @@ public class RabbitReceivers {
     @RabbitListener(queues = Constant.ACTIVITY_DELAY_QUEUE,containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void handleTenMinutesMessageTemplate(Message message){
-        String msgBody = new String(message.getBody());
-        ReferralCardInfo cardInfo = JSONObject.parseObject(msgBody,ReferralCardInfo.class);
-        referralTemplateSender.sendTenMinuteTemplateIfNecessary(cardInfo);
+        try{
+            String msgBody = new String(message.getBody());
+            ReferralCardInfo cardInfo = JSONObject.parseObject(msgBody,ReferralCardInfo.class);
+            referralTemplateSender.sendTenMinuteTemplateIfNecessary(cardInfo);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
     }
 
     private void handleEmployeeNetwork(int companyId) {
