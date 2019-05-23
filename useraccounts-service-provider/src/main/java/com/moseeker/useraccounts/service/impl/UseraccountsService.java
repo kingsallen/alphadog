@@ -179,6 +179,7 @@ public class UseraccountsService {
                 query.clear();
                 query.where("username", mobile).and("country_code",countryCode);
                 UserUserDO userUserDO = userdao.getData(query.buildQuery());
+                logger.info("UseraccountsService userChangeBind userUserDO:{}", userUserDO);
                 // 验证手机号码是否正确
                 if (userUserDO == null) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.MOBILE_IS_INVALID);
@@ -187,7 +188,7 @@ public class UseraccountsService {
                 if (userUserDO.getUnionid().equals(unionid)) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_SAME);
                 }
-
+                logger.info("UseraccountsService userChangeBind set sysuser_id = 0 where unionid = ''");
                 // 把之前的user_wx_user的sysuser_id置为0
                 wxuserdao.invalidOldWxUser(userUserDO.getUnionid());
 

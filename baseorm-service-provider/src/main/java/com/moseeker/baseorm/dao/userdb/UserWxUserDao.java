@@ -111,6 +111,10 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
      * @return
      */
     public int invalidOldWxUser(String unionid){
+        if (org.apache.commons.lang.StringUtils.isBlank(unionid)) {
+            logger.info("UserWxUserDao invalidOldWxUser update USER_WX_USER set sysuser_id = 0 where unionid= ''");
+            return 0;
+        }
         return create.update(USER_WX_USER)
                 .set(USER_WX_USER.SYSUSER_ID,0)
                 .where(USER_WX_USER.UNIONID.eq(unionid))
