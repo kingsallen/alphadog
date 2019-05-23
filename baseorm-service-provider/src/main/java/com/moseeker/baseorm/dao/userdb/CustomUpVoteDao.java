@@ -82,20 +82,12 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
     public int insert(int companyId, int receiver, int sender, long startTime, long endTime) {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         byte upvote = (byte)UpVoteState.UpVote.getValue();
-        byte unUpvote = (byte)UpVoteState.UnUpVote.getValue();
         Param<Integer> senderParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.getName(), sender);
         Param<Integer> receiverParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.getName(), receiver);
         Param<Integer> companyIdParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.getName(), companyId);
         Param<Timestamp> upvoteTimeParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.getName(), currentTime);
         Param<Byte> upVoteParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(), upvote);
 
-        Record1<Byte> cancelRecord = using(configuration()).select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL)
-                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.eq(companyId))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver)).fetchOne();
-
-        byte cancel = null==cancelRecord?unUpvote:cancelRecord.value1();
 
         int execute = using(configuration())
                 .insertInto(
@@ -114,9 +106,9 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                         upVoteParam
                 )
                 .onDuplicateKeyUpdate()
-                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL_TIME,upvoteTimeParam)
+                .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME,upvoteTimeParam)
                 .set(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL,param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.getName(),
-                        upvote==cancel?unUpvote:upvote))
+                        upvote))
                 .execute();
 
         return 0;
