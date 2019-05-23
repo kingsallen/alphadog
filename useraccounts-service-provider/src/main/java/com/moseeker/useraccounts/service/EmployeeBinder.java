@@ -167,7 +167,8 @@ public abstract class EmployeeBinder {
         userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployee.setActivation((byte)0);
-        userEmployee.setSource(bindingParams.getSource());userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployee.setSource(bindingParams.getSource());
+        userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDOThreadLocal.set(userEmployee);
         return userEmployee;
     }
@@ -209,6 +210,7 @@ public abstract class EmployeeBinder {
         log.info("doneBind persist employee:{}", useremployee);
 
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
+
         if (unActiveEmployee != null) {
             log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
             log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
@@ -218,6 +220,7 @@ public abstract class EmployeeBinder {
                 log.info("userEmployee not active");
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
                     unActiveEmployee.setEmail(useremployee.getEmail());
+                    unActiveEmployee.setEmailIsvalid(useremployee.getEmailIsvalid());
                 }
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getMobile())) {
                     unActiveEmployee.setMobile(useremployee.getMobile());
@@ -350,6 +353,7 @@ public abstract class EmployeeBinder {
         }
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
+        response.setEmployeeId(employeeId);
         return response;
     }
 
