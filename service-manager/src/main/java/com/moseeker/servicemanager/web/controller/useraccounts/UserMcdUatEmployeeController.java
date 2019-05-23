@@ -36,9 +36,11 @@ public class UserMcdUatEmployeeController {
         jsonObject.put("status", result.getStatus());
         jsonObject.put("message", result.getMessage());
         jsonObject.put("data", result.isSetStatus());
-        jsonObject.put("issetsatus()", result.isSetStatus());
-        jsonObject.put("isSetData()", result.isSetData());
-        jsonObject.put("isSetData()", result.isSetMessage());
+        if (result.getData() != null && result.getData().trim().toLowerCase().equals("true")) {
+            jsonObject.put("data", true);
+        } else {
+            jsonObject.put("data", false);
+        }
         return jsonObject.toString();
     }
 }
