@@ -573,6 +573,46 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     }
 
 
+    public UserEmployeeDO fetchActivedByEmail(String email, int companyId) {
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.EMAIL.eq(email))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.eq((byte) 1))
+                .limit(1)
+                .fetchOne();
+        if (record != null) {
+            return record.into(UserEmployeeDO.class);
+        } else {
+            return null;
+        }
+    }
 
+    public UserEmployeeDO fetchActivedByCustomField(String customField, int companyId) {
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customField))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .limit(1)
+                .fetchOne();
+        if (record != null) {
+            return record.into(UserEmployeeDO.class);
+        } else {
+            return null;
+        }
+    }
 
+    public UserEmployeeRecord fetchByCustomField(String customField, int companyId) {
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customField))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.eq((byte) 1))
+                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION)
+                .limit(1)
+                .fetchOne();
+        return record;
+    }
 }

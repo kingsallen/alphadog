@@ -117,18 +117,13 @@ public abstract class EmployeeBinder {
     public Result bind(BindingParams bindingParams,Integer bingSource) {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
-        Query.QueryBuilder query = new Query.QueryBuilder();
         try {
-            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(),
-                    bindingParams.getCompanyId()));
-            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
-                    && userEmployeeDOThreadLocal.get().getActivation() == 0) {
-                throw new RuntimeException("该员工已绑定");
-            }
+            validate(bindingParams);
+            Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
             HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
             if(certConf == null || certConf.getCompanyId() == 0) {
-                throw new RuntimeException("暂时不接受员工认证");
+                throw UserAccountException.EMPLOYEE_VERIFICATION_NOT_SUPPORT;
             }
             paramCheck(bindingParams, certConf);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
@@ -140,6 +135,20 @@ public abstract class EmployeeBinder {
         }
         log.info("bind response: {}", response);
         return response;
+    }
+
+    /**
+     * 认证前校验
+     * @param bindingParams 认证参数
+     */
+    protected void validate(BindingParams bindingParams) {
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
+        if (userEmployeeDO != null && userEmployeeDO.getId() > 0
+                && userEmployeeDO.getActivation() == EmployeeActiveState.Actived.getState()) {
+            throw UserAccountException.EMPLOYEE_ALREADY_VERIFIED;
+        } else {
+            userEmployeeDOThreadLocal.set(userEmployeeDO);
+        }
     }
 
     /**
@@ -199,8 +208,7 @@ public abstract class EmployeeBinder {
         log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
         log.info("doneBind persist employee:{}", useremployee);
 
-        UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
-                useremployee.getCompanyId());
+        UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
         if (unActiveEmployee != null) {
             log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
             log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
@@ -243,7 +251,7 @@ public abstract class EmployeeBinder {
                     unActiveEmployee.setSource((byte)useremployee.getSource());
                 }
                 log.info("userEmployee:{}", unActiveEmployee);
-                unActiveEmployee.setUpdateTime(new Timestamp(new Date().getTime()));
+                unActiveEmployee.setUpdateTime(new Timestamp(System.currentTimeMillis()));
                 employeeDao.updateRecord(unActiveEmployee);
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
@@ -343,6 +351,11 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         return response;
+    }
+
+    protected UserEmployeeRecord fetchUnActiveEmployee(UserEmployeeDO useremployee) {
+        return employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
+                useremployee.getCompanyId());
     }
 
     /**

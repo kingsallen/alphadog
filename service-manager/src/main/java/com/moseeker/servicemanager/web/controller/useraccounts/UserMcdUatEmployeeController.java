@@ -43,9 +43,7 @@ public class UserMcdUatEmployeeController {
 
     @RequestMapping(value = "/mcdUser/bindUser", method = RequestMethod.POST)
     @ResponseBody
-
-    public String getUserEmployeeByUserId(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    public String getUserEmployeeByUserId(HttpServletRequest request) throws Exception {
         try {
             // 获取application实体对象
             McdUserTypeDO mcdUserTypeDO = ParamUtils.initModelForm(request, McdUserTypeDO.class);
@@ -55,7 +53,5 @@ public class UserMcdUatEmployeeController {
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
-
-
     }
 }
