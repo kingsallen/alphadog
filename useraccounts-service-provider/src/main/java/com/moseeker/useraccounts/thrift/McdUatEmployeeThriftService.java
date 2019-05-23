@@ -49,7 +49,12 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
             int bindSource = EmployeeSource.Joywork.getValue();
             Result result1 = employeeBindAndUpdateByMcdUatSysUserId.bind(bindingParams, bindSource);
             logger.info("McdUatEmployeeThriftService getUserEmployeeInfoByUserType result1:{}", result1);
-            return ResponseUtils.success(result1.getEmployeeId());
+            if (result1.isSuccess()) {
+                return ResponseUtils.success(true);
+            } else {
+                return ResponseUtils.fail(result1.getEmployeeId(), result1.getMessage(), false);
+            }
+
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

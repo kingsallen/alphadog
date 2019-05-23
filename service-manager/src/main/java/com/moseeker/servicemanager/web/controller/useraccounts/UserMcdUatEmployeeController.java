@@ -1,9 +1,9 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.McdUatService;
 import com.moseeker.thrift.gen.useraccounts.struct.McdUserTypeDO;
@@ -32,6 +32,10 @@ public class UserMcdUatEmployeeController {
         McdUserTypeDO mcdUserTypeDO = ParamUtils.initModelForm(request, McdUserTypeDO.class);
 
         Response result = mcduatservice.getUserEmployeeInfoByUserType(mcdUserTypeDO);
-        return ResponseLogNotification.success(request, result);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("status", result.getStatus());
+        jsonObject.put("message", result.getMessage());
+        jsonObject.put("data", result.getData());
+        return jsonObject.toString();
     }
 }
