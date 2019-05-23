@@ -44,23 +44,19 @@ public class UserMcdUatEmployeeController {
     @RequestMapping(value = "/mcdUser/bindUser", method = RequestMethod.POST)
     @ResponseBody
     public String getUserEmployeeByUserId(HttpServletRequest request) throws Exception {
-        try {
-            // 获取application实体对象
+        // 获取application实体对象
 
 
-            McdUserTypeDO mcdUserTypeDO = ParamUtils.initModelForm(request, McdUserTypeDO.class);
-            // 创建申请记录
+        McdUserTypeDO mcdUserTypeDO = ParamUtils.initModelForm(request, McdUserTypeDO.class);
+        // 创建申请记录
 
-            logger.info("请求参数---------》"+request.toString());
+        logger.info("请求参数---------》"+request.toString());
 
-            logger.info("接口数据传入----------"+ mcdUserTypeDO.getCompany_id());
+        logger.info("接口数据传入----------"+ mcdUserTypeDO.getCompany_id());
 
 
 
-            Response result = mcduatservice.getUserEmployeeInfoByUserType(mcdUserTypeDO);
-            return ResponseLogNotification.success(request, result);
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
+        Response result = mcduatservice.getUserEmployeeInfoByUserType(mcdUserTypeDO);
+        return ResponseLogNotification.success(request, result);
     }
 }

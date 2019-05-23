@@ -1,11 +1,8 @@
 package com.moseeker.useraccounts.thrift;
 
-import com.moseeker.baseorm.exception.ExceptionConvertUtil;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.McdUatService;
