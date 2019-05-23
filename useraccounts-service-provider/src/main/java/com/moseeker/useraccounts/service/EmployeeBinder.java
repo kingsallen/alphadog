@@ -16,6 +16,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.EmployeeOperationEntrance;
 import com.moseeker.common.constants.EmployeeOperationIsSuccess;
 import com.moseeker.common.constants.EmployeeOperationType;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
@@ -128,6 +129,10 @@ public abstract class EmployeeBinder {
             paramCheck(bindingParams, certConf);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
+        } catch (CommonException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            response.setEmployeeId(e.getCode());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             response.setSuccess(false);
