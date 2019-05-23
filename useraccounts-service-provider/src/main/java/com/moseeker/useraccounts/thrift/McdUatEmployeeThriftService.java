@@ -36,6 +36,8 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
         UserEmployee result = mcdUatService.getSingleUserEmployee(userTypeDO.getUser_id());
         BindingParams bindingParams = new BindingParams();
 
+        logger.info("传入的数据----------------》"+result);
+
         if (result != null) {
             bindingParams.setUserId(result.getSysuserId());
             bindingParams.setCompanyId(result.getCompanyId());

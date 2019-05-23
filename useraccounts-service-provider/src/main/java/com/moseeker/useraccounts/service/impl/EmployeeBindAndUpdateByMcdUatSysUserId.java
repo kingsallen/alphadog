@@ -29,7 +29,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         logger.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
         try {
-
+           logger.info("打印日志"+userEmployeeDOThreadLocal.get().toString());
             userEmployeeDOThreadLocal.set(employeeEntity
                 .getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId()));
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
