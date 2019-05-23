@@ -54,7 +54,8 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get() == null ? new UserEmployeeDO():employeeThreadLocal.get();
 
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
-        userEmployeeDO.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+        userEmployeeDO.setEmployeeid(
+            org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployeeDO.setSysuserId(bindingParams.getUserId());
         userEmployeeDO.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployeeDO.getCname()));
         userEmployeeDO.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployeeDO.getMobile()));
@@ -69,7 +70,8 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         userEmployeeDO.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils
+            .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         return userEmployeeDO;
     }
 

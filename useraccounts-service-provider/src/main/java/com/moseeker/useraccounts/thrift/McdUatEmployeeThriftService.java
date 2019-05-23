@@ -47,7 +47,6 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
         Result result1 = employeeBindAndUpdateByMcdUatSysUserId.bind(bindingParams, bindSource);
 
         return ResponseUtils.success(result1.getEmployeeId());
-
     }
 
     @Override
