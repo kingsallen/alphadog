@@ -1,7 +1,11 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.McdUatService;
@@ -32,21 +36,26 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
 
     @Override
     public Response getUserEmployeeInfoByUserType(McdUserTypeDO userTypeDO) throws TException {
-        BindingParams bindingParams = new BindingParams();
+        logger.info("McdUatEmployeeThriftService getUserEmployeeInfoByUserType userTypeDO:{}", userTypeDO);
+        try {
+            BindingParams bindingParams = new BindingParams();
 
-        bindingParams.setUserId(userTypeDO.getUser_id());
-        bindingParams.setCompanyId(userTypeDO.getCompany_id());
-        bindingParams.setEmail(userTypeDO.getEmail());
-        bindingParams.setMobile(userTypeDO.getMobile());
-        bindingParams.setCustomField(userTypeDO.getCustom_field());
-        bindingParams.setName(userTypeDO.getCname());
-        //这必须是12代表是来自joywork;
-        bindingParams.setSource(EmployeeSource.Joywork.getValue());
-        //注册来源joywork;
-        int bindSource = EmployeeSource.Joywork.getValue();
-        Result result1 = employeeBindAndUpdateByMcdUatSysUserId.bind(bindingParams, bindSource);
-
-        return ResponseUtils.success(result1.getEmployeeId());
+            bindingParams.setUserId(userTypeDO.getUser_id());
+            bindingParams.setCompanyId(userTypeDO.getCompany_id());
+            bindingParams.setEmail(userTypeDO.getEmail());
+            bindingParams.setMobile(userTypeDO.getMobile());
+            bindingParams.setCustomField(userTypeDO.getCustom_field());
+            bindingParams.setName(userTypeDO.getCname());
+            //这必须是12代表是来自joywork;
+            bindingParams.setSource(EmployeeSource.Joywork.getValue());
+            //注册来源joywork;
+            int bindSource = EmployeeSource.Joywork.getValue();
+            Result result1 = employeeBindAndUpdateByMcdUatSysUserId.bind(bindingParams, bindSource);
+            logger.info("McdUatEmployeeThriftService getUserEmployeeInfoByUserType result1:{}", result1);
+            return ResponseUtils.success(result1.getEmployeeId());
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
