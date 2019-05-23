@@ -53,6 +53,8 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
             int bindSource = 11;//注册来源joywork
             employeeBindAndUpdateByMcdUatSysUserId.bind(bindingParams, bindSource);
 
+            logger.info("bindingParams {}-++++++++++++++++>result 返回为不为空时候返回的参数"+bindingParams);
+
             return ResponseUtils.success(result);
         } else {
             logger.info("没有查到未认证的员工信息" + result + "开始执行员工绑定");
@@ -65,6 +67,8 @@ public class McdUatEmployeeThriftService implements McdUatService.Iface {
             bindingParams.setSource(11); //这必须是11代表是来自joywork;
             int bindSource = 11;//注册来源joywork
             employeeBindAndUpdateByMcdUatSysUserId.bind(bindingParams, bindSource);
+            logger.info("bindingParams {}------->result 返回为空时候返回的参数"+bindingParams);
+
         }
 
         return ResponseUtils.success(result);

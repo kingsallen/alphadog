@@ -32,6 +32,8 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
            logger.info("打印日志"+userEmployeeDOThreadLocal.get().toString());
             userEmployeeDOThreadLocal.set(employeeEntity
                 .getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId()));
+
+
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
                 && userEmployeeDOThreadLocal.get().getActivation() == 0) {
                 // throw new RuntimeException("该员工已绑定");
