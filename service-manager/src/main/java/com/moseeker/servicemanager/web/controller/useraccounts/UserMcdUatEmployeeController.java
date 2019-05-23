@@ -35,7 +35,10 @@ public class UserMcdUatEmployeeController {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("status", result.getStatus());
         jsonObject.put("message", result.getMessage());
-        jsonObject.put("data", result.getData());
+        jsonObject.put("data", result.isSetStatus());
+        jsonObject.put("issetsatus()", result.isSetStatus());
+        jsonObject.put("isSetData()", result.isSetData());
+        jsonObject.put("isSetData()", result.isSetMessage());
         return jsonObject.toString();
     }
 }
