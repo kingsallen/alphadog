@@ -35,6 +35,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
             throw UserAccountException.EMPLOYEE_VERIFICATION_INVALID;
         }
         userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
+        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId validate before set local thread userEmployeeDO:{}", userEmployeeDO);
         employeeThreadLocal.set(userEmployeeDO);
 
     }
@@ -56,6 +57,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get() == null ? new UserEmployeeDO():employeeThreadLocal.get();
+        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee userEmployeeDO:{}", userEmployeeDO);
 
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(
@@ -76,6 +78,8 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils
             .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee after userEmployeeDO:{}", userEmployeeDO);
+
         return userEmployeeDO;
     }
 
