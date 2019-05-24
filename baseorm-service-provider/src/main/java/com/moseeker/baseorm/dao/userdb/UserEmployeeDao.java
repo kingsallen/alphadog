@@ -259,6 +259,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Param<Integer> wxUserIdParam = param(UserEmployee.USER_EMPLOYEE.WXUSER_ID.getName(), useremployee.getWxuserId());
         Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), useremployee.getAuthMethod());
         Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte) useremployee.getActivation());
+        Param<Byte> emailValidate = param(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.getName(), useremployee.getEmailIsvalid());
         Param<String> customFieldValueParam;
         if (StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
             customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), useremployee.getCustomFieldValues());
@@ -297,7 +298,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 UserEmployee.USER_EMPLOYEE.ACTIVATION,
                 UserEmployee.USER_EMPLOYEE.CREATE_TIME,
                 UserEmployee.USER_EMPLOYEE.BINDING_TIME,
-                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES)
+                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
+                UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID
+                )
 
                 .select(
                         select(
@@ -312,7 +315,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                                 activationParam,
                                 createTimeParam,
                                 BindingTimeParam,
-                                customFieldValueParam
+                                customFieldValueParam,
+                                emailValidate
                         )
                                 .whereNotExists(
                                         selectOne()
