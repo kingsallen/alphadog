@@ -222,11 +222,13 @@ public abstract class EmployeeBinder {
             employeeId = unActiveEmployee.getId();
             log.info("userEmployee active:{}", unActiveEmployee.getActivation());
             if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
-                log.info("userEmployee not active");
+                log.info("doneBind before set emilai unActiveEmployee:{}", unActiveEmployee);
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
+                    log.info("email not null");
                     unActiveEmployee.setEmail(useremployee.getEmail());
                     unActiveEmployee.setEmailIsvalid(useremployee.getEmailIsvalid());
                 }
+                log.info("doneBind after set emilai unActiveEmployee:{}", unActiveEmployee);
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getMobile())) {
                     unActiveEmployee.setMobile(useremployee.getMobile());
                 }
@@ -266,6 +268,8 @@ public abstract class EmployeeBinder {
                     employeeDao.deleteData(useremployee);
                     searchengineEntity.deleteEmployeeDO(new ArrayList<Integer>(){{add(useremployee.getId());}});
                 }
+            } else {
+                log.info("doneBind actived email_invalidate:{}", unActiveEmployee.getEmailIsvalid());
             }
         } else {
             if (useremployee.getId() > 0) {
