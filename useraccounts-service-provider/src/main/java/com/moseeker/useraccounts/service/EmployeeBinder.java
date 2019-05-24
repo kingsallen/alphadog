@@ -205,14 +205,15 @@ public abstract class EmployeeBinder {
      * @throws TException
      */
     protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException, InvalidArgumentException {
-        log.info("doneBind param: useremployee={}", useremployee);
+        log.info("doneBind param: useremployee.email:{}", useremployee.getEmail());
         log.info("useremployee.authMethod:{}", useremployee.getAuthMethod());
         Result response = new Result();
 
         DateTime currentTime = new DateTime();
         int employeeId;
         log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
-        log.info("doneBind persist employee:{}", useremployee);
+        log.info("doneBind param: useremployee.email:{}", useremployee.getEmail());
+
 
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
 
