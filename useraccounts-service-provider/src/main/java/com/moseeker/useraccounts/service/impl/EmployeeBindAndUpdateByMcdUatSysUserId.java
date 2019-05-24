@@ -57,7 +57,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get() == null ? new UserEmployeeDO():employeeThreadLocal.get();
-        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee userEmployeeDO:{}", userEmployeeDO);
+        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee userEmployeeDO.email:{}", userEmployeeDO.getEmail());
 
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(
@@ -78,7 +78,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils
             .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
-        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee after userEmployeeDO:{}", userEmployeeDO);
+        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee userEmployeeDO.email:{}", userEmployeeDO.getEmail());
 
         return userEmployeeDO;
     }
