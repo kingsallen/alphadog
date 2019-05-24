@@ -28,13 +28,15 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected void validate(BindingParams bindingParams) {
         logger.info("EmployeeBindAndUpdateByMcdUatSysUserId validate bindingParams:{}", bindingParams);
-        super.validate(bindingParams);
         UserEmployeeDO userEmployeeDO = fetchEmployeeByEmailOrCustomField(bindingParams.getEmail(),
                 bindingParams.getCustomField(), bindingParams.getCompanyId());
         logger.info("EmployeeBindAndUpdateByMcdUatSysUserId validate userEmployeeDO:{}", userEmployeeDO);
         if (userEmployeeDO != null) {
             throw UserAccountException.EMPLOYEE_VERIFICATION_INVALID;
         }
+        userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
+        employeeThreadLocal.set(userEmployeeDO);
+
     }
 
     @Override
