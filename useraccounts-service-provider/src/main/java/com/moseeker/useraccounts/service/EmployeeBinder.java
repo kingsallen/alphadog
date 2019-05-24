@@ -222,56 +222,7 @@ public abstract class EmployeeBinder {
             log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
             employeeId = unActiveEmployee.getId();
             log.info("userEmployee active:{}", unActiveEmployee.getActivation());
-            if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
-                log.info("doneBind before set emilai unActiveEmployee:{}", unActiveEmployee);
-                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
-                    log.info("email not null");
-                    unActiveEmployee.setEmail(useremployee.getEmail());
-                    unActiveEmployee.setEmailIsvalid(useremployee.getEmailIsvalid());
-                }
-                log.info("doneBind after set emilai unActiveEmployee:{}", unActiveEmployee);
-                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getMobile())) {
-                    unActiveEmployee.setMobile(useremployee.getMobile());
-                }
-                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
-                    unActiveEmployee.setCname(useremployee.getCname());
-                }
-                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomField())) {
-                    unActiveEmployee.setCustomField(useremployee.getCustomField());
-                }
-                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
-                        !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
-                    unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
-                }
-                unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
-                log.info("doneBind unActiveEmployee update record");
-                log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
-                if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
-                }
-                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
-                    unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
-                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
-                } else {
-                    useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
-                    unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
-                }
-                unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
-                if(useremployee.getSource()>0){
-                    unActiveEmployee.setSource((byte)useremployee.getSource());
-                }
-                log.info("userEmployee:{}", unActiveEmployee);
-                unActiveEmployee.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                employeeDao.updateRecord(unActiveEmployee);
-
-                if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
-                    employeeDao.deleteData(useremployee);
-                    searchengineEntity.deleteEmployeeDO(new ArrayList<Integer>(){{add(useremployee.getId());}});
-                }
-            } else {
-                log.info("doneBind actived email_invalidate:{}", unActiveEmployee.getEmailIsvalid());
-            }
+            updateInfo(unActiveEmployee, useremployee, employeeId, currentTime);
         } else {
             if (useremployee.getId() > 0) {
                 employeeDao.updateData(useremployee);
@@ -367,6 +318,55 @@ public abstract class EmployeeBinder {
         return response;
     }
 
+    protected void updateInfo(UserEmployeeRecord unActiveEmployee, UserEmployeeDO useremployee, int employeeId, DateTime currentTime) {
+        if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+            log.info("userEmployee not active");
+            if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
+                unActiveEmployee.setEmail(useremployee.getEmail());
+                unActiveEmployee.setEmailIsvalid(useremployee.getEmailIsvalid());
+            }
+            if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getMobile())) {
+                unActiveEmployee.setMobile(useremployee.getMobile());
+            }
+            if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
+                unActiveEmployee.setCname(useremployee.getCname());
+            }
+            if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomField())) {
+                unActiveEmployee.setCustomField(useremployee.getCustomField());
+            }
+            if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
+                    !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
+                unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+            }
+            unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
+            log.info("doneBind unActiveEmployee update record");
+            log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
+            if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
+                employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
+            }
+            if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
+                unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+            } else {
+                useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
+                unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
+            }
+            unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+            if(useremployee.getSource()>0){
+                unActiveEmployee.setSource((byte)useremployee.getSource());
+            }
+            log.info("userEmployee:{}", unActiveEmployee);
+            unActiveEmployee.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            employeeDao.updateRecord(unActiveEmployee);
+
+            if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
+                employeeDao.deleteData(useremployee);
+                searchengineEntity.deleteEmployeeDO(new ArrayList<Integer>(){{add(useremployee.getId());}});
+            }
+        }
+    }
+
     protected UserEmployeeRecord fetchUnActiveEmployee(UserEmployeeDO useremployee) {
         return employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                 useremployee.getCompanyId());
@@ -400,7 +400,7 @@ public abstract class EmployeeBinder {
      * @param companyId 公司编号
      * @param bindingTime 员工注册时间
      */
-    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime, int userId) {
+    protected void employeeFirstRegister(int employeeId, int companyId, long bindingTime, int userId) {
         employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
     }
     /*
