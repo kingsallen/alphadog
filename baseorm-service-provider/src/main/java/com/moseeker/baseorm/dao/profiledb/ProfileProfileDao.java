@@ -745,6 +745,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 countDownLatch.countDown();
                 return 0;
             });
+            //计算工作经历完整度
             tp.startTast(()->{
                 if (workexpRecords != null && workexpRecords.size() > 0) {
                     List<HrCompanyRecord> companies = new ArrayList<>();
@@ -853,6 +854,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 countDownLatch.countDown();
                 return 0;
             });
+
 
             try{
                 //阻塞直到所有线程结束
