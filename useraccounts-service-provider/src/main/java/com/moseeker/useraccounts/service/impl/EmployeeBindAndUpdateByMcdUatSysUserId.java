@@ -30,7 +30,6 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
 
     private ThreadLocal<UserEmployeeDO> employeeThreadLocal = new ThreadLocal<>();
 
-    @Override
     protected void validate(BindingParams bindingParams) {
         logger.info("EmployeeBindAndUpdateByMcdUatSysUserId validate bindingParams:{}", bindingParams);
         UserEmployeeDO userEmployeeDO = fetchEmployeeByEmailOrCustomField(bindingParams.getEmail(),
