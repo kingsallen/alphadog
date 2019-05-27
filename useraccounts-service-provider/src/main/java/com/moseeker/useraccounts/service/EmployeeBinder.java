@@ -301,6 +301,7 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         response.setEmployeeId(employeeId);
+        this.updateEsUsersAndProfile(useremployee.getSysuserId());
         return response;
     }
 
