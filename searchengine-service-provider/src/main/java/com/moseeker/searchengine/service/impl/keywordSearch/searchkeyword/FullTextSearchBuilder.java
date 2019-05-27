@@ -36,6 +36,7 @@ public class FullTextSearchBuilder implements KeywordSearch{
         fieldList.add("user.profiles.recent_job.company_name");
         fieldList.add("user.profiles.recent_job.department_name");
         fieldList.add("user.profiles.recent_job.job");
+        fieldList.add("user.profiles.recent_job.description");
         fieldList.add("user.profiles.other_workexps.company_name");
         fieldList.add("user.profiles.other_workexps.department_name");
         fieldList.add("user.profiles.other_workexps.job");
@@ -54,6 +55,7 @@ public class FullTextSearchBuilder implements KeywordSearch{
     private List<Integer> getBoostList(){
         List<Integer> boostList=new ArrayList<>();
         boostList.add(20);
+        boostList.add(10);
         boostList.add(10);
         boostList.add(10);
         boostList.add(10);
