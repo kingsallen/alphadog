@@ -503,7 +503,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                            List<ProfileLanguageRecord> languages, ProfileOtherRecord otherRecord,
                            List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
                            List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords, UserUserRecord userRecord,
-                           List<ProfileProfileRecord> oldProfile) {
+                           List<ProfileProfileRecord> oldProfile) throws  Exception{
         int profileId = 0;
 
         if (oldProfile != null && oldProfile.size() > 0) {
