@@ -295,8 +295,8 @@ public class Neo4jServiceImpl implements Neo4jService {
             }
 
         } catch (Exception e) {
-           logger.error(e.getMessage());
-           throw UserAccountException.NEO4J_STATUS_ERROR;
+            logger.error(e.getMessage());
+            throw UserAccountException.NEO4J_STATUS_ERROR;
         }
         return new ArrayList<>();
     }

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictTestMobile extends TableImpl<DictTestMobileRecord> {
 
-    private static final long serialVersionUID = -1095305622;
+    private static final long serialVersionUID = -895069103;
 
     /**
      * The reference instance of <code>dictdb.dict_test_mobile</code>
@@ -64,7 +64,7 @@ public class DictTestMobile extends TableImpl<DictTestMobileRecord> {
     /**
      * The column <code>dictdb.dict_test_mobile.name</code>. 测试人员姓名
      */
-    public final TableField<DictTestMobileRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "测试人员姓名");
+    public final TableField<DictTestMobileRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "测试人员姓名");
 
     /**
      * The column <code>dictdb.dict_test_mobile.create_time</code>.

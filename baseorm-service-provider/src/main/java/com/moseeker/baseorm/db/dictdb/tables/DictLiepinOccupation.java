@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> {
 
-    private static final long serialVersionUID = -1594838902;
+    private static final long serialVersionUID = -557033156;
 
     /**
      * The reference instance of <code>dictdb.dict_liepin_occupation</code>
@@ -69,7 +69,7 @@ public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> 
     /**
      * The column <code>dictdb.dict_liepin_occupation.other_code</code>. 猎聘的code，可能是字符串
      */
-    public final TableField<DictLiepinOccupationRecord, String> OTHER_CODE = createField("other_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "猎聘的code，可能是字符串");
+    public final TableField<DictLiepinOccupationRecord, String> OTHER_CODE = createField("other_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "猎聘的code，可能是字符串");
 
     /**
      * The column <code>dictdb.dict_liepin_occupation.level</code>. 级层
@@ -94,7 +94,7 @@ public class DictLiepinOccupation extends TableImpl<DictLiepinOccupationRecord> 
     /**
      * The column <code>dictdb.dict_liepin_occupation.name</code>.
      */
-    public final TableField<DictLiepinOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false), this, "");
+    public final TableField<DictLiepinOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>dictdb.dict_liepin_occupation.candidate_source</code>. 0:社招 1：校招
