@@ -91,7 +91,7 @@ public class UpVoteEntity {
         UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getId(), sender.getId(), intervalTime.getStartTime(),
                 intervalTime.getEndTime());
         if (upVote == null) {
-            throw UserAccountException.EMPLOYEE_NOT_UP_VOTE;
+            return;
         }
         upVoteDao.cancelUpVote(upVote.getId());
     }
