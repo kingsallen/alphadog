@@ -4,7 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -80,8 +82,9 @@ public class BasicController {
 			}
 			Response result = basicService.putResource(basic);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+		} catch (Exception e) {
+			TException exception = ExceptionUtils.convertException(e);
+			return ResponseLogNotification.fail(request, exception.getMessage());
 		}
 	}
 
