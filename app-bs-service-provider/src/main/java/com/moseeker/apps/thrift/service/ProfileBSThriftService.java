@@ -2,6 +2,7 @@ package com.moseeker.apps.thrift.service;
 
 import java.util.List;
 
+import com.moseeker.common.providerutils.ExceptionUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class ProfileBSThriftService implements Iface {
 			return profileBS.retrieveProfile(positionId, profile, channel);
 		}catch (Exception e){
 			logger.info("简历回流:{}", e.getMessage());
-			throw e;
+			throw ExceptionUtils.convertException(e);
 		}
 
 	}
