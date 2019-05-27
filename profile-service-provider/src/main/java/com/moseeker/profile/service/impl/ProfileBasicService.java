@@ -216,6 +216,7 @@ public class ProfileBasicService {
         if(profileId>0){
             ProfileProfileRecord profileProfile=profileDao.getProfileByIdOrUserIdOrUUID(0,profileId,null);
             if(profileProfile!=null&&profileProfile.getUserId()>0){
+                logger.info("开始执行更新用户名字的操作=======",profileProfile.getUserId());
                 Map<String, Object> result = new HashMap<>();
                 result.put("user_id", profileProfile.getUserId());
                 result.put("tableName","user_meassage");

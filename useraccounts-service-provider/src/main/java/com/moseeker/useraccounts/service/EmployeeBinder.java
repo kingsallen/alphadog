@@ -360,6 +360,7 @@ public abstract class EmployeeBinder {
     }
 
     private void updateEsUsersAndProfile(int userId){
+        log.info("开始执行更新用户名字的操作=======",userId);
         Map<String, Object> result = new HashMap<>();
         result.put("user_id", userId);
         result.put("tableName","user_meassage");
