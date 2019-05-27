@@ -23,9 +23,11 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -45,6 +47,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
@@ -523,270 +526,430 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 				/* 计算profile完整度 */
             ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
             completenessRecord.setProfileId(profileRecord.getId());
-            java.util.Date birthDay = null;
-            if (basicRecord != null) {
-                basicRecord.setProfileId(profileRecord.getId());
-                basicRecord.setCreateTime(now);
-                create.attach(basicRecord);
-                if (!StringUtils.isNullOrEmpty(basicRecord.getNationalityName())) {
-                    DictCountryRecord countryRecord = create.selectFrom(DictCountry.DICT_COUNTRY)
-                            .where(DictCountry.DICT_COUNTRY.NAME.equal(basicRecord.getNationalityName())).limit(1)
-                            .fetchOne();
-                    if (countryRecord != null) {
-                        basicRecord.setNationalityCode(countryRecord.getId().intValue());
-                    }
-                }
-                if (!StringUtils.isNullOrEmpty(basicRecord.getCityName())) {
-                    DictCityRecord cityRecord = create.selectFrom(DictCity.DICT_CITY)
-                            .where(DictCity.DICT_CITY.NAME.equal(basicRecord.getCityName())).limit(1).fetchOne();
-                    if (cityRecord != null) {
-                        basicRecord.setCityCode(cityRecord.getCode().intValue());
-                    }
-                }
-                basicRecord.insert();
-                birthDay = basicRecord.getBirth();
-                //计算basic完整度，由于修改规则，mobile或者微信号有一个即计入，为了不改变数据库表结构所以将mobile传入basic的完整度计算程序当中
-                int basicCompleteness = CompletenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
-                completenessRecord.setProfileBasic(basicCompleteness);
-            }
-            if (attachmentRecords != null && attachmentRecords.size() > 0) {
-                attachmentRecords.forEach(attachmentRecord -> {
-                    attachmentRecord.setProfileId(profileRecord.getId());
-                    attachmentRecord.setCreateTime(now);
-                    create.attach(attachmentRecord);
-                    attachmentRecord.insert();
-                });
-            }
-            if (awardsRecords != null && awardsRecords.size() > 0) {
-                awardsRecords.forEach(awardsRecord -> {
-                    awardsRecord.setProfileId(profileRecord.getId());
-                    awardsRecord.setCreateTime(now);
-                    create.attach(awardsRecord);
-                    awardsRecord.insert();
-                });
-                // 计算奖项完整度
-                int awardCompleteness = CompletenessCalculator.calculateAwards(awardsRecords);
-                completenessRecord.setProfileAwards(awardCompleteness);
-            }
-            if (credentialsRecords != null && credentialsRecords.size() > 0) {
-                credentialsRecords.forEach(credentialsRecord -> {
-                    credentialsRecord.setProfileId(profileRecord.getId());
-                    credentialsRecord.setCreateTime(now);
-                    create.attach(credentialsRecord);
-                    credentialsRecord.insert();
-                });
-                //计算证书完整度
-                int credentialsCompleteness = CompletenessCalculator.calculateCredentials(credentialsRecords);
-                completenessRecord.setProfileCredentials(credentialsCompleteness);
-            }
-            if (educationRecords != null && educationRecords.size() > 0) {
-                educationRecords.forEach(educationRecord -> {
-                    educationRecord.setProfileId(profileRecord.getId());
-                    educationRecord.setCreateTime(now);
-                    if (!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
-                        for (DictCollegeRecord collegeRecord : colleges) {
-                            if (educationRecord.getCollegeName().equals(collegeRecord.getName())) {
-                                educationRecord.setCollegeCode(collegeRecord.getCode().intValue());
-                                educationRecord.setCollegeLogo(collegeRecord.getLogo());
-                                break;
+            java.util.Date birthDay = basicRecord==null?null:basicRecord.getBirth();
+            ThreadPool tp = ThreadPool.Instance;
+            CountDownLatch countDownLatch = new CountDownLatch(14);
+            //计算basic完整度
+            tp.startTast(()->{
+                try{
+                    if (basicRecord != null) {
+                        basicRecord.setProfileId(profileRecord.getId());
+                        basicRecord.setCreateTime(now);
+                        create.attach(basicRecord);
+                        if (!StringUtils.isNullOrEmpty(basicRecord.getNationalityName())) {
+                            DictCountryRecord countryRecord = create.selectFrom(DictCountry.DICT_COUNTRY)
+                                    .where(DictCountry.DICT_COUNTRY.NAME.equal(basicRecord.getNationalityName())).limit(1)
+                                    .fetchOne();
+                            if (countryRecord != null) {
+                                basicRecord.setNationalityCode(countryRecord.getId().intValue());
                             }
                         }
+                        if (!StringUtils.isNullOrEmpty(basicRecord.getCityName())) {
+                            DictCityRecord cityRecord = create.selectFrom(DictCity.DICT_CITY)
+                                    .where(DictCity.DICT_CITY.NAME.equal(basicRecord.getCityName())).limit(1).fetchOne();
+                            if (cityRecord != null) {
+                                basicRecord.setCityCode(cityRecord.getCode().intValue());
+                            }
+                        }
+                        basicRecord.insert();
+                        //计算basic完整度，由于修改规则，mobile或者微信号有一个即计入，为了不改变数据库表结构所以将mobile传入basic的完整度计算程序当中
+                        int basicCompleteness = CompletenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
+                        completenessRecord.setProfileBasic(basicCompleteness);
                     }
-                    create.attach(educationRecord);
-                    educationRecord.insert();
-                });
-                //计算教育经历完整度
-                int educationCompleteness = CompletenessCalculator.calculateProfileEducations(educationRecords);
-                completenessRecord.setProfileEducation(educationCompleteness);
-            }
-            if (importRecord != null) {
-                create.attach(importRecord);
-                importRecord.setCreateTime(now);
-                importRecord.setProfileId(profileRecord.getId());
-                importRecord.insert();
-            }
-            if (intentionRecords != null && intentionRecords.size() > 0) {
-                List<ProfileIntentionCityRecord> intentionCityRecords = new ArrayList<>();
-                List<ProfileIntentionPositionRecord> intentionPositionRecords = new ArrayList<>();
-                intentionRecords.forEach(intentionRecord -> {
-                    intentionRecord.setProfileId(profileRecord.getId());
-                    intentionRecord.setCreateTime(now);
-                    create.attach(intentionRecord);
-                    intentionRecord.insert();
-                    if (intentionRecord.getCities().size() > 0) {
-                        intentionRecord.getCities().forEach(city -> {
-                            city.setProfileIntentionId(intentionRecord.getId());
-                            if (!StringUtils.isNullOrEmpty(city.getCityName())) {
-                                for (DictCityRecord cityRecord : cities) {
-                                    if (city.getCityName().equals(cityRecord.getName())) {
-                                        city.setCityCode(cityRecord.getCode());
-                                        intentionCityRecords.add(city);
+                }catch(Exception e){
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                }finally{
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            //插入附件
+            tp.startTast(()->{
+
+                try {
+                    if (attachmentRecords != null && attachmentRecords.size() > 0) {
+                        attachmentRecords.forEach(attachmentRecord -> {
+                            attachmentRecord.setProfileId(profileRecord.getId());
+                            attachmentRecord.setCreateTime(now);
+                            create.attach(attachmentRecord);
+                            attachmentRecord.insert();
+                        });
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            // 计算奖项完整度
+            tp.startTast(()->{
+                try {
+                    if (awardsRecords != null && awardsRecords.size() > 0) {
+                        awardsRecords.forEach(awardsRecord -> {
+                            awardsRecord.setProfileId(profileRecord.getId());
+                            awardsRecord.setCreateTime(now);
+                            create.attach(awardsRecord);
+                            awardsRecord.insert();
+                        });
+                        // 计算奖项完整度
+                        int awardCompleteness = CompletenessCalculator.calculateAwards(awardsRecords);
+                        completenessRecord.setProfileAwards(awardCompleteness);
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            //计算证书完整度
+            tp.startTast(()->{
+                try {
+                    if (credentialsRecords != null && credentialsRecords.size() > 0) {
+                        credentialsRecords.forEach(credentialsRecord -> {
+                            credentialsRecord.setProfileId(profileRecord.getId());
+                            credentialsRecord.setCreateTime(now);
+                            create.attach(credentialsRecord);
+                            credentialsRecord.insert();
+                        });
+                        //计算证书完整度
+                        int credentialsCompleteness = CompletenessCalculator.calculateCredentials(credentialsRecords);
+                        completenessRecord.setProfileCredentials(credentialsCompleteness);
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            //计算教育经历完整度
+            tp.startTast(()->{
+                try {
+                    if (educationRecords != null && educationRecords.size() > 0) {
+                        educationRecords.forEach(educationRecord -> {
+                            educationRecord.setProfileId(profileRecord.getId());
+                            educationRecord.setCreateTime(now);
+                            if (!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
+                                for (DictCollegeRecord collegeRecord : colleges) {
+                                    if (educationRecord.getCollegeName().equals(collegeRecord.getName())) {
+                                        educationRecord.setCollegeCode(collegeRecord.getCode().intValue());
+                                        educationRecord.setCollegeLogo(collegeRecord.getLogo());
                                         break;
                                     }
                                 }
                             }
-                            create.attach(city);
-                            city.insert();
+                            create.attach(educationRecord);
+                            educationRecord.insert();
                         });
+                        //计算教育经历完整度
+                        int educationCompleteness = CompletenessCalculator.calculateProfileEducations(educationRecords);
+                        completenessRecord.setProfileEducation(educationCompleteness);
                     }
-                    if (intentionRecord.getPositions().size() > 0) {
-                        intentionRecord.getPositions().forEach(position -> {
-                            position.setProfileIntentionId(intentionRecord.getId());
-                            if (!StringUtils.isNullOrEmpty(position.getPositionName())) {
-                                for (DictPositionRecord positionRecord : positions) {
-                                    if (positionRecord.getName().equals(position.getPositionName())) {
-                                        position.setPositionCode(positionRecord.getCode());
-                                        intentionPositionRecords.add(position);
-                                        break;
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            tp.startTast(()->{
+                try {
+                    if (importRecord != null) {
+                        create.attach(importRecord);
+                        importRecord.setCreateTime(now);
+                        importRecord.setProfileId(profileRecord.getId());
+                        importRecord.insert();
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            //计算求职意向完整度
+            tp.startTast(()->{
+                try {
+                    if (intentionRecords != null && intentionRecords.size() > 0) {
+                        List<ProfileIntentionCityRecord> intentionCityRecords = new ArrayList<>();
+                        List<ProfileIntentionPositionRecord> intentionPositionRecords = new ArrayList<>();
+                        intentionRecords.forEach(intentionRecord -> {
+                            intentionRecord.setProfileId(profileRecord.getId());
+                            intentionRecord.setCreateTime(now);
+                            create.attach(intentionRecord);
+                            intentionRecord.insert();
+                            if (intentionRecord.getCities().size() > 0) {
+                                intentionRecord.getCities().forEach(city -> {
+                                    city.setProfileIntentionId(intentionRecord.getId());
+                                    if (!StringUtils.isNullOrEmpty(city.getCityName())) {
+                                        for (DictCityRecord cityRecord : cities) {
+                                            if (city.getCityName().equals(cityRecord.getName())) {
+                                                city.setCityCode(cityRecord.getCode());
+                                                intentionCityRecords.add(city);
+                                                break;
+                                            }
+                                        }
                                     }
+                                    create.attach(city);
+                                    city.insert();
+                                });
+                            }
+                            if (intentionRecord.getPositions().size() > 0) {
+                                intentionRecord.getPositions().forEach(position -> {
+                                    position.setProfileIntentionId(intentionRecord.getId());
+                                    if (!StringUtils.isNullOrEmpty(position.getPositionName())) {
+                                        for (DictPositionRecord positionRecord : positions) {
+                                            if (positionRecord.getName().equals(position.getPositionName())) {
+                                                position.setPositionCode(positionRecord.getCode());
+                                                intentionPositionRecords.add(position);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    create.attach(position);
+                                    position.insert();
+                                });
+                            }
+                            if (intentionRecord.getIndustries().size() > 0) {
+                                intentionRecord.getIndustries().forEach(industry -> {
+                                    industry.setProfileIntentionId(intentionRecord.getId());
+                                    if (!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
+                                        for (DictIndustryRecord industryRecord : industries) {
+                                            if (industry.getIndustryName().equals(industryRecord.getName())) {
+                                                industry.setIndustryCode(industryRecord.getCode());
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    create.attach(industry);
+                                    industry.insert();
+                                });
+                            }
+                        });
+                        //计算求职意向完整度
+                        int intentionCompleteness = CompletenessCalculator.calculateIntentions(intentionRecords,
+                                intentionCityRecords, intentionPositionRecords);
+                        completenessRecord.setProfileIntention(intentionCompleteness);
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            //计算语言完整度
+            tp.startTast(()->{
+                try {
+                    if (languages != null && languages.size() > 0) {
+                        languages.forEach(language -> {
+                            language.setProfileId(profileRecord.getId());
+                            language.setCreateTime(now);
+                            create.attach(language);
+                            language.insert();
+                        });
+                        //计算语言完整度
+                        int languageCompleteness = CompletenessCalculator.calculateLanguages(languages);
+                        completenessRecord.setProfileLanguage(languageCompleteness);
+                    }
+
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            tp.startTast(()->{
+                try {
+                    if (otherRecord != null) {
+                        create.attach(otherRecord);
+                        otherRecord.setCreateTime(now);
+                        otherRecord.setProfileId(profileRecord.getId());
+                        otherRecord.insert();
+                    }
+
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            tp.startTast(()->{
+                try {
+                    if (skillRecords != null && skillRecords.size() > 0) {
+                        skillRecords.forEach(skill -> {
+                            skill.setProfileId(profileRecord.getId());
+                            skill.setCreateTime(now);
+                            create.attach(skill);
+                            skill.insert();
+                        });
+                        //计算技能完整度
+                        int skillCompleteness = CompletenessCalculator.calculateSkills(skillRecords);
+                        completenessRecord.setProfileSkill(skillCompleteness);
+                    }
+
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            //计算工作经历完整度
+            tp.startTast(()->{
+                try {
+                    if (workexpRecords != null && workexpRecords.size() > 0) {
+                        List<HrCompanyRecord> companies = new ArrayList<>();
+                        workexpRecords.forEach(workexp -> {
+                            workexp.setProfileId(profileRecord.getId());
+                            workexp.setCreateTime(now);
+                            if (workexp.getCompany() != null
+                                    && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
+                                HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
+                                        .where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName())).limit(1)
+                                        .fetchOne();
+                                if (hc != null) {
+                                    workexp.setCompanyId(hc.getId());
+                                    companies.add(hc);
+                                } else {
+                                    HrCompanyRecord newCompany = workexp.getCompany();
+                                    create.attach(newCompany);
+                                    newCompany.insert();
+                                    workexp.setCompanyId(newCompany.getId());
+                                    companies.add(newCompany);
                                 }
                             }
-                            create.attach(position);
-                            position.insert();
-                        });
-                    }
-                    if (intentionRecord.getIndustries().size() > 0) {
-                        intentionRecord.getIndustries().forEach(industry -> {
-                            industry.setProfileIntentionId(intentionRecord.getId());
-                            if (!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
+                            if (!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
                                 for (DictIndustryRecord industryRecord : industries) {
-                                    if (industry.getIndustryName().equals(industryRecord.getName())) {
-                                        industry.setIndustryCode(industryRecord.getCode());
+                                    if (workexp.getIndustryName().equals(industryRecord.getName())) {
+                                        workexp.setIndustryCode(industryRecord.getCode());
                                         break;
                                     }
                                 }
                             }
-                            create.attach(industry);
-                            industry.insert();
+                            if (!StringUtils.isNullOrEmpty(workexp.getCityName())) {
+                                for (DictCityRecord cityRecord : cities) {
+                                    if (workexp.getCityName().equals(cityRecord.getName())) {
+                                        workexp.setCityCode(cityRecord.getCode());
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
+                                for (DictPositionRecord positionRecord : positions) {
+                                    if (positionRecord.getName().equals(workexp.getPositionName())) {
+                                        workexp.setPositionCode(positionRecord.getCode());
+                                        break;
+                                    }
+                                }
+                            }
+
+                            create.attach(workexp);
+                            workexp.insert();
                         });
+                        //计算工作经历完整度
+                        int workExpCompleteness = CompletenessCalculator.calculateProfileWorkexps(workexpRecords, educationRecords, birthDay);
+                        completenessRecord.setProfileWorkexp(workExpCompleteness);
                     }
-                });
-                //计算求职意向完整度
-                int intentionCompleteness = CompletenessCalculator.calculateIntentions(intentionRecords,
-                        intentionCityRecords, intentionPositionRecords);
-                completenessRecord.setProfileIntention(intentionCompleteness);
-            }
-            if (languages != null && languages.size() > 0) {
-                languages.forEach(language -> {
-                    language.setProfileId(profileRecord.getId());
-                    language.setCreateTime(now);
-                    create.attach(language);
-                    language.insert();
-                });
-                //计算语言完整度
-                int languageCompleteness = CompletenessCalculator.calculateLanguages(languages);
-                completenessRecord.setProfileLanguage(languageCompleteness);
-            }
-            if (otherRecord != null) {
-                create.attach(otherRecord);
-                otherRecord.setCreateTime(now);
-                otherRecord.setProfileId(profileRecord.getId());
-                otherRecord.insert();
-            }
-
-            if (skillRecords != null && skillRecords.size() > 0) {
-                skillRecords.forEach(skill -> {
-                    skill.setProfileId(profileRecord.getId());
-                    skill.setCreateTime(now);
-                    create.attach(skill);
-                    skill.insert();
-                });
-                //计算技能完整度
-                int skillCompleteness = CompletenessCalculator.calculateSkills(skillRecords);
-                completenessRecord.setProfileSkill(skillCompleteness);
-            }
-            if (workexpRecords != null && workexpRecords.size() > 0) {
-                List<HrCompanyRecord> companies = new ArrayList<>();
-                workexpRecords.forEach(workexp -> {
-                    workexp.setProfileId(profileRecord.getId());
-                    workexp.setCreateTime(now);
-                    if (workexp.getCompany() != null
-                            && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
-                        HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-                                .where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName())).limit(1)
-                                .fetchOne();
-                        if (hc != null) {
-                            workexp.setCompanyId(hc.getId());
-                            companies.add(hc);
-                        } else {
-                            HrCompanyRecord newCompany = workexp.getCompany();
-                            create.attach(newCompany);
-                            newCompany.insert();
-                            workexp.setCompanyId(newCompany.getId());
-                            companies.add(newCompany);
-                        }
-                    }
-                    if (!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
-                        for (DictIndustryRecord industryRecord : industries) {
-                            if (workexp.getIndustryName().equals(industryRecord.getName())) {
-                                workexp.setIndustryCode(industryRecord.getCode());
-                                break;
-                            }
-                        }
-                    }
-                    if (!StringUtils.isNullOrEmpty(workexp.getCityName())) {
-                        for (DictCityRecord cityRecord : cities) {
-                            if (workexp.getCityName().equals(cityRecord.getName())) {
-                                workexp.setCityCode(cityRecord.getCode());
-                                break;
-                            }
-                        }
-                    }
-                    if (!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
-                        for (DictPositionRecord positionRecord : positions) {
-                            if (positionRecord.getName().equals(workexp.getPositionName())) {
-                                workexp.setPositionCode(positionRecord.getCode());
-                                break;
-                            }
-                        }
-                    }
-
-                    create.attach(workexp);
-                    workexp.insert();
-                });
-                //计算工作经历完整度
-                int workExpCompleteness = CompletenessCalculator.calculateProfileWorkexps(workexpRecords, educationRecords, birthDay);
-                completenessRecord.setProfileWorkexp(workExpCompleteness);
-            }
-            if (projectExps != null && projectExps.size() > 0) {
-                projectExps.forEach(projectExp -> {
-                    projectExp.setProfileId(profileRecord.getId());
-                    projectExp.setCreateTime(now);
-                    create.attach(projectExp);
-                    projectExp.insert();
-                });
-                //计算项目经历完整度
-                int projectExpCompleteness = CompletenessCalculator.calculateProjectexps(projectExps, workexpRecords);
-                completenessRecord.setProfileProjectexp(projectExpCompleteness);
-            }
-            if (worksRecords != null && worksRecords.size() > 0) {
-                worksRecords.forEach(worksRecord -> {
-                    worksRecord.setProfileId(profileRecord.getId());
-                    worksRecord.setCreateTime(now);
-                    create.attach(worksRecord);
-                    worksRecord.insert();
-                });
-                int worksCompleteness = CompletenessCalculator.calculateWorks(worksRecords);
-                completenessRecord.setProfileWorks(worksCompleteness);
-            }
-            //========================发现原来没有，现在添加上＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
-            if (userRecord != null) {
-                if (org.apache.commons.lang.StringUtils.isBlank(userRecord.getName())) {
-                    userRecord.setName("未填写");
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
                 }
-                create.attach(userRecord);
-                userRecord.update();
+                return 0;
+            });
+            tp.startTast(()->{
+                try {
+                    if (projectExps != null && projectExps.size() > 0) {
+                        projectExps.forEach(projectExp -> {
+                            projectExp.setProfileId(profileRecord.getId());
+                            projectExp.setCreateTime(now);
+                            create.attach(projectExp);
+                            projectExp.insert();
+                        });
+                        //计算项目经历完整度
+                        int projectExpCompleteness = CompletenessCalculator.calculateProjectexps(projectExps, workexpRecords);
+                        completenessRecord.setProfileProjectexp(projectExpCompleteness);
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            tp.startTast(()->{
+                try {
+                    if (worksRecords != null && worksRecords.size() > 0) {
+                        worksRecords.forEach(worksRecord -> {
+                            worksRecord.setProfileId(profileRecord.getId());
+                            worksRecord.setCreateTime(now);
+                            create.attach(worksRecord);
+                            worksRecord.insert();
+                        });
+                        int worksCompleteness = CompletenessCalculator.calculateWorks(worksRecords);
+                        completenessRecord.setProfileWorks(worksCompleteness);
+                    }
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+            tp.startTast(()->{
+                try {
+                    if (userRecord != null) {
+                        if (org.apache.commons.lang.StringUtils.isBlank(userRecord.getName())) {
+                            userRecord.setName("未填写");
+                        }
+                        create.attach(userRecord);
+                        userRecord.update();
 
-					/* 计算简历完整度 */
-                completenessRecord.setProfileId(profileRecord.getId());
-                UserWxUserRecord wxuserRecord = create.selectFrom(UserWxUser.USER_WX_USER)
-                        .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userRecord.getId().intValue())).limit(1)
-                        .fetchOne();
-                UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS)
-                        .where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
-                int userCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
-                        wxuserRecord);
-                completenessRecord.setUserUser(userCompleteness);
+                        /* 计算简历完整度 */
+                        completenessRecord.setProfileId(profileRecord.getId());
+                        UserWxUserRecord wxuserRecord = create.selectFrom(UserWxUser.USER_WX_USER)
+                                .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userRecord.getId().intValue())).limit(1)
+                                .fetchOne();
+                        UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS)
+                                .where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
+                        int userCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
+                                wxuserRecord);
+                        completenessRecord.setUserUser(userCompleteness);
+                    }
+
+                } catch (Exception e) {
+                    logger.error(e.getMessage(),e);
+                    throw e;
+                } finally {
+                    countDownLatch.countDown();
+                }
+                return 0;
+            });
+
+
+            try{
+                //阻塞直到所有线程结束
+                countDownLatch.await();
+            }catch (InterruptedException e){
+                logger.info(e.getMessage(),e);
             }
 
             int totalComplementness = (completenessRecord.getUserUser() == null ? 0
