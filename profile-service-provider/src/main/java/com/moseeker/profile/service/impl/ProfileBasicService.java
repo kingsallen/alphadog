@@ -282,6 +282,7 @@ public class ProfileBasicService {
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
                     profileEntity.reCalculateProfileBasic(struct.getProfile_id());
                     this.handlerCompanyTag(struct.getProfile_id());
+                    this.updateEsUsersAndProfile(struct.getProfile_id());
 
                 }
             } else {
