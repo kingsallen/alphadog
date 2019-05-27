@@ -526,7 +526,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 				/* 计算profile完整度 */
             ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
             completenessRecord.setProfileId(profileRecord.getId());
-            java.util.Date birthDay = basicRecord.getBirth();
+            java.util.Date birthDay = basicRecord==null?null:basicRecord.getBirth();
             ThreadPool tp = ThreadPool.Instance;
             CountDownLatch countDownLatch = new CountDownLatch(14);
             //计算basic完整度
