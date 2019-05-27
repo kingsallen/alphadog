@@ -147,6 +147,7 @@ public class UseraccountsService {
     @Autowired
     private JobApplicationDao applicationDao;
 
+
     /**
      * 账号换绑操作
      */
@@ -707,8 +708,10 @@ public class UseraccountsService {
         Map<String, Object> result = new HashMap<>();
         result.put("user_id", userId);
         result.put("tableName","user_meassage");
-        redisClient.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(),JSON.toJSONString(result));
-        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        scheduledThread.startTast(()->{
+            redisClient.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(),JSON.toJSONString(result));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        },2000);
     }
 
     /**

@@ -12,10 +12,8 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterL
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.EmployeeOperationEntrance;
-import com.moseeker.common.constants.EmployeeOperationIsSuccess;
-import com.moseeker.common.constants.EmployeeOperationType;
+import com.moseeker.common.constants.*;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
@@ -108,6 +106,8 @@ public abstract class EmployeeBinder {
     private Neo4jService neo4jService;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
+
+    ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     /**
      * 员工认证
@@ -344,6 +344,16 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         return response;
+    }
+
+    private void updateEsUsersAndProfile(int userId){
+        Map<String, Object> result = new HashMap<>();
+        result.put("user_id", userId);
+        result.put("tableName","user_meassage");
+        scheduledThread.startTast(()->{
+            client.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(),JSON.toJSONString(result));
+            client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        },2000);
     }
 
     /**
