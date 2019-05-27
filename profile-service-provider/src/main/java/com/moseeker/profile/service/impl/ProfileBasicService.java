@@ -1,19 +1,26 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -36,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,6 +67,10 @@ public class ProfileBasicService {
 
     @Autowired
     private ProfileEntity profileEntity;
+
+    ScheduledThread scheduledThread = ScheduledThread.Instance;
+    @Resource(name = "cacheClient")
+    protected RedisClient client;
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
@@ -191,12 +203,30 @@ public class ProfileBasicService {
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
 
                     this.handlerCompanyTag(struct.getProfile_id());
+                    this.updateEsUsersAndProfile(struct.getProfile_id());
                     return resultStruct;
                 }
             }
         }
 
         return resultStruct;
+    }
+
+    private void updateEsUsersAndProfile(int profileId){
+        if(profileId>0){
+            ProfileProfileRecord profileProfile=profileDao.getProfileByIdOrUserIdOrUUID(0,profileId,null);
+            if(profileProfile!=null&&profileProfile.getUserId()>0){
+                Map<String, Object> result = new HashMap<>();
+                result.put("user_id", profileProfile.getUserId());
+                result.put("tableName","user_meassage");
+                scheduledThread.startTast(()->{
+                    client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+                    client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(profileProfile.getUserId()));
+                },2000);
+            }
+
+        }
+
     }
 
 
@@ -252,6 +282,8 @@ public class ProfileBasicService {
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
                     profileEntity.reCalculateProfileBasic(struct.getProfile_id());
                     this.handlerCompanyTag(struct.getProfile_id());
+                    this.updateEsUsersAndProfile(struct.getProfile_id());
+
                 }
             } else {
                 throw ProfileException.validateFailed(validationMessage.getResult());
@@ -260,6 +292,8 @@ public class ProfileBasicService {
         }
         return i;
     }
+
+
 
     @Transactional
     public List<Basic> postResources(List<Basic> structs) throws TException {
