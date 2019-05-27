@@ -709,7 +709,7 @@ public class UseraccountsService {
         result.put("user_id", userId);
         result.put("tableName","user_meassage");
         scheduledThread.startTast(()->{
-            redisClient.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(),JSON.toJSONString(result));
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         },2000);
     }

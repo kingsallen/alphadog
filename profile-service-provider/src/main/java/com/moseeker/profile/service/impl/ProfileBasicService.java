@@ -220,7 +220,7 @@ public class ProfileBasicService {
                 result.put("user_id", profileProfile.getUserId());
                 result.put("tableName","user_meassage");
                 scheduledThread.startTast(()->{
-                    client.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(), JSON.toJSONString(result));
+                    client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
                     client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(profileProfile.getUserId()));
                 },2000);
             }
