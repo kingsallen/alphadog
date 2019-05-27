@@ -534,6 +534,7 @@ public class WholeProfileService {
                     userRecord, oldProfile);
         }catch (Exception e){
           logger.error(e.getMessage(),e);
+          throw e;
         };
         if (id > 0) {
             logger.info("importCV 添加成功");
