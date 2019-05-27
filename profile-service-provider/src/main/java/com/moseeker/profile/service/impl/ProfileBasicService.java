@@ -216,12 +216,11 @@ public class ProfileBasicService {
         if(profileId>0){
             ProfileProfileRecord profileProfile=profileDao.getProfileByIdOrUserIdOrUUID(0,profileId,null);
             if(profileProfile!=null&&profileProfile.getUserId()>0){
-                logger.info("开始执行更新用户名字的操作=======",profileProfile.getUserId());
                 Map<String, Object> result = new HashMap<>();
                 result.put("user_id", profileProfile.getUserId());
                 result.put("tableName","user_meassage");
                 scheduledThread.startTast(()->{
-                    client.lpush(Constant.APPID_ALPHADOG, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString(), JSON.toJSONString(result));
+                    client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
                     client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(profileProfile.getUserId()));
                 },2000);
             }
