@@ -167,7 +167,10 @@ struct SearchCondition {
    32: string past_position_key_word,//曾任职位的关键字
    33: string past_company_key_word,// 曾任公司的关键字
    34: string start_submit_time,//开始时间
-   35: string end_submit_time//结束时间
+   35: string end_submit_time,//结束时间
+   36: string has_attachment,
+   37: string department_ids,
+   38: string department_names
 
 }
 
