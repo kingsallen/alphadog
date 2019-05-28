@@ -30,6 +30,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
 
     private ThreadLocal<UserEmployeeDO> employeeThreadLocal = new ThreadLocal<>();
 
+    @Override
     protected void validate(BindingParams bindingParams) {
         logger.info("EmployeeBindAndUpdateByMcdUatSysUserId validate bindingParams:{}", bindingParams);
         UserEmployeeDO userEmployeeDO = fetchEmployeeByEmailOrCustomField(bindingParams.getEmail(),
@@ -39,7 +40,6 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
             throw UserAccountException.EMPLOYEE_VERIFICATION_INVALID;
         }
         userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
-        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId validate before set local thread userEmployeeDO:{}", userEmployeeDO);
         employeeThreadLocal.set(userEmployeeDO);
 
     }
@@ -61,11 +61,10 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get() == null ? new UserEmployeeDO():employeeThreadLocal.get();
-        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee userEmployeeDO.email:{}", userEmployeeDO.getEmail());
 
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(
-            org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+                org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployeeDO.setSysuserId(bindingParams.getUserId());
         userEmployeeDO.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployeeDO.getCname()));
         userEmployeeDO.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployeeDO.getMobile()));
@@ -81,9 +80,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils
-            .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
-        logger.info("EmployeeBindAndUpdateByMcdUatSysUserId createEmployee userEmployeeDO.email:{}", userEmployeeDO.getEmail());
-
+                .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         return userEmployeeDO;
     }
 
