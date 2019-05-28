@@ -17,6 +17,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
@@ -92,7 +93,7 @@ public class CandidateDBDao {
      * @param companyId
      * @return
      */
-    public Optional<CandidateCompanyDO> getCandidateCompanyByUserIDCompanyID(int userID, int companyId) throws TException {
+    public Optional<CandidateCompanyDO> getCandidateCompanyByUserIDCompanyID(int userID, int companyId) throws BIZException {
         Query query = new Query.QueryBuilder().where("sys_user_id", String.valueOf(userID)).and("company_id", String.valueOf(companyId)).buildQuery();
         try {
             CandidateCompanyDO candidateCompanyDO = candidateCompanyDao.getCandidateCompany(query);
@@ -103,7 +104,7 @@ public class CandidateDBDao {
             }
         } catch (CURDException e) {
             if (e.getCode() != 90010) {
-                throw e;
+                throw new BIZException(e.getCode(),e.getMessage());
             } else {
                 return Optional.empty();
             }
@@ -129,19 +130,21 @@ public class CandidateDBDao {
         }
     }
 
-    public void updateCandidateCompanySetPositionWxLayerQrcode(int id, byte status) throws TException {
+    public void updateCandidateCompanySetPositionWxLayerQrcode(int id, byte status) throws BIZException {
         try {
             candidateCompanyDao.updateCandidateCompanySetPositionWxLayerQrcode(id, status);
-        } catch (TException e) {
+        } catch (CURDException e) {
             e.printStackTrace();
+            throw new BIZException(e.getCode(),e.getMessage());
         }
     }
 
-    public void updateCandidateCompanySetPositionWxLayerProfile(int id, byte status) throws TException {
+    public void updateCandidateCompanySetPositionWxLayerProfile(int id, byte status) throws BIZException {
         try {
             candidateCompanyDao.updateCandidateCompanySetPositionWxLayerProfile(id, status);
-        } catch (TException e) {
+        } catch (CURDException e) {
             e.printStackTrace();
+            throw new BIZException(e.getCode(),e.getMessage());
         }
     }
 
