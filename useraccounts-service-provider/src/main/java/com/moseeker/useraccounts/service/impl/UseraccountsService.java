@@ -147,6 +147,7 @@ public class UseraccountsService {
     @Autowired
     private JobApplicationDao applicationDao;
 
+
     /**
      * 账号换绑操作
      */
@@ -179,6 +180,7 @@ public class UseraccountsService {
                 query.clear();
                 query.where("username", mobile).and("country_code",countryCode);
                 UserUserDO userUserDO = userdao.getData(query.buildQuery());
+                logger.info("UseraccountsService userChangeBind userUserDO:{}", userUserDO);
                 // 验证手机号码是否正确
                 if (userUserDO == null) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.MOBILE_IS_INVALID);
@@ -187,7 +189,7 @@ public class UseraccountsService {
                 if (userUserDO.getUnionid().equals(unionid)) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_SAME);
                 }
-
+                logger.info("UseraccountsService userChangeBind set sysuser_id = 0 where unionid = ''");
                 // 把之前的user_wx_user的sysuser_id置为0
                 wxuserdao.invalidOldWxUser(userUserDO.getUnionid());
 
@@ -687,6 +689,7 @@ public class UseraccountsService {
                             || user.isSetHeadimg()) {
                         profileDao.updateUpdateTimeByUserId((int) user.getId());
                     }
+                    this.updateUserMessage((int)user.getId());
                     return ResponseUtils.success(null);
                 } else {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -699,6 +702,16 @@ public class UseraccountsService {
 
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    private void updateUserMessage(int userId){
+        Map<String, Object> result = new HashMap<>();
+        result.put("user_id", userId);
+        result.put("tableName","user_meassage");
+        scheduledThread.startTast(()->{
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        },2000);
     }
 
     /**

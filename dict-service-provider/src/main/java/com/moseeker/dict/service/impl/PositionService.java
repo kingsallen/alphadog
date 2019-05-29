@@ -45,6 +45,8 @@ public class PositionService {
 				positionMap.put("code", position.getCode().intValue());
 				positionMap.put("parent", position.getParent().intValue());
 				positionMap.put("level", position.getLevel().intValue());
+				//加入即可ename
+				//positionMap.put("ename", position.getEname());
 				industryMaps.add(positionMap);
 			});
 		}

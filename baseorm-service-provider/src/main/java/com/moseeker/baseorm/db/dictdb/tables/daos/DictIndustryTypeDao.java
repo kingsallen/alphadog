@@ -98,4 +98,11 @@ public class DictIndustryTypeDao extends DAOImpl<DictIndustryTypeRecord, com.mos
     public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByPcImg(String... values) {
         return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.PC_IMG, values);
     }
+
+    /**
+     * Fetch records that have <code>ename IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictIndustryType> fetchByEname(String... values) {
+        return fetch(DictIndustryType.DICT_INDUSTRY_TYPE.ENAME, values);
+    }
 }

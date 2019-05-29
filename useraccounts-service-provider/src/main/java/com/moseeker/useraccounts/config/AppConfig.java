@@ -6,7 +6,10 @@ import com.moseeker.entity.pojo.mq.kafka.KafkaConsumerPlugin;
 import com.moseeker.entity.pojo.mq.kafka.KafkaProducerPlugin;
 import com.rabbitmq.client.ConnectionFactory;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -351,5 +354,32 @@ public class AppConfig {
         }};
     }
 
+    /**
+     * 声明延时交换机
+     */
+    @Bean
+    public CustomExchange delayExchange(){
+        Map<String,Object> args = new HashMap<>();
+        args.put(Constant.EXCHANGE_TYPE_DELAY,ExchangeTypes.DIRECT);
+        return new CustomExchange(Constant.ACTIVITY_DELAY_EXCHANGE,Constant.MESSAGE_TYPE_DELAY,true,false,args);
+    }
+
+    /**
+     * 声明延时队列
+     * */
+    @Bean
+    public Queue delayQueue(){
+        return new Queue(Constant.ACTIVITY_DELAY_QUEUE,true);
+    }
+
+    /**
+     * 绑定延时交换机与队列
+     * */
+    @Bean
+    public List<Binding> bindDelayQueue(){
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(delayQueue()).to(delayExchange()).with(Constant.ACTIVITY_DELAY_ROUTING_KEY).noargs());
+        }};
+    }
 
 }

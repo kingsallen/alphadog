@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustry extends TableImpl<DictIndustryRecord> {
 
-    private static final long serialVersionUID = 490040777;
+    private static final long serialVersionUID = 466374389;
 
     /**
      * The reference instance of <code>dictdb.dict_industry</code>
@@ -63,6 +63,11 @@ public class DictIndustry extends TableImpl<DictIndustryRecord> {
      * The column <code>dictdb.dict_industry.type</code>. 字典分类code
      */
     public final TableField<DictIndustryRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "字典分类code");
+
+    /**
+     * The column <code>dictdb.dict_industry.ename</code>. 英文字段
+     */
+    public final TableField<DictIndustryRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(99), this, "英文字段");
 
     /**
      * Create a <code>dictdb.dict_industry</code> table reference
