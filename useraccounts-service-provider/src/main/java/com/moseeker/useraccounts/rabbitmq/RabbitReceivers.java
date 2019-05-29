@@ -19,11 +19,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
-import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
 import org.slf4j.Logger;
@@ -64,8 +62,6 @@ public class RabbitReceivers {
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
-    @Autowired
-    private ReferralTemplateSender referralTemplateSender;
 
     @RabbitListener(queues = "handle_share_chain", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -141,14 +137,14 @@ public class RabbitReceivers {
 
     @RabbitListener(queues = Constant.ACTIVITY_DELAY_QUEUE,containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void handleTenMinutesMessageTemplate(int userId,int companyId,int pageNumber,int pageSize,long timestamp){
-        ReferralCardInfo cardInfo = new ReferralCardInfo();
-        cardInfo.setUserId(userId);
-        cardInfo.setCompanyId(companyId);
-        cardInfo.setPageNumber(pageNumber);
-        cardInfo.setPageSize(pageSize);
-        cardInfo.setTimestamp(timestamp);
-        referralTemplateSender.sendTenMinuteTemplateIfNecessary(cardInfo);
+    public void handleTenMinutesMessageTemplate(Message message){
+        try{
+            String msgBody = new String(message.getBody());
+            ReferralCardInfo cardInfo = JSONObject.parseObject(msgBody,ReferralCardInfo.class);
+            referralTemplateSender.sendTenMinuteTemplateIfNecessary(cardInfo);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
     }
 
     private void handleEmployeeNetwork(int companyId) {

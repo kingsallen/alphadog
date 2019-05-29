@@ -40,7 +40,6 @@ import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,15 +159,11 @@ public class ReferralTemplateSender {
         jsonObject.put("pageNumber",cardInfo.getPageNumber());
         jsonObject.put("pageSize",cardInfo.getPageSize());
         jsonObject.put("timestamp",cardInfo.getTimestamp());
-        MessageProperties mp = new MessageProperties();
-        mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
-        mp.setReceivedExchange(ACTIVITY_DELAY_EXCHANGE);
-        Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp)
+        Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
-                .setHeaderIfAbsent("x-delay",10*60*1000).build();
+                .setHeaderIfAbsent("x-delay",TEN_MINUTE).build();
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
@@ -182,8 +177,8 @@ public class ReferralTemplateSender {
             // 获取指定时间前十分钟内的职位浏览人
             List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
             //对十分钟内的职位浏览人查询结果进行判空操作
-            if(factShareChainDOS==null){
-                logger.info("暂无任何人浏览该员工 {} 分享的 {} 公司的职位",cardInfo.getUserId(),cardInfo.getCompanyId());
+            if(factShareChainDOS.size()==0){
+                logger.info("暂无任何人浏览该员工 {} 分享的职位",cardInfo.getUserId());
                 return;
             }
             factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), cardInfo.getUserId(),factShareChainDOS);
