@@ -1741,8 +1741,8 @@ public class PositionService {
         }
         history.remove(keywords);
         history.add(0, keywords);
-        if(history.size()>10){
-            history.remove(history.size()-1);
+        if(history.size()>8){
+            history = history.subList(0, 8);
         }
         String result = JSONObject.toJSONString(history);
         logger.info("updateRedisUserSearchPositionHistory result:{}",result);
