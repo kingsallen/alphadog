@@ -36,15 +36,18 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
         Param<Integer> positionIdParam = param(REFERRAL_SEEK_RECOMMEND.POSITION_ID.getName(), recomRecordRecord.getPositionId());
         Param<Integer> presenteeUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.getName(), recomRecordRecord.getPresenteeId());
         Param<Integer> postUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.getName(), recomRecordRecord.getPostUserId());
+        Param<Integer> originParam = param(REFERRAL_SEEK_RECOMMEND.ORIGIN.getName(),recomRecordRecord.getOrigin());
         using(configuration()).insertInto(REFERRAL_SEEK_RECOMMEND,
                 REFERRAL_SEEK_RECOMMEND.POSITION_ID,
                 REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID,
-                REFERRAL_SEEK_RECOMMEND.POST_USER_ID
+                REFERRAL_SEEK_RECOMMEND.POST_USER_ID,
+                REFERRAL_SEEK_RECOMMEND.ORIGIN
         ).select(
                 select(
                         positionIdParam,
                         presenteeUserIdParam,
-                        postUserIdParam
+                        postUserIdParam,
+                        originParam
                 )
                         .whereNotExists(
                                 selectOne()
@@ -52,6 +55,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                                         .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
                                         .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.eq(recomRecordRecord.getPresenteeId()))
                                         .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                                        .and(REFERRAL_SEEK_RECOMMEND.ORIGIN.eq(recomRecordRecord.getOrigin()))
                         )
         ).execute();
 
