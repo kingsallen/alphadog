@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.Neo4jThreadPool;
 import com.moseeker.common.util.StringUtils;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
  * Created by moseeker on 2018/12/17.
  */
 @Service
+@CounterIface
 public class Neo4jServiceImpl implements Neo4jService {
 
     private static final Logger logger = LoggerFactory.getLogger(Neo4jServiceImpl.class);
@@ -84,6 +86,8 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     Neo4jThreadPool tp = Neo4jThreadPool.Instance;
 
+    private static final long TIMEOUT = 3L;
+
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
         UserNode firstUserStatus = addUserNode(startUserId);
@@ -104,7 +108,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             Future<List<Forward>> forwardFuture = tp.startTast(() -> forwardNeo4jDao.getTwoUserFriend(startUserId, endUserId, chain.getPositionId()));
             List<Forward> forwards;
             try {
-                forwards = forwardFuture.get(3, TimeUnit.SECONDS);
+                forwards = forwardFuture.get(TIMEOUT, TimeUnit.SECONDS);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 throw CommonException.PROGRAM_EXCEPTION;
@@ -145,7 +149,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             Future<List<Connection>> connFuture = tp.startTast(() -> connNeo4jDao.getTwoUserConn(startUserId, endUserId, positionId));
             List<Connection> conns;
             try {
-                conns = connFuture.get(3, TimeUnit.SECONDS);
+                conns = connFuture.get(TIMEOUT, TimeUnit.SECONDS);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 throw CommonException.PROGRAM_EXCEPTION;
@@ -158,7 +162,7 @@ public class Neo4jServiceImpl implements Neo4jService {
                 Future<Connection> connectionFuture = tp.startTast(() -> connNeo4jDao.save(conn));
                 Connection connection;
                 try {
-                    connection = connectionFuture.get(3, TimeUnit.SECONDS);
+                    connection = connectionFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                     throw CommonException.PROGRAM_EXCEPTION;
@@ -179,7 +183,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         Future<List<Relation>> relationFuture = tp.startTast(() -> forwardNeo4jDao.getTwoUserShortFriend(startUserId, endUserId, companyId));
         List<Relation> relationList;
         try {
-            relationList = relationFuture.get(3, TimeUnit.SECONDS);
+            relationList = relationFuture.get(TIMEOUT, TimeUnit.SECONDS);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
@@ -232,7 +236,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         logger.info("neo4j 调用日志 before userNeo4jDao.updateUserEmployeeCompany datetime:{}", beforeUpdateUserEmployeeCompany.toString());
         Future<UserNode> nodeFuture = tp.startTast(() -> userNeo4jDao.updateUserEmployeeCompany(userId, companyId));
         try {
-            node = nodeFuture.get(3, TimeUnit.SECONDS);
+            node = nodeFuture.get(TIMEOUT, TimeUnit.SECONDS);
         } catch (Exception e) {
             logger.info("neo4j 调用日志 after userNeo4jDao.updateUserEmployeeCompany datetime:{}", LocalDateTime.now().toString());
             logger.error(e.getMessage(), e);
@@ -287,7 +291,7 @@ public class Neo4jServiceImpl implements Neo4jService {
                 LocalDateTime beforeFetchUserThreeDepthEmployee = LocalDateTime.now();
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}", beforeFetchUserThreeDepthEmployee.toString());
                 Future<List<EmployeeCompanyVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserIdList));
-                postUserIdList = listFuture.get(3, TimeUnit.SECONDS);
+                postUserIdList = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 LocalDateTime afterFetchUserThreeDepthEmployee = LocalDateTime.now();
                 logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}, time:{}", LocalDateTime.now().toString(), Duration.between(beforeFetchUserThreeDepthEmployee, afterFetchUserThreeDepthEmployee).toMillis());
 
@@ -329,7 +333,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             List<UserDepthVO> depthUser;
             logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}", beforeFetchEmployeeThreeDepthUser.toString());
             Future<List<UserDepthVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId()));
-            depthUser = listFuture.get(3, TimeUnit.SECONDS);
+            depthUser = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
             LocalDateTime afterFetchEmployeeThreeDepthUser = LocalDateTime.now();
             logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}, time:{}", afterFetchEmployeeThreeDepthUser.toString(), Duration.between(beforeFetchEmployeeThreeDepthUser, afterFetchEmployeeThreeDepthUser).toMillis());
             return depthUser;
@@ -350,7 +354,7 @@ public class Neo4jServiceImpl implements Neo4jService {
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList datetime:{}", beforeFetchDepthUserList.toString());
                 List<UserDepthVO> list;
                 Future<List<UserDepthVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId));
-                list = listFuture.get(3, TimeUnit.SECONDS);
+                list = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 LocalDateTime afterFetchDepthUserList = LocalDateTime.now();
                 logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchDepthUserList datetime:{}, time:{}", afterFetchDepthUserList.toString(), Duration.between(beforeFetchDepthUserList, afterFetchDepthUserList).toMillis());
                 return list;
@@ -389,7 +393,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             UserNode nodes;
             Future<UserNode> userNodeFuture = tp.startTast(() -> userNeo4jDao.save(node));
             try {
-                nodes = userNodeFuture.get(3, TimeUnit.SECONDS);
+                nodes = userNodeFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 LocalDateTime afterSave = LocalDateTime.now();
                 logger.info("neo4j 调用日志 after userNeo4jDao.save datetime:{}, time:{}", afterSave.toString(), Duration.between(beforeSave, afterSave).toMillis());
             } catch (Exception e){
