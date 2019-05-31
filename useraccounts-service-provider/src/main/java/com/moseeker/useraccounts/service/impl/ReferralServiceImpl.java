@@ -502,11 +502,13 @@ public class ReferralServiceImpl implements ReferralService {
         if(1==recommendOrigin){
             //联系内推
             origin = ApplicationSource.SEEK_REFERRAL.getValue();
-            properties.put("apply_orogin",1);
+            properties.put("apply_origin",1);
         }else if(2==recommendOrigin){
             //邀请投递
             origin = ApplicationSource.INVITE_REFERRAL.getValue();
-            properties.put("apply_orogin",2);
+            properties.put("apply_origin",2);
+        }else{
+            properties.put("apply_origin",1);
         }
 
         int applicationId = 0;
