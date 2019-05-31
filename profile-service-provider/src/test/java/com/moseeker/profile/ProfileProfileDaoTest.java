@@ -1,5 +1,6 @@
 package com.moseeker.profile;
 
+import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -9,6 +10,10 @@ import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import org.apache.thrift.TException;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by moseeker on 2017/3/16.
@@ -38,4 +43,13 @@ public class ProfileProfileDaoTest {
 //        Response response = profile.getProfileByApplication(107604,0,0,true,false);
 //        System.out.println(response);
 //    }
+
+
+    @Test
+    public void test(){
+        List<MobotReferralResultVO> referralResultVOS = new ArrayList<>();
+//        List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
+        referralResultVOS = referralResultVOS.stream().filter(e ->  e.getSuccess()==true).collect(Collectors.toList());
+        //referralIds.get(0);
+    }
 }
