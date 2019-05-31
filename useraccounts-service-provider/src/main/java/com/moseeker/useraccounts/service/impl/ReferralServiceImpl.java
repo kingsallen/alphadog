@@ -35,6 +35,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
@@ -67,9 +68,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -147,6 +146,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private SensorSend sensorSend;
 
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -489,8 +491,27 @@ public class ReferralServiceImpl implements ReferralService {
             throw UserAccountException.PERMISSION_DENIED;
         }
         Future<UserEmployeeDO> employee = tp.startTast(()->employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId()));
-        int origin = recommendRecord.getOrigin()==1 ? ApplicationSource.SEEK_REFERRAL.getValue():
-                ApplicationSource.INVITE_REFERRAL.getValue();
+
+        //候选人联系内推记录表(referral_seek_recommend)中的origin
+        int recommendOrigin = recommendRecord.getOrigin();
+
+        int origin = 0;
+
+        //神策埋点 加入 properties
+        Map<String, Object> properties = new HashMap<String, Object>();
+        if(1==recommendOrigin){
+            //联系内推
+            origin = ApplicationSource.SEEK_REFERRAL.getValue();
+            properties.put("apply_origin",1);
+        }else if(2==recommendOrigin){
+            //邀请投递
+            origin = ApplicationSource.INVITE_REFERRAL.getValue();
+            properties.put("apply_origin",2);
+        }else{
+            origin = ApplicationSource.SEEK_REFERRAL.getValue();
+            properties.put("apply_origin",1);
+        }
+
         int applicationId = 0;
         try {
             applicationId = createJobApplication(user.get().getId(), positionDO.getCompanyId(), positionId, user.get().getName(), origin, recommendRecord.getPostUserId());
@@ -508,6 +529,14 @@ public class ReferralServiceImpl implements ReferralService {
             }catch (Exception e){
                 logger.error(e.getMessage());
             }
+        }
+
+        //神策埋点
+        try{
+            String distinctId =String.valueOf(user.get().getId());
+            sensorSend.send(distinctId,"inDirectReferral",properties);
+        }catch (Exception e){
+            logger.error(e.getMessage());
         }
     }
 
