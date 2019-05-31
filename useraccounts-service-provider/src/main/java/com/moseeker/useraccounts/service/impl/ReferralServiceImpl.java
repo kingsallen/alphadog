@@ -508,6 +508,7 @@ public class ReferralServiceImpl implements ReferralService {
             origin = ApplicationSource.INVITE_REFERRAL.getValue();
             properties.put("apply_origin",2);
         }else{
+            origin = ApplicationSource.SEEK_REFERRAL.getValue();
             properties.put("apply_origin",1);
         }
 
