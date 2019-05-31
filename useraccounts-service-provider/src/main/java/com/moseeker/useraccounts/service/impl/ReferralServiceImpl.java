@@ -44,6 +44,7 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -61,6 +62,7 @@ import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -552,6 +554,10 @@ public class ReferralServiceImpl implements ReferralService {
                     record = new ReferralRecomEvaluationRecord();
                     referralEntity.logReferralOperation(positionId, application != null ? application.getId() : 0,
                             referralReasons, String.valueOf(user.getMobile()), postUserId, user.getId(), relationship, recomReasonText);
+                    application.setOrigin(ApplicationSource.FORWARD_APPLICATION.getValue());
+                    JobApplicationDO jobApplicationDO = new JobApplicationDO();
+                    BeanUtils.copyProperties(application,jobApplicationDO);
+                    applicationDao.updateData(jobApplicationDO);
                     return;
                 }
                 throw UserAccountException.NODATA_EXCEPTION;
