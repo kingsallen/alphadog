@@ -501,15 +501,12 @@ public class ReferralServiceImpl implements ReferralService {
 
         //神策埋点 加入 properties
         Map<String, Object> properties = new HashMap<String, Object>();
-        if(1==recommendOrigin){
-            //联系内推
-            origin = ApplicationSource.SEEK_REFERRAL.getValue();
-            properties.put("apply_origin",1);
-        }else if(2==recommendOrigin){
+        if(2==recommendOrigin){
             //邀请投递
             origin = ApplicationSource.INVITE_REFERRAL.getValue();
             properties.put("apply_origin",2);
         }else{
+            //联系内推
             origin = ApplicationSource.SEEK_REFERRAL.getValue();
             properties.put("apply_origin",1);
         }
