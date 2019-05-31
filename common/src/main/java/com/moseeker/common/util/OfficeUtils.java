@@ -27,10 +27,10 @@ public class OfficeUtils {
     public static int Word2Pdf(String sourceFileName, String targetFileName) {
 
         //若未获取到许可证书，返回
-        if (!isLicense()) {
+        /*if (!isLicense()) {
             logger.info("toPDF Word2Pdf:isLicense false");
             return 0;
-        }
+        }*/
         File targetFile = new File(targetFileName);
         try {
             FileOutputStream fos = new FileOutputStream(targetFile);
