@@ -175,6 +175,12 @@ public abstract class EmployeeReferralProfile {
             addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), profileNotice.getReferralType());
             referralResultVO.setId(referralId);
             resultVOS.add(referralResultVO);
+        } catch (EmployeeException e){
+            logger.error(e.getMessage(), e);
+            referralResultVO.setReason(e.getMessage());
+            referralResultVO.setSuccess(false);
+            resultVOS.add(referralResultVO);
+            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             referralResultVO.setReason(e.getMessage());
