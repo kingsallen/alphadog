@@ -8,7 +8,7 @@ public class OfficeUtilTest {
 
     @Test
     public void test00(){
-        OfficeUtils.Word2Pdf("/Users/wulei/Downloads/黄成杰简历.docx","/Users/wulei/Downloads/黄成杰简历.pdf");
+        OfficeUtils.Word2Pdf("/Users/wulei/Documents/工作文档/杂乱/黄成杰简历.docx","/Users/wulei/Documents/工作文档/杂乱/黄成杰简历.pdf");
     }
 
     @Test
