@@ -62,6 +62,7 @@ public class OfficeUtils {
                 String command = String.format(COMMAND,COMMAND_PATH, sourceFileName, targetFileName);
                 //执行生成命令
                 String output = executeCommand(command);
+                logger.info("The pdf profile has been created at {}",output);
             }
         }catch (Exception e){
             logger.error(e.getMessage());
