@@ -1,6 +1,7 @@
 package com.moseeker.position.service.appbs;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
@@ -92,10 +93,21 @@ public class PositionBS {
     @Autowired
     private JobPositionLiepinMappingDao mappingDao;
 
-    @Value("${alphacloud.jobboard.postition.sync.url}")
-    private String jobboardUrl;
+
+    private static String jobboardUrl;
 
     private ThreadPool threadPool = ThreadPool.Instance;
+
+    static {
+        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+        try {
+            configUtils.loadResource("setting.properties");
+            jobboardUrl = configUtils.get("alphacloud.jobboard.postition.sync.url", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 单一处理职位同步
      * @param positionForm
@@ -124,7 +136,15 @@ public class PositionBS {
         for (ThirdPartyPositionForm positionForm : positionForms){
             threadPool.startTast(()-> {
                 try {
-                    String result = HttpClientUtil.sentHttpPostRequest(jobboardUrl, null, JSON.parseObject(JSON.toJSONString(positionForm)));
+                    if(StringUtils.isEmptyList(positionForm.getChannels())) return null;
+
+                    JSONObject param = JSON.parseObject(JSON.toJSONString(positionForm));
+                    JSONArray jsonChannels = new JSONArray();
+                    positionForm.getChannels().forEach(channel->{
+                        jsonChannels.add(JSON.parseObject(channel));
+                    });
+                    param.put("channels",jsonChannels);
+                    String result = HttpClientUtil.sentHttpPostRequest(jobboardUrl+"?appid=A11017&interfaceid=A11017001", null, param);
 
                     if (StringUtils.isNotNullOrEmpty(result)) {
                         if (!result.startsWith("{")) {
