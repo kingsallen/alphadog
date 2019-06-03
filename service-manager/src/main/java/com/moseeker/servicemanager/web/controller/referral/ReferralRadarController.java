@@ -247,7 +247,7 @@ public class ReferralRadarController {
             JSONObject response = JSONObject.parseObject(jsonResult);
             return Result.success(response).toJson();
         } else {
-            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
     }
 
