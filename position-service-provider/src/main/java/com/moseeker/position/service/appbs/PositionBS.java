@@ -94,19 +94,9 @@ public class PositionBS {
     private JobPositionLiepinMappingDao mappingDao;
 
 
-    private static String jobboardUrl;
+    private static String jobboardUrl = "";
 
     private ThreadPool threadPool = ThreadPool.Instance;
-
-    static {
-        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-        try {
-            configUtils.loadResource("setting.properties");
-            jobboardUrl = configUtils.get("alphacloud.jobboard.postition.sync.url", String.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * 单一处理职位同步
