@@ -6,9 +6,9 @@ import com.aspose.words.SaveFormat;
 
 import java.io.*;
 
-import org.pdfbox.pdfparser.PDFParser;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.util.PDFTextStripper;
+//import org.pdfbox.pdfparser.PDFParser;
+//import org.pdfbox.pdmodel.PDDocument;
+//import org.pdfbox.util.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,7 +97,7 @@ public class OfficeUtils {
     * @return 用来检验生成的pdf是否有问题
     * */
     public static String getTextFromPdf(String pdfFilePath) throws Exception{
-        String result = null;
+        /*String result = null;
         FileInputStream is = null;
         PDDocument document = null;
         try {
@@ -131,7 +131,8 @@ public class OfficeUtils {
                 }
             }
         }
-        return result;
+        return result;*/
+        return null;
     }
 
     /*
