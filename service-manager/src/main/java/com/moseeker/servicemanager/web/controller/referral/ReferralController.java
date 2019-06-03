@@ -587,7 +587,7 @@ public class ReferralController {
                     referralForm.getRelationship(), referralForm.getRecomReasonText());
             return Result.success(userId).toJson();
         } else {
-            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
     }
 
