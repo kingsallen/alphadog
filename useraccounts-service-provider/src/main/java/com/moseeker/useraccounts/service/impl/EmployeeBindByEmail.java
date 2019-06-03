@@ -234,6 +234,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             UserEmployeeDO employeeDO = employeeDao.getData(query.buildQuery());
             if (employeeDO != null && employeeDO.getId() > 0) {
                 response.setSuccess(true);
+                response.setEmployeeId(employeeDO.getId());
                 response.setMessage("认证成功，请勿重复点击该链接");
             }
         }
