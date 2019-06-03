@@ -21,9 +21,7 @@ public class OfficeUtils {
 
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
-    private static final String COMMAND = "%s/soffice.wrapper.sh --convert-to pdf:writer_pdf_Export %s --outdir %s";
-
-    private static final String COMMAND_PATH = "/usr/local/Caskroom/libreoffice/6.2.4";
+    private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export %s --outdir %s";
 
     /**
      * word转pdf
@@ -59,7 +57,7 @@ public class OfficeUtils {
                 }
                 //只传入文件夹路径
                 targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
-                String command = String.format(COMMAND,COMMAND_PATH, sourceFileName, targetFileName);
+                String command = String.format(COMMAND,sourceFileName, targetFileName);
                 //执行生成命令
                 String output = executeCommand(command);
                 logger.info("The pdf profile has been created at {}",output);
