@@ -1516,7 +1516,8 @@ public class TalentpoolSearchengine {
         String departmentIds=params.get("department_ids");
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
                 &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
-                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)&&StringUtils.isNullOrEmpty(endSubmitTime)){
+                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)
+                &&StringUtils.isNullOrEmpty(endSubmitTime)&&StringUtils.isNullOrEmpty(departmentIds)){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -2398,6 +2399,7 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         String startSubmitTime=params.get("start_submit_time");
         String endSubmitTime=params.get("end_submit_time");
+        String departmentIds=params.get("department_ids");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
         sb.append("int i = 0; for ( val in _source.user.applications)");
@@ -2423,7 +2425,12 @@ public class TalentpoolSearchengine {
             }
             sb.append("val.submit_time<'"+endSubmitTime+"'&&");
         }
-
+        if(StringUtils.isNotNullOrEmpty(departmentIds)){
+            List<Integer> departmentIdList=this.convertStringToList(departmentIds);
+            if(!StringUtils.isEmptyList(departmentIdList)){
+                sb.append("val.team_id in "+departmentIdList.toString()+"&&");
+            }
+        }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
             sb.append("val.position_id in"+positionIdList.toString()+"&&");
