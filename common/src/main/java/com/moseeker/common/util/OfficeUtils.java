@@ -6,9 +6,10 @@ import com.aspose.words.SaveFormat;
 
 import java.io.*;
 
-//import org.pdfbox.pdfparser.PDFParser;
-//import org.pdfbox.pdmodel.PDDocument;
-//import org.pdfbox.util.PDFTextStripper;
+
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,7 @@ public class OfficeUtils {
             String pdfContent = getTextFromPdf(targetFileName);
 
             //判断生成的pdf内容是否包含错误内容
-            if(pdfContent.contains(ERROR_PDF)){
+            if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent)){
                 //采用备用方案
                 File errorPdf = new File(targetFileName);
                 if(errorPdf.exists()){
@@ -97,7 +98,7 @@ public class OfficeUtils {
     * @return 用来检验生成的pdf是否有问题
     * */
     public static String getTextFromPdf(String pdfFilePath) throws Exception{
-        /*String result = null;
+        String result = null;
         FileInputStream is = null;
         PDDocument document = null;
         try {
@@ -131,8 +132,7 @@ public class OfficeUtils {
                 }
             }
         }
-        return result;*/
-        return null;
+        return result;
     }
 
     /*
