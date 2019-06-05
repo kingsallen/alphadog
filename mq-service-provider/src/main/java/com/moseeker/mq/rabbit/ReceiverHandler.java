@@ -161,7 +161,7 @@ public class ReceiverHandler {
                 params.put("url", url);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
-                        delay*1000+System.currentTimeMillis(), params.toJSONString());
+                        delay*60*1000+System.currentTimeMillis(), params.toJSONString());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
