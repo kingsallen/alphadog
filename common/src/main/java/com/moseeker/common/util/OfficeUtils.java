@@ -7,9 +7,9 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 
 
-import org.apache.pdfbox.pdfparser.PDFParser;
+/*import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.util.PDFTextStripper;*/
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +46,7 @@ public class OfficeUtils {
             document.save(fos, SaveFormat.PDF);
             fos.close();
 
-            //获取pdf的内容
+            /*//获取pdf的内容
             String pdfContent = getTextFromPdf(targetFileName);
 
             //判断生成的pdf内容是否包含错误内容
@@ -62,7 +62,7 @@ public class OfficeUtils {
                 //执行生成命令
                 String output = executeCommand(command);
                 logger.info("The pdf profile has been created at {}",output);
-            }
+            }*/
         }catch (Exception e){
             logger.error(e.getMessage());
             return 0;
@@ -97,6 +97,7 @@ public class OfficeUtils {
     *
     * @return 用来检验生成的pdf是否有问题
     * */
+/*
     public static String getTextFromPdf(String pdfFilePath) throws Exception{
         String result = null;
         FileInputStream is = null;
@@ -134,6 +135,7 @@ public class OfficeUtils {
         }
         return result;
     }
+*/
 
     /*
     * 执行libreoffice命令生成pdf文件
