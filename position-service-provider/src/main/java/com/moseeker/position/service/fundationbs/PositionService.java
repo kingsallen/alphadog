@@ -816,10 +816,10 @@ public class PositionService {
                     formData.getSource_id(),
                     formData.getJobnumber());
             // todo 猎聘新增
-            jobPositionOldRecordList.add(jobPositionRecord);
             // 更新或者新增数据
             if (formData.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                 dbOperation = DBOperation.UPDATE;
+                jobPositionOldRecordList.add(jobPositionRecord);
             } else {
                 dbOperation = DBOperation.INSERT;
             }
