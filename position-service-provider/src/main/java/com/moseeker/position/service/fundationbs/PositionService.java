@@ -43,6 +43,7 @@ import com.moseeker.common.constants.Position.PositionSource;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -63,6 +64,7 @@ import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.schedule.PositionIndexSender;
 import com.moseeker.position.utils.CommonPositionUtils;
+import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -184,6 +186,18 @@ public class PositionService {
 
     private static List dictAlipaycampusJobcategorylist;
 
+
+    private static String ALPHACLOUD_SEARCH_SYNC_MQ;
+
+    static {
+        try {
+            ConfigPropertiesUtil configPropertiesUtil = ConfigPropertiesUtil.getInstance();
+            configPropertiesUtil.loadResource("setting.properties");
+            ALPHACLOUD_SEARCH_SYNC_MQ = configPropertiesUtil.get("alphacloud_search_sync_mq",String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 获取推荐职位 <p> </p>
      *
@@ -1179,6 +1193,35 @@ public class PositionService {
             String routingKey="newpositionesindexupdate.#";
             sender.sendMqRequest(jobPositionIds,routingKey,exchange);
             return jobPostionResponse;
+        }
+        if(!StringUtils.isEmptyList(jobPositionAddRecordList)
+                || !StringUtils.isEmptyList(jobPositionUpdateRecordList)) {
+            JSONObject form = new JSONObject();
+            form.put("companyId",batchHandlerJobPosition.getData().get(0).getCompany_id());
+
+            JSONArray data = new JSONArray();
+            if(!StringUtils.isEmptyList(jobPositionAddRecordList)) {
+                jobPositionAddRecordList.stream().forEach(p->{
+                    JSONObject temp = new JSONObject();
+                    temp.put("pid",p.getId());
+                    temp.put("title",p.getTitle());
+                    data.add(temp);
+                });
+            }
+
+            if(!StringUtils.isEmptyList(jobPositionUpdateRecordList)) {
+                jobPositionUpdateRecordList.stream().forEach(p->{
+                    JSONObject temp = new JSONObject();
+                    temp.put("pid",p.getId());
+                    temp.put("title",p.getTitle());
+                    data.add(temp);
+                });
+            }
+            try {
+                HttpClientUtil.sentHttpPostRequest(ALPHACLOUD_SEARCH_SYNC_MQ,null,form);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         logger.info("-------批量修改职位结束---------");
         return jobPostionResponse;
