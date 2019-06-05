@@ -157,7 +157,7 @@ public class ReceiverHandler {
                 params.put("position_ids", positionArray[index]);
                 params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);
                 params.put("type", "3");
-                params.put("user_id", jsonObject.getIntValue("userId"));
+                params.put("user_id", jsonObject.getIntValue("user_id"));
                 params.put("url", url);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
