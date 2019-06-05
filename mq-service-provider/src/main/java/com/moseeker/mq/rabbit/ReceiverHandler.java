@@ -140,6 +140,7 @@ public class ReceiverHandler {
     @RabbitHandler
     public void demonstrationEmployeeRegister(Message message) {
         try {
+            log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister");
             String msgBody = new String(message.getBody(), "UTF-8");
             String companyId = env.getProperty("demonstration.company_id");
             int delay = Integer.valueOf(env.getProperty("demonstration.employee.register"));
@@ -148,8 +149,9 @@ public class ReceiverHandler {
             int index = random.nextInt(positionArray.length);
             String url = env.getProperty("demonstration.employee_referral.url");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-
+            log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister jsonObject:{}",jsonObject);
             if (StringUtils.isNotBlank(companyId) && Integer.valueOf(companyId).intValue() == jsonObject.getInteger("company_id")) {
+                log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister 特定公司");
                 JSONObject params = new JSONObject();
                 params.put("aiTemplateType", 0);
                 params.put("algorithmName","");
@@ -159,6 +161,7 @@ public class ReceiverHandler {
                 params.put("type", "3");
                 params.put("userId", jsonObject.getIntValue("userId"));
                 params.put("url", url);
+                log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
                         delay*1000+System.currentTimeMillis(), params.toJSONString());
@@ -172,6 +175,7 @@ public class ReceiverHandler {
     @RabbitHandler
     public void demonstrationFollowWechat(Message message) {
         try {
+            log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat");
             String msgBody = new String(message.getBody(), "UTF-8");
             String companyId = env.getProperty("demonstration.company_id");
             int delay = Integer.valueOf(env.getProperty("demonstration.follow.wechat"));
@@ -179,8 +183,9 @@ public class ReceiverHandler {
             String[] positionArray = positions.split(",");
             int index = random.nextInt(positionArray.length);
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            templateMsgHttp.demonstrationFollowWechat(jsonObject.getIntValue("userId"),
-                    jsonObject.getInteger(companyId), companyId, positionArray[index], delay, redisClient, env);
+            log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat jsonObject:{}", jsonObject);
+            templateMsgHttp.demonstrationFollowWechat(jsonObject.getIntValue("userId"), jsonObject.getString("wechat_id"),
+                    companyId, positionArray[index], delay, redisClient, env);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
