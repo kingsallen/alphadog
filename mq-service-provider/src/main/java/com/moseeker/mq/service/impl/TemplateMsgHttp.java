@@ -1188,7 +1188,7 @@ public class TemplateMsgHttp {
                 logger.info("元夕飞花令 TemplateMsgHttp demonstrationFollowWechat 非员工");
                 JSONObject params = new JSONObject();
                 params.put("ai_template_type", 0);
-                params.put("algorithm_name","");
+                params.put("algorithm_name","algorithm_name");
                 params.put("company_id", companyIdss);
                 params.put("position_ids", positionIdStr);
                 params.put("user_id", userId);
