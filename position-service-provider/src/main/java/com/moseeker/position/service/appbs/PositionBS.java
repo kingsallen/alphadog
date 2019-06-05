@@ -132,42 +132,46 @@ public class PositionBS {
         }
 
         List<PositionSyncResultPojo> results=new ArrayList<>();
-        CountDownLatch countDownLatch = new CountDownLatch(positionForms.size());
-        for (ThirdPartyPositionForm positionForm : positionForms){
-            threadPool.startTast(()-> {
-                try {
-                    if(StringUtils.isEmptyList(positionForm.getChannels())) return null;
 
-                    JSONObject param = JSON.parseObject(JSON.toJSONString(positionForm));
-                    JSONArray jsonChannels = new JSONArray();
-                    positionForm.getChannels().forEach(channel->{
-                        jsonChannels.add(JSON.parseObject(channel));
-                    });
-                    param.put("channels",jsonChannels);
-                    String result = HttpClientUtil.sentHttpPostRequest(jobboardUrl+"?appid=A11017&interfaceid=A11017001", null, param);
+        Map<Integer, List<ThirdPartyPositionForm>> collect = positionForms.stream().collect(Collectors.groupingBy(p -> p.getPositionId()));
 
-                    if (StringUtils.isNotNullOrEmpty(result)) {
-                        if (!result.startsWith("{")) {
-                            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "unknow sync error:" + result);
-                        } else {
-                            JSONObject resultObject = JSON.parseObject(result);
-                            if (resultObject.getIntValue("code") != 0) {
-                                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "sync error:" + resultObject.getString("message"));
+        CountDownLatch countDownLatch = new CountDownLatch(collect.size());
+        for(Map.Entry<Integer,List<ThirdPartyPositionForm>> entry:collect.entrySet()) {
+            threadPool.startTast(() -> {
+                for (ThirdPartyPositionForm positionForm : entry.getValue()) {
+                    if (StringUtils.isEmptyList(positionForm.getChannels())) break;
+                    try {
+                        JSONObject param = JSON.parseObject(JSON.toJSONString(positionForm));
+                        JSONArray jsonChannels = new JSONArray();
+                        positionForm.getChannels().forEach(channel -> {
+                            jsonChannels.add(JSON.parseObject(channel));
+                        });
+                        param.put("channels", jsonChannels);
+                        String result = HttpClientUtil.sentHttpPostRequest(jobboardUrl + "?appid=A11017&interfaceid=A11017001", null, param);
+
+                        if (StringUtils.isNotNullOrEmpty(result)) {
+                            if (!result.startsWith("{")) {
+                                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "unknow sync error:" + result);
                             } else {
-                                results.add(JSON.parseObject(result, PositionSyncResultPojo.class));
+                                JSONObject resultObject = JSON.parseObject(result);
+                                if (resultObject.getIntValue("code") != 0) {
+                                    throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "sync error:" + resultObject.getString("message"));
+                                } else {
+                                    results.addAll(JSON.parseArray(resultObject.getString("data"), PositionSyncResultPojo.class));
+                                }
                             }
+                        } else {
+                            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "unknow sync error");
                         }
-                    } else {
-                        throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "unknow sync error");
+
+                    } catch(BIZException e){
+                        results.add(positionSyncHandler.createFailResult(positionForm.getPositionId(), JSON.toJSONString(positionForm), e.getMessage(), -1));
+                    } catch(Exception e){
+                        emailNotification.sendSyncFailureMail(positionForm, null, e);
+                        results.add(positionSyncHandler.createFailResult(positionForm.getPositionId(), JSON.toJSONString(positionForm), "batch Sync Position error", -1));
                     }
-                } catch (BIZException e) {
-                    results.add(positionSyncHandler.createFailResult(positionForm.getPositionId(), JSON.toJSONString(positionForm), e.getMessage(), -1));
-                } catch (Exception e) {
-                    emailNotification.sendSyncFailureMail(positionForm, null, e);
-                    results.add(positionSyncHandler.createFailResult(positionForm.getPositionId(), JSON.toJSONString(positionForm), "batch Sync Position error", -1));
-                } finally {
-                    countDownLatch.countDown();
                 }
+                countDownLatch.countDown();
                 return null;
             });
         }
