@@ -85,6 +85,9 @@ public class PositionStateAsyncHelper {
             try{
                 if(batchHandlerCountDown.await(600, TimeUnit.SECONDS)){
                     for(JobPositionRecord position:jobPositionUpdateRecordList) {
+                        if(!oldJobMap.containsKey(position.getId())) {
+                            continue;
+                        }
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("id", position.getId());
                         jsonObject.put("params", BeanUtils.DBToStruct(JobPositionDO.class,position));
