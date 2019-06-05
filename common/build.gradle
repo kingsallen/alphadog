@@ -40,7 +40,6 @@ dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
     compile deps["zxing-core"]
     compile deps["SensorsAnalyticsSDK"]
-    compile deps["pdfbox"]
 }
 
 project.description = '''
