@@ -321,9 +321,11 @@ public class ReceiverHandler {
         LogVO logVo=this.handlerLogVO();
         try{
             log.info("message:{}", JSON.toJSONString(message));
+
             msgBody = new String(message.getBody(), "UTF-8");
-            log.info("msgBody:{}", JSON.toJSONString(msgBody));
+            log.info("元夕飞花令 handlerMessageTemplate msgBody:{}", JSON.toJSONString(msgBody));
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
+                log.info("元夕飞花令 handlerMessageTemplate 职位同步失败");
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int positionId = jsonObject.getIntValue("positionId");
                 String msg = jsonObject.getString("message");
@@ -332,14 +334,16 @@ public class ReceiverHandler {
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                log.info("元夕飞花令 handlerMessageTemplate 推荐 msgBody:{}", JSON.toJSONString(msgBody));
                 int type = jsonObject.getIntValue("type");
                 log.info("type========================:{}", type);
                 this.addPropertyLogVO(logVo, jsonObject);
                 this.handlerTempLateLog(logVo, type);
                 if (type != 0) {
+                    log.info("元夕飞花令 handlerMessageTemplate type!=0");
                     AIRecomParams params = this.initRecomParams(message);
                     MessageTemplateNoticeStruct messageTemplate = messageTemplateEntity.handlerTemplate(params);
-                    log.info("messageTemplate========" + JSONObject.toJSONString(messageTemplate));
+                    log.info("元夕飞花令 handlerMessageTemplate messageTemplate========" + JSONObject.toJSONString(messageTemplate));
                     if (messageTemplate != null) {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
@@ -352,10 +356,12 @@ public class ReceiverHandler {
                             sensorSend.send(distinctId,"sendTemplateMessage",properties);
                         }
                     } else {
+                        log.info("元夕飞花令 handlerMessageTemplate messageTemplate == null");
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
                         logVo.setStatus_code(1);
                     }
                 } else {
+                    log.info("元夕飞花令 handlerMessageTemplate type=0");
                     logVo.setStatus_code(2);
                 }
             }
