@@ -164,7 +164,7 @@ public class ReceiverHandler {
                 log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
-                        delay*60*1000+System.currentTimeMillis(), params.toJSONString());
+                        delay*1000+System.currentTimeMillis(), params.toJSONString());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
