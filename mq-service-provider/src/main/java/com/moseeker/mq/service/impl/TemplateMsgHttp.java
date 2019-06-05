@@ -1184,7 +1184,7 @@ public class TemplateMsgHttp {
             if (employeeRecord == null) {
                 JSONObject params = new JSONObject();
                 params.put("ai_template_type", 0);
-                params.put("algorithm_name","");
+                params.put("algorithm_name","algorithm_name");
                 params.put("company_id", companyIdss);
                 params.put("position_ids", positionIdStr);
                 params.put("user_id", userId);
