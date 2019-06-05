@@ -1234,6 +1234,7 @@ public class TalentpoolSearchengine {
         String extsis=params.get("extsis");
         //ats查询时使用的时间
         String atsTime=params.get("ats_profile_update_time");
+        String hasAttachment=params.get("has_attachment");
         if(
                 StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
                         StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
@@ -1275,6 +1276,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(atsTime)){
             this.queryByAtsProfileUpDateTime(atsTime,query);
         }
+        if(StringUtils.isNotNullOrEmpty(hasAttachment)){
+            this.QueryByAttachment(hasAttachment,query);
+        }
         return query;
     }
 
@@ -1292,6 +1296,7 @@ public class TalentpoolSearchengine {
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
         String profilePoolId=params.get("profile_pool_id");
+        String departmentIds=params.get("department_ids");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
@@ -1304,6 +1309,11 @@ public class TalentpoolSearchengine {
                     this.queryByPublisher(publisherIds, query);
                 }
             }
+
+            if (StringUtils.isNotNullOrEmpty(departmentIds)) {
+                this.queryByDepartment(departmentIds, query);
+            }
+
             if (StringUtils.isNotNullOrEmpty(candidateSource)) {
                 this.queryByCandidateSource(Integer.parseInt(candidateSource), query);
             }
@@ -1503,10 +1513,11 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         String startSubmitTime=params.get("start_submit_time");
         String endSubmitTime=params.get("end_submit_time");
-
+        String departmentIds=params.get("department_ids");
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
                 &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
-                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)&&StringUtils.isNullOrEmpty(endSubmitTime)){
+                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)
+                &&StringUtils.isNullOrEmpty(endSubmitTime)&&StringUtils.isNullOrEmpty(departmentIds)){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -1520,6 +1531,14 @@ public class TalentpoolSearchengine {
                 }
             }
         }
+
+        if(StringUtils.isNotNullOrEmpty(departmentIds)){
+            List<Integer> departmentIdList=this.convertStringToList(departmentIds);
+            if(!StringUtils.isEmptyList(departmentIdList)){
+                sb.append("val.team_id in "+departmentIdList.toString()+"&&");
+            }
+        }
+
         if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
             sb.append("val.status=="+positionStatus+"&&");
         }
@@ -1693,6 +1712,12 @@ public class TalentpoolSearchengine {
      */
     private void queryByPublisher(String publisherIds,QueryBuilder queryBuilder){
         searchUtil.handleTermsFilter(publisherIds,queryBuilder,"user.applications.publisher");
+    }
+    /*
+     创建按照departmentId查询的索引语句
+     */
+    private void queryByDepartment(String departmentIds,QueryBuilder queryBuilder){
+        searchUtil.handleTerms(departmentIds,queryBuilder,"user.applications.team_id");
     }
     /*
      构建按照关键词查询的索引语句
@@ -2045,6 +2070,19 @@ public class TalentpoolSearchengine {
         searchUtil.handleTermsFilter(degrees,queryBuilder,"user.profiles.basic.highest_degree");
     }
 
+    /*
+      按照有无附件简历查询
+     */
+    private void QueryByAttachment(String hasAttachment,QueryBuilder queryBuilder){
+        if("1".equals(hasAttachment)){
+            QueryBuilder attachmentQuery = QueryBuilders.existsQuery("user.profiles.attachments");
+            ((BoolQueryBuilder) queryBuilder).must(attachmentQuery);
+        }else{
+            QueryBuilder attachmentQuery = QueryBuilders.existsQuery("user.profiles.attachments");
+            ((BoolQueryBuilder) queryBuilder).mustNot(attachmentQuery);
+        }
+    }
+
     private void queryParseByLastCompany(String companys,QueryBuilder queryBuilder){
         searchUtil.handleMatchParse(companys,queryBuilder,"user.profiles.recent_job.company_name");
     }
@@ -2361,6 +2399,7 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         String startSubmitTime=params.get("start_submit_time");
         String endSubmitTime=params.get("end_submit_time");
+        String departmentIds=params.get("department_ids");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
         sb.append("int i = 0; for ( val in _source.user.applications)");
@@ -2386,7 +2425,12 @@ public class TalentpoolSearchengine {
             }
             sb.append("val.submit_time<'"+endSubmitTime+"'&&");
         }
-
+        if(StringUtils.isNotNullOrEmpty(departmentIds)){
+            List<Integer> departmentIdList=this.convertStringToList(departmentIds);
+            if(!StringUtils.isEmptyList(departmentIdList)){
+                sb.append("val.team_id in "+departmentIdList.toString()+"&&");
+            }
+        }
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
             sb.append("val.position_id in"+positionIdList.toString()+"&&");
