@@ -1185,9 +1185,9 @@ public class TemplateMsgHttp {
                 JSONObject params = new JSONObject();
                 params.put("aiTemplateType", 0);
                 params.put("algorithmName","");
-                params.put("companyId", Integer.valueOf(companyIdss));
+                params.put("companyId", companyIdss);
                 params.put("positionIds", positionIdStr);
-                params.put("userId", params.getIntValue("userId"));
+                params.put("userId", userId);
 
                 ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
                 if (profileProfileRecord == null || profileProfileRecord.getDisable() == AbleFlag.DISABLE.getValue()) {
