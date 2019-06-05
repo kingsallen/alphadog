@@ -153,18 +153,18 @@ public class ReceiverHandler {
             if (StringUtils.isNotBlank(companyId) && Integer.valueOf(companyId).intValue() == jsonObject.getInteger("company_id")) {
                 log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister 特定公司");
                 JSONObject params = new JSONObject();
-                params.put("aiTemplateType", 0);
-                params.put("algorithmName","");
-                params.put("companyId", Integer.valueOf(companyId));
-                params.put("positionIds", positionArray[index]);
-                params.put("templateId", Constant.EMPLOYEE_RECOM_POSITION);
+                params.put("ai_template_type", 0);
+                params.put("algorithm_name","");
+                params.put("company_id", Integer.valueOf(companyId));
+                params.put("position_ids", positionArray[index]);
+                params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);
                 params.put("type", "3");
-                params.put("userId", jsonObject.getIntValue("userId"));
+                params.put("user_id", jsonObject.getIntValue("userId"));
                 params.put("url", url);
                 log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
-                        delay*1000+System.currentTimeMillis(), params.toJSONString());
+                        delay*60*1000+System.currentTimeMillis(), params.toJSONString());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
