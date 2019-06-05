@@ -43,7 +43,7 @@ public class FollowStateSynchronizationTool {
         }
     }
 
-//    @RabbitListener(queues = "#{unFollowWechatQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitListener(queues = "#{unFollowWechatQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void cancelEmployee(Message message) {
         String msgBody = "{}";

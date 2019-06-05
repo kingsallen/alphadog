@@ -53,6 +53,7 @@ import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
@@ -1354,7 +1355,7 @@ public class CandidateEntity implements Candidate {
     }
 
     @Override
-    public void closeElasticLayer(int userId, int companyId, int type) {
+    public void closeElasticLayer(int userId, int companyId, int type) throws Exception{
         try {
             Optional<CandidateCompanyDO> candidateCompanyDOOptional = candidateDBDao.getCandidateCompanyByUserIDCompanyID(userId, companyId);
             if (candidateCompanyDOOptional.isPresent()) {
@@ -1367,8 +1368,9 @@ public class CandidateEntity implements Candidate {
             } else {
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }
-        } catch (TException e) {
+        } catch (BIZException e) {
             logger.error(e.getMessage());
+            throw e;
         }
     }
 

@@ -423,7 +423,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
 				.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
 						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+								.and(JOB_APPLICATION.EMAIL_STATUS.eq(0))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.fetchInto(JobApplicationDO.class);
     }
@@ -435,7 +435,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.and(JOB_APPLICATION.APP_TPL_ID.in(progress))
 				.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
 						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+								.and(JOB_APPLICATION.EMAIL_STATUS.eq(0))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.fetchInto(JobApplicationDO.class);
 	}
@@ -447,7 +447,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.and(JOB_APPLICATION.APPLIER_ID.in(applierIds))
 				.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
 						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+								.and(JOB_APPLICATION.EMAIL_STATUS.eq(0))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.fetchInto(JobApplicationDO.class);
 	}
@@ -460,7 +460,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.and(JOB_APPLICATION.APPLIER_ID.in(applierIds))
 				.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
 						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+								.and(JOB_APPLICATION.EMAIL_STATUS.eq(0))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.fetchInto(JobApplicationDO.class);
 	}
@@ -471,7 +471,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
                 .and(JOB_APPLICATION.APPLIER_ID.in(applierIds))
                 .and(JOB_APPLICATION.APPLY_TYPE.eq(0)
                         .or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-                        .and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+                        .and(JOB_APPLICATION.EMAIL_STATUS.eq(0))))
                 .fetchInto(JobApplicationDO.class);
     }
 

@@ -4,9 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,10 +61,22 @@ public class BasicController {
 			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
 				return ResponseLogNotification.fail(request, "不能超过100个英文字母或者50个汉字");
 			}
+
+			String motto = basic.getMotto();
+			String qq = basic.getQq();
+			String weixin = basic.getWeixin();
+			if ( (StringUtils.isNotNullOrEmpty(motto)&&motto.length()>50)
+					||(StringUtils.isNotNullOrEmpty(qq)&&qq.length()>50)
+					||(StringUtils.isNotNullOrEmpty(weixin)&&weixin.length()>50)) {
+				return ResponseLogNotification.fail(request, "不能超过50个字符！");
+			}
 			Response result = basicService.postResource(basic);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			e.printStackTrace();
+			if (e instanceof DataIntegrityViolationException) {
+				return ResponseLogNotification.fail(request, "数据输入异常！");
+			}
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
@@ -78,9 +93,21 @@ public class BasicController {
 			if(StringUtils.isNotNullOrEmpty(name)&&name.length()>100){
 				return ResponseLogNotification.fail(request, "不能超过100个英文字母或者50个汉字");
 			}
+
+			String motto = basic.getMotto();
+			String qq = basic.getQq();
+			String weixin = basic.getWeixin();
+			if ( (StringUtils.isNotNullOrEmpty(motto)&&motto.length()>50)
+					||(StringUtils.isNotNullOrEmpty(qq)&&qq.length()>50)
+					||(StringUtils.isNotNullOrEmpty(weixin)&&weixin.length()>50)) {
+				return ResponseLogNotification.fail(request, "不能超过50个字符！");
+			}
 			Response result = basicService.putResource(basic);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
+		} catch (Exception e) {
+			if (e instanceof DataIntegrityViolationException) {
+				return ResponseLogNotification.fail(request, "数据输入异常！");
+			}
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}

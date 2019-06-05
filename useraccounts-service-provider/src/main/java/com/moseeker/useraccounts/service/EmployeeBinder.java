@@ -12,11 +12,9 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterL
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.EmployeeOperationEntrance;
-import com.moseeker.common.constants.EmployeeOperationIsSuccess;
-import com.moseeker.common.constants.EmployeeOperationType;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
@@ -109,6 +107,8 @@ public abstract class EmployeeBinder {
     private Neo4jService neo4jService;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
+
+    ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     /**
      * 员工认证
@@ -205,14 +205,14 @@ public abstract class EmployeeBinder {
      * @throws TException
      */
     protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException, InvalidArgumentException {
-        log.info("doneBind param: useremployee={}", useremployee);
+        log.info("doneBind param: useremployee.email:{}", useremployee.getEmail());
         log.info("useremployee.authMethod:{}", useremployee.getAuthMethod());
         Result response = new Result();
 
         DateTime currentTime = new DateTime();
         int employeeId;
         log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
-        log.info("doneBind persist employee:{}", useremployee);
+        log.info("doneBind param: useremployee.email:{}", useremployee.getEmail());
 
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
 
@@ -314,6 +314,7 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         response.setEmployeeId(employeeId);
+        this.updateEsUsersAndProfile(useremployee.getSysuserId());
         return response;
     }
 
@@ -369,6 +370,16 @@ public abstract class EmployeeBinder {
     protected UserEmployeeRecord fetchUnActiveEmployee(UserEmployeeDO useremployee) {
         return employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                 useremployee.getCompanyId());
+    }
+
+    private void updateEsUsersAndProfile(int userId){
+        Map<String, Object> result = new HashMap<>();
+        result.put("user_id", userId);
+        result.put("tableName","user_meassage");
+        scheduledThread.startTast(()->{
+            client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        },2000);
     }
 
     /**

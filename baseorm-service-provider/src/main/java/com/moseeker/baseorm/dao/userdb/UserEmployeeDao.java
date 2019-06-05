@@ -237,7 +237,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 "  where uu.sysuser_id = " + sysuserId + " and uu.activation = 0 and uu.disable = 0) ut " +
                 " on u.sysuser_id = ut.user_id " +
                 " set u.activation = " + EmployeeActiveState.Actived.getState() +
-                " , set u.binding_time = " + time +
+                " ,  u.binding_time = '" + time +"' "+
                 " where u.activation = " + EmployeeActiveState.UnFollow.getState() + " " +
                 " and u.id = " + id + " and ut.id is null");
     }

@@ -250,6 +250,9 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
 			vm.addFailedElement("职位名称", "未填写职位名称");
 		}
+        if(workExp.getJob()!=null && workExp.getJob().length()>100) {
+            vm.addFailedElement("职位名称", "超过最长字数限制");
+        }
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
@@ -286,6 +289,9 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
 			vm.addFailedElement("职位名称", "未填写职位名称");
 		}
+		if(workExp.getJob()!=null && workExp.getJob().length()>100) {
+			vm.addFailedElement("职位名称", "超过最长字数限制");
+		}
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
@@ -320,6 +326,9 @@ public class ProfileValidation {
 		}
 		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
 			vm.addFailedElement("职位名称", "未填写职位名称");
+		}
+		if(workExp.getJob()!=null && workExp.getJob().length()>100) {
+			vm.addFailedElement("职位名称", "超过最长字数限制");
 		}
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");

@@ -170,7 +170,7 @@ public class CompanyTagService {
         result.put("user_id", userId);
         result.put("tag_ids",tagIdList);
         client.lpush(Constant.APPID_ALPHADOG,
-               redisKey, JSON.toJSONString(result));
+                redisKey, JSON.toJSONString(result));
         logger.info(" redis 队列中的内容为  result:{}", result);
     }
 

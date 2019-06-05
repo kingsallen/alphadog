@@ -129,7 +129,7 @@ public interface Candidate {
      * @param companyId 公司编号
      * @return
      */
-    void closeElasticLayer(int userId, int companyId, int type);
+    void closeElasticLayer(int userId, int companyId, int type) throws Exception;
 
 
 
