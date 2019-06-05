@@ -1175,10 +1175,12 @@ public class TemplateMsgHttp {
     }
 
     public void demonstrationFollowWechat(int userId, Integer companyId, String companyIdStr, String positionIdStr, int delay, RedisClient redisClient, Environment env) {
+        logger.info("元夕飞花令 TemplateMsgHttp demonstrationFollowWechat");
         if (org.apache.commons.lang.StringUtils.isNotBlank(companyIdStr) && Integer.valueOf(companyId).intValue() == companyId) {
-
+            logger.info("元夕飞花令 TemplateMsgHttp demonstrationFollowWechat 特定公司");
             UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployee(userId, companyId);
             if (employeeRecord == null) {
+                logger.info("元夕飞花令 TemplateMsgHttp demonstrationFollowWechat 非员工");
                 JSONObject params = new JSONObject();
                 params.put("aiTemplateType", 0);
                 params.put("algorithmName","");
@@ -1197,12 +1199,11 @@ public class TemplateMsgHttp {
                     params.put("url", env.getProperty("demonstration.fans_referral.url"));
                 }
 
+                logger.info("元夕飞花令 TemplateMsgHttp demonstrationFollowWechat params:{}", params);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
                         delay*1000+System.currentTimeMillis(), params.toJSONString());
             }
-
-
         }
     }
 }

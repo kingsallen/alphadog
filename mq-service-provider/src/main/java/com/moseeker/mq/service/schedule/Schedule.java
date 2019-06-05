@@ -94,6 +94,7 @@ public class Schedule {
      */
     @Scheduled(cron="*/5 * * * * ?")
     public void startListeninDemonstrationDelayQueue() {
+        logger.info("元夕飞花令 Schedule startListeninDemonstrationDelayQueue");
         long now = System.currentTimeMillis();
         Set<String> tasks = redisClient.rangeByScore(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
@@ -105,6 +106,7 @@ public class Schedule {
                     0L,
                     now);
             tasks.forEach(task -> {
+                logger.info("元夕飞花令 Schedule startListeninDemonstrationDelayQueue send task:{}", task);
                 amqpTemplate.send("message_template_exchange",
                         "messagetemplate.#", MessageBuilder.withBody(task.getBytes())
                                 .build());
