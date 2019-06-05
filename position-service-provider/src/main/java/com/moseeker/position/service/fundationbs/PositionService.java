@@ -819,7 +819,11 @@ public class PositionService {
             // 更新或者新增数据
             if (formData.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                 dbOperation = DBOperation.UPDATE;
-                jobPositionOldRecordList.add(jobPositionRecord);
+                if (jobPositionRecord.getStatus() == PositionStatus.BANNED.getValue()) {
+                    needReSyncData.add(jobPositionRecord.getId());      // 记录上架职位
+                } else if (jobPositionRecord.getStatus() == PositionStatus.ACTIVED.getValue()) {
+                    jobPositionOldRecordList.add(jobPositionRecord);
+                }
             } else {
                 dbOperation = DBOperation.INSERT;
             }
@@ -827,11 +831,6 @@ public class PositionService {
             // 参数校验
             if (!checkBatchPostionData(formData, jobPositionFailMessPojos, dbOperation)) {
                 continue;
-            }
-
-            // 记录上架职位
-            if(dbOperation == DBOperation.UPDATE && jobPositionRecord.getStatus()==PositionStatus.BANNED.getValue()) {
-                needReSyncData.add(jobPositionRecord.getId());
             }
 
             JobPositionRecord formRcord = BeanUtils.structToDB(formData, JobPositionRecord.class);
@@ -1152,7 +1151,7 @@ public class PositionService {
                 }
             }
             positionStateAsyncHelper.resync(batchHandlerCountDown,needReSyncData);
-            positionStateAsyncHelper.edit(batchHandlerCountDown,jobPositionOldRecordList ,oldJobMap);
+            positionStateAsyncHelper.edit(batchHandlerCountDown,jobPositionUpdateRecordList ,oldJobMap);
 
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
