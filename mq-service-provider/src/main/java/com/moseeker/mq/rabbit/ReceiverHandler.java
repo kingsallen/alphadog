@@ -184,8 +184,8 @@ public class ReceiverHandler {
             int index = random.nextInt(positionArray.length);
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat jsonObject:{}", jsonObject);
-            templateMsgHttp.demonstrationFollowWechat(jsonObject.getIntValue("userId"),
-                    jsonObject.getInteger(companyId), companyId, positionArray[index], delay, redisClient, env);
+            templateMsgHttp.demonstrationFollowWechat(jsonObject.getIntValue("userId"), jsonObject.getString("wechat_id"),
+                    companyId, positionArray[index], delay, redisClient, env);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
