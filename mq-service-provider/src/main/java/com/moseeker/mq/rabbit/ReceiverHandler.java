@@ -154,7 +154,7 @@ public class ReceiverHandler {
                 log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister 特定公司");
                 JSONObject params = new JSONObject();
                 params.put("ai_template_type", 0);
-                params.put("algorithm_name","algorithm_name");
+                params.put("algorithm_name","feihualing_recom");
                 params.put("company_id", Integer.valueOf(companyId));
                 params.put("position_ids", positionArray[index]);
                 params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);

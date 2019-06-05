@@ -1188,7 +1188,6 @@ public class TemplateMsgHttp {
                 logger.info("元夕飞花令 TemplateMsgHttp demonstrationFollowWechat 非员工");
                 JSONObject params = new JSONObject();
                 params.put("ai_template_type", 0);
-                params.put("algorithm_name","algorithm_name");
                 params.put("company_id", companyIdss);
                 params.put("position_ids", positionIdStr);
                 params.put("user_id", userId);
@@ -1198,9 +1197,11 @@ public class TemplateMsgHttp {
                     params.put("type", "1");
                     params.put("template_id", Constant.FANS_PROFILE_COMPLETION);
                     params.put("url", env.getProperty("demonstration.improve_profile.url"));
+                    params.put("algorithm_name","");
                 } else {
                     params.put("type", "2");
                     params.put("template_id", Constant.FANS_RECOM_POSITION);
+                    params.put("algorithm_name","feihualing_recom");
                     params.put("url", env.getProperty("demonstration.fans_referral.url"));
                 }
 
