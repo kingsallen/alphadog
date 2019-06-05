@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -74,7 +75,7 @@ public class PositionStateAsyncHelper {
         });
     }
 
-    public void edit(CountDownLatch batchHandlerCountDown,List<JobPositionRecord> jobPositionUpdateRecordList) {
+    public void edit(CountDownLatch batchHandlerCountDown, List<JobPositionRecord> jobPositionUpdateRecordList, Map<Integer, JobPositionRecord> oldJobMap) {
         if(StringUtils.isEmptyList(jobPositionUpdateRecordList)) {
             return;
         }
@@ -84,8 +85,8 @@ public class PositionStateAsyncHelper {
                     for(JobPositionRecord position:jobPositionUpdateRecordList) {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("id", position.getId());
-                        jsonObject.put("params", jobPositionUpdateRecordList);
-                        jsonObject.put("oldPosition", position);
+                        jsonObject.put("params", position);
+                        jsonObject.put("oldPosition", oldJobMap.get(position.getId()));
                         if(position.getStatus() == 2) {
                             jsonObject.put("positionFlag", true);
                         } else{

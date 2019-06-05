@@ -86,8 +86,6 @@ import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,9 +99,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.moseeker.common.constants.PositionSyncVerify.POSITION_OPERATE_LIEPIN_EXCHANGE;
-import static com.moseeker.common.constants.PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_DOWNSHELF;
 
 @Service
 @Transactional
@@ -755,16 +750,7 @@ public class PositionService {
                 jobPositionDao.updateRecords(dbOnlineList);
 
                 // 猎聘api对接下架职位 todo 这行代码是新增
-                /*logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
-                pool.startTast(() -> {
-                    if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
-                        return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
-                    } else {
-                        throw new RuntimeException("rabbitmq线程等待超时");
-                    }
-                });*/
-                List<Integer> ids = dbOnlineList.stream().map(p -> p.getId()).collect(Collectors.toList());
-                positionStateAsyncHelper.downShelf(batchHandlerCountDown,ids);
+                positionStateAsyncHelper.downShelf(batchHandlerCountDown,batchLiepinPositionDownShelf);
             }
         }
         // 判断哪些数据不需要更新的
@@ -807,6 +793,8 @@ public class PositionService {
         List<Integer> ccmailPositionIdsToDelete = new ArrayList<>();
         // 需要更新的福利特色数据
         List<JobPostrionObj> needBindFeatureData = new ArrayList<>();
+        // 上架数据
+        List<Integer> needReSyncData = new ArrayList<>();
         // 公司下HR账号ID
         Map<Integer, UserHrAccountDO> userHrAccountMap = userHrAccountGroupByID(companyId);
         // 职位数据是更新还是插入操作
@@ -839,6 +827,11 @@ public class PositionService {
             // 参数校验
             if (!checkBatchPostionData(formData, jobPositionFailMessPojos, dbOperation)) {
                 continue;
+            }
+
+            // 记录上架职位
+            if(dbOperation == DBOperation.UPDATE && jobPositionRecord.getStatus()==PositionStatus.BANNED.getValue()) {
+                needReSyncData.add(jobPositionRecord.getId());
             }
 
             JobPositionRecord formRcord = BeanUtils.structToDB(formData, JobPositionRecord.class);
@@ -1158,16 +1151,8 @@ public class PositionService {
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
-            receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
-//            Future editFuture = pool.startTast(() -> {
-//                if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
-//                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateReco   dList, oldJobMap);
-//                } else {
-//                    throw new RuntimeException("rabbitmq线程等待超时");
-//                }
-//            });
-//
-//            editFuture.get(60, TimeUnit.SECONDS);
+            positionStateAsyncHelper.resync(batchHandlerCountDown,needReSyncData);
+            positionStateAsyncHelper.edit(batchHandlerCountDown,jobPositionOldRecordList ,oldJobMap);
 
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
