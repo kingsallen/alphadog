@@ -151,13 +151,13 @@ public class ReceiverHandler {
 
             if (StringUtils.isNotBlank(companyId) && Integer.valueOf(companyId).intValue() == jsonObject.getInteger("company_id")) {
                 JSONObject params = new JSONObject();
-                params.put("aiTemplateType", 0);
-                params.put("algorithmName","");
-                params.put("companyId", Integer.valueOf(companyId));
-                params.put("positionIds", positionArray[index]);
-                params.put("templateId", Constant.EMPLOYEE_RECOM_POSITION);
+                params.put("ai_template_type", 0);
+                params.put("algorithm_name","");
+                params.put("company_id", Integer.valueOf(companyId));
+                params.put("position_ids", positionArray[index]);
+                params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);
                 params.put("type", "3");
-                params.put("userId", jsonObject.getIntValue("userId"));
+                params.put("user_id", jsonObject.getIntValue("userId"));
                 params.put("url", url);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),

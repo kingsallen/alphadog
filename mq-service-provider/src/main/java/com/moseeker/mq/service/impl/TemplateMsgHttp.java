@@ -1183,20 +1183,20 @@ public class TemplateMsgHttp {
             UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployee(userId, companyIdss);
             if (employeeRecord == null) {
                 JSONObject params = new JSONObject();
-                params.put("aiTemplateType", 0);
-                params.put("algorithmName","");
-                params.put("companyId", companyIdss);
-                params.put("positionIds", positionIdStr);
-                params.put("userId", userId);
+                params.put("ai_template_type", 0);
+                params.put("algorithm_name","");
+                params.put("company_id", companyIdss);
+                params.put("position_ids", positionIdStr);
+                params.put("user_id", userId);
 
                 ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
                 if (profileProfileRecord == null || profileProfileRecord.getDisable() == AbleFlag.DISABLE.getValue()) {
                     params.put("type", "1");
-                    params.put("templateId", Constant.FANS_PROFILE_COMPLETION);
+                    params.put("template_id", Constant.FANS_PROFILE_COMPLETION);
                     params.put("url", env.getProperty("demonstration.improve_profile.url"));
                 } else {
                     params.put("type", "2");
-                    params.put("templateId", Constant.FANS_RECOM_POSITION);
+                    params.put("template_id", Constant.FANS_RECOM_POSITION);
                     params.put("url", env.getProperty("demonstration.fans_referral.url"));
                 }
 
