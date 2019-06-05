@@ -159,7 +159,7 @@ public class ReceiverHandler {
                 params.put("position_ids", positionArray[index]);
                 params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);
                 params.put("type", "3");
-                params.put("user_id", jsonObject.getIntValue("userId"));
+                params.put("user_id", jsonObject.getIntValue("user_id"));
                 params.put("url", url);
                 log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),

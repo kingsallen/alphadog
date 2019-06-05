@@ -246,7 +246,7 @@ public class AppConfig {
             add(BindingBuilder.bind(sendSeekReferralTemplateQueue()).to(seekReferralTemplateExchange()).with("*.referral_template"));
             add(BindingBuilder.bind(referralRadarTenMinuteQueue()).to(referralRadarExchange()).with("referral_radar.referral_radar_template"));
             add(BindingBuilder.bind(redpacketTemplateQueue()).to(redpacketTemplateExchange()).with("*.redpacket_template"));
-            add(BindingBuilder.bind(demonstrationEmployeeRegisterQueue()).to(employeeVerificationExchange()).with("employee_verification_exchange.demonstration"));
+            add(BindingBuilder.bind(demonstrationEmployeeRegisterQueue()).to(employeeVerificationExchange()).with("employee_verification_exchange.#"));
             add(BindingBuilder.bind(demonstrationFollowWechatQueue()).to(followWechatExchange()).with("user_follow_wechat.#"));
         }};
     }
