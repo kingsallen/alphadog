@@ -90,11 +90,14 @@ public class NodeInvoker<T> implements Invoker {
 
                 return result;
             } catch (CURDException | BIZException ce) {
-                ce.printStackTrace();
+                LOGGER.info("NOC NodeInvoker CURDException OR BIZException");
                 throw ce;
             } catch (ConnectException ce) {
+                LOGGER.info("NOC NodeInvoker ConnectException");
             	LOGGER.error(ce.getMessage(), ce);
+                LOGGER.info("NOC NodeInvoker clear node.name:{} node.data:{}", node.getName(), JSONObject.toJSONString(node.getData()));
             	pool.clear(node);
+                LOGGER.info("NOC NodeInvoker removePath node.name:{}", node.getName());
                 NodeManager.NODEMANAGER.removePath(node);
             } catch (InvocationTargetException ite) {
                 // XXX:InvocationTargetException异常发生在method.invoke()中
