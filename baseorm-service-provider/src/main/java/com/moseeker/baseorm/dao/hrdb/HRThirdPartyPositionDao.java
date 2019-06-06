@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.hrdb.utils.ThirdPartyPositionDaoFactory;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -299,7 +300,8 @@ public class HRThirdPartyPositionDao  {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
-                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ));
+                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ))
+                .and(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), ChannelType.TW104.getValue(), ValueOp.NEQ));
         if(!StringUtils.isEmptyList(conditions)){
             for(int i=0;i<conditions.size();i++){
                 update=update.and(conditions.get(i));
