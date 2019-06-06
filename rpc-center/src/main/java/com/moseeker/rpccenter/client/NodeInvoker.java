@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.SocketException;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.common.ThriftUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
@@ -82,6 +83,7 @@ public class NodeInvoker<T> implements Invoker {
                 	//warning
                     continue;
                 }
+                LOGGER.info("NOC NodeInvoker name:{}, serviceData:{}", node.getName(), JSONObject.toJSONString(node.getData()));
                 client = pool.borrowObject(node);
                 LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
                 Object result = method.invoke(client, args);

@@ -1,5 +1,6 @@
 package com.moseeker.rpccenter.server.thrift;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.common.ServerNode;
 import com.moseeker.rpccenter.config.ThriftConfig;
 import com.moseeker.rpccenter.exception.IncompleteException;
@@ -62,7 +63,7 @@ public class ThriftServerRegister implements IServer {
         try {
             // 传输通道 - 非阻塞方式
             serverTransport = new TNonblockingServerSocket(config.getPort());
-
+            logger.info("NOC ThriftServerRegister initServer port:{}", config.getPort());
         } catch (Exception e) {
             throw new RpcException(RpcException.NETWORK_EXCEPTION, e);
         }
