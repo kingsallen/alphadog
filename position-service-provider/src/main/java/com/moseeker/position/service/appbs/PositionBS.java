@@ -131,7 +131,8 @@ public class PositionBS {
             return new ArrayList<>();
         }
 
-        List<PositionSyncResultPojo> results=new ArrayList<>();
+        List<PositionSyncResultPojo> results = new ArrayList<>();
+        results = Collections.synchronizedList(results);
 
         Map<Integer, List<ThirdPartyPositionForm>> collect = positionForms.stream().collect(Collectors.groupingBy(p -> p.getPositionId()));
 
