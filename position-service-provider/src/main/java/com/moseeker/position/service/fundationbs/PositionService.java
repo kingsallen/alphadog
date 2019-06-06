@@ -1131,8 +1131,7 @@ public class PositionService {
             // 作废thirdPartyPosition数据
             if (thirdPartyPositionDisablelist.size() > 0) {
                 logger.info("-------------作废thirdPartyPosition数据开始------------------");
-                Condition condition = new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), thirdPartyPositionDisablelist, ValueOp.IN);
-                thirdpartyPositionDao.disable(Arrays.asList(condition));
+                thirdpartyPositionDao.disable(thirdPartyPositionDisablelist);
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
             if (needBindFeatureData.size() > 0) {
