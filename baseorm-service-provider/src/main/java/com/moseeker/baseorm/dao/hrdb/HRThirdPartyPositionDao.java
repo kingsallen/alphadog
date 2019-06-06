@@ -309,7 +309,7 @@ public class HRThirdPartyPositionDao  {
             }
         }
         int i = thirdPartyPositionDao.update(update.buildUpdate());
-        logger.info("删除条数：",i);
+        logger.info("删除条数：{}",i);
         return i;
     }
 
