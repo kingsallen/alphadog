@@ -22,7 +22,7 @@ public class OfficeUtils {
 
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
-    private static final String COMMAND = "xvfb-run -a -s '-screen 1 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export %s --outdir %s";
+    private static final String COMMAND = "xvfb-run -a -s '-screen 1 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir %s %s";
 
     /**
      * word转pdf
@@ -58,7 +58,7 @@ public class OfficeUtils {
                 }
                 //只传入文件夹路径
                 targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
-                String command = String.format(COMMAND,sourceFileName, targetFileName);
+                String command = String.format(COMMAND,targetFileName, sourceFileName);
                 //执行生成命令
                 String output = executeCommand(command);
                 logger.info("The pdf profile has been created at {}",output);
