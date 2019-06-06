@@ -300,14 +300,17 @@ public class HRThirdPartyPositionDao  {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
                 .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
-                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ))
-                .and(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), ChannelType.TW104.getValue(), ValueOp.NEQ));
+                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ));
+        logger.info("设置channel不为台湾104");
+        update = update.and(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), ChannelType.TW104.getValue(), ValueOp.NEQ));
         if(!StringUtils.isEmptyList(conditions)){
             for(int i=0;i<conditions.size();i++){
                 update=update.and(conditions.get(i));
             }
         }
-        return thirdPartyPositionDao.update(update.buildUpdate());
+        int i = thirdPartyPositionDao.update(update.buildUpdate());
+        logger.info("删除条数：",i);
+        return i;
     }
 
 
