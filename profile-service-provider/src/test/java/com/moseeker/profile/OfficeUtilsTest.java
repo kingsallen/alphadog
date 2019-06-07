@@ -12,7 +12,7 @@ public class OfficeUtilsTest {
 
     @Test
     public void test00(){
-        OfficeUtils.Word2Pdf("/Users/wulei/Documents/工作文档/杂乱/黄成杰简历.docx","/Users/wulei/Documents/工作文档/杂乱/黄成杰简历.pdf");
+        OfficeUtils.Word2Pdf("C:\\Users\\Administrator\\Desktop\\简历-吴雷.docx","C:\\Users\\Administrator\\Desktop\\简历-吴雷.pdf");
     }
 
 }
