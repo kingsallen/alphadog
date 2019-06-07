@@ -205,6 +205,36 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue employeeRegister() {
+        Queue queue = new Queue("redpacket_template_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange employeeVerificationExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_verification_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public Queue demonstrationEmployeeRegisterQueue() {
+        Queue queue = new Queue("demonstration_employee_register_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public Queue demonstrationFollowWechatQueue() {
+        Queue queue = new Queue("demonstration_follow_wechat_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange followWechatExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_follow_wechat_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addAwardQue()).to(topicExchange()).with("sharejd.#"));
@@ -216,6 +246,8 @@ public class AppConfig {
             add(BindingBuilder.bind(sendSeekReferralTemplateQueue()).to(seekReferralTemplateExchange()).with("*.referral_template"));
             add(BindingBuilder.bind(referralRadarTenMinuteQueue()).to(referralRadarExchange()).with("referral_radar.referral_radar_template"));
             add(BindingBuilder.bind(redpacketTemplateQueue()).to(redpacketTemplateExchange()).with("*.redpacket_template"));
+            add(BindingBuilder.bind(demonstrationEmployeeRegisterQueue()).to(employeeVerificationExchange()).with("employee_verification_exchange.#"));
+            add(BindingBuilder.bind(demonstrationFollowWechatQueue()).to(followWechatExchange()).with("user_follow_wechat.#"));
         }};
     }
 }

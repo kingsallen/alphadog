@@ -1,6 +1,7 @@
 package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
@@ -91,6 +92,7 @@ public class MessageTemplateEntity {
     @CounterIface
     @Transactional
     public MessageTemplateNoticeStruct handlerTemplate(AIRecomParams params)throws Exception{
+        log.info("元夕飞花令 MessageTemplateEntity MessageTemplateNoticeStruct params:{}", JSONObject.toJSONString(params));
         HrWxWechatDO DO= this.getHrWxWechatDOByCompanyId(params.getCompanyId());
         String wxSignture=DO.getSignature();
         String MDString= MD5Util.md5(params.getUserId()+params.getCompanyId()+""+System.currentTimeMillis());
@@ -112,12 +114,14 @@ public class MessageTemplateEntity {
             url=url.replace("{hr_id}",company.getHraccountId()+"");
         }
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName(), company.getAbbreviation(),params.getAiTemplateType());
+        log.info("元夕飞花令 MessageTemplateEntity MessageTemplateNoticeStruct colMap:{}", JSONObject.toJSONString(colMap));
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;
         }
         MessageTemplateNoticeStruct messageTemplateNoticeStruct=this.convertMessageTemplate(params,colMap,url);
         this.handlerRecomLog(params,MDString,1);
+        log.info("元夕飞花令 MessageTemplateEntity MessageTemplateNoticeStruct messageTemplateNoticeStruct:{}", messageTemplateNoticeStruct);
         return messageTemplateNoticeStruct;
     }
 

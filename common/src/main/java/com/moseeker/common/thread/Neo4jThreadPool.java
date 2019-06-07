@@ -1,6 +1,8 @@
 package com.moseeker.common.thread;
 
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.util.concurrent.*;
 
 /**
@@ -20,39 +22,44 @@ public enum Neo4jThreadPool {
      */
     private ExecutorService service;
 
+    /**
+     * Neo4j调用专用线程池
+     */
     Neo4jThreadPool() {
         init();
     }
 
+    /**
+     * 利用线程池执行任务
+     * @param task 任务
+     * @param <T> 返回类型
+     * @return future
+     */
     public <T> Future<T> startTast(Callable<T> task) {
         return this.service.submit(task);
     }
 
-    public <T> Future<T> startTastSleep(Callable<T> task) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return this.service.submit(task);
-    }
-
-    public <T> Future<T> startTast(Runnable task, T t) {
-        return this.service.submit(task, t);
-    }
-
+    /**
+     * 关闭线程池
+     */
     public void close() {
         synchronized (service) {
             if(service != null) {
                 this.service.shutdown();
             }
         }
-
     }
 
+    /**
+     * 初始化线程池
+     */
     private void init() {
-        service = new ThreadPoolExecutor(3, 200,
-                60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(50000), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("neo4j-thread-pool").build();
+        service = new ThreadPoolExecutor(1,
+                33,
+                60L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(20000), threadFactory,
+                new ThreadPoolExecutor.AbortPolicy());
     }
 }

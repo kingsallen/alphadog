@@ -1360,6 +1360,8 @@ public class UseraccountsService {
                         logger.info("================app_id={}=================", app_id);
                     }
                 }
+                redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
+                redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
             },3000);
         }
     /*

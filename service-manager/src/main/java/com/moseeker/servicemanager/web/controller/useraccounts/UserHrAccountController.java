@@ -424,7 +424,7 @@ public class UserHrAccountController {
      * 获取hr常用筛选项
      *
      * @param request
-     * @param response
+     * @param response。。。
      * @return
      */
     @RequestMapping(value = "/hraccount/searchcondition", method = RequestMethod.GET)

@@ -1177,7 +1177,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                     + "?wechat_signature=" + hrWxWechatDO.getSignature() + "&recom=" + WxUseridEncryUtil.encry(employee.getSysuserId(), 10) + "&psc=0"
                  //   + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" + System.currentTimeMillis();
                //神策数据埋点需要传入nowtime作为唯一UUID
-                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +sendTime;
+                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +sendTime
+               //添加邀请投递标志
+                +"&invite_apply=1";
+
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             if("0".equals(String.valueOf(response.get("errcode")))) {
