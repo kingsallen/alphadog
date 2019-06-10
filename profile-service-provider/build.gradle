@@ -15,6 +15,7 @@ dependencies {
     compile deps["jetty-support"]
     compile deps["spring-test"]
     compile deps["spring-rabbit"]
+    compile deps["pdfbox"]
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
