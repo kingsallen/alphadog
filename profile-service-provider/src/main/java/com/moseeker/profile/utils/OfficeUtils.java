@@ -23,6 +23,7 @@ public class OfficeUtils {
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
     private static final String COMMAND = "xvfb-run -a -s '-screen 1 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir %s %s";
+//    private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export %s --outdir %s";
 
     /**
      * word转pdf
@@ -50,16 +51,19 @@ public class OfficeUtils {
             String pdfContent = getTextFromPdf(targetFileName);
 
             boolean errorCompare = new File(sourceFileName).length()>new File(targetFileName).length();
-
+            logger.info("pdfContent.contains(ERROR_PDF) {}",pdfContent.contains(ERROR_PDF));
+            logger.info("com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) {}",com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent));
+            logger.info("errorCompare {}",errorCompare);
             //判断生成的pdf内容是否包含错误内容
             if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare){
+
+                logger.info("使用备用方案生成pdf文件");
                 //采用备用方案
                 File errorPdf = new File(targetFileName);
                 if(errorPdf.exists()){
                     errorPdf.delete();
                 }
                 //只传入文件夹路径
-                targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
                 targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
                 String command = String.format(COMMAND,targetFileName, sourceFileName);
                 logger.info("The word2pdf command is {}",command);
