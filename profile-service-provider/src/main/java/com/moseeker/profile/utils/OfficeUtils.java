@@ -7,6 +7,7 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 
 
+import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -148,22 +149,43 @@ public class OfficeUtils {
      *
      * @return
      * */
-    protected static String executeCommand(String command) throws IOException, InterruptedException {
+    public static String executeCommand(String command) {
         StringBuffer output = new StringBuffer();
         Process p;
-        p = Runtime.getRuntime().exec(command);
-        p.waitFor();
-        try (
-                InputStreamReader inputStreamReader = new InputStreamReader(p.getInputStream(), "UTF-8");
-                BufferedReader reader = new BufferedReader(inputStreamReader)
-        ) {
+        int data =0;
+        InputStreamReader inputStreamReader = null;
+        BufferedReader reader = null;
+        try {
+            logger.debug(command);
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            inputStreamReader = new InputStreamReader(p.getInputStream(), "UTF-8");
+            reader = new BufferedReader(inputStreamReader);
+
+            while((data = inputStreamReader.read())!=-1){
+                System.out.println((byte)data);
+            }
+            InputStream isErr = p.getErrorStream();
+            data =0;
+            while((data = isErr.read())!=-1){
+                System.out.println((byte)data);
+            }
+
             String line = "";
             while ((line = reader.readLine()) != null) {
                 output.append(line + "\n");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(inputStreamReader);
         }
-        p.destroy();
+        logger.debug(output.toString());
         return output.toString();
+
     }
 }
 
