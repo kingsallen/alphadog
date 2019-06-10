@@ -83,7 +83,7 @@ public class PositionStateAsyncHelper {
         if(StringUtils.isEmptyList(jobPositionUpdateRecordList)) {
             return;
         }
-        logger.info("一键同步-更新：{}", JSON.toJSONString(jobPositionUpdateRecordList));
+        logger.info("一键同步-更新：{}", jobPositionUpdateRecordList);
         ThreadPool.Instance.startTast(()-> {
             try{
                 if(batchHandlerCountDown.await(600, TimeUnit.SECONDS)){
