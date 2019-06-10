@@ -51,9 +51,13 @@ public class OfficeUtils {
             String pdfContent = getTextFromPdf(targetFileName);
 
             boolean errorCompare = new File(sourceFileName).length()>new File(targetFileName).length();
-
+            logger.info("pdfContent.contains(ERROR_PDF) {}",pdfContent.contains(ERROR_PDF));
+            logger.info("com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) {}",com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent));
+            logger.info("errorCompare {}",errorCompare);
             //判断生成的pdf内容是否包含错误内容
             if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare){
+
+                logger.info("使用备用方案生成pdf文件g");
                 //采用备用方案
                 File errorPdf = new File(targetFileName);
                 if(errorPdf.exists()){
