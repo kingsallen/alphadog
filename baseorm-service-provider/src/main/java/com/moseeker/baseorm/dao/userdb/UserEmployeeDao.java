@@ -2,6 +2,7 @@ package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.crud.LocalCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -11,6 +12,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -257,6 +259,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Param<Integer> wxUserIdParam = param(UserEmployee.USER_EMPLOYEE.WXUSER_ID.getName(), useremployee.getWxuserId());
         Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), useremployee.getAuthMethod());
         Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte) useremployee.getActivation());
+        Param<Byte> emailValidate = param(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.getName(), useremployee.getEmailIsvalid());
         Param<String> customFieldValueParam;
         if (StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
             customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), useremployee.getCustomFieldValues());
@@ -295,7 +298,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 UserEmployee.USER_EMPLOYEE.ACTIVATION,
                 UserEmployee.USER_EMPLOYEE.CREATE_TIME,
                 UserEmployee.USER_EMPLOYEE.BINDING_TIME,
-                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES)
+                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
+                UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID
+                )
 
                 .select(
                         select(
@@ -310,7 +315,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                                 activationParam,
                                 createTimeParam,
                                 BindingTimeParam,
-                                customFieldValueParam
+                                customFieldValueParam,
+                                emailValidate
                         )
                                 .whereNotExists(
                                         selectOne()
@@ -467,6 +473,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee getSingleEmployeeByUserId(int userId) {
         return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .limit(1)
                 .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
     }
 
@@ -475,5 +482,152 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIdList)).orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc(),UserEmployee.USER_EMPLOYEE.DISABLE.asc())
                 .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
     }
+    //查询sysuserid是否在该公司下;1)如果不在看custom_filed 是否有预埋数据，有数据则则把sysuserid更新为userid；
+    public void addSysUserId(int companyId , int sysuserId, String customFiled) {
+         create.update(table).set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID, sysuserId)
+            .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+            .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+            .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(Integer.valueOf(""))).execute();
+    }
 
+
+   //根据用户的工号和email判重
+    public UserEmployeeDO findbyCustomFiledAndEmail(int companyId ,String email,String customFiled) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(email))
+                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
+                .limit(1)
+                .fetchOneInto(UserEmployeeDO.class);
+
+    }
+
+    public void updateActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
+                                         String email,String cname ) {
+        LocalDateTime nowDate = LocalDateTime.now();
+        Timestamp time = Timestamp.valueOf(nowDate);
+
+        create.update(table).set(UserEmployee.USER_EMPLOYEE.EMAIL,email)
+                .set(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,customField)
+                .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID,sysuserId)
+                .set(UserEmployee.USER_EMPLOYEE.CNAME,cname)
+                .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
+                .set(UserEmployee.USER_EMPLOYEE.UPDATE_TIME,time)
+                .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId)).execute();
+
+    }
+
+    public int deleteEmptyCustomFiledBySysUuer(String customFiled) {
+        return create.deleteFrom(table).where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(0))
+                .execute();
+    }
+
+
+    public void updateUnActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
+                                     String email,String cname ) {
+               Byte source =11;//注册来源joywork
+        LocalDateTime nowDate = LocalDateTime.now();
+        Timestamp time = Timestamp.valueOf(nowDate);
+
+        create.update(table).set(UserEmployee.USER_EMPLOYEE.EMAIL,email)
+                .set(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,customField)
+                .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID,sysuserId)
+                .set(UserEmployee.USER_EMPLOYEE.CNAME,cname)
+                .set(UserEmployee.USER_EMPLOYEE.MOBILE,mobile)
+                .set(UserEmployee.USER_EMPLOYEE.SOURCE, source)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION,(byte)0)
+                .set(UserEmployee.USER_EMPLOYEE.UPDATE_TIME,time)
+                .where(UserEmployee.USER_EMPLOYEE.ACTIVATION.gt((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId)).execute();
+
+    }
+
+    public void insertActiveUserInfo(int sysuserId, int companyId,String customField, String mobile,
+                                       String email,String cname ) {
+        Byte source =11;//来joywork；
+        Byte activation=0;//已经认证
+        byte authMeth= 1;
+
+        LocalDateTime nowDate = LocalDateTime.now();
+        Timestamp time = Timestamp.valueOf(nowDate);
+
+        create.insertInto(table)
+                .columns(UserEmployee.USER_EMPLOYEE.EMAIL,
+                        UserEmployee.USER_EMPLOYEE.SYSUSER_ID,
+                        UserEmployee.USER_EMPLOYEE.CNAME,
+                        UserEmployee.USER_EMPLOYEE.MOBILE,
+                        UserEmployee.USER_EMPLOYEE.ACTIVATION,
+                        UserEmployee.USER_EMPLOYEE.SOURCE,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
+                        UserEmployee.USER_EMPLOYEE.CREATE_TIME
+
+                        )
+
+                .values(email,sysuserId,cname,mobile,activation,source,customField,authMeth,time).execute();
+
+
+
+    }
+
+    public UserEmployeeRecord getActiveEmployeeByCustomFiled(String customFiled, int companyId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+            .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customFiled))
+            .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+            .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+            .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+            .fetchOne();
+    }
+
+
+    public UserEmployeeDO fetchActivedByEmail(String email, int companyId) {
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.EMAIL.eq(email))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.eq((byte) 1))
+                .limit(1)
+                .fetchOne();
+        if (record != null) {
+            return record.into(UserEmployeeDO.class);
+        } else {
+            return null;
+        }
+    }
+
+    public UserEmployeeDO fetchActivedByCustomField(String customField, int companyId) {
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customField))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .limit(1)
+                .fetchOne();
+        if (record != null) {
+            return record.into(UserEmployeeDO.class);
+        } else {
+            return null;
+        }
+    }
+
+    public UserEmployeeRecord fetchByCustomField(String customField, int companyId) {
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customField))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.eq((byte) 1))
+                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION)
+                .limit(1)
+                .fetchOne();
+        return record;
+    }
 }
