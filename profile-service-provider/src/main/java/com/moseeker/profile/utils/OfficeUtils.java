@@ -58,6 +58,7 @@ public class OfficeUtils {
                 }
                 //只传入文件夹路径
                 targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
+                targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
                 String command = String.format(COMMAND,targetFileName, sourceFileName);
                 logger.info("The word2pdf command is {}",command);
                 //执行生成命令
