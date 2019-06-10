@@ -57,7 +57,7 @@ public class OfficeUtils {
             //判断生成的pdf内容是否包含错误内容
             if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare){
 
-                logger.info("使用备用方案生成pdf文件g");
+                logger.info("使用备用方案生成pdf文件");
                 //采用备用方案
                 File errorPdf = new File(targetFileName);
                 if(errorPdf.exists()){
