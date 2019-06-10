@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.hrdb.utils.ThirdPartyPositionDaoFactory;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -21,6 +22,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.joda.time.DateTime;
+import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +31,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition.HR_THIRD_PARTY_POSITION;
 
 /**
  * HR帐号数据库持久类
@@ -62,9 +67,11 @@ public class HRThirdPartyPositionDao  {
     @Autowired
     private ThirdPartyPositionDaoFactory daoFactory;
 
+    @Autowired
+    protected DefaultDSLContext create;
 
     public <P> TwoParam<HrThirdPartyPositionDO, P> getThirdPositionById(int id) throws BIZException {
-        Query query = new Query.QueryBuilder().where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ID.getName(), id).buildQuery();
+        Query query = new Query.QueryBuilder().where(HR_THIRD_PARTY_POSITION.ID.getName(), id).buildQuery();
         return getData(query);
     }
 
@@ -160,9 +167,9 @@ public class HRThirdPartyPositionDao  {
      */
     public HrThirdPartyPositionDO getBindingData(int positionId,int accountId){
         Query query=new Query.QueryBuilder()
-                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId)
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),accountId)
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), PositionSync.binding.getValue()) //只有正在绑定才能改为3，重新同步
+                .where(HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId)
+                .and(HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(),accountId)
+                .and(HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), PositionSync.binding.getValue()) //只有正在绑定才能改为3，重新同步
                 .buildQuery();
         return getSimpleData(query);
     }
@@ -292,20 +299,17 @@ public class HRThirdPartyPositionDao  {
 
     /**
      * 作废第三方职位
-     * @param conditions 作废条件
+     * @param pids 作废条件
      * @return
      */
-    public int disable(List<Condition> conditions){
-        Update.UpdateBuilder update=new Update.UpdateBuilder()
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.UPDATE_TIME.getName(),new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"))
-                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(),0, ValueOp.NEQ));
-        if(!StringUtils.isEmptyList(conditions)){
-            for(int i=0;i<conditions.size();i++){
-                update=update.and(conditions.get(i));
-            }
-        }
-        return thirdPartyPositionDao.update(update.buildUpdate());
+    public int disable(List<Integer> pids){
+        return create.update(HR_THIRD_PARTY_POSITION)
+                .set(HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION,(short)0)
+                .set(HR_THIRD_PARTY_POSITION.UPDATE_TIME,new Timestamp(System.currentTimeMillis()))
+                .where(HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.ne((short)0))
+                .and(HR_THIRD_PARTY_POSITION.CHANNEL.ne((short) ChannelType.TW104.getValue()))
+                .and(HR_THIRD_PARTY_POSITION.POSITION_ID.in(pids))
+                .execute();
     }
 
 
@@ -318,9 +322,9 @@ public class HRThirdPartyPositionDao  {
      * @return
      */
     public HrThirdPartyPositionDO getThirdPartyPositionById(int positionId, int positionChannel, int accountId) {
-        Query query = new Query.QueryBuilder().where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), positionId)
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), positionChannel)
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
+        Query query = new Query.QueryBuilder().where(HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), positionId)
+                .and(HR_THIRD_PARTY_POSITION.CHANNEL.getName(), positionChannel)
+                .and(HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
                 .buildQuery();
         return getSimpleData(query);
     }
@@ -334,10 +338,10 @@ public class HRThirdPartyPositionDao  {
      */
     public void updateBindState(int positionId, int accountId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
-                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
+                .set(HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
+                .where(new Condition(HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
+                .and(HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.getName(), accountId)
+                .and(HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
         thirdPartyPositionDao.update(update.buildUpdate());
     }
 
@@ -350,16 +354,16 @@ public class HRThirdPartyPositionDao  {
      */
     public void updateErrmsg(String errMsg, int positionId, int channel, int state) {
         Update.UpdateBuilder update=new Update.UpdateBuilder()
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
-                .set(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.SYNC_FAIL_REASON.getName(), errMsg)
-                .where(new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
-                .and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
+                .set(HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), state)
+                .set(HR_THIRD_PARTY_POSITION.SYNC_FAIL_REASON.getName(), errMsg)
+                .where(new Condition(HR_THIRD_PARTY_POSITION.POSITION_ID.getName(),positionId))
+                .and(HR_THIRD_PARTY_POSITION.CHANNEL.getName(), channel);
         thirdPartyPositionDao.update(update.buildUpdate());
     }
 
     public List<HrThirdPartyPositionDO> getAuditPositionData() {
         Query query = new Query.QueryBuilder()
-                .where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), PositionSync.binding.getValue())
+                .where(HR_THIRD_PARTY_POSITION.IS_SYNCHRONIZATION.getName(), PositionSync.binding.getValue())
                 .buildQuery();
         return getSimpleDatas(query);
     }
@@ -374,7 +378,7 @@ public class HRThirdPartyPositionDao  {
     private static class InnerHRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO, HrThirdPartyPositionRecord>{
 
         public InnerHRThirdPartyPositionDao() {
-            super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION, HrThirdPartyPositionDO.class);
+            super(HR_THIRD_PARTY_POSITION, HrThirdPartyPositionDO.class);
         }
 
         public InnerHRThirdPartyPositionDao(TableImpl<HrThirdPartyPositionRecord> table, Class<HrThirdPartyPositionDO> hrThirdPartyPositionDOClass) {
