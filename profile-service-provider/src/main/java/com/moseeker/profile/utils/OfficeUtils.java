@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OfficeUtils {
 
-    static Logger logger = LoggerFactory.getLogger(com.moseeker.common.util.OfficeUtils.class);
+    static Logger logger = LoggerFactory.getLogger(com.moseeker.profile.utils.OfficeUtils.class);
 
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
