@@ -1130,7 +1130,7 @@ public class PositionService {
             }
             // 作废thirdPartyPosition数据
             if (thirdPartyPositionDisablelist.size() > 0) {
-                logger.info("-------------作废thirdPartyPosition数据开始------------------");
+                logger.info("-------------作废thirdPartyPosition数据开始:{}------------------",JSON.toJSONString(thirdPartyPositionDisablelist));
                 thirdpartyPositionDao.disable(thirdPartyPositionDisablelist);
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
