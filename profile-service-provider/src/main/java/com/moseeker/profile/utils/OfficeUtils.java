@@ -22,7 +22,7 @@ public class OfficeUtils {
 
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
-    private static final String COMMAND = "xvfb-run -a -s '-screen 1 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir %s %s";
+    private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export %s %s";
 //    private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export %s --outdir %s";
 
     /**
