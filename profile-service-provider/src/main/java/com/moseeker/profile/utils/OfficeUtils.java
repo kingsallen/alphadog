@@ -49,8 +49,10 @@ public class OfficeUtils {
             //获取pdf的内容
             String pdfContent = getTextFromPdf(targetFileName);
 
+            boolean errorCompare = new File(sourceFileName).length()>new File(targetFileName).length();
+
             //判断生成的pdf内容是否包含错误内容
-            if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent)){
+            if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare){
                 //采用备用方案
                 File errorPdf = new File(targetFileName);
                 if(errorPdf.exists()){
