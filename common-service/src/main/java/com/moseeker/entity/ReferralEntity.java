@@ -269,27 +269,39 @@ public class ReferralEntity {
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
+        logger.info("ReferralEntity claimReferralCard");
+
+        logger.info("ReferralEntity claimReferralCard userUserDO:{}, referralLog:{}",
+                JSONObject.toJSONString(userUserDO), JSONObject.toJSONString(referralLog));
         // 判断是否重复认证
         if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
+            logger.info("ReferralEntity claimReferralCard 判断是否重复认证");
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
         }
         // 更新申请记录的申请人
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
+        logger.info("ReferralEntity claimReferralCard userUserDO:{}", JSONObject.toJSONString(application));
+        logger.info("ReferralEntity claimReferralCard application:{}", JSONObject.toJSONString(userUserDO));
         if (application != null) {
 
+            logger.info("ReferralEntity claimReferralCard");
             Timestamp updateTime = new Timestamp(System.currentTimeMillis());
             applicationDao.updateIfNotExist(application.getId(), userUserDO.getId(), userUserDO.getName(),
                     ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()), updateTime,
                     application.getPositionId());
+            logger.info("ReferralEntity claimReferralCard updateIfNotExist");
 
+            logger.info("ReferralEntity claimReferralCard before removeApplication");
             searchengineEntity.removeApplication(application.getApplierId(), application.getId(),
                     application.getApplierId(), application.getApplierName(), updateTime);
+            logger.info("ReferralEntity claimReferralCard removeApplication");
         }
 
 
         // 更新简历中的userId，计算简历完整度
         updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
+        logger.info("ReferralEntity claimReferralCard updateProfileUserIdAndCompleteness");
 
         // 更新候选人推荐记录中的推荐人
         int postUserId = 0;
@@ -307,6 +319,7 @@ public class ReferralEntity {
         if (postUserId > 0) {
             recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
         }
+        logger.info("ReferralEntity claimReferralCard end!");
     }
 
     public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {

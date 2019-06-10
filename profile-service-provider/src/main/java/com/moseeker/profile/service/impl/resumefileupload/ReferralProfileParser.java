@@ -8,7 +8,7 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.profile.utils.OfficeUtils;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.biz.ProfilePojo;
