@@ -170,7 +170,8 @@ struct SearchCondition {
    35: string end_submit_time,//结束时间
    36: string has_attachment,
    37: string department_ids,
-   38: string department_names
+   38: string department_names,
+   39: string remark
 
 }
 
