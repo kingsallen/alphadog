@@ -122,6 +122,7 @@ public class NodeInvoker<T> implements Invoker {
                             	//有节点重建任务，一般不存在超时问题
                                 //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
+                                LOGGER.info("NOC NodeInvoker clear node.name:{} node.data:{}", node.getName(), JSONObject.toJSONString(node.getData()));
                                 pool.clear(node);
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
@@ -132,6 +133,7 @@ public class NodeInvoker<T> implements Invoker {
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:{}",pool.getNumActive());
+                                LOGGER.info("NOC NodeInvoker invalidateObject node.name:{} node.data:{}", node.getName(), JSONObject.toJSONString(node.getData()));
                                 pool.invalidateObject(node, client);
                             }
                             client = null;
