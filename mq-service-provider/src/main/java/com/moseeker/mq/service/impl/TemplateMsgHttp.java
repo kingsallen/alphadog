@@ -18,6 +18,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -1174,32 +1175,35 @@ public class TemplateMsgHttp {
         return templateBaseVO;
     }
 
-    public void demonstrationFollowWechat(int userId, Integer companyId, String companyIdStr, String positionIdStr, int delay, RedisClient redisClient, Environment env) {
-        if (org.apache.commons.lang.StringUtils.isNotBlank(companyIdStr) && Integer.valueOf(companyId).intValue() == companyId) {
+    public void demonstrationFollowWechat(int userId, String wechatId, String companyIdStr, String positionIdStr, int delay, RedisClient redisClient, Environment env) {
 
-            UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployee(userId, companyId);
+        int companyIdss = Integer.valueOf(companyIdStr);
+        HrWxWechatRecord record = hrWxWechatDao.getById(Integer.valueOf(wechatId));
+        if (record != null && companyIdss == record.getCompanyId()) {
+            UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployee(userId, companyIdss);
             if (employeeRecord == null) {
                 JSONObject params = new JSONObject();
-                params.put("aiTemplateType", 0);
-                params.put("algorithmName","");
-                params.put("companyId", Integer.valueOf(companyId));
-                params.put("positionIds", positionIdStr);
-                params.put("userId", params.getIntValue("userId"));
+                params.put("ai_template_type", 0);
+                params.put("company_id", companyIdss);
+                params.put("position_ids", positionIdStr);
+                params.put("user_id", userId);
 
                 ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
                 if (profileProfileRecord == null || profileProfileRecord.getDisable() == AbleFlag.DISABLE.getValue()) {
                     params.put("type", "1");
-                    params.put("templateId", Constant.FANS_PROFILE_COMPLETION);
+                    params.put("template_id", Constant.FANS_PROFILE_COMPLETION);
                     params.put("url", env.getProperty("demonstration.improve_profile.url"));
+                    params.put("algorithm_name","");
                 } else {
                     params.put("type", "2");
-                    params.put("templateId", Constant.FANS_RECOM_POSITION);
+                    params.put("template_id", Constant.FANS_RECOM_POSITION);
+                    params.put("algorithm_name","feihualing_recom");
                     params.put("url", env.getProperty("demonstration.fans_referral.url"));
                 }
 
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
-                        delay*1000+System.currentTimeMillis(), params.toJSONString());
+                        delay*60*1000+System.currentTimeMillis(), params.toJSONString());
             }
 
 
