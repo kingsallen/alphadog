@@ -216,11 +216,6 @@ public abstract class EmployeeBinder {
 
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
 
-<<<<<<<<< Temporary merge branch 1
-=========
-        UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
-
->>>>>>>>> Temporary merge branch 2
         if (unActiveEmployee != null) {
             log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
             log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
