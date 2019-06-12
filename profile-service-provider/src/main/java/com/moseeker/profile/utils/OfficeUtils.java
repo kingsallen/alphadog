@@ -203,7 +203,7 @@ public class OfficeUtils {
                 //System.out.println((byte)data);
                 ebaos.write(data);
             }
-            System.err.println("[error]"+ebaos.toString());
+            logger.error("[error]"+ebaos.toString());
 
             String line = "";
             while ((line = reader.readLine()) != null) {
