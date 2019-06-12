@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -19,15 +20,15 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
-import com.moseeker.common.constants.ChannelType;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.entity.SensorSend;
@@ -131,6 +132,9 @@ public class TemplateMsgHttp {
 
     @Autowired
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
 
     @Autowired
     private SensorSend sensorSend;
@@ -1170,4 +1174,35 @@ public class TemplateMsgHttp {
         return templateBaseVO;
     }
 
+    public void demonstrationFollowWechat(int userId, Integer companyId, String companyIdStr, String positionIdStr, int delay, RedisClient redisClient, Environment env) {
+        if (org.apache.commons.lang.StringUtils.isNotBlank(companyIdStr) && Integer.valueOf(companyId).intValue() == companyId) {
+
+            UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployee(userId, companyId);
+            if (employeeRecord == null) {
+                JSONObject params = new JSONObject();
+                params.put("aiTemplateType", 0);
+                params.put("algorithmName","");
+                params.put("companyId", Integer.valueOf(companyId));
+                params.put("positionIds", positionIdStr);
+                params.put("userId", params.getIntValue("userId"));
+
+                ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
+                if (profileProfileRecord == null || profileProfileRecord.getDisable() == AbleFlag.DISABLE.getValue()) {
+                    params.put("type", "1");
+                    params.put("templateId", Constant.FANS_PROFILE_COMPLETION);
+                    params.put("url", env.getProperty("demonstration.improve_profile.url"));
+                } else {
+                    params.put("type", "2");
+                    params.put("templateId", Constant.FANS_RECOM_POSITION);
+                    params.put("url", env.getProperty("demonstration.fans_referral.url"));
+                }
+
+                redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
+                        KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
+                        delay*1000+System.currentTimeMillis(), params.toJSONString());
+            }
+
+
+        }
+    }
 }

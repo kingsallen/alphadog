@@ -232,8 +232,10 @@ public class AppConfig {
     @Bean
     public List<Binding> bingFollowWechat() {
         return new ArrayList<Binding>(){{
+            /*add(BindingBuilder.bind(followWechatQueue()).to(followWechatExchange())
+                    .with("user_follow_wechat_check_employee_identity"));*/
             add(BindingBuilder.bind(followWechatQueue()).to(followWechatExchange())
-                    .with("user_follow_wechat_check_employee_identity"));
+                    .with("user_follow_wechat.user_follow_wechat_check_employee_identity"));
         }};
     }
 
