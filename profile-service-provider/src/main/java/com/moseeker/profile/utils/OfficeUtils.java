@@ -6,7 +6,6 @@ import com.aspose.words.SaveFormat;
 
 import java.io.*;
 
-
 import org.apache.commons.io.IOUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -23,8 +22,10 @@ public class OfficeUtils {
 
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
-    private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export %s %s";
-//    private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export %s --outdir %s";
+    private static final String COMMAND = "libreoffice --invisible --convert-to pdf:writer_pdf_Export $outdir$ $src$";
+    //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export $outdir$ $src$";
+    //private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export $src$ --outdir $outdir$";
+
 
     /**
      * word转pdf
@@ -65,8 +66,8 @@ public class OfficeUtils {
                     errorPdf.delete();
                 }
                 //只传入文件夹路径
-                targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
-                String command = String.format(COMMAND,targetFileName, sourceFileName);
+                String outdir = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
+                String command = COMMAND.replace("$outdir$",outdir).replace("$src$", sourceFileName);
                 logger.info("The word2pdf command is {}",command);
                 //执行生成命令
                 String output = executeCommand(command);
@@ -117,27 +118,15 @@ public class OfficeUtils {
             document = parser.getPDDocument();
             PDFTextStripper stripper = new PDFTextStripper();
             result = stripper.getText(document);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("getTextFromPdf("+pdfFilePath+") error ",e);
         } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
+            IOUtils.closeQuietly(is);
             if (document != null) {
                 try {
                     document.close();
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    logger.error("getTextFromPdf() close document error ",e);
                 }
             }
         }
@@ -148,7 +137,7 @@ public class OfficeUtils {
      * 执行libreoffice命令生成pdf文件
      *
      * @return
-     * */
+     * *//*
     public static String executeCommand(String command) {
         StringBuffer output = new StringBuffer();
         Process p;
@@ -162,23 +151,25 @@ public class OfficeUtils {
             inputStreamReader = new InputStreamReader(p.getInputStream(), "UTF-8");
             reader = new BufferedReader(inputStreamReader);
 
-            while((data = inputStreamReader.read())!=-1){
+            *//*while((data = inputStreamReader.read())!=-1){
                 System.out.println((byte)data);
-            }
+            }*//*
             InputStream isErr = p.getErrorStream();
-            data =0;
+            *//*data =0;
             while((data = isErr.read())!=-1){
                 System.out.println((byte)data);
+            }*//*
+            String errorMsg = IOUtils.toString(p.getErrorStream());
+            if(StringUtils.isNotBlank(errorMsg)){
+                logger.error("execute command {} error ： {}",command,errorMsg);
             }
 
             String line = "";
             while ((line = reader.readLine()) != null) {
                 output.append(line + "\n");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("executeCommand " + command +"error ",e);
         } finally {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(inputStreamReader);
@@ -186,6 +177,48 @@ public class OfficeUtils {
         logger.debug(output.toString());
         return output.toString();
 
+    }*/
+    public static String executeCommand(String command) throws IOException {
+        StringBuffer output = new StringBuffer();
+        Process p;
+        int data =0;
+        InputStreamReader inputStreamReader = null;
+        BufferedReader reader = null;
+        try(ByteArrayOutputStream obaos = new ByteArrayOutputStream();ByteArrayOutputStream ebaos = new ByteArrayOutputStream();){
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            inputStreamReader = new InputStreamReader(p.getInputStream(), "UTF-8");
+            reader = new BufferedReader(inputStreamReader);
+
+
+            /*while((data = inputStreamReader.read())!=-1){
+                obaos.write(data);
+                //System.out.println((byte)data);
+            }*/
+            //System.out.println(obaos);
+
+            InputStream isErr = p.getErrorStream();
+            data =0;
+            while((data = isErr.read())!=-1){
+                //System.out.println((byte)data);
+                ebaos.write(data);
+            }
+            System.err.println("[error]"+ebaos.toString());
+
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+            }
+        } catch (Exception e) {
+            logger.error("executeCommand " + command +"error ",e);
+        } finally {
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(inputStreamReader);
+        }
+        //logger.debug(output.toString());
+        return output.toString();
+
     }
 }
+
 
