@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
@@ -22,6 +25,7 @@ import com.rabbitmq.client.Channel;
 import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -34,9 +38,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 
@@ -46,6 +49,8 @@ import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 @Component
 @PropertySource("classpath:common.properties")
 public class ReceiverHandler {
+
+    private Random random = new Random();
 
     private static Logger log = LoggerFactory.getLogger(ReceiverHandler.class);
 
@@ -75,6 +80,9 @@ public class ReceiverHandler {
 
     @Autowired
     private RedPacketEntity redPacketEntity;
+
+    @Resource(name = "cacheClient")
+    RedisClient redisClient;
 
     private SerializeConfig config = new SerializeConfig();
 
@@ -127,6 +135,62 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+
+    @RabbitListener(queues = "#{demonstrationEmployeeRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void demonstrationEmployeeRegister(Message message) {
+        try {
+            log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister");
+            String msgBody = new String(message.getBody(), "UTF-8");
+            String companyId = env.getProperty("demonstration.company_id");
+            int delay = Integer.valueOf(env.getProperty("demonstration.employee.register"));
+            String positions = env.getProperty("demonstration.positions");
+            String[] positionArray = positions.split(",");
+            int index = random.nextInt(positionArray.length);
+            String url = env.getProperty("demonstration.employee_referral.url");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister jsonObject:{}",jsonObject);
+            if (StringUtils.isNotBlank(companyId) && Integer.valueOf(companyId).intValue() == jsonObject.getInteger("company_id")) {
+                log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister 特定公司");
+                JSONObject params = new JSONObject();
+                params.put("ai_template_type", 0);
+                params.put("algorithm_name","feihualing_recom");
+                params.put("company_id", Integer.valueOf(companyId));
+                params.put("position_ids", positionArray[index]);
+                params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);
+                params.put("type", "3");
+                params.put("user_id", jsonObject.getIntValue("user_id"));
+                params.put("url", url);
+                log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
+                redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
+                        KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
+                        delay*1000+System.currentTimeMillis(), params.toJSONString());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @RabbitListener(queues = "#{demonstrationFollowWechatQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void demonstrationFollowWechat(Message message) {
+        try {
+            log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat");
+            String msgBody = new String(message.getBody(), "UTF-8");
+            String companyId = env.getProperty("demonstration.company_id");
+            int delay = Integer.valueOf(env.getProperty("demonstration.follow.wechat"));
+            String positions = env.getProperty("demonstration.positions");
+            String[] positionArray = positions.split(",");
+            int index = random.nextInt(positionArray.length);
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat jsonObject:{}", jsonObject);
+            templateMsgHttp.demonstrationFollowWechat(jsonObject.getIntValue("user_id"), jsonObject.getString("wechat_id"),
+                    companyId, positionArray[index], delay, redisClient, env);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     @RabbitListener(queues = "#{sendSeekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void  seekReferralReceive(Message message){

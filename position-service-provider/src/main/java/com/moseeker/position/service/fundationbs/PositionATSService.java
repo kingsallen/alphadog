@@ -342,8 +342,7 @@ public class PositionATSService {
         Response response = service.updatePosition(param.toJSONString());
 
         //解除绑定，绑定在hr_third_part_position当中，传递position和要修改的is_synchronization
-        Condition condition = new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), jobPositionRecord.getId());
-        thirdPartyPositionDao.disable(Arrays.asList(condition));
+        thirdPartyPositionDao.disable(Arrays.asList(jobPositionRecord.getId()));
 
         return addPositionUrlOnlySuccess(response, jobPositionRecord.getId());
     }
