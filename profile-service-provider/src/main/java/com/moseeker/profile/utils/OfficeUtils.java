@@ -22,10 +22,11 @@ public class OfficeUtils {
 
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
-    private static final String COMMAND = "libreoffice --invisible --convert-to pdf:writer_pdf_Export $outdir$ $src$";
-    //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export $outdir$ $src$";
+    // Word转PDF备用方案为JVM Runtime通过shell调用Libreoffice，mac系统用soffice命令，linux用libreoffice命令
+    private static final String COMMAND = "libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$"; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
+    // 使用x-server会丢失输出信息，
+    //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
     //private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export $src$ --outdir $outdir$";
-
 
     /**
      * word转pdf
@@ -178,6 +179,7 @@ public class OfficeUtils {
         return output.toString();
 
     }*/
+
     public static String executeCommand(String command) throws IOException {
         StringBuffer output = new StringBuffer();
         Process p;
