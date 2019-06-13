@@ -5,8 +5,9 @@ import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
 
 import java.io.*;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
+import com.aspose.words.SystemFontSource;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +30,7 @@ public class OfficeUtils {
     //private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$"; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
-    private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$ ";
+    private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log  soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
 
     static {
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
@@ -76,7 +77,7 @@ public class OfficeUtils {
                 //只传入文件夹路径
                 String outdir = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
                 String command = COMMAND.replace("$outdir$",outdir).replace("$src$", sourceFileName);
-                logger.info("The word2pdf command is {}",command);
+                logger.info("[{}]The word2pdf command is {}",Thread.currentThread().getName(),command);
                 //执行生成命令
                 String output = executeCommand(command);
                 logger.info("The pdf profile has been created at {}",output);
@@ -95,16 +96,12 @@ public class OfficeUtils {
      */
     private static boolean isLicense() {
         boolean isLicense = false;
-
-        try {
-            InputStream is = com.moseeker.common.util.OfficeUtils.class.getClassLoader().getResourceAsStream("license.xml");
-
+        try(InputStream is = com.moseeker.common.util.OfficeUtils.class.getClassLoader().getResourceAsStream("license.xml")) {
             License docLicense = new License();
             docLicense.setLicense(is);
-            is.close();
             isLicense = true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("isLicense()",e);
         }
         return isLicense;
     }
@@ -188,28 +185,51 @@ public class OfficeUtils {
 
     public static String executeCommand(String command) {
         StringBuffer output = new StringBuffer();
-        Process p = null;
+        ExecutorService pool = Executors.newFixedThreadPool(2);
         /*
         ProcessBuilder pb = new ProcessBuilder();
         pb.redirectError();*/
+        Process process = null ;
+        //CountDownLatch latch = new CountDownLatch(1);
         try{
-            p = Runtime.getRuntime().exec(command);
-            p.waitFor(10, TimeUnit.SECONDS);
-            try(InputStream is = p.getInputStream();InputStream es = p.getErrorStream()){
-                String errMsg = toString(es);
-                if(StringUtils.isNotEmpty(errMsg)){
-                    logger.error("[error]"+errMsg);
-                    logger.info("system properties {}"  , System.getProperties());
+            process = Runtime.getRuntime().exec(command);
+            Process p = process;
+            pool.submit(()->{
+                try(InputStream is = p.getInputStream();){
+                    String outMsg = toString(is);
+                    output.append(outMsg);
+                    logger.info("execute [{}] result : {} ",command,outMsg);
+                    System.out.println(outMsg);
+                }catch (IOException e){
+                    logger.error("executeCommand " + command +"error ",e);
+                }finally {
+                    //latch.countDown();
                 }
-                return toString(is);
-            }
+            });
+            pool.submit(()->{
+                try(InputStream es = p.getErrorStream();){
+                    String errMsg = toString(es);
+                    if(StringUtils.isNotEmpty(errMsg)){
+                        logger.error("[error]"+errMsg);
+                        System.err.println("[error]"+errMsg);
+                        logger.info("system properties {}"  , System.getProperties());
+                    }
+                }catch (IOException e){
+                    logger.error("executeCommand " + command +"error ",e);
+                }
+            });
+            process.waitFor(10, TimeUnit.SECONDS);
+            //latch.await();
+            return output.toString();
         } catch (Exception e) {
             logger.error("executeCommand " + command +"error ",e);
             return " error" ;
-        } finally {
-            p.destroyForcibly();
+        }finally {
+            if(process != null){
+                process.destroyForcibly();
+            }
+            pool.shutdown();
         }
-
     }
 
     private static String toString(InputStream is) throws IOException {
