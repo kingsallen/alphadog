@@ -7,6 +7,7 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -182,43 +183,30 @@ public class OfficeUtils {
 
     public static String executeCommand(String command) throws IOException {
         StringBuffer output = new StringBuffer();
-        Process p;
-        int data =0;
-        InputStreamReader inputStreamReader = null;
-        BufferedReader reader = null;
-        try(ByteArrayOutputStream obaos = new ByteArrayOutputStream();ByteArrayOutputStream ebaos = new ByteArrayOutputStream();){
+        Process p = null;
+        /*
+        ProcessBuilder pb = new ProcessBuilder();
+        pb.redirectError();*/
+        try{
             p = Runtime.getRuntime().exec(command);
             p.waitFor();
-            inputStreamReader = new InputStreamReader(p.getInputStream(), "UTF-8");
-            reader = new BufferedReader(inputStreamReader);
-
-
-            /*while((data = inputStreamReader.read())!=-1){
-                obaos.write(data);
-                //System.out.println((byte)data);
-            }*/
-            //System.out.println(obaos);
-
-            InputStream isErr = p.getErrorStream();
-            data =0;
-            while((data = isErr.read())!=-1){
-                //System.out.println((byte)data);
-                ebaos.write(data);
+            String errMsg = IOUtils.toString(p.getErrorStream(),"UTF-8");
+            if(StringUtils.isNotEmpty(errMsg)){
+                logger.error("[error]"+errMsg);
+                logger.info("system properties {}"  , System.getProperties());
+                /*try(InputStream is = Runtime.getRuntime().exec("whoami").getInputStream()){
+                    logger.info("current user : {} , system properties {}"  , IOUtils.toString(is),System.getProperties());
+                    System.out.println("current user : "+IOUtils.toString(is));
+                    System.getProperties().list(System.out);
+                }*/
             }
-            logger.error("[error]"+ebaos.toString());
-
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                output.append(line + "\n");
-            }
+            return IOUtils.toString(p.getInputStream(),"UTF-8");
         } catch (Exception e) {
             logger.error("executeCommand " + command +"error ",e);
+            return " error" ;
         } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(inputStreamReader);
+            p.destroy();
         }
-        //logger.debug(output.toString());
-        return output.toString();
 
     }
 }
