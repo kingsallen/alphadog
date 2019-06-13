@@ -1074,6 +1074,33 @@ public class UserHrAccountController {
     }
 
     /**
+     * 员工信息导入
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/employee/updatemsg/batch", method = RequestMethod.POST)
+    @ResponseBody
+    public String batchUpdate(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            int type = params.getInt("type", 0);
+            int hraccountId = params.getInt("hraccountId", 0);
+            String fileName = params.getString("fileName", "");
+            String filePath = params.getString("filePath", "");
+            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            Response res = userHrAccountService.employeeImport(userEmployees, companyId, filePath, fileName, type, hraccountId);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
      * 获取自定义字段元数据
      *
      * @param request

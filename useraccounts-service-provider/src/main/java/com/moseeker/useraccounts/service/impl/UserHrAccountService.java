@@ -3,11 +3,15 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
@@ -20,6 +24,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
@@ -67,6 +72,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
+import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeList;
@@ -195,6 +201,13 @@ public class UserHrAccountService {
 
     @Autowired
     private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+
+    @Autowired
+    protected HrEmployeeCustomFieldsDao customFieldsDao;
+
+
+    @Autowired
+    protected EmployeeCustomOptionJooqDao customOptionJooqDao;
     /**
      * 修改手机号码
      *
@@ -1369,6 +1382,55 @@ public class UserHrAccountService {
         if (importUserEmployeeStatistic != null && !importUserEmployeeStatistic.insertAccept) {
             throw UserAccountException.IMPORT_DATA_WRONG;
         }
+        ArrayListMultimap<Integer, Object> map = ArrayListMultimap.create();
+
+        List<JSONArray> customFieldValuesArray = userEmployeeMap
+                .values()
+                .parallelStream()
+                .map(userEmployeeDO -> {
+                    JSONArray array = JSONArray.parseArray(userEmployeeDO.getCustomFieldValues());
+                    return array;
+                })
+                .collect(Collectors.toList());
+        for (JSONArray jsonArray : customFieldValuesArray) {
+            if (jsonArray != null && jsonArray.size() > 0) {
+                for (int i=0; i<jsonArray.size(); i++) {
+                    if (jsonArray.get(i) != null) {
+                        for (Map.Entry<String, Object> entry : ((JSONObject)jsonArray.get(i)).entrySet()) {
+                            map.put(Integer.valueOf(entry.getKey()), entry.getValue());
+                        }
+                    }
+                }
+            }
+        }
+
+        if (map.size() > 0) {
+            List<HrEmployeeCustomFields> fields = customFieldsDao.fetchByIdList(companyId, map.keySet());
+            if (fields.size() != map.size()) {
+                throw UserAccountException.IMPORT_DATA_CUSTOM_ERROR;
+            }
+            Optional<Boolean> optional = fields.parallelStream()
+                    .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getOptionType() == OptionType.Select.getValue())
+                    .map(field -> {
+                        if (map.get(field.getId()) != null) {
+                            List<Integer> optionIdList = map.get(field.getId()).parallelStream()
+                                    .map(BeanUtils::converToInteger)
+                                    .collect(Collectors.toList());
+                            int count = customOptionJooqDao.count(field.getId(), optionIdList);
+                            return count != optionIdList.size();
+                        } else {
+                            return false;
+                        }
+
+                    })
+                    .filter(o -> o)
+                    .findAny();
+            if (optional.isPresent()) {
+                throw UserAccountException.IMPORT_DATA_WRONG;
+            }
+        }
+
+
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();

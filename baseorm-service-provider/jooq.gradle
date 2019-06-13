@@ -33,13 +33,13 @@ def xml = new groovy.xml.MarkupBuilder(writer)
         .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.9.2.xsd') {
     jdbc() {
         driver('com.mysql.jdbc.Driver')
-        url('jdbc:mysql://localhost:3306/referraldb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
-        user('root')
-        password('wjf')
+        url('jdbc:mysql://db1.dqprism.com:3306/employeedb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
+        user('daqi')
+        password('5F51692091B4031640E18E7C27430E071BC878C8')
     }
     generator() {
         database() {
-            inputSchema("dictdb")
+            inputSchema("employeedb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
 
@@ -54,7 +54,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.dictdb')
+            packageName('com.moseeker.baseorm.db.employeedb')
             directory('src/main/java')
         }
     }

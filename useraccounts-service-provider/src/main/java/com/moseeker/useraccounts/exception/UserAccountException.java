@@ -73,6 +73,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_ALREADY_VERIFIED = new UserAccountException(42061, "已经是认证员工！");
     public static final UserAccountException EMPLOYEE_VERIFICATION_NOT_SUPPORT = new UserAccountException(42062, "暂时不支持员工认证！");
     public static final UserAccountException EMPLOYEE_VERIFICATION_INVALID= new UserAccountException(42063, "认证信息失效！");
+    public static final UserAccountException IMPORT_DATA_CUSTOM_ERROR = new UserAccountException(42064, "导入员工数据自定义信息有误！");
 
     private final int code;
 
