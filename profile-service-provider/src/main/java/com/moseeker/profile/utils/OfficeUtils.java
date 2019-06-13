@@ -30,7 +30,7 @@ public class OfficeUtils {
     //private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$"; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
-    private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log  soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
+    private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
 
     static {
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
@@ -193,6 +193,7 @@ public class OfficeUtils {
         //CountDownLatch latch = new CountDownLatch(1);
         try{
             process = Runtime.getRuntime().exec(command);
+            logger.info("process execute command： {}",command);
             Process p = process;
             pool.submit(()->{
                 try(InputStream is = p.getInputStream();){
@@ -218,7 +219,10 @@ public class OfficeUtils {
                     logger.error("executeCommand " + command +"error ",e);
                 }
             });
-            process.waitFor(10, TimeUnit.SECONDS);
+            int exitValue = process.waitFor(/*10, TimeUnit.SECONDS*/);
+            if(exitValue != 0){
+                logger.error("命令{}错误退出码：{}",command,exitValue);
+            }
             //latch.await();
             return output.toString();
         } catch (Exception e) {
