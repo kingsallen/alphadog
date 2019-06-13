@@ -16,6 +16,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.tools.jconsole.Plotter;
 
 /**
  * Created by moseeker on 2018/11/6.
@@ -190,47 +191,47 @@ public class OfficeUtils {
         ProcessBuilder pb = new ProcessBuilder();
         pb.redirectError();*/
         Process process = null ;
-        //CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(1);
         try{
             process = Runtime.getRuntime().exec(command);
-            logger.info("process execute command： {}",command);
+            logger.debug("process execute command： {}",command);
             Process p = process;
             pool.submit(()->{
-                try(InputStream is = p.getInputStream();){
+                try(InputStream is = p.getInputStream();InputStream es = p.getErrorStream();){
+                    logger.debug("process read in & err");
                     String outMsg = toString(is);
                     output.append(outMsg);
-                    logger.info("execute [{}] result : {} ",command,outMsg);
-                    System.out.println(outMsg);
-                }catch (IOException e){
-                    logger.error("executeCommand " + command +"error ",e);
-                }finally {
-                    //latch.countDown();
-                }
-            });
-            pool.submit(()->{
-                try(InputStream es = p.getErrorStream();){
+                    logger.info("execute result : {} ",outMsg);
+                    //System.out.println(outMsg);
+
                     String errMsg = toString(es);
                     if(StringUtils.isNotEmpty(errMsg)){
                         logger.error("[error]"+errMsg);
-                        System.err.println("[error]"+errMsg);
+                        //System.err.println("[error]"+errMsg);
                         logger.info("system properties {}"  , System.getProperties());
                     }
                 }catch (IOException e){
                     logger.error("executeCommand " + command +"error ",e);
+                }finally {
+                    latch.countDown();
+                    p.destroy();
                 }
             });
+            logger.debug("process wait");
             int exitValue = process.waitFor(/*10, TimeUnit.SECONDS*/);
+            logger.debug("process finish");
             if(exitValue != 0){
                 logger.error("命令{}错误退出码：{}",command,exitValue);
             }
-            //latch.await();
+            //latch.await(/*3, TimeUnit.SECONDS*/);
+            //process.destroy();
             return output.toString();
         } catch (Exception e) {
             logger.error("executeCommand " + command +"error ",e);
             return " error" ;
         }finally {
             if(process != null){
-                process.destroyForcibly();
+                //process.destroy();
             }
             pool.shutdown();
         }
