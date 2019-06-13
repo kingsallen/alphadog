@@ -28,15 +28,16 @@ public class OfficeUtils {
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
     // Word转PDF备用方案为JVM Runtime通过shell调用Libreoffice，mac系统用soffice命令，linux用libreoffice命令
-    //private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$"; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
+    private static final String COMMAND = "xvfb-run -d -e libreoffice.out.log soffice --headless --convert-to pdf:writer_pdf_Export $src$ --outdir $outdir$ "; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
-    private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
+    //private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
 
     static {
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
-        logger.info("OfficeUtils init --- current user: "+ executeCommand("whoami"));
+        //logger.info("OfficeUtils init --- current user: "+ executeCommand("whoami"));
     }
+
     /**
      * word转pdf
      *
@@ -199,14 +200,14 @@ public class OfficeUtils {
         try{
             ProcessBuilder pb = new ProcessBuilder();
             pb.redirectErrorStream(true);
-            pb.redirectOutput(new File("runtime.out"));
+            //pb.redirectOutput(new File("runtime.out"));
             //pb.redirectOutput();
             //process = Runtime.getRuntime().exec(command);
             pb.command(command.split(" "));
             process = pb.start();
             logger.info("process execute command： {}",command);
             Process p = process;
-            CountDownLatch latch = new CountDownLatch(1);
+            CountDownLatch latch = new CountDownLatch(2);
             pool.submit(()->{
                 try(InputStream is = p.getInputStream();) {
                     logger.info("process read in ");
@@ -220,16 +221,27 @@ public class OfficeUtils {
                     latch.countDown();
                 }
             });
+            pool.submit(()->{
+                try(InputStream is = p.getErrorStream();) {
+                    logger.info("process read error ");
+                    String outMsg = IOUtils.toString(is);
+                    if(StringUtils.isNotBlank(outMsg)){
+                        logger.error("execute error : {} ", outMsg);
+                    }
+                }catch (IOException e){
+                    logger.error("executeCommand " + command +"error ",e);
+                }finally {
+                    latch.countDown();
+                }
+            });
 
             logger.info("process wait");
-            /*int exitValue = */process.waitFor(10, TimeUnit.SECONDS);
+            /*int exitValue = */process.waitFor(5, TimeUnit.SECONDS);
             logger.info("process finish");
-            latch.await(1,TimeUnit.SECONDS);
+            latch.await(3,TimeUnit.SECONDS);
             /*if(exitValue != 0){
                 logger.error("命令{}错误退出码：{}",command,exitValue);
             }*/
-
-
 
             process.destroy();
             process = null ;
