@@ -7,7 +7,6 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 import java.util.concurrent.*;
 
-import com.aspose.words.SystemFontSource;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +15,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.tools.jconsole.Plotter;
 
 /**
  * Created by moseeker on 2018/11/6.
