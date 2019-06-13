@@ -5,7 +5,9 @@ import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
 
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -24,10 +26,10 @@ public class OfficeUtils {
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
     // Word转PDF备用方案为JVM Runtime通过shell调用Libreoffice，mac系统用soffice命令，linux用libreoffice命令
-    private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$"; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
+    //private static final String COMMAND = "xvfb-run -d -f libreoffice.out.log libreoffice --headless --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$"; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
-    //private static final String COMMAND = "soffice --convert-to pdf:writer_pdf_Export $src$ --outdir $outdir$";
+    private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$ ";
 
     static {
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
@@ -95,7 +97,6 @@ public class OfficeUtils {
         boolean isLicense = false;
 
         try {
-
             InputStream is = com.moseeker.common.util.OfficeUtils.class.getClassLoader().getResourceAsStream("license.xml");
 
             License docLicense = new License();
@@ -193,25 +194,33 @@ public class OfficeUtils {
         pb.redirectError();*/
         try{
             p = Runtime.getRuntime().exec(command);
-            p.waitFor();
-            String errMsg = IOUtils.toString(p.getErrorStream(),"UTF-8");
-            if(StringUtils.isNotEmpty(errMsg)){
-                logger.error("[error]"+errMsg);
-                logger.info("system properties {}"  , System.getProperties());
-                /*try(InputStream is = Runtime.getRuntime().exec("whoami").getInputStream()){
-                    logger.info("current user : {} , system properties {}"  , IOUtils.toString(is),System.getProperties());
-                    System.out.println("current user : "+IOUtils.toString(is));
-                    System.getProperties().list(System.out);
-                }*/
+            p.waitFor(10, TimeUnit.SECONDS);
+            try(InputStream is = p.getInputStream();InputStream es = p.getErrorStream()){
+                String errMsg = toString(es);
+                if(StringUtils.isNotEmpty(errMsg)){
+                    logger.error("[error]"+errMsg);
+                    logger.info("system properties {}"  , System.getProperties());
+                }
+                return toString(is);
             }
-            return IOUtils.toString(p.getInputStream(),"UTF-8");
         } catch (Exception e) {
             logger.error("executeCommand " + command +"error ",e);
             return " error" ;
         } finally {
-            p.destroy();
+            p.destroyForcibly();
         }
 
+    }
+
+    private static String toString(InputStream is) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(is,Charsets.UTF_8))){
+            String line = "" ;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            return sb.toString();
+        }
     }
 }
 
