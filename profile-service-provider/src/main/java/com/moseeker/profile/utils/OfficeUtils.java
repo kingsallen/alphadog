@@ -192,7 +192,7 @@ public class OfficeUtils {
 
     public static String executeCommand(String command) {
         StringBuffer output = new StringBuffer();
-        ExecutorService pool = Executors.newFixedThreadPool(2);
+        ExecutorService pool = Executors.newFixedThreadPool(3);
         /*
         ProcessBuilder pb = new ProcessBuilder();
         pb.redirectError();*/
@@ -235,24 +235,29 @@ public class OfficeUtils {
                 }
             });
 
-            logger.info("process wait");
-            /*int exitValue = */process.waitFor(5, TimeUnit.SECONDS);
-            logger.info("process finish");
-            latch.await(3,TimeUnit.SECONDS);
-            /*if(exitValue != 0){
-                logger.error("命令{}错误退出码：{}",command,exitValue);
-            }*/
+            pool.submit(()->{
+                try {
+                    logger.info("process wait");
+                    /*int exitValue = */p.waitFor(5, TimeUnit.SECONDS);
+                    logger.info("process finish");
 
-            process.destroy();
-            process = null ;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                /*if(exitValue != 0){
+                    logger.error("命令{}错误退出码：{}",command,exitValue);
+                }*/
+                p.destroy();
+            });
+            latch.await(3,TimeUnit.SECONDS);
             return output.toString();
         } catch (Exception e) {
             logger.error("executeCommand " + command +"error ",e);
             return " error" ;
         }finally {
-            if(process != null){
+            /*if(process != null){
                 process.destroyForcibly();
-            }
+            }*/
             pool.shutdown();
         }
     }
