@@ -26,10 +26,10 @@ public class OfficeUtils {
     private static final String ERROR_PDF = "Evaluation Only. Created with Aspose.Words. Copyright 2003-2015 Aspose Pty Ltd.";
 
     // Word转PDF备用方案为JVM Runtime通过shell调用Libreoffice，mac系统用soffice命令，linux用libreoffice命令
-    private static final String COMMAND = "xvfb-run -d -e libreoffice.out.log soffice --headless --convert-to pdf:writer_pdf_Export $src$ --outdir $outdir$ "; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
+    //private static final String COMMAND = "xvfb-run -d -e libreoffice.out.log soffice --headless --convert-to pdf:writer_pdf_Export $src$ --outdir $outdir$ "; // 必须指定--outdir，而且要在源文件之前，与mac系统不同
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
-    //private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
+    private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
 
     static {
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
