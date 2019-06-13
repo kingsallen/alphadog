@@ -221,6 +221,7 @@ public class OfficeUtils {
                     latch.countDown();
                 }
             });
+
             pool.submit(()->{
                 try(InputStream is = p.getErrorStream();) {
                     logger.info("process read error ");
@@ -240,15 +241,16 @@ public class OfficeUtils {
                     logger.info("process wait");
                     /*int exitValue = */p.waitFor(5, TimeUnit.SECONDS);
                     logger.info("process finish");
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                /*if(exitValue != 0){
+                    /*if(exitValue != 0){
                     logger.error("命令{}错误退出码：{}",command,exitValue);
                 }*/
-                p.destroy();
+                } catch (InterruptedException e) {
+                    //e.printStackTrace();
+                }finally {
+                    p.destroy();
+                }
             });
+
             latch.await(3,TimeUnit.SECONDS);
             return output.toString();
         } catch (Exception e) {
