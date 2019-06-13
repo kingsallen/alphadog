@@ -88,8 +88,11 @@ public class OfficeUtils {
         }catch (Exception e){
             logger.error(e.getMessage());
             return 0;
+        } finally {
+            boolean exist = new File(targetFileName).exists();
+            logger.info("file {} {} {}",targetFileName,(exist?" exists":"doesn't exist)"));
+            return exist ? 1:0 ;
         }
-        return 1;
     }
 
     /**
@@ -193,82 +196,40 @@ public class OfficeUtils {
         ProcessBuilder pb = new ProcessBuilder();
         pb.redirectError();*/
         Process process = null ;
-        boolean mergeErr = true ;
-
         try{
             ProcessBuilder pb = new ProcessBuilder();
-            pb.redirectErrorStream(mergeErr);
+            pb.redirectErrorStream(true);
+            pb.redirectOutput(new File("runtime.out"));
             //pb.redirectOutput();
             //process = Runtime.getRuntime().exec(command);
             pb.command(command.split(" "));
             process = pb.start();
             logger.info("process execute command： {}",command);
             Process p = process;
-            if(mergeErr){
-                CountDownLatch latch = new CountDownLatch(1);
-                pool.submit(()->{
-                    try(InputStream is = p.getInputStream();) {
-                        logger.info("process read in ");
-                        String outMsg = IOUtils.toString(is);
-                        output.append(outMsg);
-                        logger.info("execute result : {} ", outMsg);
-                        is.close();
-                    }catch (IOException e){
-                        logger.error("executeCommand " + command +"error ",e);
-                    }finally {
-                        latch.countDown();
-                    }
-                });
-                logger.info("process wait");
+            CountDownLatch latch = new CountDownLatch(1);
+            pool.submit(()->{
+                try(InputStream is = p.getInputStream();) {
+                    logger.info("process read in ");
+                    String outMsg = IOUtils.toString(is);
+                    output.append(outMsg);
+                    logger.info("execute result : {} ", outMsg);
+                    is.close();
+                }catch (IOException e){
+                    logger.error("executeCommand " + command +"error ",e);
+                }finally {
+                    latch.countDown();
+                }
+            });
+
+            logger.info("process wait");
             /*int exitValue = */process.waitFor(10, TimeUnit.SECONDS);
-                logger.info("process finish");
-                latch.await(1,TimeUnit.SECONDS);
+            logger.info("process finish");
+            latch.await(1,TimeUnit.SECONDS);
             /*if(exitValue != 0){
                 logger.error("命令{}错误退出码：{}",command,exitValue);
             }*/
-            }else{
-                CountDownLatch latch = new CountDownLatch(2);
-                InputStream is = p.getInputStream();
-                InputStream es = p.getErrorStream();
-                pool.submit(()->{
-                    try {
-                        logger.info("process read in ");
-                        String outMsg = IOUtils.toString(is);
-                        output.append(outMsg);
-                        logger.info("execute result : {} ", outMsg);
-                        //System.out.println(outMsg);
-                        latch.countDown();
-                    }catch (IOException e){
-                        logger.error("executeCommand " + command +"error ",e);
-                    }
-                });
-                pool.submit(()->{
-                    try {
-                        logger.info("process read in err");
-                        String errMsg = IOUtils.toString(es);
-                        if(StringUtils.isNotEmpty(errMsg)){
-                            logger.error("[error]"+errMsg);
-                            //System.err.println("[error]"+errMsg);
-                            logger.info("system properties {}"  , System.getProperties());
-                        }
-                        latch.countDown();
-                    }catch (IOException e){
-                        logger.error("executeCommand " + command +"error ",e);
-                    }
-                });
-                logger.info("process latch - waiting for reading ");
-                latch.await(10, TimeUnit.SECONDS);
-                IOUtils.closeQuietly(is);
-                IOUtils.closeQuietly(es);
-                logger.info("process latch - closed streams ");
 
-                logger.info("process wait");
-                /*int exitValue = */process.waitFor(3, TimeUnit.SECONDS);
-                    logger.info("process finish");
-                /*if(exitValue != 0){
-                    logger.error("命令{}错误退出码：{}",command,exitValue);
-                }*/
-            }
+
 
             process.destroy();
             process = null ;
