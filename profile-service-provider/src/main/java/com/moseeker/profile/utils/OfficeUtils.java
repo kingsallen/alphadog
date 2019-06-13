@@ -80,8 +80,11 @@ public class OfficeUtils {
                 String command = COMMAND.replace("$outdir$",outdir).replace("$src$", sourceFileName);
                 logger.info("[{}]The word2pdf command is {}",Thread.currentThread().getName(),command);
                 //执行生成命令
-                String output = executeCommand(command);
-                logger.info("The pdf profile has been created at {}",output);
+                // 多线程调用libreoffice有可能存在部分word没有转换
+                synchronized (OfficeUtils.class){
+                    String output = executeCommand(command);
+                    logger.info("The pdf profile has been created at {}",output);
+                }
             }
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -191,47 +194,78 @@ public class OfficeUtils {
         ProcessBuilder pb = new ProcessBuilder();
         pb.redirectError();*/
         Process process = null ;
-        CountDownLatch latch = new CountDownLatch(1);
+        boolean mergeErr = true ;
         try{
-            process = Runtime.getRuntime().exec(command);
+            ProcessBuilder pb = new ProcessBuilder();
+            pb.redirectErrorStream(mergeErr);
+            //pb.redirectOutput();
+            //process = Runtime.getRuntime().exec(command);
+            pb.command(command.split(" "));
+            process = pb.start();
             logger.debug("process execute command： {}",command);
             Process p = process;
-            pool.submit(()->{
-                try(InputStream is = p.getInputStream();InputStream es = p.getErrorStream();){
-                    logger.debug("process read in & err");
-                    String outMsg = toString(is);
+            if(mergeErr){
+                try(InputStream is = p.getInputStream();) {
+                    logger.debug("process read in ");
+                    String outMsg = IOUtils.toString(is);
                     output.append(outMsg);
-                    logger.info("execute result : {} ",outMsg);
-                    //System.out.println(outMsg);
-
-                    String errMsg = toString(es);
-                    if(StringUtils.isNotEmpty(errMsg)){
-                        logger.error("[error]"+errMsg);
-                        //System.err.println("[error]"+errMsg);
-                        logger.info("system properties {}"  , System.getProperties());
-                    }
+                    logger.info("execute result : {} ", outMsg);
                 }catch (IOException e){
                     logger.error("executeCommand " + command +"error ",e);
-                }finally {
-                    latch.countDown();
-                    p.destroy();
                 }
-            });
-            logger.debug("process wait");
-            int exitValue = process.waitFor(/*10, TimeUnit.SECONDS*/);
-            logger.debug("process finish");
-            if(exitValue != 0){
-                logger.error("命令{}错误退出码：{}",command,exitValue);
+            }else{
+                CountDownLatch latch = new CountDownLatch(2);
+                InputStream is = p.getInputStream();
+                InputStream es = p.getErrorStream();
+                pool.submit(()->{
+                    try {
+                        logger.debug("process read in ");
+                        String outMsg = IOUtils.toString(is);
+                        output.append(outMsg);
+                        logger.info("execute result : {} ", outMsg);
+                        //System.out.println(outMsg);
+                        latch.countDown();
+                    }catch (IOException e){
+                        logger.error("executeCommand " + command +"error ",e);
+                    }
+                });
+                pool.submit(()->{
+                    try {
+                        logger.debug("process read in err");
+                        String errMsg = IOUtils.toString(es);
+                        if(StringUtils.isNotEmpty(errMsg)){
+                            logger.error("[error]"+errMsg);
+                            //System.err.println("[error]"+errMsg);
+                            logger.info("system properties {}"  , System.getProperties());
+                        }
+                        latch.countDown();
+                    }catch (IOException e){
+                        logger.error("executeCommand " + command +"error ",e);
+                    }
+                });
+                logger.debug("process latch - waiting for reading ");
+                latch.await(10, TimeUnit.SECONDS);
+                IOUtils.closeQuietly(is);
+                IOUtils.closeQuietly(es);
+                logger.debug("process latch - closed streams ");
             }
-            //latch.await(/*3, TimeUnit.SECONDS*/);
-            //process.destroy();
+
+            logger.debug("process wait");
+            /*int exitValue = */process.waitFor(3, TimeUnit.SECONDS);
+            logger.debug("process finish");
+            /*if(exitValue != 0){
+                logger.error("命令{}错误退出码：{}",command,exitValue);
+            }*/
+
+            process.destroy();
+            process = null ;
             return output.toString();
         } catch (Exception e) {
             logger.error("executeCommand " + command +"error ",e);
             return " error" ;
         }finally {
             if(process != null){
-                //process.destroy();
+                process.destroyForcibly();
             }
             pool.shutdown();
         }
