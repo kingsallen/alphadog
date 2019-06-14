@@ -1,5 +1,9 @@
 package com.moseeker.profile.utils;
 
+import com.artofsolving.jodconverter.DocumentConverter;
+import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
+import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.aspose.words.Document;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
@@ -7,6 +11,7 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 import java.util.concurrent.*;
 
+import com.aspose.words.SystemFontSource;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +35,8 @@ public class OfficeUtils {
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
     private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
+
+    private static final int UNO_PORT = 8100;
 
     static {
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
@@ -73,6 +80,8 @@ public class OfficeUtils {
                 if(errorPdf.exists()){
                     errorPdf.delete();
                 }
+                convertThroughUNO(new File(sourceFileName),targetFile);
+                /*
                 //只传入文件夹路径
                 String outdir = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
                 String command = COMMAND.replace("$outdir$",outdir).replace("$src$", sourceFileName);
@@ -83,6 +92,8 @@ public class OfficeUtils {
                     String output = executeCommand(command);
                     logger.info("The pdf profile has been created at {}",output);
                 //}
+
+                */
             }
         }catch (Exception e){
             logger.error(e.getMessage());
@@ -270,6 +281,27 @@ public class OfficeUtils {
                 sb.append(line + "\n");
             }
             return sb.toString();
+        }
+    }
+
+    public static void convertThroughUNO(File inputFile, File outputFile) {
+        logger.info("convert %s --> %s", inputFile, outputFile);
+        OpenOfficeConnection connection = new SocketOpenOfficeConnection(UNO_PORT);
+        try {
+            connection.connect();
+            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
+            converter.convert(inputFile, outputFile);
+            logger.info("convert %s --> %s end ", inputFile, outputFile);
+        } catch (Exception e) {
+            logger.error("convert error",e);
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.disconnect();
+                    connection = null;
+                }
+            } catch (Exception e) {
+            }
         }
     }
 }
