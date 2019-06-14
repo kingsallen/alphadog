@@ -1,6 +1,9 @@
 package com.moseeker.profile.utils;
 
+import com.artofsolving.jodconverter.DefaultDocumentFormatRegistry;
 import com.artofsolving.jodconverter.DocumentConverter;
+import com.artofsolving.jodconverter.DocumentFamily;
+import com.artofsolving.jodconverter.DocumentFormat;
 import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
@@ -38,7 +41,12 @@ public class OfficeUtils {
 
     private static final int UNO_PORT = 8100;
 
-    static {
+    // jodconverter 2.2.1 b不支持识别docx，手动增加docx格式
+    private static DocumentFormat DOCX_FMT = new DocumentFormat("Microsoft Word 2007 XML", DocumentFamily.TEXT,
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
+    private static DefaultDocumentFormatRegistry DOC_FMT_REGISTRY = new DefaultDocumentFormatRegistry();
+    static{
+        DOC_FMT_REGISTRY.addDocumentFormat(DOCX_FMT);
         logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
         //logger.info("OfficeUtils init --- current user: "+ executeCommand("whoami"));
     }
@@ -285,13 +293,17 @@ public class OfficeUtils {
     }
 
     public static void convertThroughUNO(File inputFile, File outputFile) {
-        logger.info("convert %s --> %s", inputFile, outputFile);
+        logger.info("convert {} --> {}", inputFile, outputFile);
         OpenOfficeConnection connection = new SocketOpenOfficeConnection(UNO_PORT);
         try {
             connection.connect();
             DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-            converter.convert(inputFile, outputFile);
-            logger.info("convert %s --> %s end ", inputFile, outputFile);
+            if(inputFile.getName().toLowerCase().endsWith(".docx")){
+                converter.convert(inputFile,DOCX_FMT,outputFile,null);
+            }else{
+                converter.convert(inputFile, outputFile);
+            }
+            logger.info("convert {} --> {} end ", inputFile, outputFile);
         } catch (Exception e) {
             logger.error("convert error",e);
         } finally {
