@@ -1,19 +1,19 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.crud.LocalCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.pojo.CustomEmployeeInsertResult;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import org.apache.thrift.TException;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -629,5 +630,33 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .limit(1)
                 .fetchOne();
         return record;
+    }
+
+
+    @Transactional(rollbackFor = {TException.class,RuntimeException.class})
+    public List<UserEmployeeRecord> casBatchInsert(List<UserEmployeeRecord> employees) throws BIZException {
+        List<UserEmployeeRecord> result = new ArrayList<>();
+        for (UserEmployeeRecord e : employees) {
+            List<Field<?>> fields = UserEmployee.USER_EMPLOYEE.fieldStream().filter(f -> e.get(f) != null).collect(Collectors.toList());
+            List<Param<?>> params = fields.stream().map(f -> param(f.getName(), e.get(f))).collect(Collectors.toList());
+
+            Condition duplicateCondition =  EmployeeAuthMethod.getAuthMethod(e.getAuthMethod()).duplicateCondition(e);
+            int id = create.insertInto(UserEmployee.USER_EMPLOYEE)
+                    .columns(fields)
+                    .select(
+                            select(params)
+                            .whereNotExists(
+                                    selectOne()
+                                            .from(UserEmployee.USER_EMPLOYEE)
+                                            .where(duplicateCondition)
+                            )
+                    ).execute();
+            if (id != 0) {
+                e.setId(id);
+                result.add(e);
+            }
+        }
+
+        return result;
     }
 }
