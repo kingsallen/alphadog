@@ -646,6 +646,15 @@ public class UserHrAccountServiceImpl implements Iface {
         }
     }
 
+    @Override
+    public ImportUserEmployeeStatistic updateEmployee(Map<Integer, UserEmployeeDO> userEmployeeDOS, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        try {
+            return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
     /**
      * 检查员工重复(批量导入之前验证)
      *

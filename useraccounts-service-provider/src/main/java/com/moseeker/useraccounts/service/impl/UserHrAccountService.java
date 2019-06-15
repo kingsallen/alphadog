@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
@@ -87,7 +85,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -1377,11 +1374,165 @@ public class UserHrAccountService {
             fileName, Integer type, Integer hraccountId) throws CommonException {
         Response response = new Response();
         logger.info("开始导入员工信息");
+
+        // 员工导入信息日志
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
+
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
+        }
+
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
+
+        //校验自定义信息填写是否正确
+        checkCustomFieldValues(userEmployeeMap, companyId, importUserEmployeeStatistic);
         if (importUserEmployeeStatistic != null && !importUserEmployeeStatistic.insertAccept) {
             throw UserAccountException.IMPORT_DATA_WRONG;
         }
+
+        // 通过手机号查询那些员工数据是更新，那些数据是新增
+        List<String> moblies = new ArrayList<>();
+        List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
+        logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
+        userEmployeeMap.forEach((k, v) -> {
+            userEmployeeList.add(v);
+            moblies.add(v.getMobile());
+        });
+        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
+        // 数据库中已经有的员工列表
+        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
+        if (!StringUtils.isEmptyList(userEmployeeDOS)) {
+            // 查询出需要更新的数据
+            for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
+                for (UserEmployeeDO user : userEmployeeDOS) {
+                    if (userEmployeeDOTemp.getMobile().equals(user.getMobile())) {
+                        userEmployeeDOTemp.setId(user.getId());
+                        userEmployeeDOTemp.setSource(8);
+                        updateUserEmployee.add(userEmployeeDOTemp);
+                    }
+                }
+            }
+            if (!StringUtils.isEmptyList(updateUserEmployee)) {
+                // 更新数据
+                logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
+                userEmployeeDao.updateDatas(updateUserEmployee);
+                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
+                // 去掉需要更新的数据
+                userEmployeeList.removeAll(updateUserEmployee);
+            }
+        }
+        // 新增数据
+        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
+        if (!StringUtils.isEmptyList(userEmployeeList)) {
+            employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
+
+        }
+
+        try {
+            HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
+            hrImporterMonitorDO.setSys(2);
+            hrImporterMonitorDO.setFile(filePath);
+            hrImporterMonitorDO.setCompanyId(companyId);
+            hrImporterMonitorDO.setName(fileName);
+            hrImporterMonitorDO.setStatus(2);
+            hrImporterMonitorDO.setType(type);
+            hrImporterMonitorDO.setMessage("导入成功");
+            hrImporterMonitorDO.setHraccountId(hraccountId);
+            hrImporterMonitorDao.addData(hrImporterMonitorDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        response = ResultMessage.SUCCESS.toResponse();
+        logger.info("导入员工信息结束");
+        return response;
+    }
+
+    /**
+     * 员工信息导入
+     *
+     * @param userEmployeeMap 员工信息列表
+     * @param companyId       公司ID
+     */
+    @Transactional
+    public ImportUserEmployeeStatistic updateEmployees(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
+            fileName, Integer type, Integer hraccountId) throws CommonException {
+
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
+        logger.info("开始批量修改");
+
+        // 员工导入信息日志
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
+
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw UserAccountException.validateFailed(errorMessage);
+        }
+
+        //校验自定义信息填写是否正确
+        checkCustomFieldValues(userEmployeeMap, companyId, importUserEmployeeStatistic);
+
+        checkEmployeeExsits(userEmployeeMap, companyId, importUserEmployeeStatistic);
+
+
+
+        if (!importUserEmployeeStatistic.insertAccept) {
+            throw UserAccountException.IMPORT_DATA_WRONG;
+        }
+
+        try {
+            HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
+            hrImporterMonitorDO.setSys(2);
+            hrImporterMonitorDO.setFile(filePath);
+            hrImporterMonitorDO.setCompanyId(companyId);
+            hrImporterMonitorDO.setName(fileName);
+            hrImporterMonitorDO.setStatus(2);
+            hrImporterMonitorDO.setType(type);
+            hrImporterMonitorDO.setMessage("导入成功");
+            hrImporterMonitorDO.setHraccountId(hraccountId);
+            hrImporterMonitorDao.addData(hrImporterMonitorDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        logger.info("批量修改结束");
+        return importUserEmployeeStatistic;
+    }
+
+    /**
+     * 检查员工重复(批量导入之前验证)
+     *
+     * @param userEmployeeMap
+     * @param companyId
+     * @return
+     */
+
+    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+        return repetitionFilter(userEmployeeMap, companyId);
+    }
+
+    /**
+     * 校验提交的自定义是否是这家公司下可选的自定义内容
+     * @param userEmployeeMap 员工数据
+     * @param companyId 公司编号
+     * @param importUserEmployeeStatistic
+     * @throws UserAccountException 业务异常 UserAccountException.IMPORT_DATA_CUSTOM_ERROR UserAccountException.IMPORT_DATA_WRONG
+     */
+    private void checkCustomFieldValues(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId, ImportUserEmployeeStatistic importUserEmployeeStatistic) throws UserAccountException {
         ArrayListMultimap<Integer, Object> map = ArrayListMultimap.create();
 
         List<JSONArray> customFieldValuesArray = userEmployeeMap
@@ -1429,91 +1580,6 @@ public class UserHrAccountService {
                 throw UserAccountException.IMPORT_DATA_WRONG;
             }
         }
-
-
-        // 通过手机号查询那些员工数据是更新，那些数据是新增
-        List<String> moblies = new ArrayList<>();
-        List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
-        logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
-        userEmployeeMap.forEach((k, v) -> {
-            userEmployeeList.add(v);
-            moblies.add(v.getMobile());
-        });
-        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
-        queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
-        // 数据库中已经有的员工列表
-        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-        List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
-        if (!StringUtils.isEmptyList(userEmployeeDOS)) {
-            // 查询出需要更新的数据
-            for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
-                for (UserEmployeeDO user : userEmployeeDOS) {
-                    if (userEmployeeDOTemp.getMobile().equals(user.getMobile())) {
-                        userEmployeeDOTemp.setId(user.getId());
-                        userEmployeeDOTemp.setSource(8);
-                        updateUserEmployee.add(userEmployeeDOTemp);
-                    }
-                }
-            }
-            if (!StringUtils.isEmptyList(updateUserEmployee)) {
-                // 更新数据
-                logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
-                userEmployeeDao.updateDatas(updateUserEmployee);
-                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
-                // 去掉需要更新的数据
-                userEmployeeList.removeAll(updateUserEmployee);
-            }
-        }
-        // 新增数据
-        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
-        if (!StringUtils.isEmptyList(userEmployeeList)) {
-            employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
-
-        }
-        // 员工导入信息日志
-        ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
-        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
-        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
-
-        String errorMessage = vu.validate();
-        if (!StringUtils.isNullOrEmpty(errorMessage)) {
-            throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
-        }
-        try {
-            HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
-            hrImporterMonitorDO.setSys(2);
-            hrImporterMonitorDO.setFile(filePath);
-            hrImporterMonitorDO.setCompanyId(companyId);
-            hrImporterMonitorDO.setName(fileName);
-            hrImporterMonitorDO.setStatus(2);
-            hrImporterMonitorDO.setType(type);
-            hrImporterMonitorDO.setMessage("导入成功");
-            hrImporterMonitorDO.setHraccountId(hraccountId);
-            hrImporterMonitorDao.addData(hrImporterMonitorDO);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw CommonException.PROGRAM_EXCEPTION;
-        }
-        response = ResultMessage.SUCCESS.toResponse();
-        logger.info("导入员工信息结束");
-        return response;
-    }
-
-
-    /**
-     * 检查员工重复(批量导入之前验证)
-     *
-     * @param userEmployeeMap
-     * @param companyId
-     * @return
-     */
-
-    public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
-        return repetitionFilter(userEmployeeMap, companyId);
     }
 
     /**
@@ -1522,7 +1588,7 @@ public class UserHrAccountService {
      * @param userEmployeeMap
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+    private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1543,6 +1609,18 @@ public class UserHrAccountService {
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+
+        ArrayListMultimap<Integer, Object> map = ArrayListMultimap.create();
+
+        List<JSONArray> customFieldValuesArray = userEmployeeMap
+                .values()
+                .parallelStream()
+                .map(userEmployeeDO -> {
+                    JSONArray array = JSONArray.parseArray(userEmployeeDO.getCustomFieldValues());
+                    return array;
+                })
+                .collect(Collectors.toList());
+
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
         int repetitionCounts = 0;
