@@ -47,6 +47,25 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID.in(idList))
                 .fetch();
+        return convertToPojo(result);
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> listSelectOptionByIdList(Integer companyId, Set<Integer> idList) {
+        if (companyId == null || companyId <= 0 || idList == null || idList.isEmpty()) {
+            return new ArrayList<>();
+        }
+        Result<HrEmployeeCustomFieldsRecord> result = create
+                .selectFrom(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
+                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.eq(companyId))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID.in(idList))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.OPTION_TYPE.eq(0))
+                .fetch();
+        return convertToPojo(result);
+    }
+
+    private List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> convertToPojo(List<HrEmployeeCustomFieldsRecord> result) {
         if (result != null && result.size() > 0) {
             return result.parallelStream()
                     .map(record -> {
