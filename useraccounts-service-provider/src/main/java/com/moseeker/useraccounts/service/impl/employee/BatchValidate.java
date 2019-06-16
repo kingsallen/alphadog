@@ -51,7 +51,7 @@ public class BatchValidate {
 
     ThreadPool threadPool = ThreadPool.Instance;
 
-    public ArrayListMultimap<Integer, EmployeeOptionValue> optionsValues(Map<Integer, UserEmployeeDO> userEmployeeMap,
+    /*public ArrayListMultimap<Integer, EmployeeOptionValue> optionsValues(Map<Integer, UserEmployeeDO> userEmployeeMap,
                                                                          Integer companyId) {
         ArrayListMultimap<Integer, Object> map = ArrayListMultimap.create();
 
@@ -132,9 +132,9 @@ public class BatchValidate {
 
     public List<ImportErrorUserEmployee> batchUpdateEmployee(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap) {
         userEmployeeMap.
-    }
+    }*/
 
-    private ArrayListMultimap<Integer, Integer>
+    //private ArrayListMultimap<Integer, Integer>
 
     class CustomOptionRel {
 

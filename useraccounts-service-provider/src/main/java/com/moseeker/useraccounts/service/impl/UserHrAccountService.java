@@ -29,6 +29,7 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterL
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -1486,8 +1487,20 @@ public class UserHrAccountService {
         //校验自定义信息填写是否正确
         checkCustomFieldValues(userEmployeeMap, companyId, importUserEmployeeStatistic);
 
-        checkEmployeeExsits(userEmployeeMap, companyId, importUserEmployeeStatistic);
+        //checkEmployeeExsits(userEmployeeMap, companyId, importUserEmployeeStatistic);
 
+        List<UserEmployeeRecord> records = new ArrayList<>(userEmployeeMap.size());
+        userEmployeeMap.forEach((key, value) -> {
+            UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
+            userEmployeeRecord.setId(value.getId());
+            if (value.getActivation() == EmployeeActiveState.Cancel.getState()) {
+                userEmployeeRecord.setActivation(EmployeeActiveState.Cancel.getState());
+            }
+            userEmployeeRecord.setCustomFieldValues(value.getCustomFieldValues());
+            records.add(userEmployeeRecord);
+        });
+
+        userEmployeeDao.updateRecords(records);
 
 
         if (!importUserEmployeeStatistic.insertAccept) {
