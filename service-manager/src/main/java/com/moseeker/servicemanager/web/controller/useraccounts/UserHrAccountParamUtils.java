@@ -20,7 +20,6 @@ public class UserHrAccountParamUtils extends ParamUtils {
                 try {
                     map.put((Integer) data.remove("rowNum"), ParamUtils.initModelForm(data, UserEmployeeDO.class));
                 } catch (Exception e) {
-                    e.printStackTrace();
                     LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
                 }
             }

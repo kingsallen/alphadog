@@ -553,11 +553,11 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public UserEmployeeVOPageVO getEmployees(String keyword, int companyId, int filter, String order, String asc,
                                              int pageNumber, int pageSize, String email_validate,int balanceType,
-                                             String timeSpan)
+                                             String timeSpan, String selectIds)
             throws BIZException, TException {
         try {
             return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate,
-                    balanceType, timeSpan);
+                    balanceType, timeSpan, selectIds);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -643,6 +643,15 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public ImportUserEmployeeStatistic updateEmployee(Map<Integer, UserEmployeeDO> userEmployeeDOS, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        try {
+            return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
     }
 

@@ -1,0 +1,360 @@
+package com.moseeker.useraccounts.service.impl.employee;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ArrayListMultimap;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
+import com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic;
+import com.moseeker.useraccounts.exception.UserAccountException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * TODO
+ *
+ * @Author jack
+ * @Date 2019/6/14 1:50 PM
+ * @Version 1.0
+ */
+@Component
+public class BatchValidate {
+
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    protected HrEmployeeCustomFieldsDao customFieldsDao;
+
+    @Autowired
+    protected EmployeeCustomOptionJooqDao customOptionJooqDao;
+
+    ThreadPool threadPool = ThreadPool.Instance;
+
+    /**
+     * 查询是否有重复数据
+     *
+     * @param userEmployeeMap 参数
+     * @param companyId 公司编号
+     * @param dbEmployeeDOList 员工数据
+     */
+    public ImportUserEmployeeStatistic importCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
+                                                   List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
+
+        // 重复的对象
+        List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
+        int repetitionCounts = 0;
+        int errorCounts = 0;
+
+        /**
+         * 为校验自定义下拉项数据做准备
+         */
+        ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
+        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
+
+        // 提交上的数据
+        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
+            UserEmployeeDO userEmployeeDO = entry.getValue();
+            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+            // 姓名不能为空
+            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("cname不能为空");
+                errorCounts = errorCounts + 1;
+                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                continue;
+            }
+            if (userEmployeeDO.getCompanyId() == 0) {
+                userEmployeeDO.setCompanyId(companyId);
+            }
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+                if (employeeCustomFiledValues.get(entry.getKey()) != null
+                        && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
+                    boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
+                    if (!flag) {
+                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setMessage("自定义选项错误");
+                        errorCounts = errorCounts + 1;
+                        importErrorUserEmployee.setRowNum(entry.getKey());
+                        importErrorUserEmployees.add(importErrorUserEmployee);
+                        continue;
+                    }
+                }
+            }
+            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+                continue;
+            }
+            if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
+                // 数据库的数据
+                for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
+                    // 非自定义员工,忽略检查
+                    if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
+                            || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
+                        continue;
+                    }
+                    // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
+                    if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
+                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
+                        repetitionCounts = repetitionCounts + 1;
+                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setRowNum(entry.getKey());
+                        importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
+                        importErrorUserEmployees.add(importErrorUserEmployee);
+                    }
+                }
+            }
+        }
+        importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
+        importUserEmployeeStatistic.setErrorCounts(errorCounts);
+        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
+        importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
+        if (repetitionCounts == 0 && errorCounts == 0) {
+            importUserEmployeeStatistic.setInsertAccept(true);
+        } else {
+            importUserEmployeeStatistic.setInsertAccept(false);
+        }
+        return importUserEmployeeStatistic;
+    }
+
+    /**
+     * 查询是否有重复数据
+     *
+     * @param userEmployeeMap 参数
+     * @param companyId 公司编号
+     * @param dbEmployeeDOList 员工数据
+     */
+    public ImportUserEmployeeStatistic updateCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
+                                                   List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
+        importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
+        // 重复的数据
+        List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
+        int repetitionCounts = 0;
+        int errorCounts = 0;
+        // 提交上的数据
+        List<Integer> employeeIdList;
+        if (dbEmployeeDOList != null && dbEmployeeDOList.size() > 0) {
+            employeeIdList = dbEmployeeDOList.parallelStream()
+                    .map(UserEmployeeDO::getId)
+                    .collect(Collectors.toList());
+        } else {
+            employeeIdList = new ArrayList<>();
+        }
+
+        /**
+         * 为校验自定义下拉项数据做准备
+         */
+        ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
+        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
+
+        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
+            UserEmployeeDO userEmployeeDO = entry.getValue();
+            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+            if (userEmployeeDO.getId() <= 0) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("编号错误");
+                errorCounts = errorCounts + 1;
+                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                continue;
+            }
+            if (!employeeIdList.contains(userEmployeeDO.getId())) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("数据不允许修改");
+                errorCounts = errorCounts + 1;
+                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                continue;
+            }
+            if (userEmployeeDO.getActivation() != EmployeeActiveState.Actived.getState()
+                    && userEmployeeDO.getActivation() != EmployeeActiveState.Cancel.getState()) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("只允许修改成取消认证的状态");
+                errorCounts = errorCounts + 1;
+                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                continue;
+            }
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+                if (employeeCustomFiledValues.get(entry.getKey()) != null
+                        && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
+                    boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
+                    if (!flag) {
+                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setMessage("自定义选项错误");
+                        errorCounts = errorCounts + 1;
+                        importErrorUserEmployee.setRowNum(entry.getKey());
+                        importErrorUserEmployees.add(importErrorUserEmployee);
+                        continue;
+                    }
+                }
+            }
+        }
+        importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
+        importUserEmployeeStatistic.setErrorCounts(errorCounts);
+        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
+
+        return importUserEmployeeStatistic;
+    }
+
+
+    /**
+     * 将自定义字段解析成结构体
+     * @param userEmployeeMap 文件中的员工数据
+     * @return 自定义字段与行数的对应关系
+     */
+    public ArrayListMultimap<Integer, CustomOptionRel> employeeParam(Map<Integer, UserEmployeeDO> userEmployeeMap) {
+        ArrayListMultimap<Integer, CustomOptionRel> map = ArrayListMultimap.create();
+
+        userEmployeeMap.forEach((row, employee) -> {
+            JSONArray array = JSONArray.parseArray(employee.getCustomFieldValues());
+            for (int i=0; i<array.size(); i++) {
+                if (array.get(i) != null) {
+                    for (Map.Entry<String, Object> entry : ((JSONObject)array.get(i)).entrySet()) {
+                        CustomOptionRel customOptionRel = new CustomOptionRel();
+                        customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
+                        customOptionRel.setOption(entry.getValue().toString());
+                        map.put(row, customOptionRel);
+                    }
+                }
+            }
+        });
+
+        return map;
+    }
+
+
+
+    /**
+     * 校验自定义项是否合法
+     * @param rels 选择的自定义数据
+     * @param dbOptions 数据库可用的自定义数据
+     * @return 是否合法。true 合法，false不合法
+     */
+    private boolean checkOptions(List<CustomOptionRel> rels, Map<Integer, List<EmployeeOptionValue>> dbOptions) {
+        if (rels != null && rels.size() > 0) {
+            Optional<CustomOptionRel> optional = rels.parallelStream()
+                    .filter(customOptionRel -> {
+                        List<EmployeeOptionValue> list = dbOptions.get(customOptionRel.getCustomId());
+                        if (list != null && list.size() > 0) {
+                            Optional<EmployeeOptionValue> optionValue = list.parallelStream()
+                                    .filter(employeeOptionValue -> employeeOptionValue.getName().equals(customOptionRel.getOption()))
+                                    .findAny();
+                            return optionValue.isPresent();
+                        } else {
+                            return true;
+                        }
+                    })
+                    .findAny();
+            return !optional.isPresent();
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 查找数据库中的下拉项数据
+     * @param params 文件中的员工的自定义数据
+     * @param companyId 公司编号
+     * @return 数据库中的下拉项
+     */
+    private Map<Integer, List<EmployeeOptionValue>> fetchOptionsValues(ArrayListMultimap<Integer, CustomOptionRel> params, int companyId) {
+
+        Map<Integer, List<EmployeeOptionValue>> map = new HashMap<>();
+        if (params != null && params.size() > 0) {
+
+            Map<Integer, Set<String>> chooseParam = new HashMap<>();
+            for (Integer row : params.keySet()) {
+                if (params.get(row) != null) {
+                    List<CustomOptionRel> rels = params.get(row);
+                    if (rels.size() > 0) {
+                        rels.forEach(rel -> {
+                            if (chooseParam.get(rel.getCustomId()) != null) {
+                                chooseParam.get(rel.getCustomId()).add(rel.getOption());
+                            } else {
+                                chooseParam.put(rel.getCustomId(), new HashSet<String>(){{add(rel.getOption());}});
+                            }
+                        });
+                    }
+                }
+            }
+            List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, chooseParam.keySet());
+            if (fields.size() > 0) {
+                Map<Integer, Set<Integer>> dbparams = new HashMap<>();
+
+                fields.forEach(hrEmployeeCustomFields -> {
+                            Set<String> values = chooseParam.get(hrEmployeeCustomFields.getId());
+                            if (values != null && values.size() > 0) {
+                                Set<Integer> optionValueIds = new HashSet<>(values.size());
+                                values.forEach(o -> {
+                                    try {
+                                        int valueId = Integer.valueOf(o.trim());
+                                        optionValueIds.add(valueId);
+                                    } catch (NumberFormatException e) {
+                                        //do nothing
+                                    }
+                                });
+                                if (optionValueIds.size() > 0) {
+                                    if (dbparams.get(hrEmployeeCustomFields.getId()) != null) {
+                                        dbparams.get(hrEmployeeCustomFields.getId()).addAll(optionValueIds);
+                                    } else {
+                                        dbparams.put(hrEmployeeCustomFields.getId(), optionValueIds);
+                                    }
+                                }
+                            }
+                        });
+
+                if (dbparams.size() > 0) {
+                    dbparams.forEach((id, optionIdList) -> {
+                        List<EmployeeOptionValue> optionValues = customOptionJooqDao.listByCustomIdAndIdList(id, optionIdList);
+                        map.put(id, optionValues);
+                    });
+                }
+            }
+        }
+        return map;
+    }
+
+    class CustomOptionRel {
+
+        private int customId;
+        private String option;
+
+        public int getCustomId() {
+            return customId;
+        }
+
+        public void setCustomId(int customId) {
+            this.customId = customId;
+        }
+
+        public String getOption() {
+            return option;
+        }
+
+        public void setOption(String option) {
+            this.option = option;
+        }
+    }
+
+
+}

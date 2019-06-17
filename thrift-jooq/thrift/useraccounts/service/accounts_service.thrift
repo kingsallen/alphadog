@@ -183,7 +183,7 @@ service UserHrAccountService {
     // 员工列表
     useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string timespan,9:string email_validate) throws (1: common_struct.BIZException e);
     //新员工列表
-    useraccounts_struct.UserEmployeeVOPageVO getEmployees(1:string keyword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string email_validate,9:i32 balanceType, 10: string timespan) throws (1: common_struct.BIZException e);
+    useraccounts_struct.UserEmployeeVOPageVO getEmployees(1:string keyword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string email_validate,9:i32 balanceType, 10: string timespan, 11 : string selectedIids) throws (1: common_struct.BIZException e);
     // 员工信息导出
     list<useraccounts_struct.UserEmployeeVO> employeeExport(1:list<i32> userEmployees,2:i32 companyId,3:i32 type) throws (1: common_struct.BIZException e);
     // 员工信息
@@ -192,6 +192,8 @@ service UserHrAccountService {
     common_struct.Response updateUserEmployee(1:string cname, 2:string mobile, 3:string email, 4:string customField, 5:i32 userEmployeeId,6:i32 companyId,7:string customFieldValues) throws (1: common_struct.BIZException e)
     // 员工信息导入
     common_struct.Response employeeImport(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId,3:string filePath,4:string fileName,5:i32 type,6:i32 hraccountId) throws (1: common_struct.BIZException e)
+    //员工批量修改
+    useraccounts_struct.ImportUserEmployeeStatistic updateEmployee(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId,3:string filePath,4:string fileName,5:i32 type,6:i32 hraccountId) throws (1: common_struct.BIZException e)
     // 检查员工重复
     useraccounts_struct.ImportUserEmployeeStatistic checkBatchInsert(1:map<i32,user_employee_struct.UserEmployeeDO> userEmployeeDOS, 2:i32 companyId) throws (1: common_struct.BIZException e)
     //查询自定义导出字段
