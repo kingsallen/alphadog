@@ -25,7 +25,7 @@ service SearchengineServices {
 
     common_struct.Response queryAwardRankingInWx(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId)throws (1: common_struct.BIZException e);
     //员工列表
-    common_struct.Response fetchEmployees(1: list<i32> companyIds, 2: string keywords, 3: i32 filter, 4: string order, 5: string asc, 6: string emailValidate, 7: i32 pageSize, 8: i32 pageNumber,9:i32 balanceType, 10: string timeSpan)throws (1: common_struct.BIZException e);
+    common_struct.Response fetchEmployees(1: list<i32> companyIds, 2: string keywords, 3: i32 filter, 4: string order, 5: string asc, 6: string emailValidate, 7: i32 pageSize, 8: i32 pageNumber,9:i32 balanceType, 10: string timeSpan, 11: string selectIds)throws (1: common_struct.BIZException e);
     
     common_struct.Response listLeaderBoard(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId, 4: i32 pageNum, 5: i32 pageSize)throws (1: common_struct.BIZException e);
     

@@ -183,7 +183,7 @@ service UserHrAccountService {
     // 员工列表
     useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string timespan,9:string email_validate) throws (1: common_struct.BIZException e);
     //新员工列表
-    useraccounts_struct.UserEmployeeVOPageVO getEmployees(1:string keyword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string email_validate,9:i32 balanceType, 10: string timespan) throws (1: common_struct.BIZException e);
+    useraccounts_struct.UserEmployeeVOPageVO getEmployees(1:string keyword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string email_validate,9:i32 balanceType, 10: string timespan, 11 : string selectedIids) throws (1: common_struct.BIZException e);
     // 员工信息导出
     list<useraccounts_struct.UserEmployeeVO> employeeExport(1:list<i32> userEmployees,2:i32 companyId,3:i32 type) throws (1: common_struct.BIZException e);
     // 员工信息
