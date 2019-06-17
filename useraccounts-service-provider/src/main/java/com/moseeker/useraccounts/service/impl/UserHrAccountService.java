@@ -2147,7 +2147,8 @@ public class UserHrAccountService {
                 }
                 List customFieldValues = new ArrayList();
                 if (userEmployeeDO.getCustomFieldValues() != null) {
-                    customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
+                    List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                    customFieldValues.addAll(list);
                 }
                 userEmployeeVO.setCustomFieldValues(customFieldValues);
                 // 微信昵称
