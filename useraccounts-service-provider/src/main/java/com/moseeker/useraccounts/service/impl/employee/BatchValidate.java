@@ -141,7 +141,7 @@ public class BatchValidate {
      * @param companyId 公司编号
      * @param dbEmployeeDOList 员工数据
      */
-    public ImportUserEmployeeStatistic updateCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
+    public ImportUserEmployeeStatistic updateCheck(List<UserEmployeeDO> userEmployeeMap, Integer companyId,
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
@@ -165,14 +165,14 @@ public class BatchValidate {
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
 
-        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
-            UserEmployeeDO userEmployeeDO = entry.getValue();
+        for (int i=0; i<userEmployeeMap.size(); i++) {
+            UserEmployeeDO userEmployeeDO = userEmployeeMap.get(i);
             ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
             if (userEmployeeDO.getId() <= 0) {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                 importErrorUserEmployee.setMessage("编号错误");
                 errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployee.setRowNum(i);
                 importErrorUserEmployees.add(importErrorUserEmployee);
                 continue;
             }
@@ -180,7 +180,7 @@ public class BatchValidate {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                 importErrorUserEmployee.setMessage("数据不允许修改");
                 errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployee.setRowNum(i);
                 importErrorUserEmployees.add(importErrorUserEmployee);
                 continue;
             }
@@ -189,20 +189,20 @@ public class BatchValidate {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                 importErrorUserEmployee.setMessage("只允许修改成取消认证的状态");
                 errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployee.setRowNum(i);
                 importErrorUserEmployees.add(importErrorUserEmployee);
                 continue;
             }
             if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
                     && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
-                if (employeeCustomFiledValues.get(entry.getKey()) != null
-                        && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
-                    boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
+                if (employeeCustomFiledValues.get(i) != null
+                        && employeeCustomFiledValues.get(i).size() > 0) {
+                    boolean flag = checkOptions(employeeCustomFiledValues.get(i), dbCustomFieldValues);
                     if (!flag) {
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("自定义选项错误");
                         errorCounts = errorCounts + 1;
-                        importErrorUserEmployee.setRowNum(entry.getKey());
+                        importErrorUserEmployee.setRowNum(i);
                         importErrorUserEmployees.add(importErrorUserEmployee);
                         continue;
                     }
@@ -227,22 +227,39 @@ public class BatchValidate {
 
         userEmployeeMap.forEach((row, employee) -> {
             JSONArray array = JSONArray.parseArray(employee.getCustomFieldValues());
-            for (int i=0; i<array.size(); i++) {
-                if (array.get(i) != null) {
-                    for (Map.Entry<String, Object> entry : ((JSONObject)array.get(i)).entrySet()) {
-                        CustomOptionRel customOptionRel = new CustomOptionRel();
-                        customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
-                        customOptionRel.setOption(entry.getValue().toString());
-                        map.put(row, customOptionRel);
-                    }
-                }
-            }
+            packageRel(map, array);
         });
-
         return map;
     }
 
+    /**
+     * 将自定义字段解析成结构体
+     * @param userEmployeeMap 文件中的员工数据
+     * @return 自定义字段与行数的对应关系
+     */
+    public ArrayListMultimap<Integer, CustomOptionRel> employeeParam(List<UserEmployeeDO> userEmployeeMap) {
+        ArrayListMultimap<Integer, CustomOptionRel> map = ArrayListMultimap.create();
 
+        for (int j=0; j<userEmployeeMap.size(); j++) {
+            UserEmployeeDO employee = userEmployeeMap.get(j);
+            JSONArray array = JSONArray.parseArray(employee.getCustomFieldValues());
+            packageRel(map, array);
+        }
+        return map;
+    }
+
+    private void packageRel(ArrayListMultimap<Integer, CustomOptionRel> map, JSONArray array) {
+        for (int i=0; i<array.size(); i++) {
+            if (array.get(i) != null) {
+                for (Map.Entry<String, Object> entry : ((JSONObject)array.get(i)).entrySet()) {
+                    CustomOptionRel customOptionRel = new CustomOptionRel();
+                    customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
+                    customOptionRel.setOption(entry.getValue().toString());
+                    map.put(i, customOptionRel);
+                }
+            }
+        }
+    }
 
     /**
      * 校验自定义项是否合法

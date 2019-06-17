@@ -1456,11 +1456,11 @@ public class UserHrAccountService {
     /**
      * 员工信息导入
      *
-     * @param userEmployeeMap 员工信息列表
      * @param companyId       公司ID
+     * @param userEmployeeMap 员工信息列表
      */
     @Transactional
-    public ImportUserEmployeeStatistic updateEmployees(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
+    public ImportUserEmployeeStatistic updateEmployees(Integer companyId, List<UserEmployeeDO> userEmployeeMap, String filePath, String
             fileName, Integer type, Integer hraccountId) throws CommonException {
         logger.info("开始批量修改");
 
@@ -1495,11 +1495,12 @@ public class UserHrAccountService {
                 errorEmployeeIdList.add(employeeDO.getUserEmployeeDO().getId());
             }
         }
-        userEmployeeMap.forEach((row, userEmployee) -> {
+
+        for (UserEmployeeDO userEmployee : userEmployeeMap) {
             Optional<UserEmployeeDO> optional = dbEmployeeDOList.parallelStream()
                     .filter(dbEmployee -> !errorEmployeeIdList.contains(userEmployee.getId()) &&
-                                (dbEmployee.getId() == userEmployee.getId()
-                                        && !userEmployee.getCustomFieldValues().equals(dbEmployee.getCustomFieldValues())))
+                            (dbEmployee.getId() == userEmployee.getId()
+                                    && !userEmployee.getCustomFieldValues().equals(dbEmployee.getCustomFieldValues())))
                     .findAny();
             if (optional.isPresent()) {
                 updateCustomFieldList.add(userEmployee);
@@ -1514,8 +1515,7 @@ public class UserHrAccountService {
             if (optional1.isPresent()) {
                 updateActivationList.add(userEmployee);
             }
-
-        });
+        }
 
         if (updateCustomFieldList.size() > 0) {
             List<UserEmployeeRecord> records = updateCustomFieldList
@@ -1528,7 +1528,6 @@ public class UserHrAccountService {
                     })
                     .collect(Collectors.toList());
             userEmployeeDao.updateRecords(records);
-
         }
 
         if (updateActivationList.size() > 0) {
@@ -1568,17 +1567,6 @@ public class UserHrAccountService {
 
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
         return repetitionFilter(userEmployeeMap, companyId);
-    }
-
-    /**
-     * 校验提交的自定义是否是这家公司下可选的自定义内容
-     * @param userEmployeeMap 员工数据
-     * @param companyId 公司编号
-     * @param importUserEmployeeStatistic
-     * @throws UserAccountException 业务异常 UserAccountException.IMPORT_DATA_CUSTOM_ERROR UserAccountException.IMPORT_DATA_WRONG
-     */
-    private void checkCustomFieldValues(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId, ImportUserEmployeeStatistic importUserEmployeeStatistic) throws UserAccountException {
-
     }
 
     /**
