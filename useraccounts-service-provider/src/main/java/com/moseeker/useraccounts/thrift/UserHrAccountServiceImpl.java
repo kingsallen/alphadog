@@ -647,7 +647,7 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public ImportUserEmployeeStatistic updateEmployee(Map<Integer, UserEmployeeDO> userEmployeeDOS, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+    public ImportUserEmployeeStatistic updateEmployee(List<UserEmployeeDO> userEmployeeDOS, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
         try {
             return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
         } catch (Exception e) {

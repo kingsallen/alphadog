@@ -2,10 +2,9 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import org.slf4j.LoggerFactory;
 
 public class UserHrAccountParamUtils extends ParamUtils {
@@ -25,6 +24,23 @@ public class UserHrAccountParamUtils extends ParamUtils {
             }
         }
         return map;
+    }
+
+    public static List<UserEmployeeDO> parseEmployees(List<Map<String, Object>> datas) throws Exception {
+        if (datas != null && datas.size() > 0) {
+            List<UserEmployeeDO> userEmployeeDOS = new ArrayList<>(datas.size());
+            for (Map<String, Object> data : datas) {
+                try {
+                    UserEmployeeDO userEmployeeDO = ParamUtils.initModelForm(data, UserEmployeeDO.class);
+                    userEmployeeDOS.add(userEmployeeDO);
+                } catch (Exception e) {
+                    LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
+                }
+            }
+            return userEmployeeDOS;
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 
 }

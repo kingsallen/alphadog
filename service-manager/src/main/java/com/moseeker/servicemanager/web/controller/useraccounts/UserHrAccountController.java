@@ -25,6 +25,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
@@ -1090,7 +1091,10 @@ public class UserHrAccountController {
         Integer hraccountId = params.getInt("hraccountId", 0);
         String fileName = params.getString("fileName", "");
         String filePath = params.getString("filePath", "");
-        Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+        logger.info("userEmployees:{}", params.get("userEmployees"));
+
+        List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseEmployees((List<Map<String, Object>>)params.get("userEmployees"));
+
         ImportUserEmployeeStatistic importUserEmployeeStatistic = userHrAccountService.updateEmployee(userEmployees, companyId, filePath, fileName, type, hraccountId);
         return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(importUserEmployeeStatistic)));
     }

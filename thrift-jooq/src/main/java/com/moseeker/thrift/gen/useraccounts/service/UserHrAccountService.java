@@ -94,7 +94,7 @@ public class UserHrAccountService {
 
     public com.moseeker.thrift.gen.common.struct.Response employeeImport(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic updateEmployee(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic updateEmployee(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic checkBatchInsert(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -202,7 +202,7 @@ public class UserHrAccountService {
 
     public void employeeImport(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void updateEmployee(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException;
+    public void updateEmployee(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException;
 
     public void checkBatchInsert(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException;
 
@@ -1294,13 +1294,13 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeImport failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic updateEmployee(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic updateEmployee(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_updateEmployee(userEmployeeDOS, companyId, filePath, fileName, type, hraccountId);
       return recv_updateEmployee();
     }
 
-    public void send_updateEmployee(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws org.apache.thrift.TException
+    public void send_updateEmployee(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId) throws org.apache.thrift.TException
     {
       updateEmployee_args args = new updateEmployee_args();
       args.setUserEmployeeDOS(userEmployeeDOS);
@@ -3110,7 +3110,7 @@ public class UserHrAccountService {
       }
     }
 
-    public void updateEmployee(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException {
+    public void updateEmployee(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       updateEmployee_call method_call = new updateEmployee_call(userEmployeeDOS, companyId, filePath, fileName, type, hraccountId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -3118,13 +3118,13 @@ public class UserHrAccountService {
     }
 
     public static class updateEmployee_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> {
-      private java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS;
+      private java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS;
       private int companyId;
       private java.lang.String filePath;
       private java.lang.String fileName;
       private int type;
       private int hraccountId;
-      public updateEmployee_call(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public updateEmployee_call(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS, int companyId, java.lang.String filePath, java.lang.String fileName, int type, int hraccountId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userEmployeeDOS = userEmployeeDOS;
         this.companyId = companyId;
@@ -46659,7 +46659,7 @@ public class UserHrAccountService {
   public static class updateEmployee_args implements org.apache.thrift.TBase<updateEmployee_args, updateEmployee_args._Fields>, java.io.Serializable, Cloneable, Comparable<updateEmployee_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("updateEmployee_args");
 
-    private static final org.apache.thrift.protocol.TField USER_EMPLOYEE_DOS_FIELD_DESC = new org.apache.thrift.protocol.TField("userEmployeeDOS", org.apache.thrift.protocol.TType.MAP, (short)1);
+    private static final org.apache.thrift.protocol.TField USER_EMPLOYEE_DOS_FIELD_DESC = new org.apache.thrift.protocol.TField("userEmployeeDOS", org.apache.thrift.protocol.TType.LIST, (short)1);
     private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)2);
     private static final org.apache.thrift.protocol.TField FILE_PATH_FIELD_DESC = new org.apache.thrift.protocol.TField("filePath", org.apache.thrift.protocol.TType.STRING, (short)3);
     private static final org.apache.thrift.protocol.TField FILE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("fileName", org.apache.thrift.protocol.TType.STRING, (short)4);
@@ -46669,7 +46669,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new updateEmployee_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new updateEmployee_argsTupleSchemeFactory();
 
-    public java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS; // required
+    public java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS; // required
     public int companyId; // required
     public java.lang.String filePath; // required
     public java.lang.String fileName; // required
@@ -46758,8 +46758,7 @@ public class UserHrAccountService {
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.USER_EMPLOYEE_DOS, new org.apache.thrift.meta_data.FieldMetaData("userEmployeeDOS", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32), 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO.class))));
       tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
@@ -46779,7 +46778,7 @@ public class UserHrAccountService {
     }
 
     public updateEmployee_args(
-      java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS,
+      java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS,
       int companyId,
       java.lang.String filePath,
       java.lang.String fileName,
@@ -46804,17 +46803,9 @@ public class UserHrAccountService {
     public updateEmployee_args(updateEmployee_args other) {
       __isset_bitfield = other.__isset_bitfield;
       if (other.isSetUserEmployeeDOS()) {
-        java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> __this__userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(other.userEmployeeDOS.size());
-        for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> other_element : other.userEmployeeDOS.entrySet()) {
-
-          java.lang.Integer other_element_key = other_element.getKey();
-          com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO other_element_value = other_element.getValue();
-
-          java.lang.Integer __this__userEmployeeDOS_copy_key = other_element_key;
-
-          com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO __this__userEmployeeDOS_copy_value = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO(other_element_value);
-
-          __this__userEmployeeDOS.put(__this__userEmployeeDOS_copy_key, __this__userEmployeeDOS_copy_value);
+        java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> __this__userEmployeeDOS = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(other.userEmployeeDOS.size());
+        for (com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO other_element : other.userEmployeeDOS) {
+          __this__userEmployeeDOS.add(new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO(other_element));
         }
         this.userEmployeeDOS = __this__userEmployeeDOS;
       }
@@ -46850,18 +46841,22 @@ public class UserHrAccountService {
       return (this.userEmployeeDOS == null) ? 0 : this.userEmployeeDOS.size();
     }
 
-    public void putToUserEmployeeDOS(int key, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO val) {
-      if (this.userEmployeeDOS == null) {
-        this.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>();
-      }
-      this.userEmployeeDOS.put(key, val);
+    public java.util.Iterator<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> getUserEmployeeDOSIterator() {
+      return (this.userEmployeeDOS == null) ? null : this.userEmployeeDOS.iterator();
     }
 
-    public java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> getUserEmployeeDOS() {
+    public void addToUserEmployeeDOS(com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO elem) {
+      if (this.userEmployeeDOS == null) {
+        this.userEmployeeDOS = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>();
+      }
+      this.userEmployeeDOS.add(elem);
+    }
+
+    public java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> getUserEmployeeDOS() {
       return this.userEmployeeDOS;
     }
 
-    public updateEmployee_args setUserEmployeeDOS(java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS) {
+    public updateEmployee_args setUserEmployeeDOS(java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> userEmployeeDOS) {
       this.userEmployeeDOS = userEmployeeDOS;
       return this;
     }
@@ -47004,7 +46999,7 @@ public class UserHrAccountService {
         if (value == null) {
           unsetUserEmployeeDOS();
         } else {
-          setUserEmployeeDOS((java.util.Map<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>)value);
+          setUserEmployeeDOS((java.util.List<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>)value);
         }
         break;
 
@@ -47364,20 +47359,18 @@ public class UserHrAccountService {
           }
           switch (schemeField.id) {
             case 1: // USER_EMPLOYEE_DOS
-              if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TMap _map106 = iprot.readMapBegin();
-                  struct.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(2*_map106.size);
-                  int _key107;
-                  com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _val108;
-                  for (int _i109 = 0; _i109 < _map106.size; ++_i109)
+                  org.apache.thrift.protocol.TList _list106 = iprot.readListBegin();
+                  struct.userEmployeeDOS = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(_list106.size);
+                  com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _elem107;
+                  for (int _i108 = 0; _i108 < _list106.size; ++_i108)
                   {
-                    _key107 = iprot.readI32();
-                    _val108 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
-                    _val108.read(iprot);
-                    struct.userEmployeeDOS.put(_key107, _val108);
+                    _elem107 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
+                    _elem107.read(iprot);
+                    struct.userEmployeeDOS.add(_elem107);
                   }
-                  iprot.readMapEnd();
+                  iprot.readListEnd();
                 }
                 struct.setUserEmployeeDOSIsSet(true);
               } else { 
@@ -47442,13 +47435,12 @@ public class UserHrAccountService {
         if (struct.userEmployeeDOS != null) {
           oprot.writeFieldBegin(USER_EMPLOYEE_DOS_FIELD_DESC);
           {
-            oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.STRUCT, struct.userEmployeeDOS.size()));
-            for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> _iter110 : struct.userEmployeeDOS.entrySet())
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.userEmployeeDOS.size()));
+            for (com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _iter109 : struct.userEmployeeDOS)
             {
-              oprot.writeI32(_iter110.getKey());
-              _iter110.getValue().write(oprot);
+              _iter109.write(oprot);
             }
-            oprot.writeMapEnd();
+            oprot.writeListEnd();
           }
           oprot.writeFieldEnd();
         }
@@ -47511,10 +47503,9 @@ public class UserHrAccountService {
         if (struct.isSetUserEmployeeDOS()) {
           {
             oprot.writeI32(struct.userEmployeeDOS.size());
-            for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> _iter111 : struct.userEmployeeDOS.entrySet())
+            for (com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _iter110 : struct.userEmployeeDOS)
             {
-              oprot.writeI32(_iter111.getKey());
-              _iter111.getValue().write(oprot);
+              _iter110.write(oprot);
             }
           }
         }
@@ -47541,16 +47532,14 @@ public class UserHrAccountService {
         java.util.BitSet incoming = iprot.readBitSet(6);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map112 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(2*_map112.size);
-            int _key113;
-            com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _val114;
-            for (int _i115 = 0; _i115 < _map112.size; ++_i115)
+            org.apache.thrift.protocol.TList _list111 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.userEmployeeDOS = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(_list111.size);
+            com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _elem112;
+            for (int _i113 = 0; _i113 < _list111.size; ++_i113)
             {
-              _key113 = iprot.readI32();
-              _val114 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
-              _val114.read(iprot);
-              struct.userEmployeeDOS.put(_key113, _val114);
+              _elem112 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
+              _elem112.read(iprot);
+              struct.userEmployeeDOS.add(_elem112);
             }
           }
           struct.setUserEmployeeDOSIsSet(true);
@@ -48454,16 +48443,16 @@ public class UserHrAccountService {
             case 1: // USER_EMPLOYEE_DOS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map116 = iprot.readMapBegin();
-                  struct.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(2*_map116.size);
-                  int _key117;
-                  com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _val118;
-                  for (int _i119 = 0; _i119 < _map116.size; ++_i119)
+                  org.apache.thrift.protocol.TMap _map114 = iprot.readMapBegin();
+                  struct.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(2*_map114.size);
+                  int _key115;
+                  com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _val116;
+                  for (int _i117 = 0; _i117 < _map114.size; ++_i117)
                   {
-                    _key117 = iprot.readI32();
-                    _val118 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
-                    _val118.read(iprot);
-                    struct.userEmployeeDOS.put(_key117, _val118);
+                    _key115 = iprot.readI32();
+                    _val116 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
+                    _val116.read(iprot);
+                    struct.userEmployeeDOS.put(_key115, _val116);
                   }
                   iprot.readMapEnd();
                 }
@@ -48499,10 +48488,10 @@ public class UserHrAccountService {
           oprot.writeFieldBegin(USER_EMPLOYEE_DOS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.STRUCT, struct.userEmployeeDOS.size()));
-            for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> _iter120 : struct.userEmployeeDOS.entrySet())
+            for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> _iter118 : struct.userEmployeeDOS.entrySet())
             {
-              oprot.writeI32(_iter120.getKey());
-              _iter120.getValue().write(oprot);
+              oprot.writeI32(_iter118.getKey());
+              _iter118.getValue().write(oprot);
             }
             oprot.writeMapEnd();
           }
@@ -48539,10 +48528,10 @@ public class UserHrAccountService {
         if (struct.isSetUserEmployeeDOS()) {
           {
             oprot.writeI32(struct.userEmployeeDOS.size());
-            for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> _iter121 : struct.userEmployeeDOS.entrySet())
+            for (java.util.Map.Entry<java.lang.Integer, com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO> _iter119 : struct.userEmployeeDOS.entrySet())
             {
-              oprot.writeI32(_iter121.getKey());
-              _iter121.getValue().write(oprot);
+              oprot.writeI32(_iter119.getKey());
+              _iter119.getValue().write(oprot);
             }
           }
         }
@@ -48557,16 +48546,16 @@ public class UserHrAccountService {
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map122 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(2*_map122.size);
-            int _key123;
-            com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _val124;
-            for (int _i125 = 0; _i125 < _map122.size; ++_i125)
+            org.apache.thrift.protocol.TMap _map120 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.I32, org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.userEmployeeDOS = new java.util.HashMap<java.lang.Integer,com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO>(2*_map120.size);
+            int _key121;
+            com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO _val122;
+            for (int _i123 = 0; _i123 < _map120.size; ++_i123)
             {
-              _key123 = iprot.readI32();
-              _val124 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
-              _val124.read(iprot);
-              struct.userEmployeeDOS.put(_key123, _val124);
+              _key121 = iprot.readI32();
+              _val122 = new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO();
+              _val122.read(iprot);
+              struct.userEmployeeDOS.put(_key121, _val122);
             }
           }
           struct.setUserEmployeeDOSIsSet(true);
@@ -49905,14 +49894,14 @@ public class UserHrAccountService {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list126 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO>(_list126.size);
-                  com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _elem127;
-                  for (int _i128 = 0; _i128 < _list126.size; ++_i128)
+                  org.apache.thrift.protocol.TList _list124 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO>(_list124.size);
+                  com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _elem125;
+                  for (int _i126 = 0; _i126 < _list124.size; ++_i126)
                   {
-                    _elem127 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO();
-                    _elem127.read(iprot);
-                    struct.success.add(_elem127);
+                    _elem125 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO();
+                    _elem125.read(iprot);
+                    struct.success.add(_elem125);
                   }
                   iprot.readListEnd();
                 }
@@ -49949,9 +49938,9 @@ public class UserHrAccountService {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _iter129 : struct.success)
+            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _iter127 : struct.success)
             {
-              _iter129.write(oprot);
+              _iter127.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -49990,9 +49979,9 @@ public class UserHrAccountService {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _iter130 : struct.success)
+            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _iter128 : struct.success)
             {
-              _iter130.write(oprot);
+              _iter128.write(oprot);
             }
           }
         }
@@ -50007,14 +49996,14 @@ public class UserHrAccountService {
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list131 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO>(_list131.size);
-            com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _elem132;
-            for (int _i133 = 0; _i133 < _list131.size; ++_i133)
+            org.apache.thrift.protocol.TList _list129 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO>(_list129.size);
+            com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO _elem130;
+            for (int _i131 = 0; _i131 < _list129.size; ++_i131)
             {
-              _elem132 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO();
-              _elem132.read(iprot);
-              struct.success.add(_elem132);
+              _elem130 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO();
+              _elem130.read(iprot);
+              struct.success.add(_elem130);
             }
           }
           struct.setSuccessIsSet(true);
@@ -53574,14 +53563,14 @@ public class UserHrAccountService {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list134 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO>(_list134.size);
-                  com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _elem135;
-                  for (int _i136 = 0; _i136 < _list134.size; ++_i136)
+                  org.apache.thrift.protocol.TList _list132 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO>(_list132.size);
+                  com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _elem133;
+                  for (int _i134 = 0; _i134 < _list132.size; ++_i134)
                   {
-                    _elem135 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO();
-                    _elem135.read(iprot);
-                    struct.success.add(_elem135);
+                    _elem133 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO();
+                    _elem133.read(iprot);
+                    struct.success.add(_elem133);
                   }
                   iprot.readListEnd();
                 }
@@ -53618,9 +53607,9 @@ public class UserHrAccountService {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _iter137 : struct.success)
+            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _iter135 : struct.success)
             {
-              _iter137.write(oprot);
+              _iter135.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -53659,9 +53648,9 @@ public class UserHrAccountService {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _iter138 : struct.success)
+            for (com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _iter136 : struct.success)
             {
-              _iter138.write(oprot);
+              _iter136.write(oprot);
             }
           }
         }
@@ -53676,14 +53665,14 @@ public class UserHrAccountService {
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list139 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO>(_list139.size);
-            com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _elem140;
-            for (int _i141 = 0; _i141 < _list139.size; ++_i141)
+            org.apache.thrift.protocol.TList _list137 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO>(_list137.size);
+            com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO _elem138;
+            for (int _i139 = 0; _i139 < _list137.size; ++_i139)
             {
-              _elem140 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO();
-              _elem140.read(iprot);
-              struct.success.add(_elem140);
+              _elem138 = new com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO();
+              _elem138.read(iprot);
+              struct.success.add(_elem138);
             }
           }
           struct.setSuccessIsSet(true);
