@@ -178,6 +178,7 @@ public class BatchValidate {
                 errorCounts = errorCounts + 1;
                 importErrorUserEmployee.setRowNum(i);
                 importErrorUserEmployees.add(importErrorUserEmployee);
+                logger.info("BatchValidate updateEmployee updateCheck row:{} message:id <=0", i);
                 continue;
             }
             if (!employeeIdList.contains(userEmployeeDO.getId())) {
@@ -186,6 +187,7 @@ public class BatchValidate {
                 errorCounts = errorCounts + 1;
                 importErrorUserEmployee.setRowNum(i);
                 importErrorUserEmployees.add(importErrorUserEmployee);
+                logger.info("BatchValidate updateEmployee updateCheck row:{} message:数据不允许修改", i);
                 continue;
             }
             if (userEmployeeDO.getActivation() != EmployeeActiveState.Actived.getState()
@@ -195,6 +197,7 @@ public class BatchValidate {
                 errorCounts = errorCounts + 1;
                 importErrorUserEmployee.setRowNum(i);
                 importErrorUserEmployees.add(importErrorUserEmployee);
+                logger.info("BatchValidate updateEmployee updateCheck row:{} message:只允许修改成取消认证的状态", i);
                 continue;
             }
             if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
@@ -208,6 +211,7 @@ public class BatchValidate {
                         errorCounts = errorCounts + 1;
                         importErrorUserEmployee.setRowNum(i);
                         importErrorUserEmployees.add(importErrorUserEmployee);
+                        logger.info("BatchValidate updateEmployee updateCheck row:{} message:自定义选项错误", i);
                         continue;
                     }
                 }
