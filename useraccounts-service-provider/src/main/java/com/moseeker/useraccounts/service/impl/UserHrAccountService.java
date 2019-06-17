@@ -1485,6 +1485,7 @@ public class UserHrAccountService {
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.updateCheck(userEmployeeMap, companyId, dbEmployeeDOList);
+        logger.info("UserHrAccountService updateEmployees importUserEmployeeStatistic:{}", importUserEmployeeStatistic);
 
         List<UserEmployeeDO> updateCustomFieldList = new ArrayList<>();
         List<UserEmployeeDO> updateActivationList = new ArrayList<>();
@@ -1532,10 +1533,6 @@ public class UserHrAccountService {
 
         if (updateActivationList.size() > 0) {
             employeeEntity.unbind(updateActivationList);
-        }
-
-        if (!importUserEmployeeStatistic.insertAccept) {
-            throw UserAccountException.IMPORT_DATA_WRONG;
         }
 
         try {
