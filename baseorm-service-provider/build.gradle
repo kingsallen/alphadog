@@ -8,7 +8,6 @@ repositories {
 // 设置依赖
 dependencies { 
 	compile project (":common")
-	compile project (":thrift-jooq")
     compile deps["mysql-connector-java"]
 	compile deps["spring-core"]
     compile deps["spring-context"]

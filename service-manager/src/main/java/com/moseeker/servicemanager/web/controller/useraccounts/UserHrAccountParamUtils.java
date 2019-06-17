@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
@@ -32,6 +34,26 @@ public class UserHrAccountParamUtils extends ParamUtils {
             for (Map<String, Object> data : datas) {
                 try {
                     UserEmployeeDO userEmployeeDO = ParamUtils.initModelForm(data, UserEmployeeDO.class);
+                    if (data.get("customFieldValues") != null && !data.get("customFieldValues").equals("[]")) {
+
+                        JSONArray jsonArray = new JSONArray();
+                        List<Map<String, String>>  list = (List)data.get("customFieldValues");
+                        if (list != null && list.size() > 0) {
+                            list.forEach(map -> {
+                                JSONObject jsonObject = new JSONObject();
+                                map.forEach((key, value) -> {
+                                    if (!value.equals("")) {
+                                        jsonObject.put(key, value);
+                                    }
+                                });
+                                if (jsonObject.size() > 0) {
+                                    jsonArray.add(jsonArray);
+                                }
+                            });
+
+                            userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
+                        }
+                    }
                     userEmployeeDOS.add(userEmployeeDO);
                 } catch (Exception e) {
                     LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);

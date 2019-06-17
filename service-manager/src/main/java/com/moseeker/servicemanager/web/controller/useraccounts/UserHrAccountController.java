@@ -1091,9 +1091,10 @@ public class UserHrAccountController {
         Integer hraccountId = params.getInt("hraccountId", 0);
         String fileName = params.getString("fileName", "");
         String filePath = params.getString("filePath", "");
-        logger.info("userEmployees:{}", params.get("userEmployees"));
+        logger.info("batchUpdate userEmployees:{}", params.get("userEmployees"));
 
         List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseEmployees((List<Map<String, Object>>)params.get("userEmployees"));
+        logger.info("batchUpdate userEmployees:{}", userEmployees);
 
         ImportUserEmployeeStatistic importUserEmployeeStatistic = userHrAccountService.updateEmployee(userEmployees, companyId, filePath, fileName, type, hraccountId);
         return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(importUserEmployeeStatistic)));
