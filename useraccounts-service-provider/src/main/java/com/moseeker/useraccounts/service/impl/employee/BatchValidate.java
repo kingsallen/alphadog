@@ -251,11 +251,15 @@ public class BatchValidate {
     private void packageRel(ArrayListMultimap<Integer, CustomOptionRel> map, JSONArray array) {
         for (int i=0; i<array.size(); i++) {
             if (array.get(i) != null) {
-                for (Map.Entry<String, Object> entry : ((JSONObject)array.get(i)).entrySet()) {
-                    CustomOptionRel customOptionRel = new CustomOptionRel();
-                    customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
-                    customOptionRel.setOption(entry.getValue().toString());
-                    map.put(i, customOptionRel);
+                JSONArray jsonArray = (JSONArray)array.get(i);
+                if (jsonArray != null && jsonArray.size() > 0) {
+
+                    for (Map.Entry<String, Object> entry : ((JSONObject)jsonArray.get(0)).entrySet()) {
+                        CustomOptionRel customOptionRel = new CustomOptionRel();
+                        customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
+                        customOptionRel.setOption(entry.getValue().toString());
+                        map.put(i, customOptionRel);
+                    }
                 }
             }
         }

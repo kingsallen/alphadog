@@ -47,7 +47,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
                                     }
                                 });
                                 if (jsonObject.size() > 0) {
-                                    jsonArray.add(jsonArray);
+                                    jsonArray.add(jsonObject);
                                 }
                             });
 
