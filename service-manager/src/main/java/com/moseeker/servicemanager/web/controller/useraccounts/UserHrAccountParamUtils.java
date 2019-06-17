@@ -42,7 +42,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
                             list.forEach(map -> {
                                 JSONObject jsonObject = new JSONObject();
                                 map.forEach((key, value) -> {
-                                    if (!value.equals("")) {
+                                    if (!value.trim().equals("")) {
                                         jsonObject.put(key, value);
                                     }
                                 });
