@@ -1489,6 +1489,9 @@ public class UserHrAccountService {
 
         List<UserEmployeeDO> updateCustomFieldList = new ArrayList<>();
         List<UserEmployeeDO> updateActivationList = new ArrayList<>();
+
+        List<Integer> employeeIdList = new ArrayList<>();
+
         List<Integer> errorEmployeeIdList = new ArrayList<>();
         if (importUserEmployeeStatistic.getUserEmployeeDO() != null
                 && importUserEmployeeStatistic.getUserEmployeeDO().size() > 0) {
@@ -1505,6 +1508,7 @@ public class UserHrAccountService {
                     .findAny();
             if (optional.isPresent()) {
                 updateCustomFieldList.add(userEmployee);
+                employeeIdList.add(userEmployee.getId());
             }
 
             Optional<UserEmployeeDO> optional1 = dbEmployeeDOList.parallelStream()
@@ -1515,6 +1519,7 @@ public class UserHrAccountService {
                     .findAny();
             if (optional1.isPresent()) {
                 updateActivationList.add(userEmployee);
+                employeeIdList.add(userEmployee.getId());
             }
         }
 
@@ -1534,6 +1539,7 @@ public class UserHrAccountService {
         if (updateActivationList.size() > 0) {
             employeeEntity.unbind(updateActivationList);
         }
+        searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList));
 
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
@@ -1635,8 +1641,16 @@ public class UserHrAccountService {
         userEmployeeDetailVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
 
         if (userEmployeeDO.getCustomFieldValues() != null) {
+            List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+            userEmployeeDetailVO.setCustomFieldValues(list);
             List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-            userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
+            if (customFieldValues != null && customFieldValues.size() > 0) {
+                List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
+                userEmployeeDetailVO.setCustomFieldValues(jsonArray);
+            } else {
+                userEmployeeDetailVO.setCustomFieldValues(new ArrayList<>(0));
+            }
+
         }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {

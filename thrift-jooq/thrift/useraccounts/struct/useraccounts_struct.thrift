@@ -462,7 +462,7 @@ struct UserEmployeeDetailVO{
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime // 绑定时间
     13: optional i32 award, // 积分
-    14: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息,
+    14: optional list<map<string,string>> customFieldValues // 公司员工认证后补填字段配置信息,
     15: optional string bonus //员工当前的奖金总额,
     16: optional i32 authMethod //认证方式,
     17: optional string unbindingTime //解除绑定时间

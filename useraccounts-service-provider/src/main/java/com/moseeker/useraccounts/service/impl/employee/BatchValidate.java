@@ -51,6 +51,62 @@ public class BatchValidate {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
+     * 将员工自定义字段json字符串解析成List<Map<String,String>>
+     * @param customFieldValueStr 自定义字段json字符串
+     * @return list
+     */
+    public List<Map<String, String>> parseCustomFieldValues(String customFieldValueStr) {
+        if (org.apache.commons.lang.StringUtils.isNotBlank(customFieldValueStr) && !customFieldValueStr.equals("[]")) {
+
+            List customFieldValues = JSONObject.parseObject(customFieldValueStr, List.class);
+            if (customFieldValues != null && customFieldValues.size() > 0) {
+                List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
+                for (Object customFieldValue : customFieldValues) {
+                    Map<String, String> jsonObject = new HashMap<>();
+
+                    JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
+                    customFieldJSONObject.forEach((key, value) -> {
+                        if (value instanceof JSONArray) {
+                            String valueStr;
+                            if (((JSONArray)value).get(0) instanceof String) {
+                                valueStr = (String) ((JSONArray)value).get(0);
+                                jsonObject.put(key, valueStr);
+                            } else if(((JSONArray)value).get(0) instanceof Integer) {
+                                valueStr = ((JSONArray)value).get(0).toString();
+                                jsonObject.put(key, valueStr);
+                            } else {
+                                //do nothing
+                            }
+                        } else if (value instanceof JSONObject) {
+                            ((JSONObject)value).forEach((keyKey, valueValue) -> {
+                                String valueStr;
+                                if (valueValue instanceof String) {
+                                    valueStr = (String) valueValue;
+                                    jsonObject.put(keyKey, valueStr);
+                                } else if(valueValue instanceof Integer) {
+                                    valueStr = valueValue.toString();
+                                    jsonObject.put(keyKey, valueStr);
+                                } else {
+                                    //do nothing
+                                }
+                            });
+                        }
+                    });
+                    if (jsonObject.size() > 0) {
+                        jsonArray.add(jsonObject);
+                    }
+                }
+
+                return jsonArray;
+            } else {
+                return new ArrayList<>(0);
+            }
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+    /**
      * 查询是否有重复数据
      *
      * @param userEmployeeMap 参数
