@@ -16,6 +16,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +47,8 @@ public class BatchValidate {
     protected EmployeeCustomOptionJooqDao customOptionJooqDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 查询是否有重复数据
@@ -248,19 +252,39 @@ public class BatchValidate {
         return map;
     }
 
+    /**
+     * 将自定义字段解析成结构体
+     * @param map 结构体
+     * @param array json数组
+     */
     private void packageRel(ArrayListMultimap<Integer, CustomOptionRel> map, JSONArray array) {
         for (int i=0; i<array.size(); i++) {
             if (array.get(i) != null) {
-                JSONArray jsonArray = (JSONArray)array.get(i);
-                if (jsonArray != null && jsonArray.size() > 0) {
-
-                    for (Map.Entry<String, Object> entry : ((JSONObject)jsonArray.get(0)).entrySet()) {
-                        CustomOptionRel customOptionRel = new CustomOptionRel();
-                        customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
-                        customOptionRel.setOption(entry.getValue().toString());
-                        map.put(i, customOptionRel);
+                logger.info("BatchValidate packageRel array[{}]:{}", i, array.get(i));
+                if (array.get(i) instanceof JSONArray) {
+                    JSONArray jsonArray = (JSONArray)array.get(i);
+                    if (jsonArray != null && jsonArray.size() > 0) {
+                        parseJson(map, (JSONObject)jsonArray.get(0), i);
                     }
+                } else if (array.get(i) instanceof JSONObject) {
+                    parseJson(map, (JSONObject)array.get(i), i);
                 }
+            }
+        }
+    }
+
+    /**
+     * 解析custonFieldValues json信息
+     * @param map 结构体
+     * @param jsonObject json对象
+     */
+    private void parseJson(ArrayListMultimap<Integer, CustomOptionRel> map, JSONObject jsonObject, int i) {
+        if (jsonObject != null && jsonObject.size() > 0) {
+            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                CustomOptionRel customOptionRel = new CustomOptionRel();
+                customOptionRel.setCustomId(Integer.valueOf(entry.getKey()));
+                customOptionRel.setOption(entry.getValue().toString());
+                map.put(i, customOptionRel);
             }
         }
     }
