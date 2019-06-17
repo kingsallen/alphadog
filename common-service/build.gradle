@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 // 设置依赖
 dependencies {
     compile project (":common")
+    compile project (":thrift-jooq")
     compile project (":baseorm-service-provider")
 
     compile deps["spring-core"]
