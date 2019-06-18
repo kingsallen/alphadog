@@ -327,19 +327,27 @@ public class BatchValidate {
          * 校验必填项
          */
         List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
+        logger.info("BatchValidate validateCustomFieldValues customSupplyVOS:{}", JSONObject.toJSONString(customSupplyVOS));
         List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
                 .parallelStream()
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
+        logger.info("BatchValidate validateCustomFieldValues notSupportList:{}", JSONObject.toJSONString(notSupportList));
         if (notSupportList != null && notSupportList.size() > 0) {
             logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
+        }
+
+        logger.info("BatchValidate validateCustomFieldValues customFieldValues:{}", JSONObject.toJSONString(customFieldValues));
+        if (customFieldValues == null || customFieldValues.size() == 0) {
+            return true;
         }
 
         /**
          * 校验下拉项选择
          */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+        logger.info("BatchValidate validateCustomFieldValues rels:{}", JSONObject.toJSONString(rels));
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
                     .parallelStream()
@@ -347,7 +355,7 @@ public class BatchValidate {
                     .collect(Collectors.toSet());
             List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, customFieldIdList);
 
-
+            logger.info("BatchValidate validateCustomFieldValues fields:{}", JSONObject.toJSONString(fields));
 
             if (fields.size() > 0) {
                 Map<Integer, Integer> params = new HashMap<>(fields.size());
