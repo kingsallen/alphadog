@@ -1540,7 +1540,6 @@ public class UserHrAccountService {
                         && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
                         && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
                     updateActivationList.add(userEmployee);
-                    employeeIdList.add(userEmployee.getId());
                 }
             }
         }
