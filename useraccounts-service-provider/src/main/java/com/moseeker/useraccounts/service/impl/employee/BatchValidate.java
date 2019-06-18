@@ -425,7 +425,7 @@ public class BatchValidate {
                                     .findAny();
                             return optionValue.isPresent();
                         } else {
-                            return true;
+                            return false;
                         }
                     })
                     .findAny();
