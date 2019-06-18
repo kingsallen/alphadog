@@ -434,7 +434,7 @@ public class BatchValidate {
                             logger.info("BatchValidate checkOptions optionValue.siPresent:{}", optionValue.isPresent());
                             return optionValue.isPresent();
                         } else {
-                            return true;
+                            return false;
                         }
                     })
                     .findAny();
