@@ -361,6 +361,7 @@ public class BatchValidate {
                     }
 
                 }
+                logger.info("BatchValidate validateCustomFieldValues 数据库中的下拉项： params:{}", JSONObject.toJSONString(params));
                 int count = customOptionJooqDao.countByCustomIdAndId(params);
                 logger.info("BatchValidate validateCustomFieldValues 数据库中的下拉项： count:{}, 用户提交的下拉项：fields.size:{}", count, fields.size());
                 return count == fields.size();

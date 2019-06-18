@@ -85,6 +85,7 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
                             .and(EMPLOYEE_OPTION_VALUE.ID.eq(entry.getValue())));
                 }
             }
+            logger.info("EmployeeCustomOptionJooqDao countByCustomIdAndId condition:{}",condition);
             if (condition != null) {
                 return create
                         .selectCount()
