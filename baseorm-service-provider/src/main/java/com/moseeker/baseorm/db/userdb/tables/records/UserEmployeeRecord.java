@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 1691849733;
+    private static final long serialVersionUID = 591195282;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -591,14 +591,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证
+     * Setter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接
      */
     public void setSource(Byte value) {
         set(40, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证
+     * Getter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接
      */
     public Byte getSource() {
         return (Byte) get(40);
@@ -814,6 +814,34 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
         return (Integer) get(55);
     }
 
+    /**
+     * Setter for <code>userdb.user_employee.unbind_time</code>. 取消认证的时间
+     */
+    public void setUnbindTime(Timestamp value) {
+        set(56, value);
+    }
+
+    /**
+     * Getter for <code>userdb.user_employee.unbind_time</code>. 取消认证的时间
+     */
+    public Timestamp getUnbindTime() {
+        return (Timestamp) get(56);
+    }
+
+    /**
+     * Setter for <code>userdb.user_employee.import_time</code>. 导入时间
+     */
+    public void setImportTime(Timestamp value) {
+        set(57, value);
+    }
+
+    /**
+     * Getter for <code>userdb.user_employee.import_time</code>. 导入时间
+     */
+    public Timestamp getImportTime() {
+        return (Timestamp) get(57);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -840,7 +868,7 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     /**
      * Create a detached, initialised UserEmployeeRecord
      */
-    public UserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, Integer hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod, String customFieldValues, Integer teamId, Byte jobGrade, Integer cityCode, Byte degree, Integer bonus) {
+    public UserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, Integer hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod, String customFieldValues, Integer teamId, Byte jobGrade, Integer cityCode, Byte degree, Integer bonus, Timestamp unbindTime, Timestamp importTime) {
         super(UserEmployee.USER_EMPLOYEE);
 
         set(0, id);
@@ -899,5 +927,7 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
         set(53, cityCode);
         set(54, degree);
         set(55, bonus);
+        set(56, unbindTime);
+        set(57, importTime);
     }
 }

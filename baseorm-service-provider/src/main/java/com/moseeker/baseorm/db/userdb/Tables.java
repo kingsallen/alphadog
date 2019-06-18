@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.EmployeeAward;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -13,8 +14,11 @@ import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserFormerEmployee;
@@ -53,6 +57,11 @@ public class Tables {
      * VIEW
      */
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * The table <code>userdb.employee_award</code>.
+     */
+    public static final EmployeeAward EMPLOYEE_AWARD = com.moseeker.baseorm.db.userdb.tables.EmployeeAward.EMPLOYEE_AWARD;
 
     /**
      * 阿里用户信息表
@@ -95,6 +104,16 @@ public class Tables {
     public static final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
 
     /**
+     * 员工积分记录表
+     */
+    public static final UserEmployeePointsRecordTemp USER_EMPLOYEE_POINTS_RECORD_TEMP = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP;
+
+    /**
+     * 员工积分记录表
+     */
+    public static final UserEmployeePointsRecordTest USER_EMPLOYEE_POINTS_RECORD_TEST = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST;
+
+    /**
      * 员工想要了解内推政策点击次数表
      */
     public static final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
@@ -103,6 +122,11 @@ public class Tables {
      * The table <code>userdb.user_employee_temp</code>.
      */
     public static final UserEmployeeTemp USER_EMPLOYEE_TEMP = com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp.USER_EMPLOYEE_TEMP;
+
+    /**
+     * The table <code>userdb.user_employee_test</code>.
+     */
+    public static final UserEmployeeTest USER_EMPLOYEE_TEST = com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest.USER_EMPLOYEE_TEST;
 
     /**
      * 员工点赞记录

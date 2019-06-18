@@ -683,6 +683,7 @@ public class EmployeeEntity {
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
                 e.setUpdateTime(now);
+                e.setUnbindTime(now);
             });
             for (UserEmployeeDO DO : employees) {
                 int userId = DO.getSysuserId();

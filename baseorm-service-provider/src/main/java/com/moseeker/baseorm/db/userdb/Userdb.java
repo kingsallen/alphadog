@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.EmployeeAward;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -13,8 +14,11 @@ import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserFormerEmployee;
@@ -57,7 +61,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 715017960;
+    private static final long serialVersionUID = 946195272;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -68,6 +72,11 @@ public class Userdb extends SchemaImpl {
      * VIEW
      */
     public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * The table <code>userdb.employee_award</code>.
+     */
+    public final EmployeeAward EMPLOYEE_AWARD = com.moseeker.baseorm.db.userdb.tables.EmployeeAward.EMPLOYEE_AWARD;
 
     /**
      * 阿里用户信息表
@@ -110,6 +119,16 @@ public class Userdb extends SchemaImpl {
     public final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
 
     /**
+     * 员工积分记录表
+     */
+    public final UserEmployeePointsRecordTemp USER_EMPLOYEE_POINTS_RECORD_TEMP = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP;
+
+    /**
+     * 员工积分记录表
+     */
+    public final UserEmployeePointsRecordTest USER_EMPLOYEE_POINTS_RECORD_TEST = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST;
+
+    /**
      * 员工想要了解内推政策点击次数表
      */
     public final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
@@ -118,6 +137,11 @@ public class Userdb extends SchemaImpl {
      * The table <code>userdb.user_employee_temp</code>.
      */
     public final UserEmployeeTemp USER_EMPLOYEE_TEMP = com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp.USER_EMPLOYEE_TEMP;
+
+    /**
+     * The table <code>userdb.user_employee_test</code>.
+     */
+    public final UserEmployeeTest USER_EMPLOYEE_TEST = com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest.USER_EMPLOYEE_TEST;
 
     /**
      * 员工点赞记录
@@ -230,6 +254,7 @@ public class Userdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
+            EmployeeAward.EMPLOYEE_AWARD,
             UserAliUser.USER_ALI_USER,
             UserBdUser.USER_BD_USER,
             UserCollectPosition.USER_COLLECT_POSITION,
@@ -238,8 +263,11 @@ public class Userdb extends SchemaImpl {
             UserEmployee.USER_EMPLOYEE,
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL,
+            UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP,
+            UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST,
             UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY,
             UserEmployeeTemp.USER_EMPLOYEE_TEMP,
+            UserEmployeeTest.USER_EMPLOYEE_TEST,
             UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE,
             UserFavPosition.USER_FAV_POSITION,
             UserFormerEmployee.USER_FORMER_EMPLOYEE,
