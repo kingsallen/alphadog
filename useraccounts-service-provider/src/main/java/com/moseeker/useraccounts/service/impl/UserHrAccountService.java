@@ -1508,6 +1508,8 @@ public class UserHrAccountService {
             }
         }
 
+        logger.info("UserHrAccountService updateEmployees errorEmployeeIdList:{}", JSONObject.toJSONString(errorEmployeeIdList));
+
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
             Optional<UserEmployeeDO> optional = dbEmployeeDOList.parallelStream()
                     .filter(dbEmployee -> !errorEmployeeIdList.contains(userEmployee.getId()) &&
@@ -1526,6 +1528,7 @@ public class UserHrAccountService {
                             && dbEmployee.getActivation() == EmployeeActiveState.Actived.getState()
                             && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState())
                     .findAny();
+
             logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}", userEmployee.getActivation());
             logger.info("UserHrAccountService updateEmployees optional1.isPresent():{}", optional1.isPresent());
             if (optional1.isPresent()) {
