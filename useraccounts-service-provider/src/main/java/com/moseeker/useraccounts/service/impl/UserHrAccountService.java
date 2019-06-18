@@ -1480,6 +1480,10 @@ public class UserHrAccountService {
             throw UserAccountException.validateFailed(errorMessage);
         }
 
+        if (userEmployeeMap.size() > 5000) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
+        }
+
         // 查找已经存在的数据
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.clear();

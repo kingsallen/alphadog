@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -68,8 +69,11 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
-            userEmployeeDO.setCustomFieldValues(JSONObject.toJSONString(bindingParams));
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(bindingParams.getCustomFieldValues());
+            userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
         }
+        log.info("EmployeeBindByCustomfield createEmployee customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
         return userEmployeeDO;
     }
 }

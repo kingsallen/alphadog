@@ -59,7 +59,7 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
 @Component
 public abstract class EmployeeBinder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
+    protected static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
 
     protected MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
