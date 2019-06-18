@@ -322,6 +322,22 @@ public class BatchValidate {
      * @param customFieldValues 自定义配置
      */
     public boolean validateCustomFieldValues(Map<Integer, String> customFieldValues, int companyId) {
+
+        /**
+         * 校验必填项
+         */
+        List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
+        List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
+                .parallelStream()
+                .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
+                .collect(Collectors.toList());
+        if (notSupportList != null && notSupportList.size() > 0) {
+            return false;
+        }
+
+        /**
+         * 校验下拉项选择
+         */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
@@ -330,14 +346,7 @@ public class BatchValidate {
                     .collect(Collectors.toSet());
             List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, customFieldIdList);
 
-            List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
-            List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
-                    .parallelStream()
-                    .filter(hrEmployeeCustomFields -> !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
-                    .collect(Collectors.toList());
-            if (notSupportList != null && notSupportList.size() > 0) {
-                return false;
-            }
+
 
             if (fields.size() > 0) {
                 Map<Integer, Integer> params = new HashMap<>(fields.size());
