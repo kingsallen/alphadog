@@ -165,6 +165,7 @@ public abstract class EmployeeReferralProfile {
         MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
         referralResultVO.setPosition_id(jobPositionDO.getId());
         referralResultVO.setTitle(jobPositionDO.getTitle());
+        resultVOS.add(referralResultVO);
         try {
             int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, attachmentId, jobPositionDO.getId(),
                     profileNotice.getReferralType());
@@ -174,18 +175,15 @@ public abstract class EmployeeReferralProfile {
                     profileNotice.getMobile(), employeeDO.getSysuserId(), userId, profileNotice.getRelationship(), profileNotice.getReferralText());
             addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), profileNotice.getReferralType());
             referralResultVO.setId(referralId);
-            resultVOS.add(referralResultVO);
         } catch (EmployeeException e){
             logger.error(e.getMessage(), e);
             referralResultVO.setReason(e.getMessage());
             referralResultVO.setSuccess(false);
-            resultVOS.add(referralResultVO);
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             referralResultVO.setReason(e.getMessage());
             referralResultVO.setSuccess(false);
-            resultVOS.add(referralResultVO);
             throw e;
         }finally {
             countDownLatch.countDown();
