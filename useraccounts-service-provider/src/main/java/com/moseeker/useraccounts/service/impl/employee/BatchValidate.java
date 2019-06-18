@@ -429,7 +429,7 @@ public class BatchValidate {
                         }
                     })
                     .findAny();
-            return !optional.isPresent();
+            return optional.isPresent();
         } else {
             return true;
         }
