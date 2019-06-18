@@ -126,7 +126,9 @@ public class BatchValidate {
          * 为校验自定义下拉项数据做准备
          */
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
+        logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues));
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
+        logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
 
         // 提交上的数据
         for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
