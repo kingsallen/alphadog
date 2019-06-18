@@ -166,6 +166,8 @@ public class BatchValidate {
             if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
                 continue;
             }
+            logger.info("BatchValidate importCheck dbEmployeeDOList: {}", JSONObject.toJSONString(dbEmployeeDOList));
+            logger.info("BatchValidate importCheck cname: {}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
             if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
                 // 数据库的数据
                 for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
