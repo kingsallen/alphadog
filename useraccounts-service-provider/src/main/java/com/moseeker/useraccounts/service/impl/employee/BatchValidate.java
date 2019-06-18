@@ -441,7 +441,7 @@ public class BatchValidate {
             logger.info("BatchValidate checkOptions optional.siPresent:{}", optional.isPresent());
             return optional.isPresent();
         } else {
-            return true;
+            return false;
         }
     }
 
