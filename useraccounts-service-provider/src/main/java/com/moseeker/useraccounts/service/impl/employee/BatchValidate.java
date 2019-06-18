@@ -439,7 +439,7 @@ public class BatchValidate {
                     })
                     .findAny();
             logger.info("BatchValidate checkOptions optional.siPresent:{}", optional.isPresent());
-            return !optional.isPresent();
+            return optional.isPresent();
         } else {
             return true;
         }
