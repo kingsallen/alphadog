@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
@@ -201,7 +202,9 @@ public abstract class EmployeeBinder {
         userEmployee.setSource(bindingParams.getSource());
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
-            userEmployee.setCustomFieldValues(JSONObject.toJSONString(bindingParams));
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(bindingParams.getCustomFieldValues());
+            userEmployee.setCustomFieldValues(jsonArray.toJSONString());
         }
         userEmployeeDOThreadLocal.set(userEmployee);
         return userEmployee;
