@@ -469,11 +469,12 @@ public class BatchValidate {
             }
             List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, chooseParam.keySet());
             if (fields.size() > 0) {
-                Map<Integer, Set<Integer>> dbparams = new HashMap<>();
+                Map<Integer, Set<String>> dbparams = new HashMap<>();
 
                 fields.forEach(hrEmployeeCustomFields -> {
-                            Set<String> values = chooseParam.get(hrEmployeeCustomFields.getId());
-                            if (values != null && values.size() > 0) {
+                    Set<String> values = chooseParam.get(hrEmployeeCustomFields.getId());
+                    dbparams.put(hrEmployeeCustomFields.getId(), values);
+                            /*if (values != null && values.size() > 0) {
                                 Set<Integer> optionValueIds = new HashSet<>(values.size());
                                 values.forEach(o -> {
                                     try {
@@ -490,12 +491,12 @@ public class BatchValidate {
                                         dbparams.put(hrEmployeeCustomFields.getId(), optionValueIds);
                                     }
                                 }
-                            }
+                            }*/
                         });
 
                 if (dbparams.size() > 0) {
                     dbparams.forEach((id, optionIdList) -> {
-                        List<EmployeeOptionValue> optionValues = customOptionJooqDao.listByCustomIdAndIdList(id, optionIdList);
+                        List<EmployeeOptionValue> optionValues = customOptionJooqDao.listByCustomIdAndNames(id, optionIdList);
                         map.put(id, optionValues);
                     });
                 }
