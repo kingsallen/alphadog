@@ -65,6 +65,17 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
         return convertToPojo(result);
     }
 
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchRequiredByCompanyId(int companyId) {
+        Result<HrEmployeeCustomFieldsRecord> result = create
+                .selectFrom(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
+                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.eq(companyId))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.MANDATORY.eq(1))
+                .fetch();
+        return convertToPojo(result);
+    }
+
     private List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> convertToPojo(List<HrEmployeeCustomFieldsRecord> result) {
         if (result != null && result.size() > 0) {
             return result.parallelStream()

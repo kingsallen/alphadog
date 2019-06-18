@@ -150,6 +150,8 @@ public class BatchValidate {
                         && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
                     boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                     if (!flag) {
+                        logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", employeeCustomFiledValues.get(entry.getKey()));
+                        logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("自定义选项错误");
                         errorCounts = errorCounts + 1;
@@ -309,6 +311,46 @@ public class BatchValidate {
     }
 
     /**
+     * 校验单个员工的自定义配置是否正确
+     * @param customFieldValues 自定义配置
+     */
+    public boolean validateCustomFieldValues(Map<Integer, String> customFieldValues, int companyId) {
+        List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+        if (rels != null) {
+            Set<Integer> customFieldIdList = rels
+                    .parallelStream()
+                    .map(CustomOptionRel::getCustomId)
+                    .collect(Collectors.toSet());
+            List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, customFieldIdList);
+
+            List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
+            List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
+                    .parallelStream()
+                    .filter(hrEmployeeCustomFields -> !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
+                    .collect(Collectors.toList());
+            if (notSupportList != null && notSupportList.size() > 0) {
+                return false;
+            }
+
+            if (fields.size() > 0) {
+                Map<Integer, Integer> params = new HashMap<>(fields.size());
+                for (HrEmployeeCustomFields field : fields) {
+                    try {
+                        Integer optionId = Integer.valueOf(customFieldValues.get(field.getId()));
+                        params.put(field.getId(), optionId);
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+
+                }
+                int count = customOptionJooqDao.countByCustomIdAndId(params);
+                return count == fields.size();
+            }
+        }
+        return false;
+    }
+
+    /**
      * 将自定义字段解析成结构体
      * @param map 结构体
      * @param array json数组
@@ -328,6 +370,27 @@ public class BatchValidate {
             }
         }
     }
+
+    /**
+     * 将自定义字段解析成结构体
+     * @param customFieldValues json数组
+     */
+    private List<CustomOptionRel> packageMapRel(Map<Integer, String> customFieldValues) {
+        if (customFieldValues != null && customFieldValues.size() > 0) {
+            List<CustomOptionRel> rels = new ArrayList<>(customFieldValues.size());
+            customFieldValues.forEach((key, value) -> {
+                CustomOptionRel customOptionRel = new CustomOptionRel();
+                customOptionRel.setCustomId(Integer.valueOf(key));
+                customOptionRel.setOption(value);
+                rels.add(customOptionRel);
+            });
+            return rels;
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+
 
     /**
      * 解析custonFieldValues json信息

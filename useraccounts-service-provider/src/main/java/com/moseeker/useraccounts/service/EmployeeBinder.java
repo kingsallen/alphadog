@@ -131,6 +131,7 @@ public abstract class EmployeeBinder {
                 throw UserAccountException.EMPLOYEE_VERIFICATION_NOT_SUPPORT;
             }
             paramCheck(bindingParams, certConf);
+            validateCustomFieldValues(bindingParams);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
         } catch (CommonException e) {
@@ -144,6 +145,19 @@ public abstract class EmployeeBinder {
         }
         log.info("bind response: {}", response);
         return response;
+    }
+
+    /**
+     * 校验自定义信息
+     * @param bindingParams 认证参数
+     */
+    protected void validateCustomFieldValues(BindingParams bindingParams) {
+        boolean customValidateResult = batchValidate.validateCustomFieldValues(bindingParams.getCustomFieldValues(),
+                bindingParams.getCompanyId());
+
+        if (!customValidateResult) {
+            throw UserAccountException.EMPLOYEE_CUSTOM_FIELD_ERROR;
+        }
     }
 
     /**
@@ -178,6 +192,9 @@ public abstract class EmployeeBinder {
         userEmployee.setActivation((byte)0);
         userEmployee.setSource(bindingParams.getSource());
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
+            userEmployee.setCustomFieldValues(JSONObject.toJSONString(bindingParams));
+        }
         userEmployeeDOThreadLocal.set(userEmployee);
         return userEmployee;
     }
@@ -193,6 +210,7 @@ public abstract class EmployeeBinder {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("公司信息", bindingParams.getCompanyId(), null, null, 1, null);
         validateUtil.addIntTypeValidate("用户信息", bindingParams.getUserId(), null, null, 1, null);
+
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             throw UserAccountException.validateFailed(result);
