@@ -50,7 +50,6 @@ public class UserHrAccountParamUtils extends ParamUtils {
         try {
             UserEmployeeDO userEmployeeDO = ParamUtils.initModelForm(data, UserEmployeeDO.class);
             if (data.get("customFieldValues") != null && !data.get("customFieldValues").equals("[]")) {
-
                 JSONArray jsonArray = new JSONArray();
                 List<Map<String, String>>  list = (List)data.get("customFieldValues");
                 if (list != null && list.size() > 0) {
@@ -68,6 +67,9 @@ public class UserHrAccountParamUtils extends ParamUtils {
 
                     userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
                 }
+            }
+            if (data.get("activation") instanceof String && data.get("activation").equals("已撤销认证")) {
+                userEmployeeDO.setActivation(1);
             }
             return userEmployeeDO;
         } catch (Exception e) {

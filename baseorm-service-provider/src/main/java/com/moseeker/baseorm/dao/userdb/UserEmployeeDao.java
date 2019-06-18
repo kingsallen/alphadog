@@ -11,6 +11,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.thrift.TException;
@@ -634,7 +635,6 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return record;
     }
 
-
     @Transactional(rollbackFor = {TException.class,RuntimeException.class})
     public List<UserEmployeeRecord> casBatchInsert(List<UserEmployeeRecord> employees) throws BIZException {
         List<UserEmployeeRecord> result = new ArrayList<>();
@@ -642,16 +642,16 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             List<Field<?>> fields = UserEmployee.USER_EMPLOYEE.fieldStream().filter(f -> e.get(f) != null).collect(Collectors.toList());
             List<Param<?>> params = fields.stream().map(f -> param(f.getName(), e.get(f))).collect(Collectors.toList());
 
-            Condition duplicateCondition =  EmployeeAuthMethod.getAuthMethod(e.getAuthMethod()).duplicateCondition(e);
+            org.jooq.Condition duplicateCondition = EmployeeAuthMethod.getAuthMethod(e.getAuthMethod()).duplicateCondition(e);
             int id = create.insertInto(UserEmployee.USER_EMPLOYEE)
                     .columns(fields)
                     .select(
                             select(params)
-                            .whereNotExists(
-                                    selectOne()
-                                            .from(UserEmployee.USER_EMPLOYEE)
-                                            .where(duplicateCondition)
-                            )
+                                    .whereNotExists(
+                                            selectOne()
+                                                    .from(UserEmployee.USER_EMPLOYEE)
+                                                    .where(duplicateCondition)
+                                    )
                     ).execute();
             if (id != 0) {
                 e.setId(id);
@@ -660,5 +660,21 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         }
 
         return result;
+    }
+
+    public UserEmployeeDO fetchUnActiveEmployeeByCustom(int companyId, String name, String customField) {
+        UserEmployeeRecord userEmployeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(name))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customField))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.ne(EmployeeActiveState.Actived.getState()))
+                .limit(1)
+                .fetchOne();
+        if (userEmployeeRecord != null) {
+            return userEmployeeRecord.into(UserEmployeeDO.class);
+        } else {
+            return null;
+        }
     }
 }
