@@ -330,4 +330,10 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByDepartmentNames(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.DEPARTMENT_NAMES, values);
     }
+    /**
+     * Fetch records that have <code>remark IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByRemark(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.REMARK, values);
+    }
 }
