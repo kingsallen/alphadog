@@ -152,7 +152,7 @@ public class BatchValidate {
                         && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
                     boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                     if (!flag) {
-                        logger.info("BatchValidate importCheck failed employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues.get(entry.getKey()));
+                        logger.info("BatchValidate importCheck failed employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues.get(entry.getKey())));
                         logger.info("BatchValidate importCheck failed dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("自定义选项错误");
