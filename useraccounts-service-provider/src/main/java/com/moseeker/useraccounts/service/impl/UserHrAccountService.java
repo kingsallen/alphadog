@@ -2197,6 +2197,7 @@ public class UserHrAccountService {
                 userEmployeeVOS.add(userEmployeeVO);
             }
         }
+        logger.info("UserHrAccountService packageEmployeeVOs userEmployeeVOs:{}", JSONObject.toJSONString(userEmployeeVOS));
         return userEmployeeVOS;
     }
 
