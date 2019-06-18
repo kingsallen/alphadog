@@ -439,6 +439,8 @@ struct UserEmployeeVO{
     13: optional list<map<string,string>> customFieldValues, // 公司员工认证后补填字段配置信息
     14: optional string bonus, // 奖金
     15: optional i32 authMethod, //认证方式 
+    16: optional string unbindTime, //取消绑定的时间
+    17: optional string importTime, //导入时间
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{
