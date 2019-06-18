@@ -1509,25 +1509,34 @@ public class UserHrAccountService {
         }
 
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
+
+            if (errorEmployeeIdList.contains(userEmployee.getId())) {
+                continue;
+            }
+
             Optional<UserEmployeeDO> optional = dbEmployeeDOList.parallelStream()
-                    .filter(dbEmployee -> !errorEmployeeIdList.contains(userEmployee.getId()) &&
-                            (dbEmployee.getId() == userEmployee.getId()
-                                    && !userEmployee.getCustomFieldValues().equals(dbEmployee.getCustomFieldValues())))
+                    .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId()
+                                    && !userEmployee.getCustomFieldValues().equals(dbEmployee.getCustomFieldValues()))
                     .findAny();
             if (optional.isPresent()) {
                 updateCustomFieldList.add(userEmployee);
                 employeeIdList.add(userEmployee.getId());
             }
 
-            Optional<UserEmployeeDO> optional1 = dbEmployeeDOList.parallelStream()
-                    .filter(dbEmployee -> !errorEmployeeIdList.contains(userEmployee.getId()) &&
-                            (dbEmployee.getActivation() != userEmployee.getActivation())
-                            && dbEmployee.getActivation() == EmployeeActiveState.Actived.getState()
-                            && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState())
+            Optional<UserEmployeeDO> optional1 = dbEmployeeDOList
+                    .parallelStream()
+                    .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId())
                     .findAny();
+            logger.info("UserHrAccountService updateEmployees optional1.isPresent():{}", optional1.isPresent());
+
             if (optional1.isPresent()) {
-                updateActivationList.add(userEmployee);
-                employeeIdList.add(userEmployee.getId());
+                logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}, dbEmployee.activation:{}", userEmployee.getActivation(), optional1.get().getActivation());
+                if (userEmployee.getActivation() != optional1.get().getActivation()
+                        && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
+                        && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
+                    updateActivationList.add(userEmployee);
+                    employeeIdList.add(userEmployee.getId());
+                }
             }
         }
 
