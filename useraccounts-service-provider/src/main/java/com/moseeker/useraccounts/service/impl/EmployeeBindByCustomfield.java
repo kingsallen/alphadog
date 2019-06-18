@@ -28,14 +28,10 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         super.paramCheck(bindingParams, certConf);
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
-                .and("cname", bindingParams.getName())
-                .and("custom_field", bindingParams.getCustomField())
-                .and("activation", EmployeeActiveState.Init.getState())
-                .and("disable", "0");
 
-        employeeThreadLocal.set(employeeDao.getData(query.buildQuery()));
+        UserEmployeeDO userEmployeeDO = employeeDao.fetchUnActiveEmployeeByCustom(bindingParams.getCompanyId(),
+                bindingParams.getName(), bindingParams.getCustomField());
+        employeeThreadLocal.set(userEmployeeDO);
         if (employeeThreadLocal.get() == null || employeeThreadLocal.get().getId() == 0) {
             throw new RuntimeException("员工认证信息不正确");
         } else if (employeeThreadLocal.get().getActivation() == 0) {
