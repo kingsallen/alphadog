@@ -129,6 +129,7 @@ public class BatchValidate {
         logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues));
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
         logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
+        logger.info("BatchValidate importCheck dbEmployeeDOList: {}", JSONObject.toJSONString(dbEmployeeDOList));
 
         // 提交上的数据
         for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
@@ -166,7 +167,6 @@ public class BatchValidate {
             if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
                 continue;
             }
-            logger.info("BatchValidate importCheck dbEmployeeDOList: {}", JSONObject.toJSONString(dbEmployeeDOList));
             logger.info("BatchValidate importCheck cname: {}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
             if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
                 // 数据库的数据
