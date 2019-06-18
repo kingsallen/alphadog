@@ -81,7 +81,7 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
                     condition = EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(entry.getKey())
                             .and(EMPLOYEE_OPTION_VALUE.ID.eq(entry.getValue()));
                 } else {
-                    condition.or(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(entry.getKey())
+                    condition = condition.or(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(entry.getKey())
                             .and(EMPLOYEE_OPTION_VALUE.ID.eq(entry.getValue())));
                 }
             }
