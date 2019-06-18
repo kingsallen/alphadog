@@ -45,6 +45,11 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     }
 
     @Override
+    protected void validateCustomFieldValues(BindingParams bindingParams) {
+        //do nothing
+    }
+
+    @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("公司编号",bindingParams.getCompanyId(), 1, Integer.MAX_VALUE);

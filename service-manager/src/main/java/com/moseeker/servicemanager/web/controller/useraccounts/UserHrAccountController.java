@@ -1040,7 +1040,7 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
         } catch (BIZException e) {
@@ -1066,7 +1066,7 @@ public class UserHrAccountController {
             int hraccountId = params.getInt("hraccountId", 0);
             String fileName = params.getString("fileName", "");
             String filePath = params.getString("filePath", "");
-            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId, filePath, fileName, type, hraccountId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
