@@ -152,8 +152,8 @@ public class BatchValidate {
                         && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
                     boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                     if (!flag) {
-                        logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", employeeCustomFiledValues.get(entry.getKey()));
-                        logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
+                        logger.info("BatchValidate importCheck failed employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues.get(entry.getKey()));
+                        logger.info("BatchValidate importCheck failed dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("自定义选项错误");
                         errorCounts = errorCounts + 1;
@@ -429,12 +429,16 @@ public class BatchValidate {
                             Optional<EmployeeOptionValue> optionValue = list.parallelStream()
                                     .filter(employeeOptionValue -> employeeOptionValue.getName().equals(customOptionRel.getOption()))
                                     .findAny();
+
+                            logger.info("BatchValidate checkOptions customOptionRel:{}", JSONObject.toJSONString(customOptionRel));
+                            logger.info("BatchValidate checkOptions optionValue.siPresent:{}", optionValue.isPresent());
                             return optionValue.isPresent();
                         } else {
                             return true;
                         }
                     })
                     .findAny();
+            logger.info("BatchValidate checkOptions optional.siPresent:{}", optional.isPresent());
             return !optional.isPresent();
         } else {
             return true;
