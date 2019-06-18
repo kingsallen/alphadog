@@ -1512,6 +1512,7 @@ public class UserHrAccountService {
 
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
+            logger.info("UserHrAccountService updateEmployees userEmployee:{}", userEmployee);
             if (errorEmployeeIdList.contains(userEmployee.getId())) {
                 continue;
             }
@@ -1526,6 +1527,7 @@ public class UserHrAccountService {
                 employeeIdList.add(userEmployee.getId());
             }
 
+            logger.info("UserHrAccountService updateEmployees dbEmployee:{}", JSONObject.toJSONString(dbEmployeeDOList));
             Optional<UserEmployeeDO> optional1 = dbEmployeeDOList
                     .parallelStream()
                     .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId())
