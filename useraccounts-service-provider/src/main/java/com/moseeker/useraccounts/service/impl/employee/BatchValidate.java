@@ -320,14 +320,17 @@ public class BatchValidate {
          * 校验必填项
          */
         List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
+        logger.info("BatchValidate validateCustomFieldValues customSupplyVOS:{}", JSONObject.toJSONString(customSupplyVOS));
         List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
                 .parallelStream()
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
+        logger.info("BatchValidate validateCustomFieldValues notSupportList:{}", JSONObject.toJSONString(notSupportList));
         if (notSupportList != null && notSupportList.size() > 0) {
             return false;
         }
 
+        logger.info("BatchValidate validateCustomFieldValues customFieldValues:{}", JSONObject.toJSONString(customFieldValues));
         if (customFieldValues == null || customFieldValues.size() == 0) {
             return true;
         }
@@ -336,6 +339,7 @@ public class BatchValidate {
          * 校验下拉项选择
          */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+        logger.info("BatchValidate validateCustomFieldValues rels:{}", JSONObject.toJSONString(rels));
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
                     .parallelStream()
@@ -343,7 +347,7 @@ public class BatchValidate {
                     .collect(Collectors.toSet());
             List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, customFieldIdList);
 
-
+            logger.info("BatchValidate validateCustomFieldValues fields:{}", JSONObject.toJSONString(fields));
 
             if (fields.size() > 0) {
                 Map<Integer, Integer> params = new HashMap<>(fields.size());
@@ -352,11 +356,13 @@ public class BatchValidate {
                         Integer optionId = Integer.valueOf(customFieldValues.get(field.getId()));
                         params.put(field.getId(), optionId);
                     } catch (NumberFormatException e) {
+                        logger.info("BatchValidate validateCustomFieldValues NumberFormatException");
                         return false;
                     }
 
                 }
                 int count = customOptionJooqDao.countByCustomIdAndId(params);
+                logger.info("BatchValidate validateCustomFieldValues count == fields.size():{}", count == fields.size());
                 return count == fields.size();
             }
         }
