@@ -1558,9 +1558,13 @@ public class UserHrAccountService {
         }
 
         if (updateActivationList.size() > 0) {
+            logger.info("UserHrAccountService updateEmployees updateActivationList:{}", JSONObject.toJSONString(updateActivationList));
             employeeEntity.unbind(updateActivationList);
         }
-        searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList));
+        if (employeeIdList.size() > 0) {
+            logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
+            searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList));
+        }
 
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
