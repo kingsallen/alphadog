@@ -89,6 +89,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1395,7 +1396,10 @@ public class UserHrAccountService {
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
         logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
+            v.setImportTime(now.format(dateTimeFormatter));
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });

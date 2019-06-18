@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.userdb;
 
 
+import com.moseeker.baseorm.db.userdb.tables.EmployeeAward;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -12,7 +13,11 @@ import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserFormerEmployee;
@@ -29,6 +34,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
+import com.moseeker.baseorm.db.userdb.tables.records.EmployeeAwardRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserCollectPositionRecord;
@@ -36,8 +42,12 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserCompanyFollowRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserCompanyVisitReqRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordCompanyRelRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordTempRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordTestRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeReferralPolicyRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeTempRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeTestRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeUpvoteRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFormerEmployeeRecord;
@@ -88,7 +98,11 @@ public class Keys {
     public static final Identity<UserEmployeeRecord, Integer> IDENTITY_USER_EMPLOYEE = Identities0.IDENTITY_USER_EMPLOYEE;
     public static final Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD;
     public static final Identity<UserEmployeePointsRecordCompanyRelRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
+    public static final Identity<UserEmployeePointsRecordTempRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_TEMP = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD_TEMP;
+    public static final Identity<UserEmployeePointsRecordTestRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_TEST = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD_TEST;
     public static final Identity<UserEmployeeReferralPolicyRecord, Integer> IDENTITY_USER_EMPLOYEE_REFERRAL_POLICY = Identities0.IDENTITY_USER_EMPLOYEE_REFERRAL_POLICY;
+    public static final Identity<UserEmployeeTempRecord, Integer> IDENTITY_USER_EMPLOYEE_TEMP = Identities0.IDENTITY_USER_EMPLOYEE_TEMP;
+    public static final Identity<UserEmployeeTestRecord, Integer> IDENTITY_USER_EMPLOYEE_TEST = Identities0.IDENTITY_USER_EMPLOYEE_TEST;
     public static final Identity<UserEmployeeUpvoteRecord, Integer> IDENTITY_USER_EMPLOYEE_UPVOTE = Identities0.IDENTITY_USER_EMPLOYEE_UPVOTE;
     public static final Identity<UserFavPositionRecord, Integer> IDENTITY_USER_FAV_POSITION = Identities0.IDENTITY_USER_FAV_POSITION;
     public static final Identity<UserFormerEmployeeRecord, Integer> IDENTITY_USER_FORMER_EMPLOYEE = Identities0.IDENTITY_USER_FORMER_EMPLOYEE;
@@ -110,6 +124,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<EmployeeAwardRecord> KEY_EMPLOYEE_AWARD_PRIMARY = UniqueKeys0.KEY_EMPLOYEE_AWARD_PRIMARY;
     public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_PRIMARY = UniqueKeys0.KEY_USER_ALI_USER_PRIMARY;
     public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_USER_ID = UniqueKeys0.KEY_USER_ALI_USER_USER_ID;
     public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = UniqueKeys0.KEY_USER_BD_USER_PRIMARY;
@@ -120,8 +135,12 @@ public class Keys {
     public static final UniqueKey<UserEmployeeRecord> KEY_USER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_PRIMARY;
     public static final UniqueKey<UserEmployeePointsRecordRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY;
     public static final UniqueKey<UserEmployeePointsRecordCompanyRelRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL_PRIMARY;
+    public static final UniqueKey<UserEmployeePointsRecordTempRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_TEMP_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_POINTS_RECORD_TEMP_PRIMARY;
+    public static final UniqueKey<UserEmployeePointsRecordTestRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_TEST_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_POINTS_RECORD_TEST_PRIMARY;
     public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_REFERRAL_POLICY_PRIMARY;
     public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_USER_EMPLOYEE_REFERRAL_POLICY_EMPLOYEE_ID_PK = UniqueKeys0.KEY_USER_EMPLOYEE_REFERRAL_POLICY_USER_EMPLOYEE_REFERRAL_POLICY_EMPLOYEE_ID_PK;
+    public static final UniqueKey<UserEmployeeTempRecord> KEY_USER_EMPLOYEE_TEMP_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_TEMP_PRIMARY;
+    public static final UniqueKey<UserEmployeeTestRecord> KEY_USER_EMPLOYEE_TEST_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_TEST_PRIMARY;
     public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_UPVOTE_PRIMARY;
     public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER = UniqueKeys0.KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER;
     public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = UniqueKeys0.KEY_USER_FAV_POSITION_PRIMARY;
@@ -167,7 +186,11 @@ public class Keys {
         public static Identity<UserEmployeeRecord, Integer> IDENTITY_USER_EMPLOYEE = createIdentity(UserEmployee.USER_EMPLOYEE, UserEmployee.USER_EMPLOYEE.ID);
         public static Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = createIdentity(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
         public static Identity<UserEmployeePointsRecordCompanyRelRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = createIdentity(UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL, UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL.ID);
+        public static Identity<UserEmployeePointsRecordTempRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_TEMP = createIdentity(UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP, UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP.ID);
+        public static Identity<UserEmployeePointsRecordTestRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD_TEST = createIdentity(UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST, UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST.ID);
         public static Identity<UserEmployeeReferralPolicyRecord, Integer> IDENTITY_USER_EMPLOYEE_REFERRAL_POLICY = createIdentity(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.ID);
+        public static Identity<UserEmployeeTempRecord, Integer> IDENTITY_USER_EMPLOYEE_TEMP = createIdentity(UserEmployeeTemp.USER_EMPLOYEE_TEMP, UserEmployeeTemp.USER_EMPLOYEE_TEMP.ID);
+        public static Identity<UserEmployeeTestRecord, Integer> IDENTITY_USER_EMPLOYEE_TEST = createIdentity(UserEmployeeTest.USER_EMPLOYEE_TEST, UserEmployeeTest.USER_EMPLOYEE_TEST.ID);
         public static Identity<UserEmployeeUpvoteRecord, Integer> IDENTITY_USER_EMPLOYEE_UPVOTE = createIdentity(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID);
         public static Identity<UserFavPositionRecord, Integer> IDENTITY_USER_FAV_POSITION = createIdentity(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
         public static Identity<UserFormerEmployeeRecord, Integer> IDENTITY_USER_FORMER_EMPLOYEE = createIdentity(UserFormerEmployee.USER_FORMER_EMPLOYEE, UserFormerEmployee.USER_FORMER_EMPLOYEE.ID);
@@ -187,6 +210,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<EmployeeAwardRecord> KEY_EMPLOYEE_AWARD_PRIMARY = createUniqueKey(EmployeeAward.EMPLOYEE_AWARD, "KEY_employee_award_PRIMARY", EmployeeAward.EMPLOYEE_AWARD.ID);
         public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_PRIMARY = createUniqueKey(UserAliUser.USER_ALI_USER, "KEY_user_ali_user_PRIMARY", UserAliUser.USER_ALI_USER.ID);
         public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_USER_ID = createUniqueKey(UserAliUser.USER_ALI_USER, "KEY_user_ali_user_user_id", UserAliUser.USER_ALI_USER.USER_ID);
         public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_PRIMARY", UserBdUser.USER_BD_USER.ID);
@@ -197,8 +221,12 @@ public class Keys {
         public static final UniqueKey<UserEmployeeRecord> KEY_USER_EMPLOYEE_PRIMARY = createUniqueKey(UserEmployee.USER_EMPLOYEE, "KEY_user_employee_PRIMARY", UserEmployee.USER_EMPLOYEE.ID);
         public static final UniqueKey<UserEmployeePointsRecordRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY = createUniqueKey(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, "KEY_user_employee_points_record_PRIMARY", UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
         public static final UniqueKey<UserEmployeePointsRecordCompanyRelRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL_PRIMARY = createUniqueKey(UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL, "KEY_user_employee_points_record_company_rel_PRIMARY", UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL.ID);
+        public static final UniqueKey<UserEmployeePointsRecordTempRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_TEMP_PRIMARY = createUniqueKey(UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP, "KEY_user_employee_points_record_temp_PRIMARY", UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP.ID);
+        public static final UniqueKey<UserEmployeePointsRecordTestRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_TEST_PRIMARY = createUniqueKey(UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST, "KEY_user_employee_points_record_test_PRIMARY", UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST.ID);
         public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_PRIMARY = createUniqueKey(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, "KEY_user_employee_referral_policy_PRIMARY", UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.ID);
         public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_USER_EMPLOYEE_REFERRAL_POLICY_EMPLOYEE_ID_PK = createUniqueKey(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, "KEY_user_employee_referral_policy_user_employee_referral_policy_employee_id_pk", UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.EMPLOYEE_ID);
+        public static final UniqueKey<UserEmployeeTempRecord> KEY_USER_EMPLOYEE_TEMP_PRIMARY = createUniqueKey(UserEmployeeTemp.USER_EMPLOYEE_TEMP, "KEY_user_employee_temp_PRIMARY", UserEmployeeTemp.USER_EMPLOYEE_TEMP.ID);
+        public static final UniqueKey<UserEmployeeTestRecord> KEY_USER_EMPLOYEE_TEST_PRIMARY = createUniqueKey(UserEmployeeTest.USER_EMPLOYEE_TEST, "KEY_user_employee_test_PRIMARY", UserEmployeeTest.USER_EMPLOYEE_TEST.ID);
         public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_PRIMARY = createUniqueKey(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE, "KEY_user_employee_upvote_PRIMARY", UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID);
         public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER = createUniqueKey(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE, "KEY_user_employee_upvote_user_employee_upvote_sender_receiver", UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER);
         public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = createUniqueKey(UserFavPosition.USER_FAV_POSITION, "KEY_user_fav_position_PRIMARY", UserFavPosition.USER_FAV_POSITION.ID);

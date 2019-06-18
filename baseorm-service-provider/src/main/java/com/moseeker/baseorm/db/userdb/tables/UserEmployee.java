@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -2021202502;
+    private static final long serialVersionUID = 1955911639;
 
     /**
      * The reference instance of <code>userdb.user_employee</code>
@@ -253,9 +253,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     public final TableField<UserEmployeeRecord, Long> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.BIGINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "登录次数");
 
     /**
-     * The column <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证
+     * The column <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接
      */
-    public final TableField<UserEmployeeRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证");
+    public final TableField<UserEmployeeRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接");
 
     /**
      * The column <code>userdb.user_employee.download_token</code>. 下载行业报告的校验token
@@ -331,6 +331,16 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
      * The column <code>userdb.user_employee.bonus</code>. 员工当前的奖金总额
      */
     public final TableField<UserEmployeeRecord, Integer> BONUS = createField("bonus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工当前的奖金总额");
+
+    /**
+     * The column <code>userdb.user_employee.unbind_time</code>. 取消认证的时间
+     */
+    public final TableField<UserEmployeeRecord, Timestamp> UNBIND_TIME = createField("unbind_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "取消认证的时间");
+
+    /**
+     * The column <code>userdb.user_employee.import_time</code>. 导入时间
+     */
+    public final TableField<UserEmployeeRecord, Timestamp> IMPORT_TIME = createField("import_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "导入时间");
 
     /**
      * Create a <code>userdb.user_employee</code> table reference
