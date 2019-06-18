@@ -295,7 +295,7 @@ public class BatchValidate {
 
         userEmployeeMap.forEach((row, employee) -> {
             JSONArray array = JSONArray.parseArray(employee.getCustomFieldValues());
-            packageRel(map, array);
+            packageRel(map, array, row);
         });
         return map;
     }
@@ -311,7 +311,7 @@ public class BatchValidate {
         for (int j=0; j<userEmployeeMap.size(); j++) {
             UserEmployeeDO employee = userEmployeeMap.get(j);
             JSONArray array = JSONArray.parseArray(employee.getCustomFieldValues());
-            packageRel(map, array);
+            packageRel(map, array, j);
         }
         return map;
     }
@@ -360,18 +360,19 @@ public class BatchValidate {
      * 将自定义字段解析成结构体
      * @param map 结构体
      * @param array json数组
+     * @param row
      */
-    private void packageRel(ArrayListMultimap<Integer, CustomOptionRel> map, JSONArray array) {
+    private void packageRel(ArrayListMultimap<Integer, CustomOptionRel> map, JSONArray array, Integer row) {
         for (int i=0; i<array.size(); i++) {
             if (array.get(i) != null) {
                 logger.info("BatchValidate packageRel array[{}]:{}", i, array.get(i));
                 if (array.get(i) instanceof JSONArray) {
                     JSONArray jsonArray = (JSONArray)array.get(i);
                     if (jsonArray != null && jsonArray.size() > 0) {
-                        parseJson(map, (JSONObject)jsonArray.get(0), i);
+                        parseJson(map, (JSONObject)jsonArray.get(0), row);
                     }
                 } else if (array.get(i) instanceof JSONObject) {
-                    parseJson(map, (JSONObject)array.get(i), i);
+                    parseJson(map, (JSONObject)array.get(i), row);
                 }
             }
         }
