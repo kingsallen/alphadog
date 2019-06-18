@@ -68,7 +68,11 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
         }
     }
 
-
+    /**
+     * 根据自定义编号和下拉项编号查找存在的数量
+     * @param params 自定义编号和下拉项编号
+     * @return 符合条件的数量
+     */
     public int countByCustomIdAndId(Map<Integer, Integer> params) {
         if (params != null && params.size() > 0) {
             Condition condition = null;
@@ -93,6 +97,26 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
             }
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * 根据ID和自定义信息ID查找下拉项
+     * @param customId 自定义信息编号
+     * @param names 下拉项名称集合
+     * @return 下拉项信息
+     */
+    public List<EmployeeOptionValue> listByCustomIdAndNames(Integer customId, Set<String> names) {
+        Result<EmployeeOptionValueRecord> result = create
+                .selectFrom(EMPLOYEE_OPTION_VALUE)
+                .where(EMPLOYEE_OPTION_VALUE.NAME.in(names))
+                .and(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customId))
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY)
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.into(EmployeeOptionValue.class);
+        } else {
+            return new ArrayList<>(0);
         }
     }
 }
