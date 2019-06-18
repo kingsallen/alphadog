@@ -332,6 +332,7 @@ public class BatchValidate {
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
         if (notSupportList != null && notSupportList.size() > 0) {
+            logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
         }
 
@@ -355,11 +356,13 @@ public class BatchValidate {
                         Integer optionId = Integer.valueOf(customFieldValues.get(field.getId()));
                         params.put(field.getId(), optionId);
                     } catch (NumberFormatException e) {
+                        logger.info("BatchValidate validateCustomFieldValues 下拉项是字符串! ：field{}", JSONObject.toJSONString(field));
                         return false;
                     }
 
                 }
                 int count = customOptionJooqDao.countByCustomIdAndId(params);
+                logger.info("BatchValidate validateCustomFieldValues 数据库中的下拉项： count:{}, 用户提交的下拉项：fields.size:{}", count, fields.size());
                 return count == fields.size();
             }
         }
