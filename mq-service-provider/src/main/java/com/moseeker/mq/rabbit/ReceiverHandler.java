@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
@@ -22,6 +25,7 @@ import com.rabbitmq.client.Channel;
 import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -34,9 +38,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.util.*;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 
@@ -46,6 +49,8 @@ import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 @Component
 @PropertySource("classpath:common.properties")
 public class ReceiverHandler {
+
+    private Random random = new Random();
 
     private static Logger log = LoggerFactory.getLogger(ReceiverHandler.class);
 
@@ -75,6 +80,9 @@ public class ReceiverHandler {
 
     @Autowired
     private RedPacketEntity redPacketEntity;
+
+    @Resource(name = "cacheClient")
+    RedisClient redisClient;
 
     private SerializeConfig config = new SerializeConfig();
 
@@ -127,6 +135,62 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+
+    @RabbitListener(queues = "#{demonstrationEmployeeRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void demonstrationEmployeeRegister(Message message) {
+        try {
+            log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister");
+            String msgBody = new String(message.getBody(), "UTF-8");
+            String companyId = env.getProperty("demonstration.company_id");
+            int delay = Integer.valueOf(env.getProperty("demonstration.employee.register"));
+            String positions = env.getProperty("demonstration.positions");
+            String[] positionArray = positions.split(",");
+            int index = random.nextInt(positionArray.length);
+            String url = env.getProperty("demonstration.employee_referral.url");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister jsonObject:{}",jsonObject);
+            if (StringUtils.isNotBlank(companyId) && Integer.valueOf(companyId).intValue() == jsonObject.getInteger("company_id")) {
+                log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister 特定公司");
+                JSONObject params = new JSONObject();
+                params.put("ai_template_type", 0);
+                params.put("algorithm_name","feihualing_recom");
+                params.put("company_id", Integer.valueOf(companyId));
+                params.put("position_ids", positionArray[index]);
+                params.put("template_id", Constant.EMPLOYEE_RECOM_POSITION);
+                params.put("type", "3");
+                params.put("user_id", jsonObject.getIntValue("user_id"));
+                params.put("url", url);
+                log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
+                redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
+                        KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
+                        delay*1000+System.currentTimeMillis(), params.toJSONString());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @RabbitListener(queues = "#{demonstrationFollowWechatQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void demonstrationFollowWechat(Message message) {
+        try {
+            log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat");
+            String msgBody = new String(message.getBody(), "UTF-8");
+            String companyId = env.getProperty("demonstration.company_id");
+            int delay = Integer.valueOf(env.getProperty("demonstration.follow.wechat"));
+            String positions = env.getProperty("demonstration.positions");
+            String[] positionArray = positions.split(",");
+            int index = random.nextInt(positionArray.length);
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("元夕飞花令 ReceiverHandler demonstrationFollowWechat jsonObject:{}", jsonObject);
+            templateMsgHttp.demonstrationFollowWechat(jsonObject.getIntValue("user_id"), jsonObject.getString("wechat_id"),
+                    companyId, positionArray[index], delay, redisClient, env);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     @RabbitListener(queues = "#{sendSeekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void  seekReferralReceive(Message message){
@@ -146,10 +210,11 @@ public class ReceiverHandler {
                 long sendTime=  now.getTime();
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.REFERRAL_SEEK_REFERRAL);
-                String distinctId = String.valueOf(postUserId);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
+                properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
+                String distinctId = String.valueOf(postUserId);
+                // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
@@ -160,7 +225,7 @@ public class ReceiverHandler {
                 Date nowTime= new Date();
                 long  sendTime= nowTime.getTime();
                 properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.REFERRA_RECOMMEND_EVALUATE);
+                properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
                 log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
                 String distinctId = String.valueOf(userId);
@@ -257,9 +322,11 @@ public class ReceiverHandler {
         LogVO logVo=this.handlerLogVO();
         try{
             log.info("message:{}", JSON.toJSONString(message));
+
             msgBody = new String(message.getBody(), "UTF-8");
-            log.info("msgBody:{}", JSON.toJSONString(msgBody));
+            log.info("元夕飞花令 handlerMessageTemplate msgBody:{}", JSON.toJSONString(msgBody));
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
+                log.info("元夕飞花令 handlerMessageTemplate 职位同步失败");
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int positionId = jsonObject.getIntValue("positionId");
                 String msg = jsonObject.getString("message");
@@ -268,14 +335,19 @@ public class ReceiverHandler {
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                log.info("handlerMessageTemplate jsonObject:{}", jsonObject);
+                if (jsonObject.getInteger("company_id") != null && jsonObject.getInteger("company_id") == 1912646) {
+                    log.info("handlerMessageTemplate 元夕飞花令！");
+                }
                 int type = jsonObject.getIntValue("type");
                 log.info("type========================:{}", type);
                 this.addPropertyLogVO(logVo, jsonObject);
                 this.handlerTempLateLog(logVo, type);
                 if (type != 0) {
+                    log.info("元夕飞花令 handlerMessageTemplate type!=0");
                     AIRecomParams params = this.initRecomParams(message);
                     MessageTemplateNoticeStruct messageTemplate = messageTemplateEntity.handlerTemplate(params);
-                    log.info("messageTemplate========" + JSONObject.toJSONString(messageTemplate));
+                    log.info("元夕飞花令 handlerMessageTemplate messageTemplate========" + JSONObject.toJSONString(messageTemplate));
                     if (messageTemplate != null) {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
@@ -288,10 +360,12 @@ public class ReceiverHandler {
                             sensorSend.send(distinctId,"sendTemplateMessage",properties);
                         }
                     } else {
+                        log.info("元夕飞花令 handlerMessageTemplate messageTemplate == null");
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
                         logVo.setStatus_code(1);
                     }
                 } else {
+                    log.info("元夕飞花令 handlerMessageTemplate type=0");
                     logVo.setStatus_code(2);
                 }
             }

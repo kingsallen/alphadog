@@ -10,6 +10,8 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Set;
+
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
 
 /**
  * 
@@ -40,6 +45,9 @@ public class Schedule {
 
 	@Autowired
     private ClearUpVote clearUpVote;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
 	ThreadPool threadPool = ThreadPool.Instance;
 
@@ -79,6 +87,32 @@ public class Schedule {
             return true;
         });
 	}
+
+    /**
+     * 负责从延迟队列中查找符合要求的消息模版，将其转移到消息模版的执行队列中
+     * 每分钟执行一次
+     */
+    @Scheduled(cron="*/5 * * * * ?")
+    public void startListeninDemonstrationDelayQueue() {
+        logger.info("元夕飞花令 Schedule startListeninDemonstrationDelayQueue");
+        long now = System.currentTimeMillis();
+        Set<String> tasks = redisClient.rangeByScore(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
+                0L,
+                now);
+        if(tasks != null && tasks.size() > 0) {
+            redisClient.zRemRangeByScore(AppId.APPID_ALPHADOG.getValue(),
+                    KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
+                    0L,
+                    now);
+            tasks.forEach(task -> {
+                logger.info("元夕飞花令 Schedule startListeninDemonstrationDelayQueue send task:{}", task);
+                amqpTemplate.send("message_template_exchange",
+                        "messagetemplate.#", MessageBuilder.withBody(task.getBytes())
+                                .build());
+            });
+        }
+    }
 
 	private void sendNotice(Set<String> employeeEmailVerifyNotices) {
 

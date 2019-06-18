@@ -1179,7 +1179,6 @@ public class BeanUtils {
             try {
                 return Integer.valueOf(((String) value).trim());
             } catch (NumberFormatException e) {
-                e.printStackTrace();
                 return Integer.valueOf(0);
             }
         } else if (value instanceof Boolean) {

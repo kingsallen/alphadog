@@ -11,7 +11,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.util.OfficeUtils;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.UploadFilesService;
@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +65,8 @@ public class UploadFilesServiceImpl implements UploadFilesService {
     public UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException {
         logger.info("上传文件参数："+"fileName"+fileName+"fileData"+fileData);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
-
+        LocalDateTime anylisisStart = LocalDateTime.now();
+        logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：anylisisStart{}",anylisisStart);
         if(!ProfileDocCheckTool.checkFileName(fileName)){
             throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
         }
@@ -88,6 +91,11 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 }
             }
             logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
+            LocalDateTime anylisisEnd = LocalDateTime.now();
+            logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：anylisisEnd{}",anylisisEnd);
+            Duration duration = Duration.between(anylisisStart,anylisisEnd);
+            long millis = duration.toMillis();//相差毫秒数
+            logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：millis{}",millis);
             Date date = new Date();
             //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -189,13 +197,16 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),String.valueOf(employeeId));
         logger.info("checkResult redis对应的value{}",value);
         JSONObject jsonObject = JSON.parseObject(value);
+        logger.info("UploadFilesServiceImpl checkResult jsonObject:{}", jsonObject.toJSONString());
         JSONObject user = jsonObject.getJSONObject("user");
         logger.info("UploadFilesServiceImpl checkResult user{}",user);
         if (user != null){
+            logger.info("UploadFilesServiceImpl checkResult user:{}", user.toJSONString());
             uploadFilesResult.setName(StringUtils.isNotBlank(user.getString("name"))? user.getString("name"):user.getString("nickname"));
             logger.info("UploadFilesServiceImpl checkResult ,user.getmobile{}",user.get("mobile"));
             if (user.get("mobile") != null){
-                uploadFilesResult.setMobile(user.get("mobile").toString());
+                String mobile = user.get("mobile").toString();
+                uploadFilesResult.setMobile(mobile.trim().equals("0")?"":mobile);
             }
             if ("0".equals( uploadFilesResult.getMobile() ) ){
                 uploadFilesResult.setMobile("");

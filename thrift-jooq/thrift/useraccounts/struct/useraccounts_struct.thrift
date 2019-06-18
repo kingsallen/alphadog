@@ -167,7 +167,11 @@ struct SearchCondition {
    32: string past_position_key_word,//曾任职位的关键字
    33: string past_company_key_word,// 曾任公司的关键字
    34: string start_submit_time,//开始时间
-   35: string end_submit_time//结束时间
+   35: string end_submit_time,//结束时间
+   36: string has_attachment,
+   37: string department_ids,
+   38: string department_names,
+   39: string remark
 
 }
 
@@ -432,9 +436,11 @@ struct UserEmployeeVO{
     10: optional string companyName, // 公司名称
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime, // 认证时间
-    13: optional list<map<string,list<string>>> customFieldValues, // 公司员工认证后补填字段配置信息
+    13: optional list<map<string,string>> customFieldValues, // 公司员工认证后补填字段配置信息
     14: optional string bonus, // 奖金
     15: optional i32 authMethod, //认证方式 
+    16: optional string unbindTime, //取消绑定的时间
+    17: optional string importTime, //导入时间
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{
@@ -458,7 +464,7 @@ struct UserEmployeeDetailVO{
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime // 绑定时间
     13: optional i32 award, // 积分
-    14: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息,
+    14: optional list<map<string,string>> customFieldValues // 公司员工认证后补填字段配置信息,
     15: optional string bonus //员工当前的奖金总额,
     16: optional i32 authMethod //认证方式,
     17: optional string unbindingTime //解除绑定时间

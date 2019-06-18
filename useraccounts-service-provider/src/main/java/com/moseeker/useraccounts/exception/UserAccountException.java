@@ -70,6 +70,11 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_COMPANY_UNMATCH = new UserAccountException(42059, "员工与公司不匹配！");
     public static final UserAccountException RADAR_STATUS_CLOSE = new UserAccountException(42060, "雷达开关关闭！");
     public static final UserAccountException NEO4J_STATUS_ERROR = new UserAccountException(43001, "Neo4j查询出错！");
+    public static final UserAccountException EMPLOYEE_ALREADY_VERIFIED = new UserAccountException(42061, "已经是认证员工！");
+    public static final UserAccountException EMPLOYEE_VERIFICATION_NOT_SUPPORT = new UserAccountException(42062, "暂时不支持员工认证！");
+    public static final UserAccountException EMPLOYEE_VERIFICATION_INVALID= new UserAccountException(42063, "认证信息失效！");
+    public static final UserAccountException IMPORT_DATA_CUSTOM_ERROR = new UserAccountException(42064, "导入员工数据自定义信息有误！");
+    public static final UserAccountException EMPLOYEE_CUSTOM_FIELD_ERROR = new UserAccountException(42065, "自定义信息有误！");
 
     private final int code;
 

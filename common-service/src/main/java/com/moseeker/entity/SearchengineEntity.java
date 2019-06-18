@@ -351,6 +351,12 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                    }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
@@ -594,13 +600,16 @@ public class SearchengineEntity {
                 GetResponse response = client.prepareGet("users", "users", id + "").execute().actionGet();
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
+                logger.info("SearchengineEntity removeApplication mapTemp:{}", JSONObject.toJSONString(mapTemp));
                 if (mapTemp != null) {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
+                        logger.info("removeApplication applications:{}", JSONObject.toJSONString(applications));
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            logger.info("removeApplication applicationOptional:{}", applicationOptional.get());
                             if (applicationOptional.isPresent()) {
                                 logger.info("removeApplication exists ");
                                 List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());

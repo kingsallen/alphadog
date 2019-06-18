@@ -683,6 +683,7 @@ public class EmployeeEntity {
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
                 e.setUpdateTime(now);
+                e.setUnbindTime(now);
             });
             for (UserEmployeeDO DO : employees) {
                 int userId = DO.getSysuserId();
@@ -1714,6 +1715,8 @@ public class EmployeeEntity {
             List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
             for(UserEmployeeDO employee : userEmployeeList){
                 UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                logger.info("EmployeeEntity addEmployeeListIfNotExist employee:{}", employee);
+                logger.info("EmployeeEntity addEmployeeListIfNotExist record:{}", record);
                 record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
                 UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
 

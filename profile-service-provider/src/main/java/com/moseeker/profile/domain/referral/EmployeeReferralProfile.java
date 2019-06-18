@@ -179,7 +179,6 @@ public abstract class EmployeeReferralProfile {
             logger.error(e.getMessage(), e);
             referralResultVO.setReason(e.getMessage());
             referralResultVO.setSuccess(false);
-            referralResultVO.setErrorCode(e.getCode());
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

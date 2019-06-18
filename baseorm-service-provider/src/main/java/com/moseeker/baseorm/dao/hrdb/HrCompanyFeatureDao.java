@@ -42,7 +42,7 @@ public class HrCompanyFeatureDao extends JooqCrudImpl<HrCompanyFeature, HrCompan
      根据福利特色列表获取福利特色
      */
     public List<HrCompanyFeature> getFeatureListByIdList(List<Integer> idList){
-        List<HrCompanyFeature> list=create.selectFrom(HR_COMPANY_FEATURE).where(HR_COMPANY_FEATURE.ID.in(idList)).fetchInto(HrCompanyFeature.class);
+        List<HrCompanyFeature> list=create.selectFrom(HR_COMPANY_FEATURE).where(HR_COMPANY_FEATURE.ID.in(idList)).and(HR_COMPANY_FEATURE.DISABLE.eq(1)).fetchInto(HrCompanyFeature.class);
         return list;
     }
     /*

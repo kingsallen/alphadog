@@ -1,6 +1,7 @@
 package com.moseeker.position.thrift;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -239,8 +240,10 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        logger.info("PositionServicesImpl saveAndSync");
         JobPostionResponse response=service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 
+        logger.info("PositionServicesImpl saveAndSync response:{}", JSONObject.toJSONString(response));
         List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
         int syncingCounts=0;
 
@@ -255,6 +258,7 @@ public class PositionServicesImpl implements Iface {
             form.setRequestType(SyncRequestType.ATS.code());
         }
 
+        logger.info("PositionServicesImpl saveAndSync syncDatas:{}", JSONObject.toJSONString(syncDatas));
         logger.info("syncDatas: "+JSON.toJSONString(syncDatas));
 
         try {
@@ -276,6 +280,7 @@ public class PositionServicesImpl implements Iface {
         response.setSyncingCounts(syncingCounts);
         response.setSyncData(null);
 
+        logger.info("PositionServicesImpl saveAndSync response:{}", JSONObject.toJSONString(response));
         return ResponseUtils.success(response);
     }
 

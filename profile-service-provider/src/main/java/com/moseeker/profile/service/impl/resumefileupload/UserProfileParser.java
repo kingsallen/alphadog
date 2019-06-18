@@ -5,7 +5,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.util.OfficeUtils;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.profile.User;
@@ -73,10 +73,10 @@ public class UserProfileParser extends AbstractResumeFileParser {
                     fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
             logger.info("........." + pdfName + " --------------pdf file ---> status = " + status);
 //            if(status == 1) {
-            fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
-            fileNameData.setFileName(pdfName);
-            fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
-                    .replace(".doc", Constant.WORD_PDF));
+                fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                fileNameData.setFileName(pdfName);
+                fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
+                        .replace(".doc", Constant.WORD_PDF));
 //            }
         }
     }

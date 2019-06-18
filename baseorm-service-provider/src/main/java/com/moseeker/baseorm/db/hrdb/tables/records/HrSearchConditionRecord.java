@@ -4,12 +4,12 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 1614713910;
+    private static final long serialVersionUID = -466625948;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -450,59 +450,59 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     * Setter for <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
-    public void setPositionKeyWord(String value) {
+    public void setPositionStatus(Integer value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     * Getter for <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
-    public String getPositionKeyWord() {
-        return (String) get(30);
+    public Integer getPositionStatus() {
+        return (Integer) get(30);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     * Setter for <code>hrdb.hr_search_condition.position_key_word</code>.
      */
-    public void setPastPositionKeyWord(String value) {
+    public void setPositionKeyWord(String value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     * Getter for <code>hrdb.hr_search_condition.position_key_word</code>.
      */
-    public String getPastPositionKeyWord() {
+    public String getPositionKeyWord() {
         return (String) get(31);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     * Setter for <code>hrdb.hr_search_condition.past_position_key_word</code>.
      */
-    public void setPastCompanyKeyWord(String value) {
+    public void setPastPositionKeyWord(String value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     * Getter for <code>hrdb.hr_search_condition.past_position_key_word</code>.
      */
-    public String getPastCompanyKeyWord() {
+    public String getPastPositionKeyWord() {
         return (String) get(32);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.position_status</code>.
+     * Setter for <code>hrdb.hr_search_condition.past_company_key_word</code>.
      */
-    public void setPositionStatus(Integer value) {
+    public void setPastCompanyKeyWord(String value) {
         set(33, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.position_status</code>.
+     * Getter for <code>hrdb.hr_search_condition.past_company_key_word</code>.
      */
-    public Integer getPositionStatus() {
-        return (Integer) get(33);
+    public String getPastCompanyKeyWord() {
+        return (String) get(33);
     }
 
     /**
@@ -533,6 +533,62 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         return (Timestamp) get(35);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_search_condition.has_attachment</code>. 1 有附件，0 无附件，不传代表不限
+     */
+    public void setHasAttachment(String value) {
+        set(36, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.has_attachment</code>. 1 有附件，0 无附件，不传代表不限
+     */
+    public String getHasAttachment() {
+        return (String) get(36);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_search_condition.department_ids</code>. 部门id，英文逗号连接的字符串
+     */
+    public void setDepartmentIds(String value) {
+        set(37, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.department_ids</code>. 部门id，英文逗号连接的字符串
+     */
+    public String getDepartmentIds() {
+        return (String) get(37);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_search_condition.department_names</code>. 部门名称，英文逗号连接的字符串
+     */
+    public void setDepartmentNames(String value) {
+        set(38, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.department_names</code>. 部门名称，英文逗号连接的字符串
+     */
+    public String getDepartmentNames() {
+        return (String) get(38);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_search_condition.remark</code>. 是否有备注 0无1有空为不限
+     */
+    public void setRemark(String value) {
+        set(39, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.remark</code>. 是否有备注 0无1有空为不限
+     */
+    public String getRemark() {
+        return (String) get(39);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -550,16 +606,16 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     // -------------------------------------------------------------------------
 
     /**
-     * Create a detached HrSearchConditionRecord
+     * Create a detached HrSearchConditionPO
      */
     public HrSearchConditionRecord() {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
     }
 
     /**
-     * Create a detached, initialised HrSearchConditionRecord
+     * Create a detached, initialised HrSearchConditionPO
      */
-    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord, Integer positionStatus, Timestamp startSubmitTime, Timestamp endSubmitTime) {
+    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, Integer positionStatus, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord, Timestamp startSubmitTime, Timestamp endSubmitTime, String hasAttachment, String departmentIds, String departmentNames, String remark) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
 
         set(0, id);
@@ -592,11 +648,15 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         set(27, favoriteHrs);
         set(28, cityCode);
         set(29, intentionCityCode);
-        set(30, positionKeyWord);
-        set(31, pastPositionKeyWord);
-        set(32, pastCompanyKeyWord);
-        set(33, positionStatus);
+        set(30, positionStatus);
+        set(31, positionKeyWord);
+        set(32, pastPositionKeyWord);
+        set(33, pastCompanyKeyWord);
         set(34, startSubmitTime);
         set(35, endSubmitTime);
+        set(36, hasAttachment);
+        set(37, departmentIds);
+        set(38, departmentNames);
+        set(39, remark);
     }
 }

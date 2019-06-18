@@ -57,4 +57,9 @@ public class BeanUtilsTest {
         assertEquals("昵称", userUserRecord.getNickname());
         assertEquals(1, userUserRecord.getParentid().intValue());
     }
+
+    @Test
+    public void test00(){
+        System.out.println(213423|4524523);
+    }
 }

@@ -523,12 +523,18 @@ public class WholeProfileService {
         }
         ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
-        int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
-                profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
-                profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
-                profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
-                profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
-                userRecord, oldProfile);
+        logger.info("开始 importCV");
+        int id=0;
+        try {
+            id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+                    profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
+                    profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
+                    profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
+                    profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
+                    userRecord, oldProfile);
+        }catch (Exception e){
+          logger.error(e.getMessage(),e);
+        };
         if (id > 0) {
             logger.info("importCV 添加成功");
             try {

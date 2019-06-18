@@ -450,4 +450,18 @@ public class UserEmployeeDao extends DAOImpl<UserEmployeeRecord, com.moseeker.ba
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> fetchByBonus(Integer... values) {
         return fetch(UserEmployee.USER_EMPLOYEE.BONUS, values);
     }
+
+    /**
+     * Fetch records that have <code>unbind_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> fetchByUnbindTime(Timestamp... values) {
+        return fetch(UserEmployee.USER_EMPLOYEE.UNBIND_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>import_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> fetchByImportTime(Timestamp... values) {
+        return fetch(UserEmployee.USER_EMPLOYEE.IMPORT_TIME, values);
+    }
 }

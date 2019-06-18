@@ -3,12 +3,10 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
-import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -29,8 +27,9 @@ import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.*;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 /**
  * Created by zztaiwll on 17/8/14.
@@ -780,10 +779,10 @@ public class CompanyPcService {
     public HrWxWechatDO  getHrWxWechatDOBySignature(String signature, int companyId){
         HrWxWechatDO DO= new HrWxWechatDO();
         if(StringUtils.isNotNullOrEmpty(signature)){
-            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),signature).buildQuery();
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),signature).and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(),1).buildQuery();
             DO = hrWxWechatDao.getData(query);
         }else if(companyId > 0){
-            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),companyId).buildQuery();
+            Query query = new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),companyId).and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(),1).buildQuery();
             DO = hrWxWechatDao.getData(query);
         }
         return DO;

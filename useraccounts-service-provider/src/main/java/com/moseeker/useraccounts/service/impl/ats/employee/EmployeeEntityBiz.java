@@ -3,7 +3,7 @@ package com.moseeker.useraccounts.service.impl.ats.employee;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
+import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 
 import java.util.List;
 import java.util.Map;
