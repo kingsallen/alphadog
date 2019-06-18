@@ -32,6 +32,7 @@ import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import java.util.*;
 
+import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -105,6 +106,9 @@ public abstract class EmployeeBinder {
 
     @Autowired
     private Neo4jService neo4jService;
+
+    @Autowired
+    BatchValidate batchValidate;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
