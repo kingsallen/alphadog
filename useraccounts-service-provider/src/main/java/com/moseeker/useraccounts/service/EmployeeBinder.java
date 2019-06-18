@@ -201,6 +201,7 @@ public abstract class EmployeeBinder {
         userEmployee.setActivation((byte)0);
         userEmployee.setSource(bindingParams.getSource());
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        log.info("EmployeeBinder createEmployee customFieldValues:{}", JSONObject.toJSONString(bindingParams.getCustomFieldValues()));
         if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
             JSONArray jsonArray = new JSONArray();
             jsonArray.add(bindingParams.getCustomFieldValues());
