@@ -19,7 +19,8 @@ public class UserHrAccountParamUtils extends ParamUtils {
                     throw new Exception("请设置行号!");
                 }
                 try {
-                    map.put((Integer) data.remove("rowNum"), ParamUtils.initModelForm(data, UserEmployeeDO.class));
+                    UserEmployeeDO userEmployeeDO = parseEmployee(data);
+                    map.put((Integer) data.remove("rowNum"), userEmployeeDO);
                 } catch (Exception e) {
                     LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
                 }
@@ -33,27 +34,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
             List<UserEmployeeDO> userEmployeeDOS = new ArrayList<>(datas.size());
             for (Map<String, Object> data : datas) {
                 try {
-                    UserEmployeeDO userEmployeeDO = ParamUtils.initModelForm(data, UserEmployeeDO.class);
-                    if (data.get("customFieldValues") != null && !data.get("customFieldValues").equals("[]")) {
-
-                        JSONArray jsonArray = new JSONArray();
-                        List<Map<String, String>>  list = (List)data.get("customFieldValues");
-                        if (list != null && list.size() > 0) {
-                            list.forEach(map -> {
-                                JSONObject jsonObject = new JSONObject();
-                                map.forEach((key, value) -> {
-                                    if (!value.trim().equals("")) {
-                                        jsonObject.put(key, value);
-                                    }
-                                });
-                                if (jsonObject.size() > 0) {
-                                    jsonArray.add(jsonObject);
-                                }
-                            });
-
-                            userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
-                        }
-                    }
+                    UserEmployeeDO userEmployeeDO = parseEmployee(data);
                     userEmployeeDOS.add(userEmployeeDO);
                 } catch (Exception e) {
                     LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
@@ -63,6 +44,36 @@ public class UserHrAccountParamUtils extends ParamUtils {
         } else {
             return new ArrayList<>(0);
         }
+    }
+
+    private static UserEmployeeDO parseEmployee(Map<String, Object> data) {
+        try {
+            UserEmployeeDO userEmployeeDO = ParamUtils.initModelForm(data, UserEmployeeDO.class);
+            if (data.get("customFieldValues") != null && !data.get("customFieldValues").equals("[]")) {
+
+                JSONArray jsonArray = new JSONArray();
+                List<Map<String, String>>  list = (List)data.get("customFieldValues");
+                if (list != null && list.size() > 0) {
+                    list.forEach(map -> {
+                        JSONObject jsonObject = new JSONObject();
+                        map.forEach((key, value) -> {
+                            if (!value.trim().equals("")) {
+                                jsonObject.put(key, value);
+                            }
+                        });
+                        if (jsonObject.size() > 0) {
+                            jsonArray.add(jsonObject);
+                        }
+                    });
+
+                    userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
+                }
+            }
+            return userEmployeeDO;
+        } catch (Exception e) {
+            LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
+        }
+        return null;
     }
 
 }
