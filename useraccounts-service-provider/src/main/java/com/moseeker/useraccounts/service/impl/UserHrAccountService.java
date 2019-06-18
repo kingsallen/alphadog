@@ -1514,6 +1514,7 @@ public class UserHrAccountService {
                             (dbEmployee.getId() == userEmployee.getId()
                                     && !userEmployee.getCustomFieldValues().equals(dbEmployee.getCustomFieldValues())))
                     .findAny();
+
             if (optional.isPresent()) {
                 updateCustomFieldList.add(userEmployee);
                 employeeIdList.add(userEmployee.getId());
@@ -1525,6 +1526,8 @@ public class UserHrAccountService {
                             && dbEmployee.getActivation() == EmployeeActiveState.Actived.getState()
                             && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState())
                     .findAny();
+            logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}", userEmployee.getActivation());
+            logger.info("UserHrAccountService updateEmployees optional1.isPresent():{}", optional1.isPresent());
             if (optional1.isPresent()) {
                 updateActivationList.add(userEmployee);
                 employeeIdList.add(userEmployee.getId());
