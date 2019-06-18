@@ -431,7 +431,7 @@ public class BatchValidate {
                     .findAny();
             return optional.isPresent();
         } else {
-            return true;
+            return false;
         }
     }
 
