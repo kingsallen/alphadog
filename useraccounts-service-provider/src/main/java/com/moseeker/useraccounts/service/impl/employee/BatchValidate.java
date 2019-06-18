@@ -328,6 +328,10 @@ public class BatchValidate {
             return false;
         }
 
+        if (customFieldValues == null || customFieldValues.size() == 0) {
+            return true;
+        }
+
         /**
          * 校验下拉项选择
          */
