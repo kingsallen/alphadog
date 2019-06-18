@@ -1508,8 +1508,6 @@ public class UserHrAccountService {
             }
         }
 
-        logger.info("UserHrAccountService updateEmployees errorEmployeeIdList:{}", JSONObject.toJSONString(errorEmployeeIdList));
-
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
             logger.info("UserHrAccountService updateEmployees userEmployee:{}", userEmployee);
@@ -1536,6 +1534,8 @@ public class UserHrAccountService {
 
             if (optional1.isPresent()) {
                 logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}, dbEmployee.activation:{}", userEmployee.getActivation(), optional1.get().getActivation());
+                logger.info("UserHrAccountService updateEmployees userEmployee.getActivation() != optional1.get().getActivation():{}", userEmployee.getActivation() != optional1.get().getActivation());
+                logger.info("UserHrAccountService updateEmployees userEmployee.getActivation() == EmployeeActiveState.Cancel.getState():{}", userEmployee.getActivation() == EmployeeActiveState.Cancel.getState());
                 if (userEmployee.getActivation() != optional1.get().getActivation()
                         && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
                         && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
