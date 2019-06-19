@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecruitProcessItems extends TableImpl<HrCompanyRecruitProcessItemsRecord> {
 
-    private static final long serialVersionUID = -1101205897;
+    private static final long serialVersionUID = -1066842410;
 
     /**
      * The reference instance of <code>hrdb.hr_company_recruit_process_items</code>
@@ -69,7 +69,7 @@ public class HrCompanyRecruitProcessItems extends TableImpl<HrCompanyRecruitProc
     /**
      * The column <code>hrdb.hr_company_recruit_process_items.process_order</code>. 排序
      */
-    public final TableField<HrCompanyRecruitProcessItemsRecord, Integer> PROCESS_ORDER = createField("process_order", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "排序");
+    public final TableField<HrCompanyRecruitProcessItemsRecord, Integer> PROCESS_ORDER = createField("process_order", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "排序");
 
     /**
      * The column <code>hrdb.hr_company_recruit_process_items.app_tpl_id</code>. 招聘状态id

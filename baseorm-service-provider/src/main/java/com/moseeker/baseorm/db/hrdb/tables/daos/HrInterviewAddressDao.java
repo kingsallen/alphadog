@@ -120,4 +120,11 @@ public class HrInterviewAddressDao extends DAOImpl<HrInterviewAddressRecord, com
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewAddress> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrInterviewAddress.HR_INTERVIEW_ADDRESS.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>snapshot IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewAddress> fetchBySnapshot(Integer... values) {
+        return fetch(HrInterviewAddress.HR_INTERVIEW_ADDRESS.SNAPSHOT, values);
+    }
 }

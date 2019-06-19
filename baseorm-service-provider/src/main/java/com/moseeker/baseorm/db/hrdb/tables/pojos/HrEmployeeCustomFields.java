@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields implements Serializable {
 
-    private static final long serialVersionUID = -579414064;
+    private static final long serialVersionUID = 267967234;
 
     private Integer id;
     private Integer companyId;
@@ -33,6 +33,8 @@ public class HrEmployeeCustomFields implements Serializable {
     private Integer mandatory;
     private Integer status;
     private Integer optionType;
+    private Integer fieldType;
+    private String  ename;
 
     public HrEmployeeCustomFields() {}
 
@@ -46,6 +48,8 @@ public class HrEmployeeCustomFields implements Serializable {
         this.mandatory = value.mandatory;
         this.status = value.status;
         this.optionType = value.optionType;
+        this.fieldType = value.fieldType;
+        this.ename = value.ename;
     }
 
     public HrEmployeeCustomFields(
@@ -57,7 +61,9 @@ public class HrEmployeeCustomFields implements Serializable {
         Byte    disable,
         Integer mandatory,
         Integer status,
-        Integer optionType
+        Integer optionType,
+        Integer fieldType,
+        String  ename
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -68,6 +74,8 @@ public class HrEmployeeCustomFields implements Serializable {
         this.mandatory = mandatory;
         this.status = status;
         this.optionType = optionType;
+        this.fieldType = fieldType;
+        this.ename = ename;
     }
 
     public Integer getId() {
@@ -142,6 +150,22 @@ public class HrEmployeeCustomFields implements Serializable {
         this.optionType = optionType;
     }
 
+    public Integer getFieldType() {
+        return this.fieldType;
+    }
+
+    public void setFieldType(Integer fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    public String getEname() {
+        return this.ename;
+    }
+
+    public void setEname(String ename) {
+        this.ename = ename;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrEmployeeCustomFields (");
@@ -155,6 +179,8 @@ public class HrEmployeeCustomFields implements Serializable {
         sb.append(", ").append(mandatory);
         sb.append(", ").append(status);
         sb.append(", ").append(optionType);
+        sb.append(", ").append(fieldType);
+        sb.append(", ").append(ename);
 
         sb.append(")");
         return sb.toString();

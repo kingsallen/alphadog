@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewFeedbackTemplate extends TableImpl<HrInterviewFeedbackTemplateRecord> {
 
-    private static final long serialVersionUID = -2022597237;
+    private static final long serialVersionUID = -2071698673;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_feedback_template</code>
@@ -90,6 +90,11 @@ public class HrInterviewFeedbackTemplate extends TableImpl<HrInterviewFeedbackTe
      * The column <code>hrdb.hr_interview_feedback_template.update_time</code>. 更新时间
      */
     public final TableField<HrInterviewFeedbackTemplateRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>hrdb.hr_interview_feedback_template.snapshot</code>. 是否是快照 0不是 1是
+     */
+    public final TableField<HrInterviewFeedbackTemplateRecord, Integer> SNAPSHOT = createField("snapshot", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否是快照 0不是 1是");
 
     /**
      * Create a <code>hrdb.hr_interview_feedback_template</code> table reference

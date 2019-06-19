@@ -142,6 +142,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
                 String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
                 log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
+                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , BeanUtils.convertStructToJSON(userEmployee));
                 log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, activationCode:{}, result: {}", userEmployee.getId(), activationCode , resultACode);
 
                 JSONObject jsonObject = new JSONObject();

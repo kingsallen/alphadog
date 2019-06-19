@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewAddress implements Serializable {
 
-    private static final long serialVersionUID = 267044713;
+    private static final long serialVersionUID = 1087792751;
 
     private Integer   id;
     private Integer   companyId;
@@ -34,6 +34,7 @@ public class HrInterviewAddress implements Serializable {
     private Integer   defaultFlag;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   snapshot;
 
     public HrInterviewAddress() {}
 
@@ -47,6 +48,7 @@ public class HrInterviewAddress implements Serializable {
         this.defaultFlag = value.defaultFlag;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.snapshot = value.snapshot;
     }
 
     public HrInterviewAddress(
@@ -58,7 +60,8 @@ public class HrInterviewAddress implements Serializable {
         Integer   disable,
         Integer   defaultFlag,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   snapshot
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -69,6 +72,7 @@ public class HrInterviewAddress implements Serializable {
         this.defaultFlag = defaultFlag;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.snapshot = snapshot;
     }
 
     public Integer getId() {
@@ -143,6 +147,14 @@ public class HrInterviewAddress implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getSnapshot() {
+        return this.snapshot;
+    }
+
+    public void setSnapshot(Integer snapshot) {
+        this.snapshot = snapshot;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrInterviewAddress (");
@@ -156,6 +168,7 @@ public class HrInterviewAddress implements Serializable {
         sb.append(", ").append(defaultFlag);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(snapshot);
 
         sb.append(")");
         return sb.toString();

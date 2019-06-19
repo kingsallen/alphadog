@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.util.query.Condition;
@@ -27,14 +29,10 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         super.paramCheck(bindingParams, certConf);
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
-                .and("cname", bindingParams.getName())
-                .and("custom_field", bindingParams.getCustomField())
-                .and("activation", EmployeeActiveState.Init.getState())
-                .and("disable", "0");
 
-        employeeThreadLocal.set(employeeDao.getData(query.buildQuery()));
+        UserEmployeeDO userEmployeeDO = employeeDao.fetchUnActiveEmployeeByCustom(bindingParams.getCompanyId(),
+                bindingParams.getName(), bindingParams.getCustomField());
+        employeeThreadLocal.set(userEmployeeDO);
         if (employeeThreadLocal.get() == null || employeeThreadLocal.get().getId() == 0) {
             throw new RuntimeException("员工认证信息不正确");
         } else if (employeeThreadLocal.get().getActivation() == 0) {
@@ -70,6 +68,12 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(bindingParams.getCustomFieldValues());
+            userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
+        }
+        log.info("EmployeeBindByCustomfield createEmployee customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
         return userEmployeeDO;
     }
 }

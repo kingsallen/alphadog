@@ -62,10 +62,12 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 
 /**
  * Created by YYF
@@ -95,6 +97,7 @@ public class SearchengineEntity {
     @Autowired
     private UserWxUserDao userWxUserDao;
 
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 获取ES连接
@@ -179,6 +182,16 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                    }
+
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
@@ -351,6 +364,19 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                        logger.info("SearchengineEntity updateEmployeeAwards unbind_time:{}", jsonObject.get("unbind_time"));
+                        LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                        logger.info("SearchengineEntity updateEmployeeAwards unbind_time_long:{}", jsonObject.get("unbind_time_long"));
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                        logger.info("SearchengineEntity updateEmployeeAwards import_time:{}", jsonObject.get("import_time"));
+                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                        logger.info("SearchengineEntity updateEmployeeAwards import_time_lonog:{}", jsonObject.get("import_time_long"));
+                    }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {

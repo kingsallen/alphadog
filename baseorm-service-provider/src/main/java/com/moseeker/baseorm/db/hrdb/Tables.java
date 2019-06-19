@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import com.moseeker.baseorm.db.hrdb.tables.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -17,6 +18,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
@@ -24,8 +26,11 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcess;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcessItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomDisplay;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -33,6 +38,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
@@ -41,6 +47,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterCandidate;
 import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterJob;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterOmsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterProfile;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
@@ -104,6 +111,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 自定义字段的下拉选项表
+     */
+    public static final EmployeeOptionValue EMPLOYEE_OPTION_VALUE = com.moseeker.baseorm.db.hrdb.tables.EmployeeOptionValue.EMPLOYEE_OPTION_VALUE;
 
     /**
      * The table <code>hrdb.hr_account_application_notify</code>.
@@ -171,6 +183,11 @@ public class Tables {
     public static final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
 
     /**
+     * 账号公司关联记录
+     */
+    public static final HrCompanyAccountCopy HR_COMPANY_ACCOUNT_COPY = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY;
+
+    /**
      * 公司级别的配置信息表
      */
     public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
@@ -206,14 +223,29 @@ public class Tables {
     public static final HrCompanyReferralConf HR_COMPANY_REFERRAL_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF;
 
     /**
+     * The table <code>hrdb.hr_dashboard_config</code>.
+     */
+    public static final HrDashboardConfig HR_DASHBOARD_CONFIG = com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig.HR_DASHBOARD_CONFIG;
+
+    /**
      * 部门员工配置表
      */
     public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
 
     /**
+     * 员工认证-自定义显示表
+     */
+    public static final HrEmployeeCustomDisplay HR_EMPLOYEE_CUSTOM_DISPLAY = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomDisplay.HR_EMPLOYEE_CUSTOM_DISPLAY;
+
+    /**
      * 员工认证自定义字段表
      */
     public static final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
+
+    /**
+     * 自定义字段的下拉选项表
+     */
+    public static final HrEmployeeOptionValue HR_EMPLOYEE_OPTION_VALUE = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeOptionValue.HR_EMPLOYEE_OPTION_VALUE;
 
     /**
      * 员工职能表
@@ -249,6 +281,11 @@ public class Tables {
      * 红包记录表
      */
     public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
+
+    /**
+     * The table <code>hrdb.hr_hb_items_backup</code>.
+     */
+    public static final HrHbItemsBackup HR_HB_ITEMS_BACKUP = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup.HR_HB_ITEMS_BACKUP;
 
     /**
      * 红包配置和职位绑定表
@@ -289,6 +326,11 @@ public class Tables {
      * 猎头职位表
      */
     public static final HrHeadhunterJob HR_HEADHUNTER_JOB = com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterJob.HR_HEADHUNTER_JOB;
+
+    /**
+     * 猎头管理OMS配置表
+     */
+    public static final HrHeadhunterOmsConf HR_HEADHUNTER_OMS_CONF = com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterOmsConf.HR_HEADHUNTER_OMS_CONF;
 
     /**
      * 猎头上传简历表 猎头上传简历临时存储，hr接收后为正式简历
@@ -491,7 +533,7 @@ public class Tables {
     public static final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * The table <code>hrdb.hr_wx_module</code>.
+     * 微信模块表
      */
     public static final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
