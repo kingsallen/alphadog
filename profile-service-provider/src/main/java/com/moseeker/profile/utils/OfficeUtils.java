@@ -1,12 +1,5 @@
 package com.moseeker.profile.utils;
 
-import com.artofsolving.jodconverter.DefaultDocumentFormatRegistry;
-import com.artofsolving.jodconverter.DocumentConverter;
-import com.artofsolving.jodconverter.DocumentFamily;
-import com.artofsolving.jodconverter.DocumentFormat;
-import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.aspose.words.Document;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
@@ -14,15 +7,19 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 import java.util.concurrent.*;
 
-import com.aspose.words.SystemFontSource;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
+import org.artofsolving.jodconverter.office.OfficeManager;
+import org.artofsolving.jodconverter.util.PlatformUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.artofsolving.jodconverter.OfficeDocumentConverter;
+import org.artofsolving.jodconverter.office.*;
 
 /**
  * Created by moseeker on 2018/11/6.
@@ -38,17 +35,18 @@ public class OfficeUtils {
     // 使用x-server会丢失输出信息，
     //private static final String COMMAND = "xvfb-run -a -s '-screen 0 640x480x16'  libreoffice --invisible --convert-to pdf:writer_pdf_Export --outdir $outdir$ $src$";
     private static final String COMMAND = "soffice --headless --convert-to pdf:writer_pdf_Export  $src$ --outdir $outdir$ ";
+    private static final int UNO_PORT = 8100 ;
+    private static OfficeManager officeManager;
+    private static String OFFICE_HONE = PlatformUtils.isLinux()?"/usr/lib64/libreoffice": "/Applications/LibreOffice.app/Contents";
 
-    private static final int UNO_PORT = 8100;
-
-    // jodconverter 2.2.1 b不支持识别docx，手动增加docx格式
-    private static DocumentFormat DOCX_FMT = new DocumentFormat("Microsoft Word 2007 XML", DocumentFamily.TEXT,
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "docx");
-    private static DefaultDocumentFormatRegistry DOC_FMT_REGISTRY = new DefaultDocumentFormatRegistry();
-    static{
-        DOC_FMT_REGISTRY.addDocumentFormat(DOCX_FMT);
-        logger.info("OfficeUtils init --- system properties {}"  , System.getProperties());
-        //logger.info("OfficeUtils init --- current user: "+ executeCommand("whoami"));
+    static {
+        if(OFFICE_HONE == null || !new File(OFFICE_HONE).exists()  ){
+            OFFICE_HONE = org.artofsolving.jodconverter.office.OfficeUtils.getDefaultOfficeHome().getAbsolutePath(); //
+        }
+        startService();
+        Runtime.getRuntime().addShutdownHook(new Thread(()->{
+            stopService();
+        }));
     }
 
     /**
@@ -292,30 +290,38 @@ public class OfficeUtils {
         }
     }
 
-    public static void convertThroughUNO(File inputFile, File outputFile) {
-        logger.info("convert {} --> {}", inputFile, outputFile);
-        OpenOfficeConnection connection = new SocketOpenOfficeConnection(UNO_PORT);
-        try {
-            connection.connect();
-            DocumentConverter converter = new OpenOfficeDocumentConverter(connection);
-            if(inputFile.getName().toLowerCase().endsWith(".docx")){
-                converter.convert(inputFile,DOCX_FMT,outputFile,null);
-            }else{
-                converter.convert(inputFile, outputFile);
-            }
-            logger.info("convert {} --> {} end ", inputFile, outputFile);
-        } catch (Exception e) {
-            logger.error("convert error",e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                    connection = null;
-                }
-            } catch (Exception e) {
-            }
-        }
+    // 打开服务器
+    public static void startService() {
+        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+        System.out.println("准备启动office服务....");
+        //configuration.setOfficeHome(OFFICE_HONE);// 设置OpenOffice.org安装目录
+        configuration.setPortNumbers(UNO_PORT); // 设置转换端口，默认为8100
+        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+
+        officeManager = configuration.buildOfficeManager();
+        officeManager.start(); // 启动服务
+        System.out.println("office转换服务启动成功!");
     }
+
+    // 关闭服务器
+    public static void stopService() {
+        System.out.println("关闭office转换服务....");
+        if (officeManager != null) {
+            officeManager.stop();
+        }
+        System.out.println("关闭office转换成功!");
+    }
+
+    public static void convertThroughUNO(File inputFile, File outputFile) throws IOException {
+        logger.info("convert {} --> {}", inputFile, outputFile);
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+        converter.convert(inputFile, outputFile);
+        //stopService();
+    }
+
+
+
 }
 
 

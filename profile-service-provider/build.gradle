@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 dependencies {
     // https://mvnrepository.com/artifact/com.artofsolving/jodconverter
     compile group: 'com.artofsolving', name: 'jodconverter', version: '2.2.1'
+    compile group: 'com.github.livesense', name: 'jodconverter-core', version: '1.0.5'
     compile project(":rpc-center")
     compile project(":common")
     compile project(":common-service")
