@@ -366,12 +366,16 @@ public class SearchengineEntity {
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
                         jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                        logger.info("SearchengineEntity updateEmployeeAwards unbind_time:{}", jsonObject.get("unbind_time"));
                         LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
                         jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                        logger.info("SearchengineEntity updateEmployeeAwards unbind_time_long:{}", jsonObject.get("unbind_time_long"));
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
                         jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                        logger.info("SearchengineEntity updateEmployeeAwards import_time:{}", jsonObject.get("import_time"));
                         jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                        logger.info("SearchengineEntity updateEmployeeAwards import_time_lonog:{}", jsonObject.get("import_time_long"));
                     }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
