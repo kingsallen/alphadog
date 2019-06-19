@@ -350,6 +350,7 @@ public class SearchengineEntity {
                     jsonObject.put("managername", userEmployeeDO.getManagername());
                     jsonObject.put("status", userEmployeeDO.getStatus());
                     jsonObject.put("is_rp_sent", userEmployeeDO.getIsRpSent());
+                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO.activation:{}", new Double(userEmployeeDO.getActivation()).intValue());
                     jsonObject.put("activation", new Double(userEmployeeDO.getActivation()).intValue());
                     jsonObject.put("retiredate", userEmployeeDO.getRetiredate());
                     jsonObject.put("login_count", userEmployeeDO.getLoginCount());
