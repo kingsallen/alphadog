@@ -7,9 +7,12 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
 import java.util.*;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserHrAccountParamUtils extends ParamUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(UserHrAccountParamUtils.class);
 
     public static Map<Integer, UserEmployeeDO> parseUserEmployeeDO(List<HashMap<String, Object>> datas) throws Exception {
         Map<Integer, UserEmployeeDO> map = new LinkedHashMap();
@@ -22,7 +25,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
                     UserEmployeeDO userEmployeeDO = parseEmployee(data);
                     map.put((Integer) data.remove("rowNum"), userEmployeeDO);
                 } catch (Exception e) {
-                    LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -37,7 +40,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
                     UserEmployeeDO userEmployeeDO = parseEmployee(data);
                     userEmployeeDOS.add(userEmployeeDO);
                 } catch (Exception e) {
-                    LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
+                    logger.error(e.getMessage(), e);
                 }
             }
             return userEmployeeDOS;
@@ -48,6 +51,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
 
     private static UserEmployeeDO parseEmployee(Map<String, Object> data) {
         try {
+            logger.info("UserHrAccountParamUtils parseEmployee data:{}", JSONObject.toJSONString(data));
             UserEmployeeDO userEmployeeDO = ParamUtils.initModelForm(data, UserEmployeeDO.class);
             if (data.get("customFieldValues") != null && !data.get("customFieldValues").equals("[]")) {
                 JSONArray jsonArray = new JSONArray();
@@ -73,7 +77,7 @@ public class UserHrAccountParamUtils extends ParamUtils {
             }
             return userEmployeeDO;
         } catch (Exception e) {
-            LoggerFactory.getLogger(UserHrAccountParamUtils.class).error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

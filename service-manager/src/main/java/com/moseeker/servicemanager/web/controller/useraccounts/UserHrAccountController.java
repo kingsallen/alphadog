@@ -1076,6 +1076,7 @@ public class UserHrAccountController {
             int hraccountId = params.getInt("hraccountId", 0);
             String fileName = params.getString("fileName", "");
             String filePath = params.getString("filePath", "");
+            logger.info("employeeImport userEmployees:{}", params.get("userEmployees"));
             Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId, filePath, fileName, type, hraccountId);
             return ResponseLogNotification.success(request, res);
