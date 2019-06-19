@@ -171,6 +171,8 @@ public class BatchValidate {
                         continue;
                     } else {
                         JSONArray customFieldValues = convertOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
+                        logger.info("BatchValidate importCheck success customFieldValues:{}", customFieldValues);
+                        userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
                     }
                 }
             }
