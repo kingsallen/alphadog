@@ -185,11 +185,9 @@ public class SearchengineEntity {
 
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
                         jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
-                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
                         jsonObject.put("import_time", userEmployeeDO.getImportTime());
-                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                     }
 
                     JSONObject searchData = new JSONObject();
@@ -278,13 +276,6 @@ public class SearchengineEntity {
     }
 
 
-    /**
-     * 全量更新员工积分
-     *
-     * @param employeeIds
-     * @return
-     * @throws TException
-     */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
@@ -349,7 +340,6 @@ public class SearchengineEntity {
                     jsonObject.put("managername", userEmployeeDO.getManagername());
                     jsonObject.put("status", userEmployeeDO.getStatus());
                     jsonObject.put("is_rp_sent", userEmployeeDO.getIsRpSent());
-                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO.activation:{}", new Double(userEmployeeDO.getActivation()).intValue());
                     jsonObject.put("activation", new Double(userEmployeeDO.getActivation()).intValue());
                     jsonObject.put("retiredate", userEmployeeDO.getRetiredate());
                     jsonObject.put("login_count", userEmployeeDO.getLoginCount());
@@ -367,21 +357,18 @@ public class SearchengineEntity {
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
                         jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
-                        LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
                         jsonObject.put("import_time", userEmployeeDO.getImportTime());
-                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                     }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
-                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
+                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
                         searchData.put("email", userEmployeeDO.getEmail().toLowerCase());
                     }
-                    searchData.put("mobile",String.valueOf(userEmployeeDO.getMobile()));
+                    searchData.put("mobile", String.valueOf(userEmployeeDO.getMobile()));
                     searchData.put("custom_field", "");
-                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
+                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
                         searchData.put("custom_field", userEmployeeDO.getCustomField().toLowerCase());
                     }
 
@@ -429,7 +416,7 @@ public class SearchengineEntity {
                     jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
                     searchData.put("cname", "");
-                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
+                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
                         searchData.put("cname", userEmployeeDO.getCname().toLowerCase());
                     }
                     jsonObject.put("disable", userEmployeeDO.getDisable());
