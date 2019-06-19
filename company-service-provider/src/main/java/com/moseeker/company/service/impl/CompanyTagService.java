@@ -146,12 +146,18 @@ public class CompanyTagService {
                 }
             }
             if(!StringUtils.isEmptyList(deleList)){
+                logger.info("=======需要删除的标签的列表是=========");
+                logger.info(JSON.toJSONString(deleList));
+                logger.info("===================================");
                 talentpoolCompanyTagUserDao.deleteByUserIdAndTagId(deleList);
             }
             /*
 
              */
             if (!StringUtils.isEmptyList(list)) {
+                logger.info("=======需要添加的标签的列表是=========");
+                logger.info(list.toString());
+                logger.info("===================================");
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
                     this.addRedisRefreshEs(userId,tagIdList, KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
