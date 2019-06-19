@@ -1258,6 +1258,9 @@ public class UserHrAccountService {
         }
         try {
             logger.info("getEmployees pageNum:{}, pageSize:{}", pageNumber, pageSize);
+            if (org.apache.commons.lang.StringUtils.isNotBlank(order)) {
+                order = order.replace("unbind_time", "unbind_time_long").replace("import_time", "import_time_long");
+            }
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
                     pageSize, pageNumber,balanceType, timeSpan, selectIds);
         } catch (Exception e) {
