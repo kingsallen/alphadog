@@ -95,21 +95,21 @@ public class AppConfig {
     }
 
     @Bean
-    public Queue profileCompanyTagQue() {
-        Queue queue = new Queue("profile_company_tag_recom_que", true, false, false);
+    public Queue profileCompanyTagNewQue() {
+        Queue queue = new Queue("profile_company_tag_recom_new_que", true, false, false);
         return queue;
     }
 
     @Bean
-    public TopicExchange profileCompanyTagRecomExchange() {
-        TopicExchange topicExchange = new TopicExchange("profile_company_tag_recom_exchange", true, false);
+    public TopicExchange profileCompanyTagRecomNewExchange() {
+        TopicExchange topicExchange = new TopicExchange("profile_company_tag_recom_new_exchange", true, false);
         return topicExchange;
     }
 
     @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
+            add(BindingBuilder.bind(profileCompanyTagNewQue()).to(profileCompanyTagRecomNewExchange()).with("profilecompanytagnewrecom.#"));
         }};
     }
 }
