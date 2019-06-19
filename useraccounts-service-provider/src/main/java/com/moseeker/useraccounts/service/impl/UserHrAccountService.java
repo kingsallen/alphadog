@@ -2207,10 +2207,11 @@ public class UserHrAccountService {
                 if (userEmployeeDO.getCustomFieldValues() != null) {
 
                     List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+
                     List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());
                     customFieldValues.addAll(list1);
                 }
-                userEmployeeVO.setCustomFieldValues(customFieldValues);
+                userEmployeeVO.setSystemFields(customFieldValues);
                 // 微信昵称
                 if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                     userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());

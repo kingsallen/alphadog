@@ -441,6 +441,7 @@ struct UserEmployeeVO{
     15: optional i32 authMethod, //认证方式 
     16: optional string unbindTime, //取消绑定的时间
     17: optional string importTime, //导入时间
+    18: optional list<map<string,string>> systemFields, //系统字段
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{
