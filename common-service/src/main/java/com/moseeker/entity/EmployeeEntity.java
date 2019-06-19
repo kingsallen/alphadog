@@ -688,7 +688,6 @@ public class EmployeeEntity {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
-                e.setUpdateTime(now);
                 e.setUnbindTime(now);
             });
             logger.info("EmployeeEntity unbind after change employees:{}", JSONObject.toJSONString(employees));

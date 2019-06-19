@@ -434,6 +434,7 @@ public class SearchengineEntity {
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
                     jsonObject.put("email", userEmployeeDO.getEmail());
+                    jsonObject.put("sdfsdfsdfsdf", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
                     searchData.put("cname", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
