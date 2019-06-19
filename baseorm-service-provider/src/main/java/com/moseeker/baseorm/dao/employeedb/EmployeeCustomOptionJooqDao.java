@@ -61,11 +61,7 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
                 .and(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customId))
                 .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY)
                 .fetch();
-        if (result != null && result.size() > 0) {
-            return result.into(EmployeeOptionValue.class);
-        } else {
-            return new ArrayList<>(0);
-        }
+        return convertToPOJO(result);
     }
 
     /**
@@ -113,6 +109,23 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
                 .and(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customId))
                 .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY)
                 .fetch();
+        return convertToPOJO(result);
+    }
+
+    /**
+     * 查找指定自定义信息的下拉项
+     * @param fieldIdList 自定义配置信息
+     * @return 自定义信息下拉项
+     */
+    public List<EmployeeOptionValue> listByCustomIdList(List<Integer> fieldIdList) {
+        Result<EmployeeOptionValueRecord> result = create
+                .selectFrom(EMPLOYEE_OPTION_VALUE)
+                .where(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.in(fieldIdList))
+                .fetch();
+        return convertToPOJO(result);
+    }
+
+    private List<EmployeeOptionValue> convertToPOJO(Result<EmployeeOptionValueRecord> result) {
         if (result != null && result.size() > 0) {
             return result.into(EmployeeOptionValue.class);
         } else {
