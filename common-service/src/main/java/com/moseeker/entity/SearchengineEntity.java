@@ -185,7 +185,6 @@ public class SearchengineEntity {
 
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
                         jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
-                        LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
                         jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
