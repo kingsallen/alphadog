@@ -269,6 +269,13 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>position_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(Integer... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_STATUS, values);
+    }
+
+    /**
      * Fetch records that have <code>position_key_word IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionKeyWord(String... values) {
@@ -290,13 +297,6 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     }
 
     /**
-     * Fetch records that have <code>position_status IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(Integer... values) {
-        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_STATUS, values);
-    }
-
-    /**
      * Fetch records that have <code>start_submit_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByStartSubmitTime(Timestamp... values) {
@@ -308,5 +308,32 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByEndSubmitTime(Timestamp... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.END_SUBMIT_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>has_attachment IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByHasAttachment(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.HAS_ATTACHMENT, values);
+    }
+
+    /**
+     * Fetch records that have <code>department_ids IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByDepartmentIds(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.DEPARTMENT_IDS, values);
+    }
+
+    /**
+     * Fetch records that have <code>department_names IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByDepartmentNames(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.DEPARTMENT_NAMES, values);
+    }
+    /**
+     * Fetch records that have <code>remark IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByRemark(String... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.REMARK, values);
     }
 }

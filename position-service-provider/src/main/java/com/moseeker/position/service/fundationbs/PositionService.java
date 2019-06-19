@@ -21,7 +21,6 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -63,10 +62,7 @@ import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.schedule.PositionIndexSender;
-import com.moseeker.position.utils.CommonPositionUtils;
-import com.moseeker.position.utils.HttpClientUtil;
-import com.moseeker.position.utils.SpecialCtiy;
-import com.moseeker.position.utils.SpecialProvince;
+import com.moseeker.position.utils.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -113,6 +109,8 @@ public class PositionService {
     private JobCustomDao jobCustomDao;
     @Autowired
     KafkaSender kafkaSender;
+    @Autowired
+    private PositionStateAsyncHelper positionStateAsyncHelper;
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
@@ -758,15 +756,7 @@ public class PositionService {
                 jobPositionDao.updateRecords(dbOnlineList);
 
                 // 猎聘api对接下架职位 todo 这行代码是新增
-                logger.info("==================batchLiepinPositionDownShelf:{}=================", batchLiepinPositionDownShelf);
-                pool.startTast(() -> {
-                    if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
-                        return receiverHandler.batchHandlerLiepinDownShelfOperation(batchLiepinPositionDownShelf);
-                    } else {
-                        throw new RuntimeException("rabbitmq线程等待超时");
-                    }
-                });
-
+                positionStateAsyncHelper.downShelf(batchHandlerCountDown,batchLiepinPositionDownShelf);
             }
         }
         // 判断哪些数据不需要更新的
@@ -809,6 +799,8 @@ public class PositionService {
         List<Integer> ccmailPositionIdsToDelete = new ArrayList<>();
         // 需要更新的福利特色数据
         List<JobPostrionObj> needBindFeatureData = new ArrayList<>();
+        // 上架数据
+        List<Integer> needReSyncData = new ArrayList<>();
         // 公司下HR账号ID
         Map<Integer, UserHrAccountDO> userHrAccountMap = userHrAccountGroupByID(companyId);
         // 职位数据是更新还是插入操作
@@ -830,10 +822,14 @@ public class PositionService {
                     formData.getSource_id(),
                     formData.getJobnumber());
             // todo 猎聘新增
-            jobPositionOldRecordList.add(jobPositionRecord);
             // 更新或者新增数据
             if (formData.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                 dbOperation = DBOperation.UPDATE;
+                if (jobPositionRecord.getStatus() == PositionStatus.BANNED.getValue()) {
+                    needReSyncData.add(jobPositionRecord.getId());      // 记录上架职位
+                } else if (jobPositionRecord.getStatus() == PositionStatus.ACTIVED.getValue()) {
+                    jobPositionOldRecordList.add(jobPositionRecord);
+                }
             } else {
                 dbOperation = DBOperation.INSERT;
             }
@@ -1143,9 +1139,8 @@ public class PositionService {
             }
             // 作废thirdPartyPosition数据
             if (thirdPartyPositionDisablelist.size() > 0) {
-                logger.info("-------------作废thirdPartyPosition数据开始------------------");
-                Condition condition = new Condition(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID.getName(), thirdPartyPositionDisablelist, ValueOp.IN);
-                thirdpartyPositionDao.disable(Arrays.asList(condition));
+                logger.info("-------------作废thirdPartyPosition数据开始:{}------------------",JSON.toJSONString(thirdPartyPositionDisablelist));
+                thirdpartyPositionDao.disable(thirdPartyPositionDisablelist);
                 logger.info("-------------作废thirdPartyPosition数据结束------------------");
             }
             if (needBindFeatureData.size() > 0) {
@@ -1160,16 +1155,8 @@ public class PositionService {
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
-            receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
-//            Future editFuture = pool.startTast(() -> {
-//                if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
-//                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateReco   dList, oldJobMap);
-//                } else {
-//                    throw new RuntimeException("rabbitmq线程等待超时");
-//                }
-//            });
-//
-//            editFuture.get(60, TimeUnit.SECONDS);
+            positionStateAsyncHelper.resync(batchHandlerCountDown,needReSyncData);
+            positionStateAsyncHelper.edit(batchHandlerCountDown,jobPositionUpdateRecordList ,oldJobMap);
 
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
@@ -1196,8 +1183,21 @@ public class PositionService {
         }
         if(!StringUtils.isEmptyList(jobPositionAddRecordList)
                 || !StringUtils.isEmptyList(jobPositionUpdateRecordList)) {
+            sendSearchSyncMq(companyId,jobPositionAddRecordList,jobPositionUpdateRecordList);
+        }
+        logger.info("-------批量修改职位结束---------");
+        return jobPostionResponse;
+    }
+
+    @Autowired
+    private PositionIndexSender sender;
+
+    private void sendSearchSyncMq(Integer companyId,
+                                  List<JobPositionRecord> jobPositionAddRecordList,
+                                  List<JobPositionRecord> jobPositionUpdateRecordList){
+        pool.startTast(() -> {
             JSONObject form = new JSONObject();
-            form.put("companyId",batchHandlerJobPosition.getData().get(0).getCompany_id());
+            form.put("companyId",companyId);
 
             JSONArray data = new JSONArray();
             if(!StringUtils.isEmptyList(jobPositionAddRecordList)) {
@@ -1218,17 +1218,13 @@ public class PositionService {
                 });
             }
             try {
-                HttpClientUtil.sentHttpPostRequest(ALPHACLOUD_SEARCH_SYNC_MQ,null,form);
+                HttpClientUtil.sentHttpPostRequest(ALPHACLOUD_SEARCH_SYNC_MQ, null, form);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("send alphacloud search sync mq error:{},form:{}", e.getMessage(), form);
             }
-        }
-        logger.info("-------批量修改职位结束---------");
-        return jobPostionResponse;
+            return null;
+        });
     }
-
-    @Autowired
-    private PositionIndexSender sender;
 
     /**
      * 处理抄送邮件记录

@@ -239,6 +239,13 @@ public final class ConstantErrorCodeMessage {
     public static final String CONSISTENCY_TOOL = "{'status':81001,'message':'重复的参数转换器！'}";
 
 
+    //useraccount服务提示信息说明
+    public static final String MCD_USER_EMAIL_AND_CUSTOM_FIELD = "{'status':111001,'message':'邮箱或者用工号已经注册过！'}";
+    public static final String MCD_USER_BIND_DONE = "{'status':111002,'message':'用户已经认证过！'}";
+
+    public static final String MCD_IS_EXIT = "{'status':111003,'message':'员工已经绑定过！'}";
+
+
     //IM服务
     public static final String CHAT_ROOM_NOT_EXIST = "{'status':91001,'message':'聊天室不存在！'}";
     public static final String CANT_SET_LEAVE_TO_MOBOT = "{'status':91002,'message':'尚未采购该功能，详情请联系您的客户成功顾问。'}";

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -13,6 +14,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -20,6 +22,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -70,6 +73,9 @@ public abstract class EmployeeBinder {
     protected UserEmployeeDao employeeDao;
 
     @Autowired
+    protected HrCompanyDao companyDao;
+
+    @Autowired
     protected UserWxEntity wxEntity;
 
     @Autowired
@@ -103,6 +109,9 @@ public abstract class EmployeeBinder {
     KafkaSender kafkaSender;
 
     @Autowired
+    SensorSend sensorSend;
+
+    @Autowired
     private Neo4jService neo4jService;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
@@ -117,22 +126,21 @@ public abstract class EmployeeBinder {
     public Result bind(BindingParams bindingParams,Integer bingSource) {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
-        Query.QueryBuilder query = new Query.QueryBuilder();
         try {
-            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(),
-                    bindingParams.getCompanyId()));
-            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
-                    && userEmployeeDOThreadLocal.get().getActivation() == 0) {
-                throw new RuntimeException("该员工已绑定");
-            }
+            validate(bindingParams);
+            Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
             HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
             if(certConf == null || certConf.getCompanyId() == 0) {
-                throw new RuntimeException("暂时不接受员工认证");
+                throw UserAccountException.EMPLOYEE_VERIFICATION_NOT_SUPPORT;
             }
             paramCheck(bindingParams, certConf);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
+        } catch (CommonException e) {
+            response.setSuccess(false);
+            response.setMessage(e.getMessage());
+            response.setEmployeeId(e.getCode());
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             response.setSuccess(false);
@@ -140,6 +148,20 @@ public abstract class EmployeeBinder {
         }
         log.info("bind response: {}", response);
         return response;
+    }
+
+    /**
+     * 认证前校验
+     * @param bindingParams 认证参数
+     */
+    protected void validate(BindingParams bindingParams) {
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
+        if (userEmployeeDO != null && userEmployeeDO.getId() > 0
+                && userEmployeeDO.getActivation() == EmployeeActiveState.Actived.getState()) {
+            throw UserAccountException.EMPLOYEE_ALREADY_VERIFIED;
+        } else {
+            userEmployeeDOThreadLocal.set(userEmployeeDO);
+        }
     }
 
     /**
@@ -199,7 +221,6 @@ public abstract class EmployeeBinder {
         int employeeId;
         log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
         log.info("doneBind param: useremployee.email:{}", useremployee.getEmail());
-
 
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
 
@@ -302,6 +323,15 @@ public abstract class EmployeeBinder {
         useremployee.setId(employeeId);
         response.setEmployeeId(employeeId);
         this.updateEsUsersAndProfile(useremployee.getSysuserId());
+
+        //神策埋点加入 pro
+        HrCompanyDO companyDO = companyDao.getCompanyById(useremployee.getCompanyId());
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("companyName", companyDO.getName());
+        properties.put("companyId", useremployee.getCompanyId());
+        properties.put("isEmployee", 1);
+        sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
+
         return response;
     }
 
