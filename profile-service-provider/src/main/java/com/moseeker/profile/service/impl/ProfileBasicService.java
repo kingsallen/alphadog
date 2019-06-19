@@ -290,6 +290,7 @@ public class ProfileBasicService {
             }
 
         }
+        logger.info("======处理企业标签问题=========");
         this.handlerCompanyTag(struct.getProfile_id());
         return i;
     }
