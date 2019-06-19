@@ -22,8 +22,7 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
-
-    private static final long serialVersionUID = 1896549539;
+    private static final long serialVersionUID = 223385824;
 
     private Integer   id;
     private String    name;
@@ -64,6 +63,7 @@ public class HrSearchCondition implements Serializable {
     private String    hasAttachment;
     private String    departmentIds;
     private String    departmentNames;
+    private String    remark;
 
     public HrSearchCondition() {}
 
@@ -107,48 +107,50 @@ public class HrSearchCondition implements Serializable {
         this.hasAttachment = value.hasAttachment;
         this.departmentIds = value.departmentIds;
         this.departmentNames = value.departmentNames;
+        this.remark = value.remark;
     }
 
     public HrSearchCondition(
-        Integer   id,
-        String    name,
-        String    publisher,
-        String    positionId,
-        String    keyword,
-        String    submitTime,
-        String    workYears,
-        String    cityName,
-        String    degree,
-        String    pastPosition,
-        Integer   inLastJobSearchPosition,
-        Integer   minAge,
-        Integer   maxAge,
-        String    intentionCityName,
-        Integer   sex,
-        String    intentionSalaryCode,
-        String    companyName,
-        Integer   inLastJobSearchCompany,
-        Integer   hrAccountId,
-        Timestamp createTime,
-        Integer   updateTime,
-        Integer   type,
-        String    candidateSource,
-        Byte      isPublic,
-        String    origins,
-        Byte      isRecommend,
-        String    tagIds,
-        String    favoriteHrs,
-        String    cityCode,
-        String    intentionCityCode,
-        Integer   positionStatus,
-        String    positionKeyWord,
-        String    pastPositionKeyWord,
-        String    pastCompanyKeyWord,
-        Timestamp startSubmitTime,
-        Timestamp endSubmitTime,
-        String    hasAttachment,
-        String    departmentIds,
-        String    departmentNames
+            Integer   id,
+            String    name,
+            String    publisher,
+            String    positionId,
+            String    keyword,
+            String    submitTime,
+            String    workYears,
+            String    cityName,
+            String    degree,
+            String    pastPosition,
+            Integer   inLastJobSearchPosition,
+            Integer   minAge,
+            Integer   maxAge,
+            String    intentionCityName,
+            Integer   sex,
+            String    intentionSalaryCode,
+            String    companyName,
+            Integer   inLastJobSearchCompany,
+            Integer   hrAccountId,
+            Timestamp createTime,
+            Integer   updateTime,
+            Integer   type,
+            String    candidateSource,
+            Byte      isPublic,
+            String    origins,
+            Byte      isRecommend,
+            String    tagIds,
+            String    favoriteHrs,
+            String    cityCode,
+            String    intentionCityCode,
+            Integer   positionStatus,
+            String    positionKeyWord,
+            String    pastPositionKeyWord,
+            String    pastCompanyKeyWord,
+            Timestamp startSubmitTime,
+            Timestamp endSubmitTime,
+            String    hasAttachment,
+            String    departmentIds,
+            String    departmentNames,
+            String    remark
     ) {
         this.id = id;
         this.name = name;
@@ -189,6 +191,7 @@ public class HrSearchCondition implements Serializable {
         this.hasAttachment = hasAttachment;
         this.departmentIds = departmentIds;
         this.departmentNames = departmentNames;
+        this.remark = remark;
     }
 
     public Integer getId() {
@@ -503,6 +506,14 @@ public class HrSearchCondition implements Serializable {
         this.departmentNames = departmentNames;
     }
 
+    public String getRemark() {
+        return this.remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -546,6 +557,7 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(hasAttachment);
         sb.append(", ").append(departmentIds);
         sb.append(", ").append(departmentNames);
+        sb.append(", ").append(remark);
 
         sb.append(")");
         return sb.toString();
