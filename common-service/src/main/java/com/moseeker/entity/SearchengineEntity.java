@@ -286,7 +286,7 @@ public class SearchengineEntity {
      * @throws TException
      */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
-        logger.info("----开始全量更新员工积分-------");
+        logger.info("SearchengineEntity updateEmployeeAwards employeeIds:{}", JSONObject.toJSONString(employeeIds));
         // 连接ES
         TransportClient client = this.getTransportClient();
         if (client == null) {
@@ -327,6 +327,7 @@ public class SearchengineEntity {
                 bulkRequest = client.prepareBulk();
                 // 更新数据
                 for (UserEmployeeDO userEmployeeDO : userEmployeeDOList) {
+                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO:{}", userEmployeeDO);
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
@@ -364,6 +365,7 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+                    logger.info("SearchengineEntity updateEmployeeAwards unbind_time:{}", userEmployeeDO.getUnbindTime());
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
                         jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
                         logger.info("SearchengineEntity updateEmployeeAwards unbind_time:{}", jsonObject.get("unbind_time"));
@@ -371,6 +373,7 @@ public class SearchengineEntity {
                         jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
                         logger.info("SearchengineEntity updateEmployeeAwards unbind_time_long:{}", jsonObject.get("unbind_time_long"));
                     }
+                    logger.info("SearchengineEntity updateEmployeeAwards import_time:{}", userEmployeeDO.getImportTime());
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
                         jsonObject.put("import_time", userEmployeeDO.getImportTime());
                         logger.info("SearchengineEntity updateEmployeeAwards import_time:{}", jsonObject.get("import_time"));
@@ -442,6 +445,7 @@ public class SearchengineEntity {
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
                     logger.info(JSONObject.toJSONString(jsonObject));
+                    logger.info("SearchengineEntity updateEmployeeAwards jsonObject:{}", jsonObject);
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
                                     .setSource(jsonObject)

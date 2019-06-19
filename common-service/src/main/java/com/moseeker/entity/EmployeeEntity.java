@@ -697,6 +697,7 @@ public class EmployeeEntity {
                         .stream()
                         .map(UserEmployeeDO::getId).filter(id -> id > 0)
                         .collect(Collectors.toList());
+                logger.info("EmployeeEntity unbind employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
                 searchengineEntity.updateEmployeeAwards(employeeIdList);
                 List<Integer> companyIdList = employees
                         .stream()
