@@ -1685,14 +1685,6 @@ public class UserHrAccountService {
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
             userEmployeeDetailVO.setCustomFieldValues(list);
-            List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-            if (customFieldValues != null && customFieldValues.size() > 0) {
-                List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
-                userEmployeeDetailVO.setCustomFieldValues(jsonArray);
-            } else {
-                userEmployeeDetailVO.setCustomFieldValues(new ArrayList<>(0));
-            }
-
         }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
