@@ -862,14 +862,14 @@ public class UserHrAccountService {
         stringBuffer.append("%");
         // 名字
         Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), stringBuffer.toString(), ValueOp.LIKE);
-        // 自定义字段
+       /* // 自定义字段
         Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 邮箱
         Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 手机号码
-        Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);
+        Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);*/
 
-        queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile);
+        queryBuilder.andInnerCondition(cname);
         return queryBuilder;
     }
 
