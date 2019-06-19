@@ -92,7 +92,7 @@ public class EmployeeBizTool {
                     keyword,
                     defaultquery);*/
             searchUtil.matchPhrasePrefixQueryV2(new ArrayList<String>(){{
-                                                 add("search_data.email");add("search_data.mobile");add("search_data.custom_field");add("search_data.cname");
+                                                 add("search_data.cname");
                                              }},
                     keyword,
                     defaultquery);

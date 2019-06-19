@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -56,16 +57,21 @@ public class BatchValidate {
      * @return list
      */
     public List<Map<String, String>> parseCustomFieldValues(String customFieldValueStr) {
+        logger.info("BatchValidate parseCustomFieldValues");
         if (org.apache.commons.lang.StringUtils.isNotBlank(customFieldValueStr) && !customFieldValueStr.equals("[]")) {
+            logger.info("BatchValidate parseCustomFieldValues customFieldValues not null");
 
             List customFieldValues = JSONObject.parseObject(customFieldValueStr, List.class);
+            logger.info("BatchValidate parseCustomFieldValues customFieldValues:{}", customFieldValues);
             if (customFieldValues != null && customFieldValues.size() > 0) {
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
+                    logger.info("BatchValidate parseCustomFieldValues customFieldValue:{}", JSONObject.toJSONString(customFieldValue));
                     Map<String, String> jsonObject = new HashMap<>();
 
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
                     customFieldJSONObject.forEach((key, value) -> {
+                        logger.info("BatchValidate parseCustomFieldValues key:{}, vlaue:{}", key, value);
                         if (value instanceof JSONArray) {
                             String valueStr;
                             if (((JSONArray)value).get(0) instanceof String) {
@@ -90,6 +96,11 @@ public class BatchValidate {
                                     //do nothing
                                 }
                             });
+                        } else {
+                            String valueStr = BeanUtils.converToString(value);
+                            if (valueStr != null) {
+                                jsonObject.put(key, BeanUtils.converToString(value));
+                            }
                         }
                     });
                     if (jsonObject.size() > 0) {
@@ -158,6 +169,8 @@ public class BatchValidate {
                         importErrorUserEmployee.setRowNum(entry.getKey());
                         importErrorUserEmployees.add(importErrorUserEmployee);
                         continue;
+                    } else {
+                        JSONArray customFieldValues = convertOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                     }
                 }
             }
@@ -367,6 +380,42 @@ public class BatchValidate {
             }
         }
         return false;
+    }
+
+    /**
+     * 将提交的自定义信息中，如果有想下拉项，则改成id
+     * @param rels 自定义信息
+     * @param dbOptions 下拉项
+     * @return map
+     */
+    private JSONArray convertOptionId(List<CustomOptionRel> rels, Map<Integer, List<EmployeeOptionValue>> dbOptions) {
+        if (rels != null && rels.size() > 0) {
+            JSONArray jsonArray = new JSONArray(rels.size());
+
+            rels.forEach(customOptionRel -> {
+                List<EmployeeOptionValue> list = dbOptions.get(customOptionRel.getCustomId());
+                if (list != null && list.size() > 0) {
+
+                    Optional<EmployeeOptionValue> optionValue = list.parallelStream()
+                            .filter(employeeOptionValue -> employeeOptionValue.getName().equals(customOptionRel.getOption()))
+                            .findAny();
+                    if (optionValue.isPresent()) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put(String.valueOf(customOptionRel.getCustomId()), String.valueOf(optionValue.get().getId()));
+                        jsonArray.add(jsonObject);
+                    }
+                } else {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put(String.valueOf(customOptionRel.getCustomId()), customOptionRel.getOption())
+                    jsonArray.add(jsonObject);
+                }
+            });
+            logger.info("BatchValidate checkOptions convertOptionId:{}", jsonArray);
+
+            return jsonArray;
+        } else {
+            return new JSONArray(0);
+        }
     }
 
     /**
