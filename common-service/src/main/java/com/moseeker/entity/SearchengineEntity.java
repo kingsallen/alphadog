@@ -448,6 +448,7 @@ public class SearchengineEntity {
 
                     logger.info(JSONObject.toJSONString(jsonObject));
                     logger.info("SearchengineEntity updateEmployeeAwards jsonObject:{}", jsonObject);
+                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO.id:{}", userEmployeeDO.getId());
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
                                     .setSource(jsonObject)
