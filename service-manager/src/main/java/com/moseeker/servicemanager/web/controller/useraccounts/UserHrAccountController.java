@@ -42,6 +42,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -720,7 +723,11 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/unbind", method = RequestMethod.PUT)
     @ResponseBody
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS");
+        LocalDateTime start = LocalDateTime.now();
+        logger.info("UserHrAccountController before unbindEmployee now:{}", start.format(dateTimeFormatter));
         try {
+
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
             int companyId = params.getInt("companyId", 0);
@@ -741,6 +748,10 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime after = LocalDateTime.now();
+            logger.info("UserHrAccountController after unbindEmployee now:{}", after.format(dateTimeFormatter));
+            logger.info("UserHrAccountController unbindEmployee duration:{}", Duration.between(start, after).toMillis());
         }
     }
 
