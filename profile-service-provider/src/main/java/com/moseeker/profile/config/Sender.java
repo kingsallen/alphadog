@@ -39,7 +39,7 @@ public class Sender {
     public void  send(String message) {
         logger.info("handlerCompanyTagTalent send message:{}",message);
         MessageProperties msp = new MessageProperties();
-        amqpTemplate.send("profile_company_tag_recom_exchange", "profilecompanytagrecom.#", MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
+        amqpTemplate.send("profile_company_tag_recom_new_exchange", "profilecompanytagnewrecom.#", MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
         logger.info("send success...");
     }
 
