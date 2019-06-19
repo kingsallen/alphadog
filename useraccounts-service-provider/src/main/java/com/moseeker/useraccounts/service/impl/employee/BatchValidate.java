@@ -692,6 +692,8 @@ public class BatchValidate {
             }
         }
         result.add(department);
+        result.add(position);
+        result.add(city);
         return result;
     }
 
