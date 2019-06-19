@@ -46,6 +46,7 @@ public class ProfileCompanyTagService {
     public void  handlerCompanyTag(int profileId,int userId){
         if(userId==0){
             userId=this.getUserIdFromProfile(profileId);
+            logger.info("======查询得到的user_id是======"+userId);
         }
         handlerCompanyTagByUserId(userId);
     }
