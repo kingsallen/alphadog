@@ -156,7 +156,7 @@ public class CompanyTagService {
              */
             if (!StringUtils.isEmptyList(list)) {
                 logger.info("=======需要添加的标签的列表是=========");
-                logger.info(JSON.toJSONString(list));
+                logger.info(list.toString());
                 logger.info("===================================");
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
