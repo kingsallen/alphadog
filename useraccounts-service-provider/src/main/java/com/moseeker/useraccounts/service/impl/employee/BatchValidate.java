@@ -621,7 +621,7 @@ public class BatchValidate {
                     logger.info("BatchValidate convertToListDisplay departmentValueOptional.isPresent:{}", departmentValueOptional.isPresent());
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId()));
+                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
                             logger.info("BatchValidate convertToListDisplay department optionId:{}", optionId);
                             Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
                                     .parallelStream()
