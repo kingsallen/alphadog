@@ -415,7 +415,7 @@ public class BatchValidate {
                     }
                 } else {
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put(String.valueOf(customOptionRel.getCustomId()), customOptionRel.getOption())
+                    jsonObject.put(String.valueOf(customOptionRel.getCustomId()), customOptionRel.getOption());
                     jsonArray.add(jsonObject);
                 }
             });
