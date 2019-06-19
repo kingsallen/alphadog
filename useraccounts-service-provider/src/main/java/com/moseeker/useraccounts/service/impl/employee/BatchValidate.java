@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic;
 import com.moseeker.useraccounts.constant.FieldType;
+import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -588,10 +589,13 @@ public class BatchValidate {
      * 生成员工列表页面的系统字段数据
      * @param list
      * @param fieldsList
-     * @param companyId
-     * @return
+     * @param employeeOptionValues
+     *@param companyId  @return
      */
-    public List<Map<String,String>> convertToListDisplay(List<Map<String, String>> list, List<HrEmployeeCustomFields> fieldsList, int companyId) {
+    public List<Map<String,String>> convertToListDisplay(List<Map<String, String>> list,
+                                                         List<HrEmployeeCustomFields> fieldsList,
+                                                         List<EmployeeOptionValue> employeeOptionValues,
+                                                         int companyId) {
         logger.info("BatchValidate convertToListDisplay");
         List<Map<String,String>> result = new ArrayList<>(0);
 
@@ -612,11 +616,28 @@ public class BatchValidate {
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
                 logger.info("BatchValidate convertToListDisplay departmentOptional.isPresent:{}", departmentOptional.isPresent());
-                if (departmentOptional.isPresent()) {
+                if (departmentOptional.isPresent() && departmentOptional.get().getOptionType() == OptionType.Select.getValue()) {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
                     logger.info("BatchValidate convertToListDisplay departmentValueOptional.isPresent:{}", departmentValueOptional.isPresent());
                     if (departmentValueOptional.isPresent()) {
-                        department.put("department", departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
+                        if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
+                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId()));
+                            logger.info("BatchValidate convertToListDisplay department optionId:{}", optionId);
+                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                    .parallelStream()
+                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                    .findAny();
+                            logger.info("BatchValidate convertToListDisplay department optionValueOptional:{}", optionValueOptional.isPresent());
+                            if (optionValueOptional.isPresent()) {
+                                department.put("department", optionValueOptional.get().getName());
+                            } else {
+                                department.put("department", "");
+                            }
+                        } else {
+                            department.put("department", "");
+                        }
+                    } else {
+                        department.put("department", "");
                     }
                 }
 
@@ -630,7 +651,24 @@ public class BatchValidate {
                     Optional<Map<String, String>> positionValueOptional = parseFilter(list, positionOptional);
                     logger.info("BatchValidate convertToListDisplay positionValueOptional.isPresent:{}", positionValueOptional.isPresent());
                     if (positionValueOptional.isPresent()) {
-                        department.put("position", positionValueOptional.get().get(departmentOptional.get().getId().toString()));
+                        if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
+                            Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
+                            logger.info("BatchValidate convertToListDisplay position optionId:{}", optionId);
+                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                    .parallelStream()
+                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                    .findAny();
+                            logger.info("BatchValidate convertToListDisplay position optionValueOptional.isPresent:{}", optionValueOptional.isPresent());
+                            if (optionValueOptional.isPresent()) {
+                                position.put("position", optionValueOptional.get().getName());
+                            } else {
+                                position.put("position", "");
+                            }
+                        } else {
+                            position.put("position", "");
+                        }
+                    } else {
+                        position.put("position", "");
                     }
                 }
 
@@ -644,16 +682,29 @@ public class BatchValidate {
                     Optional<Map<String, String>> cityValueOptional = parseFilter(list, cityOptional);
                     logger.info("BatchValidate convertToListDisplay cityValueOptional.isPresent:{}", cityValueOptional.isPresent());
                     if (cityValueOptional.isPresent()) {
-                        department.put("city", cityValueOptional.get().get(cityOptional.get().getId().toString()));
+                        if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
+                            Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
+                            logger.info("BatchValidate convertToListDisplay city optionId:{}", optionId);
+                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                    .parallelStream()
+                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                    .findAny();
+                            logger.info("BatchValidate convertToListDisplay city optionValueOptional.isPresent:{}", optionValueOptional.isPresent());
+                            if (optionValueOptional.isPresent()) {
+                                city.put("city", optionValueOptional.get().getName());
+                            } else {
+                                city.put("city", "");
+                            }
+                        } else {
+                            city.put("city", "");
+                        }
+                    } else {
+                        city.put("city", "");
                     }
                 }
             }
         }
         result.add(department);
-
-
-
-
         return result;
     }
 

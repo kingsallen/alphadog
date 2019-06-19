@@ -8,6 +8,7 @@ import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
@@ -15,6 +16,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
@@ -68,6 +70,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
+import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeList;
@@ -197,6 +200,9 @@ public class UserHrAccountService {
 
     @Autowired
     protected HrEmployeeCustomFieldsDao customFieldsDao;
+
+    @Autowired
+    protected EmployeeCustomOptionJooqDao customOptionJooqDao;
 
     @Autowired
     BatchValidate batchValidate;
@@ -2162,6 +2168,18 @@ public class UserHrAccountService {
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
 
             List<HrEmployeeCustomFields> fieldsList = customFieldsDao.listSystemCustomFieldByCompanyIdList(companyIds);
+            List<EmployeeOptionValue> employeeOptionValues;
+            if (fieldsList != null && fieldsList.size() > 0) {
+                List<Integer> fieldIdList = fieldsList
+                        .parallelStream()
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getOptionType() == OptionType.Select.getValue())
+                        .map(HrEmployeeCustomFields::getId)
+                        .collect(Collectors.toList());
+                employeeOptionValues = customOptionJooqDao.listByCustomIdList(fieldIdList);
+            } else {
+                employeeOptionValues = new ArrayList<>(0);
+            }
+
 
             // 查询公司信息
             Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
@@ -2177,10 +2195,11 @@ public class UserHrAccountService {
                     userEmployeeVO.setAward(0);
                 }
                 List<Map<String, String>> customFieldValues = new ArrayList(3);
+
                 if (userEmployeeDO.getCustomFieldValues() != null) {
 
                     List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
-                    List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, userEmployeeDO.getCompanyId());
+                    List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());
                     customFieldValues.addAll(list1);
                 }
                 userEmployeeVO.setCustomFieldValues(customFieldValues);
