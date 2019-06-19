@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeamMemberRecord extends UpdatableRecordImpl<HrTeamMemberRecord> implements Record12<Integer, String, String, String, Integer, Integer, Timestamp, Timestamp, Integer, Integer, String, Integer> {
 
-    private static final long serialVersionUID = 644537100;
+    private static final long serialVersionUID = -276740760;
 
     /**
      * Setter for <code>hrdb.hr_team_member.id</code>.
@@ -187,14 +187,14 @@ public class HrTeamMemberRecord extends UpdatableRecordImpl<HrTeamMemberRecord> 
     }
 
     /**
-     * Setter for <code>hrdb.hr_team_member.orders</code>.
+     * Setter for <code>hrdb.hr_team_member.orders</code>. 团队成员显示顺序
      */
     public void setOrders(Integer value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_team_member.orders</code>.
+     * Getter for <code>hrdb.hr_team_member.orders</code>. 团队成员显示顺序
      */
     public Integer getOrders() {
         return (Integer) get(11);

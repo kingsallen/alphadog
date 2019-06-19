@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterCandidate implements Serializable {
 
-    private static final long serialVersionUID = -992344011;
+    private static final long serialVersionUID = 1890141593;
 
     private Integer    id;
     private String     candidateName;
@@ -39,6 +39,7 @@ public class HrHeadhunterCandidate implements Serializable {
     private Timestamp  updateTime;
     private String     companyName;
     private String     positionName;
+    private Integer    userId;
 
     public HrHeadhunterCandidate() {}
 
@@ -56,6 +57,7 @@ public class HrHeadhunterCandidate implements Serializable {
         this.updateTime = value.updateTime;
         this.companyName = value.companyName;
         this.positionName = value.positionName;
+        this.userId = value.userId;
     }
 
     public HrHeadhunterCandidate(
@@ -71,7 +73,8 @@ public class HrHeadhunterCandidate implements Serializable {
         Timestamp  createTime,
         Timestamp  updateTime,
         String     companyName,
-        String     positionName
+        String     positionName,
+        Integer    userId
     ) {
         this.id = id;
         this.candidateName = candidateName;
@@ -86,6 +89,7 @@ public class HrHeadhunterCandidate implements Serializable {
         this.updateTime = updateTime;
         this.companyName = companyName;
         this.positionName = positionName;
+        this.userId = userId;
     }
 
     public Integer getId() {
@@ -192,6 +196,14 @@ public class HrHeadhunterCandidate implements Serializable {
         this.positionName = positionName;
     }
 
+    public Integer getUserId() {
+        return this.userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrHeadhunterCandidate (");
@@ -209,6 +221,7 @@ public class HrHeadhunterCandidate implements Serializable {
         sb.append(", ").append(updateTime);
         sb.append(", ").append(companyName);
         sb.append(", ").append(positionName);
+        sb.append(", ").append(userId);
 
         sb.append(")");
         return sb.toString();

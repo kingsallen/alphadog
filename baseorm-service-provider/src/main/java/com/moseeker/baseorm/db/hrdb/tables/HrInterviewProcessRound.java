@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewProcessRound extends TableImpl<HrInterviewProcessRoundRecord> {
 
-    private static final long serialVersionUID = -970341529;
+    private static final long serialVersionUID = 1401036329;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_process_round</code>
@@ -69,12 +69,12 @@ public class HrInterviewProcessRound extends TableImpl<HrInterviewProcessRoundRe
     /**
      * The column <code>hrdb.hr_interview_process_round.disabled</code>. 状态： 0 有效  1 无效 
      */
-    public final TableField<HrInterviewProcessRoundRecord, Integer> DISABLED = createField("disabled", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态： 0 有效  1 无效 ");
+    public final TableField<HrInterviewProcessRoundRecord, Integer> DISABLED = createField("disabled", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态： 0 有效  1 无效 ");
 
     /**
      * The column <code>hrdb.hr_interview_process_round.deleted</code>. 逻辑删除 1 删除 0 未删除
      */
-    public final TableField<HrInterviewProcessRoundRecord, Integer> DELETED = createField("deleted", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "逻辑删除 1 删除 0 未删除");
+    public final TableField<HrInterviewProcessRoundRecord, Integer> DELETED = createField("deleted", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "逻辑删除 1 删除 0 未删除");
 
     /**
      * The column <code>hrdb.hr_interview_process_round.round_order</code>. 排序

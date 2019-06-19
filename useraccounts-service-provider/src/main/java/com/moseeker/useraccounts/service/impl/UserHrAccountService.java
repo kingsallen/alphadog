@@ -9,7 +9,6 @@ import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -20,6 +19,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
@@ -163,9 +163,6 @@ public class UserHrAccountService {
     private HrCompanyAccountDao hrCompanyAccountDao;
 
     @Autowired
-    private JobApplicationDao applicationDao;
-
-    @Autowired
     CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
@@ -197,6 +194,9 @@ public class UserHrAccountService {
 
     @Autowired
     private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+
+    @Autowired
+    protected HrEmployeeCustomFieldsDao customFieldsDao;
 
     @Autowired
     BatchValidate batchValidate;
@@ -2160,6 +2160,9 @@ public class UserHrAccountService {
             queryBuilder.clear();
             queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+
+            List<HrEmployeeCustomFields> fieldsList = customFieldsDao.listSystemCustomFieldByCompanyIdList(companyIds);
+
             // 查询公司信息
             Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
             for (UserEmployeeDO userEmployeeDO : employees) {
@@ -2173,10 +2176,12 @@ public class UserHrAccountService {
                 if(userEmployeeVO.getAward()<0){
                     userEmployeeVO.setAward(0);
                 }
-                List customFieldValues = new ArrayList();
+                List<Map<String, String>> customFieldValues = new ArrayList(3);
                 if (userEmployeeDO.getCustomFieldValues() != null) {
+
                     List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
-                    customFieldValues.addAll(list);
+                    List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, userEmployeeDO.getCompanyId());
+                    customFieldValues.addAll(list1);
                 }
                 userEmployeeVO.setCustomFieldValues(customFieldValues);
                 // 微信昵称
