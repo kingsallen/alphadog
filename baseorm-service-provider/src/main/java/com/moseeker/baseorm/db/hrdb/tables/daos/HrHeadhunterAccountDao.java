@@ -95,6 +95,13 @@ public class HrHeadhunterAccountDao extends DAOImpl<HrHeadhunterAccountRecord, c
     }
 
     /**
+     * Fetch records that have <code>hr_company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHeadhunterAccount> fetchByHrCompanyId(Integer... values) {
+        return fetch(HrHeadhunterAccount.HR_HEADHUNTER_ACCOUNT.HR_COMPANY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>username IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHeadhunterAccount> fetchByUsername(String... values) {
@@ -120,6 +127,13 @@ public class HrHeadhunterAccountDao extends DAOImpl<HrHeadhunterAccountRecord, c
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHeadhunterAccount> fetchByContractFilePath(String... values) {
         return fetch(HrHeadhunterAccount.HR_HEADHUNTER_ACCOUNT.CONTRACT_FILE_PATH, values);
+    }
+
+    /**
+     * Fetch records that have <code>contract_file_name IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHeadhunterAccount> fetchByContractFileName(String... values) {
+        return fetch(HrHeadhunterAccount.HR_HEADHUNTER_ACCOUNT.CONTRACT_FILE_NAME, values);
     }
 
     /**

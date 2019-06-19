@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecruitProcess extends TableImpl<HrCompanyRecruitProcessRecord> {
 
-    private static final long serialVersionUID = 41528456;
+    private static final long serialVersionUID = -2063549849;
 
     /**
      * The reference instance of <code>hrdb.hr_company_recruit_process</code>
@@ -69,7 +69,7 @@ public class HrCompanyRecruitProcess extends TableImpl<HrCompanyRecruitProcessRe
     /**
      * The column <code>hrdb.hr_company_recruit_process.disable</code>. 状态：0 有效  1 无效 2 逻辑删除
      */
-    public final TableField<HrCompanyRecruitProcessRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
+    public final TableField<HrCompanyRecruitProcessRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
 
     /**
      * The column <code>hrdb.hr_company_recruit_process.process_order</code>. 排序

@@ -16,6 +16,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportUserEmployeeStatistic;
+import com.moseeker.useraccounts.constant.FieldType;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -568,6 +569,99 @@ public class BatchValidate {
             }
         }
         return map;
+    }
+
+    /**
+     * 生成员工列表页面的系统字段数据
+     * @param list
+     * @param fieldsList
+     * @param companyId
+     * @return
+     */
+    public List<Map<String,String>> convertToListDisplay(List<Map<String, String>> list, List<HrEmployeeCustomFields> fieldsList, int companyId) {
+        logger.info("BatchValidate convertToListDisplay");
+        List<Map<String,String>> result = new ArrayList<>(0);
+
+        Map<String, String> department = new HashMap<>(1);
+        Map<String, String> position = new HashMap<>(1);
+        Map<String, String> city = new HashMap<>(1);
+        if (list == null || list.size() == 0) {
+            logger.info("BatchValidate convertToListDisplay list is empty");
+            department.put("department", "");
+            position.put("position", "");
+            city.put("city", "");
+        } else {
+            if (fieldsList != null && fieldsList.size() > 0) {
+
+                Optional<HrEmployeeCustomFields> departmentOptional = fieldsList
+                        .parallelStream()
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.Department.getValue())
+                                && hrEmployeeCustomFields.getCompanyId().equals(companyId))
+                        .findAny();
+                logger.info("BatchValidate convertToListDisplay departmentOptional.isPresent:{}", departmentOptional.isPresent());
+                if (departmentOptional.isPresent()) {
+                    Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
+                    logger.info("BatchValidate convertToListDisplay departmentValueOptional.isPresent:{}", departmentValueOptional.isPresent());
+                    if (departmentValueOptional.isPresent()) {
+                        department.put("department", departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
+                    }
+                }
+
+                Optional<HrEmployeeCustomFields> positionOptional = fieldsList
+                        .parallelStream()
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.Position.getValue())
+                                && hrEmployeeCustomFields.getCompanyId().equals(companyId))
+                        .findAny();
+                logger.info("BatchValidate convertToListDisplay positionOptional.isPresent:{}", positionOptional.isPresent());
+                if (positionOptional.isPresent()) {
+                    Optional<Map<String, String>> positionValueOptional = parseFilter(list, positionOptional);
+                    logger.info("BatchValidate convertToListDisplay positionValueOptional.isPresent:{}", positionValueOptional.isPresent());
+                    if (positionValueOptional.isPresent()) {
+                        department.put("position", positionValueOptional.get().get(departmentOptional.get().getId().toString()));
+                    }
+                }
+
+                Optional<HrEmployeeCustomFields> cityOptional = fieldsList
+                        .parallelStream()
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.City.getValue())
+                                && hrEmployeeCustomFields.getCompanyId().equals(companyId))
+                        .findAny();
+                logger.info("BatchValidate convertToListDisplay cityOptional.isPresent:{}", cityOptional.isPresent());
+                if (cityOptional.isPresent()) {
+                    Optional<Map<String, String>> cityValueOptional = parseFilter(list, cityOptional);
+                    logger.info("BatchValidate convertToListDisplay cityValueOptional.isPresent:{}", cityValueOptional.isPresent());
+                    if (cityValueOptional.isPresent()) {
+                        department.put("city", cityValueOptional.get().get(cityOptional.get().getId().toString()));
+                    }
+                }
+            }
+        }
+        result.add(department);
+
+
+
+
+        return result;
+    }
+
+    private Optional<Map<String, String>> parseFilter(List<Map<String, String>> list,
+                                                      Optional<HrEmployeeCustomFields> optional) {
+        if (optional.isPresent()) {
+            Optional<Map<String, String>> optional1 = list
+                    .parallelStream()
+                    .filter(map -> {
+                        if (map.keySet().contains(optional.get().getId().toString())) {
+                            logger.info("BatchValidate convertToListDisplay contain key");
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    })
+                    .findAny();
+            return optional1;
+        } else {
+            return Optional.empty();
+        }
     }
 
     class CustomOptionRel {

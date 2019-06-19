@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsRecord> {
 
-    private static final long serialVersionUID = 452495033;
+    private static final long serialVersionUID = -654031967;
 
     /**
      * The reference instance of <code>hrdb.hr_employee_custom_fields</code>
@@ -94,6 +94,16 @@ public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsReco
      * The column <code>hrdb.hr_employee_custom_fields.option_type</code>. 选项类型  0:下拉选项, 1:文本
      */
     public final TableField<HrEmployeeCustomFieldsRecord, Integer> OPTION_TYPE = createField("option_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "选项类型  0:下拉选项, 1:文本");
+
+    /**
+     * The column <code>hrdb.hr_employee_custom_fields.field_type</code>. 0:部门，1:职位，2:城市，3:自定义字段
+     */
+    public final TableField<HrEmployeeCustomFieldsRecord, Integer> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "0:部门，1:职位，2:城市，3:自定义字段");
+
+    /**
+     * The column <code>hrdb.hr_employee_custom_fields.ename</code>. 自定义字段英文名
+     */
+    public final TableField<HrEmployeeCustomFieldsRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "自定义字段英文名");
 
     /**
      * Create a <code>hrdb.hr_employee_custom_fields</code> table reference
