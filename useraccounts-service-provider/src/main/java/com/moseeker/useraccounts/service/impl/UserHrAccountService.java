@@ -43,6 +43,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -1514,6 +1515,9 @@ public class UserHrAccountService {
             }
         }
 
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
             logger.info("UserHrAccountService updateEmployees userEmployee:{}", userEmployee);
@@ -1545,6 +1549,7 @@ public class UserHrAccountService {
                 if (userEmployee.getActivation() != optional1.get().getActivation()
                         && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
                         && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
+                    userEmployee.setUnbindTime(now.format(dateTimeFormatter));
                     updateActivationList.add(userEmployee);
                 }
             }
