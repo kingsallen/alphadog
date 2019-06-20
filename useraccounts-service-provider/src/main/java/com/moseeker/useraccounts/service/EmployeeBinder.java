@@ -195,7 +195,11 @@ public abstract class EmployeeBinder {
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
             JSONArray jsonArray = new JSONArray();
-            jsonArray.add(bindingParams.getCustomFieldValues());
+            bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(key.toString(), value);
+                jsonArray.add(jsonObject);
+            });
             userEmployee.setCustomFieldValues(jsonArray.toJSONString());
         }
         userEmployeeDOThreadLocal.set(userEmployee);

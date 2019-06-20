@@ -75,7 +75,11 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
             JSONArray jsonArray = new JSONArray();
-            jsonArray.add(bindingParams.getCustomFieldValues());
+            bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(key.toString(), value);
+                jsonArray.add(jsonObject);
+            });
             userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
         }
         log.info("EmployeeBindByCustomfield createEmployee customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
