@@ -13,9 +13,9 @@ import com.aspose.words.SaveFormat;
 import java.io.*;
 import java.net.ConnectException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.*;
 
-import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -50,7 +50,7 @@ public class OfficeUtils {
         try {
             checkAndStart();
         } catch (IOException|InterruptedException e) {
-            e.printStackTrace();
+            logger.error("OfficeUtils 初始化启动libreoffice服务失败",e);
         }
     }
 
@@ -168,10 +168,10 @@ public class OfficeUtils {
         ProcessQuery processQuery = new ProcessQuery("soffice", "socket,host=127.0.0.1,port="+UNO_PORT);
         long existingPid = new LinuxProcessManager().findPid(processQuery);
         if(existingPid <= 0){
-            System.out.println("检测到无office服务，开始启动");
+            logger.info("检测到无office服务，开始启动");
             startServer();
         }else{
-            System.out.println("office服务pid=" + existingPid + ",监听端口="+UNO_PORT);
+            logger.info("office服务pid=" + existingPid + ",监听端口="+UNO_PORT);
         }
     }
 
@@ -197,16 +197,19 @@ public class OfficeUtils {
         command.add("--norestore");
         ProcessBuilder processBuilder = new ProcessBuilder(command);
 
-        System.out.println("starting process with acceptString socket,host=127.0.0.1,port=" +UNO_PORT);
+        logger.info("startServer() starting process with " + Objects.toString(command));
         Process process = processBuilder.start();
 
-        // 等待足够时间以保证libreoffice的socket监听服务完全启动
-        process.waitFor(3,TimeUnit.SECONDS);
         // JVM停止时自动结束线程
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
-            System.out.println(System.currentTimeMillis() + "|jvm shutdown," +  (process.isAlive()?" to close":"dead") + " processs : " + UNO_LIS_CMD  + "");
-            if(process.isAlive()) process.destroy();
+            logger.info("jvm shutdown," +  (process.isAlive()?" to close":"dead") + " processs : " + UNO_LIS_CMD  + "");
+            if(process.isAlive()) process.destroyForcibly();
         }));
+
+        // 等待足够时间以保证libreoffice的socket监听服务完全启动
+        logger.info("startServer() waiting few minutes...");
+        process.waitFor(3,TimeUnit.SECONDS);
+        logger.info("startServer() exit | process.isAlive() = {}", process.isAlive());
         return process;
     }
 
@@ -217,16 +220,15 @@ public class OfficeUtils {
      * @param outputFile
      */
     public static void convertThroughUNO(File inputFile, File outputFile) {
-        logger.info(System.currentTimeMillis() + "|convert %s --> %s\n", inputFile, outputFile);
+        logger.info(System.currentTimeMillis() + "|convert {} --> {}\n", inputFile, outputFile);
         OpenOfficeConnection connection = new SocketOpenOfficeConnection(UNO_PORT);
         try {
-
             // 连接UNO
             try{
                 connection.connect();
             }catch (ConnectException ce){
                 // 如果socket连接失败，可能是libreoffice服务未开，调用命令启动
-                System.out.println("openoffice uno 连接" + UNO_PORT + " 端口失败，使用命令启动");
+                logger.error("openoffice uno 连接" + UNO_PORT + " 端口失败，使用命令启动");
                 // 如果连接失败
                 startServer();
                 connection.connect();
@@ -239,20 +241,14 @@ public class OfficeUtils {
             }else{
                 converter.convert(inputFile, outputFile);
             }
-            logger.info(System.currentTimeMillis() + "|convert %s --> %s end \n", inputFile, outputFile);
+            logger.info(System.currentTimeMillis() + "|convert {} --> {} end \n", inputFile, outputFile);
         } catch (ConnectException ce) {
-            System.out.println("openoffice uno 再次连接" + UNO_PORT + " 端口失败，请求使用当前用户权限执行以下命令启动libreoffice："+UNO_LIS_CMD);
-            try {
-                System.out.println(IOUtils.toString(Runtime.getRuntime().exec("ps -aA |grep soffice").getInputStream()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            ce.printStackTrace();
+            logger.error("openoffice uno 再次连接" + UNO_PORT + " 端口失败，请求使用当前用户权限执行以下命令启动libreoffice："+UNO_LIS_CMD);
         } catch (Exception e){
-            e.printStackTrace(System.err);
+            logger.error("convertThroughUNO word转pdf失败",e);
         } finally{
             try {
-                if (connection != null) {
+                if (connection != null && connection.isConnected()) {
                     connection.disconnect();
                     connection = null;
                 }
@@ -340,18 +336,23 @@ public class OfficeUtils {
         }
     }
 
-    private static String toString(InputStream is) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(is,Charsets.UTF_8))){
-            String line = "" ;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+
+/*
+    public static void main(String[] args) throws IOException {
+        String dir = "/Users/huangxia/Downloads/docx";
+
+        ExecutorService pool = Executors.newCachedThreadPool();
+
+        new File(dir).listFiles((f)->{if(f.getName().endsWith(".pdf")) f.delete();return true ;});
+        new File(dir).listFiles((f)->{
+            if(f.getName().endsWith(".docx")){
+                convertThroughUNO(f, new File(f.getAbsolutePath().replace(".docx",".pdf")));
             }
-            return sb.toString();
-        }
+            return true ;
+        });
+        System.in.read();
     }
-
-
+*/
 
 }
 
