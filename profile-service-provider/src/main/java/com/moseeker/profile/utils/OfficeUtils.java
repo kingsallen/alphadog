@@ -3,7 +3,6 @@ package com.moseeker.profile.utils;
 import com.artofsolving.jodconverter.DefaultDocumentFormatRegistry;
 import com.artofsolving.jodconverter.DocumentFamily;
 import com.artofsolving.jodconverter.DocumentFormat;
-import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
 import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
 import com.aspose.words.Document;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.concurrent.*;
 
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -196,9 +196,17 @@ public class OfficeUtils {
         command.add("--nologo");
         command.add("--norestore");
         ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
 
         logger.info("startServer() starting process with " + Objects.toString(command));
         Process process = processBuilder.start();
+        Thread t = new Thread(()->{
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), Charsets.UTF_8))){
+                logger.info(reader.readLine());
+            }catch (IOException e){
+                logger.error("read soffice process error",e);
+            }
+        });
 
         // JVM停止时自动结束线程
         Runtime.getRuntime().addShutdownHook(new Thread(()->{
@@ -209,6 +217,8 @@ public class OfficeUtils {
         // 等待足够时间以保证libreoffice的socket监听服务完全启动
         logger.info("startServer() waiting few minutes...");
         process.waitFor(3,TimeUnit.SECONDS);
+        t.interrupt();
+
         logger.info("startServer() exit | process.isAlive() = {}", process.isAlive());
         return process;
     }
@@ -221,7 +231,7 @@ public class OfficeUtils {
      */
     public static void convertThroughUNO(File inputFile, File outputFile) {
         logger.info(System.currentTimeMillis() + "|convert {} --> {}\n", inputFile, outputFile);
-        OpenOfficeConnection connection = new SocketOpenOfficeConnection(UNO_PORT);
+        SocketOpenOfficeConnection connection = new SocketOpenOfficeConnection(UNO_PORT);
         try {
             // 连接UNO
             try{
@@ -231,6 +241,7 @@ public class OfficeUtils {
                 logger.error("openoffice uno 连接" + UNO_PORT + " 端口失败，使用命令启动");
                 // 如果连接失败
                 startServer();
+                connection = new SocketOpenOfficeConnection(UNO_PORT);
                 connection.connect();
             }
 
@@ -311,7 +322,7 @@ public class OfficeUtils {
             pool.submit(()->{
                 try {
                     logger.info("process wait");
-                    /*int exitValue = */p.waitFor(5, TimeUnit.SECONDS);
+                    /*int exitValue = */p.waitFor(3, TimeUnit.SECONDS);
                     logger.info("process finish");
                     /*if(exitValue != 0){
                     logger.error("命令{}错误退出码：{}",command,exitValue);
@@ -337,7 +348,7 @@ public class OfficeUtils {
     }
 
 
-/*
+
     public static void main(String[] args) throws IOException {
         String dir = "/Users/huangxia/Downloads/docx";
 
@@ -352,7 +363,7 @@ public class OfficeUtils {
         });
         System.in.read();
     }
-*/
+
 
 }
 
