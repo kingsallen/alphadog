@@ -55,7 +55,7 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
             }
-        } else if(employeeThreadLocal.get().getSysuserId() == bindingParams.getUserId()
+        } else if(employeeThreadLocal.get().getSysuserId() != bindingParams.getUserId()
                 && employeeThreadLocal.get().getActivation() == EmployeeActiveState.Cancel.getState()) {
             userEmployeeDO = userEmployeeDOThreadLocal.get();
             userEmployeeDO.setSysuserId(bindingParams.getUserId());
