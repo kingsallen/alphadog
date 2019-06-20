@@ -2190,7 +2190,7 @@ public class UserHrAccountService {
                     userEmployeeVO.setUnbindTime(new DateTime(userEmployeeDO.getUnbindTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
                 if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getImportTime())) {
-                    userEmployeeVO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                    userEmployeeDO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"))
                 }
                 if(userEmployeeVO.getAward()<0){
                     userEmployeeVO.setAward(0);
