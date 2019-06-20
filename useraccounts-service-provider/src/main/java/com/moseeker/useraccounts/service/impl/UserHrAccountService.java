@@ -1768,23 +1768,23 @@ public class UserHrAccountService {
         }
 
         try {
-            UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            if (cname != null) {
+            //先查询原数据，在手机号，姓名没有传值的时候，不予更新
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
+            if (StringUtils.isNotNullOrEmpty(cname)) {
                 userEmployeeDO.setCname(cname);
             }
-            if (mobile != null) {
+            if (StringUtils.isNotNullOrEmpty(mobile)) {
                 userEmployeeDO.setMobile(mobile);
             }
-            if (customField != null) {
+            if (StringUtils.isNotNullOrEmpty(customField)) {
                 userEmployeeDO.setCustomField(customField);
             }
-            if (email != null) {
+            if (StringUtils.isNotNullOrEmpty(email)) {
                 userEmployeeDO.setEmail(email);
             }
-            if (customFieldValues != null) {
+            if (StringUtils.isNotNullOrEmpty(customFieldValues)) {
                 userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
-            userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
