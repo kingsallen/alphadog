@@ -1768,7 +1768,8 @@ public class UserHrAccountService {
         }
 
         try {
-            UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
+            //先查询原数据，在手机号，姓名没有传值的时候，不予更新
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
             if (cname != null) {
                 userEmployeeDO.setCname(cname);
             }
@@ -1784,7 +1785,6 @@ public class UserHrAccountService {
             if (customFieldValues != null) {
                 userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
-            userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
