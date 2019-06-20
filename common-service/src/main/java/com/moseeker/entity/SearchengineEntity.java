@@ -184,10 +184,10 @@ public class SearchengineEntity {
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
 
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
-                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                        jsonObject.put("unbind_time", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf));
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
-                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                        jsonObject.put("import_time", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf));
                     }
 
                     JSONObject searchData = new JSONObject();
@@ -356,10 +356,10 @@ public class SearchengineEntity {
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
-                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                        jsonObject.put("unbind_time", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf));
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
-                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                        jsonObject.put("import_time", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf));
                     }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
