@@ -1775,8 +1775,6 @@ public class UserHrAccountService {
         try {
             //先查询原数据，在手机号，姓名没有传值的时候，不予更新
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
-            logger.info("需更新员工数据为userEmployeeDO：{}",userEmployeeDO);
-            logger.info("传入参数 cname: {} mobile: {} customField: {} email: {} customFieldValue: {}",cname,mobile,customField,email,customFieldValues);
             if (StringUtils.isNotNullOrEmpty(cname)) {
                 userEmployeeDO.setCname(cname);
             }
@@ -2206,7 +2204,9 @@ public class UserHrAccountService {
 
                 if (userEmployeeDO.getCustomFieldValues() != null) {
 
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
                     List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues list:{}", JSONObject.toJSONString(list));
                     userEmployeeVO.setCustomFieldValues(list);
 
                     List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());
