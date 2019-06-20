@@ -174,7 +174,7 @@ public class BatchValidate {
                         importErrorUserEmployees.add(importErrorUserEmployee);
                         continue;
                     } else {
-                        JSONArray customFieldValues = convertOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
+                        JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                         logger.info("BatchValidate importCheck success customFieldValues:{}", customFieldValues);
                         userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
                     }
@@ -396,12 +396,29 @@ public class BatchValidate {
     }
 
     /**
+     * 将下拉项内容换成编号
+     * @param userEmployeeDOS 员工列表
+     * @param companyId 公司编号
+     */
+    public void convertToOptionId(List<UserEmployeeDO> userEmployeeDOS, int companyId) {
+        ArrayListMultimap<Integer, BatchValidate.CustomOptionRel> map =employeeParam(userEmployeeDOS);
+        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(map, companyId);
+
+        for (int i =0; i<userEmployeeDOS.size(); i++) {
+            logger.info("BatchValidate convertToOptionId before convert:{}", userEmployeeDOS.get(i).customFieldValues);
+            JSONArray jsonArray = convertNameToOptionId(map.get(i), dbCustomFieldValues);
+            logger.info("BatchValidate convertToOptionId after convert:{}", jsonArray.toJSONString());
+            userEmployeeDOS.get(i).setCustomFieldValues(jsonArray.toJSONString());
+        }
+    }
+
+    /**
      * 将提交的自定义信息中，如果有想下拉项，则改成id
      * @param rels 自定义信息
      * @param dbOptions 下拉项
      * @return map
      */
-    private JSONArray convertOptionId(List<CustomOptionRel> rels, Map<Integer, List<EmployeeOptionValue>> dbOptions) {
+    private JSONArray convertNameToOptionId(List<CustomOptionRel> rels, Map<Integer, List<EmployeeOptionValue>> dbOptions) {
         if (rels != null && rels.size() > 0) {
             JSONArray jsonArray = new JSONArray(rels.size());
 
@@ -423,7 +440,7 @@ public class BatchValidate {
                     jsonArray.add(jsonObject);
                 }
             });
-            logger.info("BatchValidate checkOptions convertOptionId:{}", jsonArray);
+            logger.info("BatchValidate checkOptions convertNameToOptionId:{}", jsonArray);
 
             return jsonArray;
         } else {
