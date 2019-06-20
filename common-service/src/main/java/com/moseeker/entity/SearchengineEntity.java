@@ -363,12 +363,12 @@ public class SearchengineEntity {
                     }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
-                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
                         searchData.put("email", userEmployeeDO.getEmail().toLowerCase());
                     }
-                    searchData.put("mobile", String.valueOf(userEmployeeDO.getMobile()));
+                    searchData.put("mobile",String.valueOf(userEmployeeDO.getMobile()));
                     searchData.put("custom_field", "");
-                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
                         searchData.put("custom_field", userEmployeeDO.getCustomField().toLowerCase());
                     }
 
@@ -416,7 +416,7 @@ public class SearchengineEntity {
                     jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
                     searchData.put("cname", "");
-                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
                         searchData.put("cname", userEmployeeDO.getCname().toLowerCase());
                     }
                     jsonObject.put("disable", userEmployeeDO.getDisable());
