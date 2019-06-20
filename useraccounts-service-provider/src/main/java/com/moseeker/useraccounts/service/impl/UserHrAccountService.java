@@ -2191,6 +2191,12 @@ public class UserHrAccountService {
                 if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
                     userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
+                if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getUnbindTime())) {
+                    userEmployeeVO.setUnbindTime(new DateTime(userEmployeeDO.getUnbindTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
+                if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getImportTime())) {
+                    userEmployeeDO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"))
+                }
                 if(userEmployeeVO.getAward()<0){
                     userEmployeeVO.setAward(0);
                 }
