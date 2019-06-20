@@ -318,7 +318,7 @@ public class SearchengineEntity {
                 bulkRequest = client.prepareBulk();
                 // 更新数据
                 for (UserEmployeeDO userEmployeeDO : userEmployeeDOList) {
-                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO:{}", userEmployeeDO);
+                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO:{}", JSONObject.toJSONString(userEmployeeDO));
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
@@ -434,7 +434,7 @@ public class SearchengineEntity {
                     logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO.id:{}", userEmployeeDO.getId());
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
-                                    .setSource(jsonObject)
+                                    .setSource(jsonObject).request()
                     );
                 }
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
