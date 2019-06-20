@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
@@ -1421,6 +1422,9 @@ public class UserHrAccountService {
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
         List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
         if (!StringUtils.isEmptyList(userEmployeeDOS)) {
+            batchValidate.convertToOptionId(userEmployeeDOS, companyId);
+            logger.info("employeeImport userEmployeeDOS: {}", JSONObject.toJSONString(userEmployeeDOS));
+
             // 查询出需要更新的数据
             for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
                 for (UserEmployeeDO user : userEmployeeDOS) {
@@ -1520,6 +1524,8 @@ public class UserHrAccountService {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
+
+        batchValidate.convertToOptionId(userEmployeeMap, companyId);
 
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
