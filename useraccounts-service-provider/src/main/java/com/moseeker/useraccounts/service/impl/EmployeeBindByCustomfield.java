@@ -55,7 +55,6 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
             }
         } else if(employeeThreadLocal.get().getSysuserId() != bindingParams.getUserId()
                 && employeeThreadLocal.get().getActivation() == EmployeeActiveState.Cancel.getState()) {
-            userEmployeeDO = userEmployeeDOThreadLocal.get();
             userEmployeeDO.setSysuserId(bindingParams.getUserId());
             log.info("取消认证的自定义信息可以被其他用户使用!");
 
