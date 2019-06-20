@@ -277,7 +277,7 @@ public class SearchengineEntity {
 
 
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
-        logger.info("SearchengineEntity updateEmployeeAwards employeeIds:{}", JSONObject.toJSONString(employeeIds));
+        logger.info("----开始全量更新员工积分-------");
         // 连接ES
         TransportClient client = this.getTransportClient();
         if (client == null) {
@@ -318,7 +318,6 @@ public class SearchengineEntity {
                 bulkRequest = client.prepareBulk();
                 // 更新数据
                 for (UserEmployeeDO userEmployeeDO : userEmployeeDOList) {
-                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO:{}", JSONObject.toJSONString(userEmployeeDO));
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", userEmployeeDO.getId());
                     jsonObject.put("company_id", userEmployeeDO.getCompanyId());
@@ -356,22 +355,14 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
-                    logger.info("SearchengineEntity updateEmployeeAwards unbind_time:{}", userEmployeeDO.getUnbindTime());
-                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
-                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
-                    }
-                    logger.info("SearchengineEntity updateEmployeeAwards import_time:{}", userEmployeeDO.getImportTime());
-                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
-                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
-                    }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
-                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
                         searchData.put("email", userEmployeeDO.getEmail().toLowerCase());
                     }
-                    searchData.put("mobile", String.valueOf(userEmployeeDO.getMobile()));
+                    searchData.put("mobile",String.valueOf(userEmployeeDO.getMobile()));
                     searchData.put("custom_field", "");
-                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
                         searchData.put("custom_field", userEmployeeDO.getCustomField().toLowerCase());
                     }
 
@@ -417,10 +408,9 @@ public class SearchengineEntity {
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
                     jsonObject.put("email", userEmployeeDO.getEmail());
-                    jsonObject.put("sdfsdfsdfsdf", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
                     searchData.put("cname", "");
-                    if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
                         searchData.put("cname", userEmployeeDO.getCname().toLowerCase());
                     }
                     jsonObject.put("disable", userEmployeeDO.getDisable());
@@ -430,11 +420,9 @@ public class SearchengineEntity {
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
                     logger.info(JSONObject.toJSONString(jsonObject));
-                    logger.info("SearchengineEntity updateEmployeeAwards jsonObject:{}", jsonObject);
-                    logger.info("SearchengineEntity updateEmployeeAwards userEmployeeDO.id:{}", userEmployeeDO.getId());
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
-                                    .setSource(jsonObject).request()
+                                    .setSource(jsonObject)
                     );
                 }
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
