@@ -355,6 +355,12 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                    }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
