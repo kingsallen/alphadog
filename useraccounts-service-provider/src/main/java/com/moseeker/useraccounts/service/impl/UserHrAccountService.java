@@ -1775,6 +1775,8 @@ public class UserHrAccountService {
         try {
             //先查询原数据，在手机号，姓名没有传值的时候，不予更新
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
+            logger.info("需更新员工数据为userEmployeeDO：{}",userEmployeeDO);
+            logger.info("传入参数 cname: {} mobile: {} customField: {} email: {} customFieldValue: {}",cname,mobile,customField,email,customFieldValues);
             if (cname != null) {
                 userEmployeeDO.setCname(cname);
             }
