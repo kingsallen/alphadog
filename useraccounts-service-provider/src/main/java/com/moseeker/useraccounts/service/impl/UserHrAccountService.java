@@ -1772,19 +1772,19 @@ public class UserHrAccountService {
             UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
             logger.info("需更新员工数据为userEmployeeDO：{}",userEmployeeDO);
             logger.info("传入参数 cname: {} mobile: {} customField: {} email: {} customFieldValue: {}",cname,mobile,customField,email,customFieldValues);
-            if (cname != null) {
+            if (StringUtils.isNotNullOrEmpty(cname)) {
                 userEmployeeDO.setCname(cname);
             }
-            if (mobile != null) {
+            if (StringUtils.isNotNullOrEmpty(mobile)) {
                 userEmployeeDO.setMobile(mobile);
             }
-            if (customField != null) {
+            if (StringUtils.isNotNullOrEmpty(customField)) {
                 userEmployeeDO.setCustomField(customField);
             }
-            if (email != null) {
+            if (StringUtils.isNotNullOrEmpty(email)) {
                 userEmployeeDO.setEmail(email);
             }
-            if (customFieldValues != null) {
+            if (StringUtils.isNotNullOrEmpty(customFieldValues)) {
                 userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
             int i = userEmployeeDao.updateData(userEmployeeDO);
