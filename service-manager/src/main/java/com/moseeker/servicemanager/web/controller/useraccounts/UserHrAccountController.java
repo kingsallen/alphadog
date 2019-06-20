@@ -1050,7 +1050,9 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
+            logger.info("employeeImport userEmployees:{}", JSONObject.toJSONString(params.get("userEmployees")));
             Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            logger.info("employeeImport userEmployees:{}", JSONObject.toJSONString(userEmployees));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
         } catch (BIZException e) {
