@@ -2241,6 +2241,7 @@ public class UserHrAccountService {
                 userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                 userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
                 logger.info("UserHrAccountService packageEmployeeVOs step5 importTime:{}", userEmployeeDO.getImportTime());
+                logger.info("UserHrAccountService packageEmployeeVOs userEmployeeVO:{}", JSONObject.toJSONString(userEmployeeVO));
                 userEmployeeVOS.add(userEmployeeVO);
             }
         }
