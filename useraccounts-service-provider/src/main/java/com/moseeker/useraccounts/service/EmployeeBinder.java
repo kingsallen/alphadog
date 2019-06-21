@@ -490,5 +490,4 @@ public abstract class EmployeeBinder {
             candidateCompanyDao.updateDatas(list);
         }
     }
-
 }

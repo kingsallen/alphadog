@@ -252,8 +252,11 @@ public class UserEmployeeController {
         }
     }
 
-    /*
-    解绑员工
+    /**
+     * 员工认证
+     * @param request
+     * @param response
+     * @return
      */
     @RequestMapping(value="/user/employee/bind", method = RequestMethod.POST)
     @ResponseBody
@@ -281,6 +284,31 @@ public class UserEmployeeController {
             logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+
+    /**
+     * 重新发送邮件
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="/employee/resend/bind/email", method = RequestMethod.POST)
+    @ResponseBody
+    public String retrySendVerificationMail(HttpServletRequest request) throws Exception {
+
+        Params<String, Object> param = ParamUtils.parseRequestParam(request);
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("用户", param.getInt("user_id"));
+        validateUtil.addRequiredValidate("公司", param.getInt("company_id"));
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(result)) {
+            return ResponseLogNotification.fail(request, result);
+        }
+
+        //获取来源
+        int bindSource = Integer.parseInt(param.get("appid").toString());
+        employeeService.retrySendVerificationMail(param.getInt("user_id"),param.getInt("company_id"), bindSource);
+        return ResponseLogNotification.successJson(request, "SUCCESS");
     }
 
     /*

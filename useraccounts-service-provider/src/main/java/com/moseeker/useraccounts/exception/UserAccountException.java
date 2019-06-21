@@ -76,6 +76,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException IMPORT_DATA_CUSTOM_ERROR = new UserAccountException(42064, "导入员工数据自定义信息有误！");
     public static final UserAccountException EMPLOYEE_CUSTOM_FIELD_ERROR = new UserAccountException(42065, "自定义信息有误！");
     public static final UserAccountException EMPLOYEE_BATCH_UPDAT_OVER_LIMIT = new UserAccountException(42066, "超过允许批量修改的上限！");
+    public static final UserAccountException EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED = new UserAccountException(42067, "邮件认证的认证信息过期！");
 
     private final int code;
 
