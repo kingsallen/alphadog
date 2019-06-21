@@ -2202,7 +2202,7 @@ public class UserHrAccountService {
                 }
                 logger.info("UserHrAccountService packageEmployeeVOs before importTime:{}", userEmployeeDO.getImportTime());
                 if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getImportTime())) {
-                    userEmployeeDO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                    userEmployeeVO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
                 logger.info("UserHrAccountService packageEmployeeVOs after importTime:{}", userEmployeeDO.getImportTime());
                 if(userEmployeeVO.getAward()<0){
