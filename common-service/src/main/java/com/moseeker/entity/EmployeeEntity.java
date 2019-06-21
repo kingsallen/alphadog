@@ -686,8 +686,6 @@ public class EmployeeEntity {
                     .map(employee ->employee.getSysuserId()).collect(Collectors.toList());
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
-                e.setEmailIsvalid((byte) 0);
-                e.setCustomFieldValues("[]");
                 e.setUnbindTime(now);
             });
             logger.info("EmployeeEntity unbind after change employees:{}", JSONObject.toJSONString(employees));
