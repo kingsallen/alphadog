@@ -1,5 +1,6 @@
 package com.moseeker.position.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -57,6 +58,7 @@ public class PositionStateAsyncHelper {
         if(StringUtils.isEmptyList(ids)) {
             return;
         }
+        logger.info("一键同步-重新上架：{}", JSON.toJSONString(ids));
         ThreadPool.Instance.startTast(()-> {
             try{
                 if(batchHandlerCountDown.await(600, TimeUnit.SECONDS)){
@@ -81,6 +83,7 @@ public class PositionStateAsyncHelper {
         if(StringUtils.isEmptyList(jobPositionUpdateRecordList)) {
             return;
         }
+        logger.info("一键同步-更新：{}", jobPositionUpdateRecordList);
         ThreadPool.Instance.startTast(()-> {
             try{
                 if(batchHandlerCountDown.await(600, TimeUnit.SECONDS)){

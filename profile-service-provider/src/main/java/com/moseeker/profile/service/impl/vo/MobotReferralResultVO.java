@@ -12,6 +12,7 @@ public class MobotReferralResultVO {
     private Integer position_id;
     private String title;
     private String reason;
+    private int errorCode ;
     private Boolean success;
 
     public Integer getId() {
@@ -54,6 +55,14 @@ public class MobotReferralResultVO {
         this.position_id = position_id;
     }
 
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
     @Override
     public String toString() {
         return "MobotReferralResultVO{" +
@@ -61,6 +70,7 @@ public class MobotReferralResultVO {
                 ", position_id=" + position_id +
                 ", title='" + title + '\'' +
                 ", reason='" + reason + '\'' +
+                ", errorCode=" + errorCode +
                 ", success=" + success +
                 '}';
     }

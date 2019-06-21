@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.util.query.Condition;
@@ -27,14 +29,10 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         super.paramCheck(bindingParams, certConf);
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
-                .and("cname", bindingParams.getName())
-                .and("custom_field", bindingParams.getCustomField())
-                .and("activation", EmployeeActiveState.Init.getState())
-                .and("disable", "0");
 
-        employeeThreadLocal.set(employeeDao.getData(query.buildQuery()));
+        UserEmployeeDO userEmployeeDO = employeeDao.fetchUnActiveEmployeeByCustom(bindingParams.getCompanyId(),
+                bindingParams.getName(), bindingParams.getCustomField());
+        employeeThreadLocal.set(userEmployeeDO);
         if (employeeThreadLocal.get() == null || employeeThreadLocal.get().getId() == 0) {
             throw new RuntimeException("员工认证信息不正确");
         } else if (employeeThreadLocal.get().getActivation() == 0) {
@@ -45,6 +43,8 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get();
+        log.info("EmployeeBindByCustomfield createEmployee userEmployeeDO:{}", userEmployeeDO);
+        log.info("EmployeeBindByCustomfield createEmployee bindingParams:{}", bindingParams);
         if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
@@ -55,6 +55,11 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
             }
+        } else if(employeeThreadLocal.get().getSysuserId() != bindingParams.getUserId()
+                && employeeThreadLocal.get().getActivation() == EmployeeActiveState.Cancel.getState()) {
+            userEmployeeDO.setSysuserId(bindingParams.getUserId());
+            log.info("取消认证的自定义信息可以被其他用户使用!");
+
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配");
         }
@@ -70,6 +75,16 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
+            JSONArray jsonArray = new JSONArray();
+            bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(key.toString(), value);
+                jsonArray.add(jsonObject);
+            });
+            userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
+        }
+        log.info("EmployeeBindByCustomfield createEmployee customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
         return userEmployeeDO;
     }
 }

@@ -210,10 +210,11 @@ public class ReceiverHandler {
                 long sendTime=  now.getTime();
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.REFERRAL_SEEK_REFERRAL);
-                String distinctId = String.valueOf(postUserId);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
+                properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
+                String distinctId = String.valueOf(postUserId);
+                // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
@@ -224,7 +225,7 @@ public class ReceiverHandler {
                 Date nowTime= new Date();
                 long  sendTime= nowTime.getTime();
                 properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.REFERRA_RECOMMEND_EVALUATE);
+                properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
                 log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
                 String distinctId = String.valueOf(userId);
@@ -334,7 +335,10 @@ public class ReceiverHandler {
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
-                log.info("元夕飞花令 handlerMessageTemplate 推荐 msgBody:{}", JSON.toJSONString(msgBody));
+                log.info("handlerMessageTemplate jsonObject:{}", jsonObject);
+                if (jsonObject.getInteger("company_id") != null && jsonObject.getInteger("company_id") == 1912646) {
+                    log.info("handlerMessageTemplate 元夕飞花令！");
+                }
                 int type = jsonObject.getIntValue("type");
                 log.info("type========================:{}", type);
                 this.addPropertyLogVO(logVo, jsonObject);

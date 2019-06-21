@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewConcrete extends TableImpl<HrInterviewConcreteRecord> {
 
-    private static final long serialVersionUID = 380290166;
+    private static final long serialVersionUID = -201487584;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_concrete</code>
@@ -139,7 +139,7 @@ public class HrInterviewConcrete extends TableImpl<HrInterviewConcreteRecord> {
     /**
      * The column <code>hrdb.hr_interview_concrete.disable</code>. 状态：0 有效  1 无效 2 逻辑删除
      */
-    public final TableField<HrInterviewConcreteRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
+    public final TableField<HrInterviewConcreteRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
 
     /**
      * The column <code>hrdb.hr_interview_concrete.create_time</code>. 创建时间
@@ -150,6 +150,16 @@ public class HrInterviewConcrete extends TableImpl<HrInterviewConcreteRecord> {
      * The column <code>hrdb.hr_interview_concrete.update_time</code>. 更新时间
      */
     public final TableField<HrInterviewConcreteRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名 
+     */
+    public final TableField<HrInterviewConcreteRecord, String> CONTACT_NAME = createField("contact_name", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "其它联系人姓名 ");
+
+    /**
+     * The column <code>hrdb.hr_interview_concrete.contact_phone</code>. 其它联系人电话
+     */
+    public final TableField<HrInterviewConcreteRecord, String> CONTACT_PHONE = createField("contact_phone", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "其它联系人电话");
 
     /**
      * Create a <code>hrdb.hr_interview_concrete</code> table reference

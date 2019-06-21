@@ -166,7 +166,6 @@ public class ReferralTemplateSender {
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
 
-
     @Transactional(rollbackFor = Exception.class)
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
         try {

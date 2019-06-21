@@ -575,7 +575,7 @@ public class ReferralServiceImpl implements ReferralService {
     private void checkReferralResult(List<MobotReferralResultVO> referralResultVOS) throws BIZException {
         for(MobotReferralResultVO referralResultVO : referralResultVOS){
             if(!referralResultVO.getSuccess()){
-                throw new BIZException(1, referralResultVO.getReason());
+                throw new BIZException(referralResultVO.getErrorCode()>0?referralResultVO.getErrorCode():1, referralResultVO.getReason());
             }
         }
     }

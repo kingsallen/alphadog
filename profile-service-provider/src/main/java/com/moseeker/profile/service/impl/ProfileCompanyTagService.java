@@ -46,6 +46,7 @@ public class ProfileCompanyTagService {
     public void  handlerCompanyTag(int profileId,int userId){
         if(userId==0){
             userId=this.getUserIdFromProfile(profileId);
+            logger.info("======查询得到的user_id是======"+userId);
         }
         handlerCompanyTagByUserId(userId);
     }
@@ -53,17 +54,17 @@ public class ProfileCompanyTagService {
     public void  handlerCompanyTagByUserId(int userId){
         if(userId>0){
             boolean flag=this.validateUsertalent(userId);
-            logger.debug("handlerCompanyTagTalent handlerCompanyTag flag:{}",flag);
+            logger.info("handlerCompanyTagTalent handlerCompanyTag flag:{}",flag);
             if(flag){
                 Set<Integer> userIdSet=new HashSet<>();
                 userIdSet.add(userId);
                 Set<Integer> companyIdSet=this.getCompanySetByApplierId(userId);
-                logger.debug("handlerCompanyTagTalent handlerCompanyTag companyIdSet:{}",companyIdSet);
+                logger.info("handlerCompanyTagTalent handlerCompanyTag companyIdSet:{}",companyIdSet);
                 if(!StringUtils.isEmptySet(companyIdSet)){
                     Map<String,Object> message=new HashMap<>();
                     message.put("user_ids",userIdSet);
                     message.put("company_ids",companyIdSet);
-                    logger.debug("handlerCompanyTagTalent handlerCompanyTag message:{}",message);
+                    logger.info("handlerCompanyTagTalent handlerCompanyTag message:{}",message);
                     sender.send(JSON.toJSONString(message),80000);
                 }
             }

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = 1896549539;
+    private static final long serialVersionUID = -1536467791;
 
     private Integer   id;
     private String    name;
@@ -64,6 +64,7 @@ public class HrSearchCondition implements Serializable {
     private String    hasAttachment;
     private String    departmentIds;
     private String    departmentNames;
+    private String    remark;
 
     public HrSearchCondition() {}
 
@@ -107,6 +108,7 @@ public class HrSearchCondition implements Serializable {
         this.hasAttachment = value.hasAttachment;
         this.departmentIds = value.departmentIds;
         this.departmentNames = value.departmentNames;
+        this.remark = value.remark;
     }
 
     public HrSearchCondition(
@@ -148,7 +150,8 @@ public class HrSearchCondition implements Serializable {
         Timestamp endSubmitTime,
         String    hasAttachment,
         String    departmentIds,
-        String    departmentNames
+        String    departmentNames,
+        String    remark
     ) {
         this.id = id;
         this.name = name;
@@ -189,6 +192,7 @@ public class HrSearchCondition implements Serializable {
         this.hasAttachment = hasAttachment;
         this.departmentIds = departmentIds;
         this.departmentNames = departmentNames;
+        this.remark = remark;
     }
 
     public Integer getId() {
@@ -503,6 +507,14 @@ public class HrSearchCondition implements Serializable {
         this.departmentNames = departmentNames;
     }
 
+    public String getRemark() {
+        return this.remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -546,6 +558,7 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(hasAttachment);
         sb.append(", ").append(departmentIds);
         sb.append(", ").append(departmentNames);
+        sb.append(", ").append(remark);
 
         sb.append(")");
         return sb.toString();

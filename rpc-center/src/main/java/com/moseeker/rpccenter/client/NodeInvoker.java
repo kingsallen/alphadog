@@ -5,14 +5,11 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.SocketException;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.rpccenter.common.ThriftUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TApplicationException;
-import org.apache.thrift.TServiceClient;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +82,7 @@ public class NodeInvoker<T> implements Invoker {
                 	//warning
                     continue;
                 }
+                LOGGER.info("NOC NodeInvoker name:{}, serviceData:{}", node.getName(), JSONObject.toJSONString(node.getData()));
                 client = pool.borrowObject(node);
                 LOGGER.info("node:{}, getNumActive:{}",node,pool.getNumActive());
                 //LOGGER.info("NodeInvoker invoke client:{}, args:{}", JSONObject.toJSONString(client), args != null ? JSONObject.toJSONString(args):null);
@@ -92,11 +90,14 @@ public class NodeInvoker<T> implements Invoker {
 
                 return result;
             } catch (CURDException | BIZException ce) {
-                ce.printStackTrace();
+                LOGGER.info("NOC NodeInvoker CURDException OR BIZException");
                 throw ce;
             } catch (ConnectException ce) {
+                LOGGER.info("NOC NodeInvoker ConnectException");
             	LOGGER.error(ce.getMessage(), ce);
+                LOGGER.info("NOC NodeInvoker clear node.name:{} node.data:{}", node.getName(), JSONObject.toJSONString(node.getData()));
             	pool.clear(node);
+                LOGGER.info("NOC NodeInvoker removePath node.name:{}", node.getName());
                 NodeManager.NODEMANAGER.removePath(node);
             } catch (InvocationTargetException ite) {
                 // XXX:InvocationTargetException异常发生在method.invoke()中
@@ -121,6 +122,7 @@ public class NodeInvoker<T> implements Invoker {
                             	//有节点重建任务，一般不存在超时问题
                                 //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
+                                LOGGER.info("NOC NodeInvoker clear node.name:{} node.data:{}", node.getName(), JSONObject.toJSONString(node.getData()));
                                 pool.clear(node);
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
@@ -131,6 +133,7 @@ public class NodeInvoker<T> implements Invoker {
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:{}",pool.getNumActive());
+                                LOGGER.info("NOC NodeInvoker invalidateObject node.name:{} node.data:{}", node.getName(), JSONObject.toJSONString(node.getData()));
                                 pool.invalidateObject(node, client);
                             }
                             client = null;

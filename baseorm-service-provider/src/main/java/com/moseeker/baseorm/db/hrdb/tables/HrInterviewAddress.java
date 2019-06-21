@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewAddress extends TableImpl<HrInterviewAddressRecord> {
 
-    private static final long serialVersionUID = -1943363759;
+    private static final long serialVersionUID = -1099822724;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_address</code>
@@ -95,6 +95,11 @@ public class HrInterviewAddress extends TableImpl<HrInterviewAddressRecord> {
      * The column <code>hrdb.hr_interview_address.update_time</code>. 更新时间
      */
     public final TableField<HrInterviewAddressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>hrdb.hr_interview_address.snapshot</code>. 是否是快照 0 不是 1是
+     */
+    public final TableField<HrInterviewAddressRecord, Integer> SNAPSHOT = createField("snapshot", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否是快照 0 不是 1是");
 
     /**
      * Create a <code>hrdb.hr_interview_address</code> table reference

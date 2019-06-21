@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord> {
 
-    private static final long serialVersionUID = 669081031;
+    private static final long serialVersionUID = 1502261722;
 
     /**
      * The reference instance of <code>hrdb.hr_headhunter_candidate</code>
@@ -78,9 +78,9 @@ public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord
     public final TableField<HrHeadhunterCandidateRecord, Integer> JOB_ID = createField("job_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "申请职位 hrdb.hr_headhunter_job.id");
 
     /**
-     * The column <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 筛选, 2 面试, 3 offer, 4 待入职, 5 入职, 6 淘汰
+     * The column <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 已推荐，7 被hr拒绝
      */
-    public final TableField<HrHeadhunterCandidateRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态: 0 待接收，1 筛选, 2 面试, 3 offer, 4 待入职, 5 入职, 6 淘汰");
+    public final TableField<HrHeadhunterCandidateRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态: 0 待接收，1 已推荐，7 被hr拒绝");
 
     /**
      * The column <code>hrdb.hr_headhunter_candidate.operation_info</code>. 操作信息
@@ -95,7 +95,7 @@ public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord
     /**
      * The column <code>hrdb.hr_headhunter_candidate.cost</code>. 猎头费用
      */
-    public final TableField<HrHeadhunterCandidateRecord, BigDecimal> COST = createField("cost", org.jooq.impl.SQLDataType.DECIMAL.precision(5, 2), this, "猎头费用");
+    public final TableField<HrHeadhunterCandidateRecord, BigDecimal> COST = createField("cost", org.jooq.impl.SQLDataType.DECIMAL.precision(20, 2).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "猎头费用");
 
     /**
      * The column <code>hrdb.hr_headhunter_candidate.create_time</code>. 创建时间
@@ -116,6 +116,11 @@ public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord
      * The column <code>hrdb.hr_headhunter_candidate.position_name</code>. 当前职位
      */
     public final TableField<HrHeadhunterCandidateRecord, String> POSITION_NAME = createField("position_name", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "当前职位");
+
+    /**
+     * The column <code>hrdb.hr_headhunter_candidate.user_id</code>. user_user.id 用于候选人和用户关联
+     */
+    public final TableField<HrHeadhunterCandidateRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "user_user.id 用于候选人和用户关联");
 
     /**
      * Create a <code>hrdb.hr_headhunter_candidate</code> table reference

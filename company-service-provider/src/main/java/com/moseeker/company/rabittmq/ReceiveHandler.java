@@ -37,7 +37,7 @@ public class ReceiveHandler {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    @RabbitListener(queues = "#{profileCompanyTagQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitListener(queues = "#{profileCompanyTagNewQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void profileCompanyTagRecomQueHandler(Message message, Channel channel) {
         String msgBody = "{}";

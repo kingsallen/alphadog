@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterProfileRecord extends UpdatableRecordImpl<HrHeadhunterProfileRecord> implements Record10<Integer, Integer, String, String, String, String, Integer, Timestamp, Timestamp, Byte> {
 
-    private static final long serialVersionUID = 1455243504;
+    private static final long serialVersionUID = -1466720810;
 
     /**
      * Setter for <code>hrdb.hr_headhunter_profile.id</code>. 主键
@@ -159,14 +159,14 @@ public class HrHeadhunterProfileRecord extends UpdatableRecordImpl<HrHeadhunterP
     }
 
     /**
-     * Setter for <code>hrdb.hr_headhunter_profile.status</code>. 简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历）
+     * Setter for <code>hrdb.hr_headhunter_profile.status</code>. 简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历），2. 被拒绝
      */
     public void setStatus(Byte value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_headhunter_profile.status</code>. 简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历）
+     * Getter for <code>hrdb.hr_headhunter_profile.status</code>. 简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历），2. 被拒绝
      */
     public Byte getStatus() {
         return (Byte) get(9);
