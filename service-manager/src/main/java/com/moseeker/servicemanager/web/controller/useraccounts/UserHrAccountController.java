@@ -895,7 +895,7 @@ public class UserHrAccountController {
             int pageSize = params.getInt("pageSize", 0);
             int balanceType = params.getInt("balanceType",0);
             String timespan = params.getString("timespan", "");
-            String selectedIids = params.getString("selectedIids");
+            String selectedIids = params.getString("selectedIds");
 
             logger.info("UserHrAccountController employeeList params:{}", JSONObject.toJSONString(params));
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
