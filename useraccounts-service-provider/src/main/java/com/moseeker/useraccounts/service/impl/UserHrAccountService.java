@@ -2200,12 +2200,15 @@ public class UserHrAccountService {
                 if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getUnbindTime())) {
                     userEmployeeVO.setUnbindTime(new DateTime(userEmployeeDO.getUnbindTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
+                logger.info("UserHrAccountService packageEmployeeVOs before importTime:{}", userEmployeeDO.getImportTime());
                 if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getImportTime())) {
                     userEmployeeDO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
+                logger.info("UserHrAccountService packageEmployeeVOs after importTime:{}", userEmployeeDO.getImportTime());
                 if(userEmployeeVO.getAward()<0){
                     userEmployeeVO.setAward(0);
                 }
+                logger.info("UserHrAccountService packageEmployeeVOs step1 importTime:{}", userEmployeeDO.getImportTime());
                 List<Map<String, String>> customFieldValues = new ArrayList(3);
 
                 if (userEmployeeDO.getCustomFieldValues() != null) {
@@ -2218,6 +2221,7 @@ public class UserHrAccountService {
                     List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());
                     customFieldValues.addAll(list1);
                 }
+                logger.info("UserHrAccountService packageEmployeeVOs step2 importTime:{}", userEmployeeDO.getImportTime());
                 userEmployeeVO.setSystemFields(customFieldValues);
                 // 微信昵称
                 if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
@@ -2225,15 +2229,18 @@ public class UserHrAccountService {
                 } else {
                     userEmployeeVO.setNickName("未知");
                 }
+                logger.info("UserHrAccountService packageEmployeeVOs step3 importTime:{}", userEmployeeDO.getImportTime());
                 // 公司名称
                 if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
                     HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
                     userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
                     userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                 }
+                logger.info("UserHrAccountService packageEmployeeVOs step4 importTime:{}", userEmployeeDO.getImportTime());
                 userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
                 userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                 userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
+                logger.info("UserHrAccountService packageEmployeeVOs step5 importTime:{}", userEmployeeDO.getImportTime());
                 userEmployeeVOS.add(userEmployeeVO);
             }
         }
