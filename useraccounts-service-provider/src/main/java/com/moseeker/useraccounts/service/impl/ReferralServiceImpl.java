@@ -534,6 +534,8 @@ public class ReferralServiceImpl implements ReferralService {
         try{
             String distinctId =String.valueOf(user.get().getId());
             sensorSend.send(distinctId,"inDirectReferral",properties);
+
+
         }catch (Exception e){
             logger.error(e.getMessage());
         }
