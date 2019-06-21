@@ -101,7 +101,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
     @Override
     protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException, InvalidArgumentException {
-        return sendMail(userEmployee, bindEmailSource, true);
+        return sendMail(userEmployee, bindEmailSource);
     }
 
     public Result emailActivation(String activationCode,int bindEmailSource) throws TException, InvalidArgumentException {
@@ -168,11 +168,18 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         }
         UserEmployeeDO employee = JSONObject.parseObject(employeeValue, UserEmployeeDO.class);
         log.info("EmployeeBindByEmail retrySendVerificationMail authInfoKey:{}", JSONObject.toJSONString(employee));
-        sendMail(employee, source, false);
+        sendMail(employee, source);
 
     }
 
-    private Result sendMail(UserEmployeeDO userEmployee,int bindEmailSource, boolean updateExpireTime) throws TException {
+    /**
+     * 发送员工认证邮箱确认邮件
+     * @param userEmployee 员工信息
+     * @param bindEmailSource 来源
+     * @return 执行结果
+     * @throws TException
+     */
+    private Result sendMail(UserEmployeeDO userEmployee,int bindEmailSource) throws TException {
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.clear();
@@ -216,11 +223,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 log.info("EmployeeBindByEmail sendMail activationCode:{}", activationCode);
                 // 集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
                 String authInfoKey = employeeEntity.getAuthInfoKey(userEmployee.getSysuserId(), userEmployee.getCompanyId());
-                log.info("EmployeeBindByEmail sendMail updateExpireTime:{}", updateExpireTime);
-                if (updateExpireTime) {
-                    String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
-                    log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
-                }
+                String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
+                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
                 String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
                 log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , BeanUtils.convertStructToJSON(userEmployee));
                 log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, activationCode:{}, result: {}", userEmployee.getId(), activationCode , resultACode);
