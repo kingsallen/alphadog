@@ -964,9 +964,6 @@ public class EmployeeService {
         if (org.apache.commons.lang3.StringUtils.isBlank(pendingEmployee)) {
             throw UserAccountException.EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED;
         }
-        UserEmployeeDO emp = new UserEmployeeDO();
-        JSONObject jsonObject = JSONObject.parseObject(pendingEmployee);
-
 
         EmployeeBindByEmail bindByEmail = (EmployeeBindByEmail)employeeBinder.get("auth_method_email");
         bindByEmail.retrySendVerificationMail(userId, companyId, source);

@@ -158,12 +158,16 @@ public class EmployeeBindByEmail extends EmployeeBinder{
      * @throws Exception 业务异常
      */
     public void retrySendVerificationMail(int userId, int companyId, int source) throws Exception {
+        log.info("EmployeeBindByEmail retrySendVerificationMail userId:{}, companyId:{}, source:{}", userId, companyId, source);
         String authInfoKey = employeeEntity.getAuthInfoKey(userId, companyId);
+        log.info("EmployeeBindByEmail retrySendVerificationMail authInfoKey:{}", authInfoKey);
         String employeeValue = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey);
+        log.info("EmployeeBindByEmail retrySendVerificationMail employeeValue:{}", employeeValue);
         if (org.apache.commons.lang3.StringUtils.isBlank(employeeValue)) {
             throw UserAccountException.EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED;
         }
         UserEmployeeDO employee = JSONObject.parseObject(employeeValue, UserEmployeeDO.class);
+        log.info("EmployeeBindByEmail retrySendVerificationMail authInfoKey:{}", JSONObject.toJSONString(employee));
         sendMail(employee, source, false);
 
     }
@@ -179,6 +183,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         HrWxWechatDO hrwechatResult = hrWxWechatDao.getData(query.buildQuery());
         HrCompanyConfDO hrCompanyConfDO = new HrCompanyConfDO();
         hrCompanyConfDO = hrCompanyConfDao.getData(query.buildQuery());
+        log.info("EmployeeBindByEmail sendMail hrCompanyConfDO:{}", JSONObject.toJSONString(hrCompanyConfDO));
+        log.info("EmployeeBindByEmail sendMail hrwechatResult:{}", JSONObject.toJSONString(hrwechatResult));
         if (companyDO != null && companyDO.getId() != 0 && hrwechatResult != null && hrwechatResult.getId() != 0) {
             // 激活码(MD5)： userId_companyId_groupId
             String activationCode = MD5Util.encryptSHA(userEmployee.getId()+"-"+userEmployee.getEmail()+"-"+System.currentTimeMillis());
@@ -203,11 +209,14 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), "");
             // 发送认证邮件
             Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, userEmployee.getEmail(), subject, senderName, senderDisplay);
+            log.info("EmployeeBindByEmail sendMail mailResponse:{}", JSONObject.toJSONString(mailResponse));
             // 邮件发送成功
             if (mailResponse.getStatus() == 0) {
                 userEmployee.setActivationCode(activationCode);
+                log.info("EmployeeBindByEmail sendMail activationCode:{}", activationCode);
                 // 集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
                 String authInfoKey = employeeEntity.getAuthInfoKey(userEmployee.getSysuserId(), userEmployee.getCompanyId());
+                log.info("EmployeeBindByEmail sendMail updateExpireTime:{}", updateExpireTime);
                 if (updateExpireTime) {
                     String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
                     log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
