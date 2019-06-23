@@ -24,17 +24,19 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterAccount implements Serializable {
 
-    private static final long serialVersionUID = -1499341941;
+    private static final long serialVersionUID = 1802448206;
 
     private Integer    id;
     private String     email;
     private String     password;
     private Integer    companyId;
     private Integer    hrId;
+    private Integer    hrCompanyId;
     private String     username;
     private Timestamp  serviceStartTime;
     private Timestamp  serviceEndTime;
     private String     contractFilePath;
+    private String     contractFileName;
     private String     contractType;
     private BigDecimal feeRate;
     private Integer    termOfProtection;
@@ -52,10 +54,12 @@ public class HrHeadhunterAccount implements Serializable {
         this.password = value.password;
         this.companyId = value.companyId;
         this.hrId = value.hrId;
+        this.hrCompanyId = value.hrCompanyId;
         this.username = value.username;
         this.serviceStartTime = value.serviceStartTime;
         this.serviceEndTime = value.serviceEndTime;
         this.contractFilePath = value.contractFilePath;
+        this.contractFileName = value.contractFileName;
         this.contractType = value.contractType;
         this.feeRate = value.feeRate;
         this.termOfProtection = value.termOfProtection;
@@ -72,10 +76,12 @@ public class HrHeadhunterAccount implements Serializable {
         String     password,
         Integer    companyId,
         Integer    hrId,
+        Integer    hrCompanyId,
         String     username,
         Timestamp  serviceStartTime,
         Timestamp  serviceEndTime,
         String     contractFilePath,
+        String     contractFileName,
         String     contractType,
         BigDecimal feeRate,
         Integer    termOfProtection,
@@ -90,10 +96,12 @@ public class HrHeadhunterAccount implements Serializable {
         this.password = password;
         this.companyId = companyId;
         this.hrId = hrId;
+        this.hrCompanyId = hrCompanyId;
         this.username = username;
         this.serviceStartTime = serviceStartTime;
         this.serviceEndTime = serviceEndTime;
         this.contractFilePath = contractFilePath;
+        this.contractFileName = contractFileName;
         this.contractType = contractType;
         this.feeRate = feeRate;
         this.termOfProtection = termOfProtection;
@@ -144,6 +152,14 @@ public class HrHeadhunterAccount implements Serializable {
         this.hrId = hrId;
     }
 
+    public Integer getHrCompanyId() {
+        return this.hrCompanyId;
+    }
+
+    public void setHrCompanyId(Integer hrCompanyId) {
+        this.hrCompanyId = hrCompanyId;
+    }
+
     public String getUsername() {
         return this.username;
     }
@@ -174,6 +190,14 @@ public class HrHeadhunterAccount implements Serializable {
 
     public void setContractFilePath(String contractFilePath) {
         this.contractFilePath = contractFilePath;
+    }
+
+    public String getContractFileName() {
+        return this.contractFileName;
+    }
+
+    public void setContractFileName(String contractFileName) {
+        this.contractFileName = contractFileName;
     }
 
     public String getContractType() {
@@ -249,10 +273,12 @@ public class HrHeadhunterAccount implements Serializable {
         sb.append(", ").append(password);
         sb.append(", ").append(companyId);
         sb.append(", ").append(hrId);
+        sb.append(", ").append(hrCompanyId);
         sb.append(", ").append(username);
         sb.append(", ").append(serviceStartTime);
         sb.append(", ").append(serviceEndTime);
         sb.append(", ").append(contractFilePath);
+        sb.append(", ").append(contractFileName);
         sb.append(", ").append(contractType);
         sb.append(", ").append(feeRate);
         sb.append(", ").append(termOfProtection);

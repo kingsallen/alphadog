@@ -25,6 +25,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppExportFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
@@ -41,6 +42,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -424,8 +428,7 @@ public class UserHrAccountController {
      * 获取hr常用筛选项
      *
      * @param request
-     * @param response。。。
-     * @return
+     * @param response
      */
     @RequestMapping(value = "/hraccount/searchcondition", method = RequestMethod.GET)
     @ResponseBody
@@ -720,7 +723,11 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/unbind", method = RequestMethod.PUT)
     @ResponseBody
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS");
+        LocalDateTime start = LocalDateTime.now();
+        logger.info("UserHrAccountController before unbindEmployee now:{}", start.format(dateTimeFormatter));
         try {
+
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
             int companyId = params.getInt("companyId", 0);
@@ -741,6 +748,10 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime after = LocalDateTime.now();
+            logger.info("UserHrAccountController after unbindEmployee now:{}", after.format(dateTimeFormatter));
+            logger.info("UserHrAccountController unbindEmployee duration:{}", Duration.between(start, after).toMillis());
         }
     }
 
@@ -894,8 +905,11 @@ public class UserHrAccountController {
             int pageSize = params.getInt("pageSize", 0);
             int balanceType = params.getInt("balanceType",0);
             String timespan = params.getString("timespan", "");
+            String selectedIids = params.getString("selectedIds");
+
+            logger.info("UserHrAccountController employeeList params:{}", JSONObject.toJSONString(params));
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
-                    order, asc, pageNumber, pageSize, email_isvalid,balanceType, timespan);
+                    order, asc, pageNumber, pageSize, email_isvalid,balanceType, timespan, selectedIids);
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
@@ -1036,7 +1050,9 @@ public class UserHrAccountController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            logger.info("employeeImport userEmployees:{}", JSONObject.toJSONString(params.get("userEmployees")));
+            Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            logger.info("employeeImport userEmployees:{}", JSONObject.toJSONString(userEmployees));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
         } catch (BIZException e) {
@@ -1062,7 +1078,8 @@ public class UserHrAccountController {
             int hraccountId = params.getInt("hraccountId", 0);
             String fileName = params.getString("fileName", "");
             String filePath = params.getString("filePath", "");
-            Map userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
+            logger.info("employeeImport userEmployees:{}", params.get("userEmployees"));
+            Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId, filePath, fileName, type, hraccountId);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
@@ -1071,6 +1088,30 @@ public class UserHrAccountController {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+
+    /**
+     * 员工信息导入修改
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/employee/updatemsg/batch", method = RequestMethod.POST)
+    @ResponseBody
+    public String batchUpdate(HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        Integer companyId = params.getInt("companyId", 0);
+        Integer type = params.getInt("type", 0);
+        Integer hraccountId = params.getInt("hraccountId", 0);
+        String fileName = params.getString("fileName", "");
+        String filePath = params.getString("filePath", "");
+        logger.info("batchUpdate userEmployees:{}", params.get("userEmployees"));
+
+        List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseEmployees((List<Map<String, Object>>)params.get("userEmployees"));
+        logger.info("batchUpdate userEmployees:{}", userEmployees);
+
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = userHrAccountService.updateEmployee(userEmployees, companyId, filePath, fileName, type, hraccountId);
+        return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(importUserEmployeeStatistic)));
     }
 
     /**

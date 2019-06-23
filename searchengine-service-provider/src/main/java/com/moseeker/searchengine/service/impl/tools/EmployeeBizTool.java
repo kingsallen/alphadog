@@ -58,6 +58,16 @@ public class EmployeeBizTool {
     }
 
     /**
+     * 解析指定员工编号查找
+     * @param defaultQuery 查找工具
+     * @param employeeIds 员工编号
+     * @param searchUtil ES查询条件生成工具
+     */
+    public static void addEmployeeIds(QueryBuilder defaultQuery, List<Integer> employeeIds, SearchUtil searchUtil) {
+        searchUtil.handleTerms(Arrays.toString(employeeIds.toArray()).replaceAll("\\[|\\]| ", ""), defaultQuery, "id");
+    }
+
+    /**
      * 解析公司参数
      * @param defaultquery 查询工具
      * @param companyIds 公司编号集合
@@ -82,7 +92,7 @@ public class EmployeeBizTool {
                     keyword,
                     defaultquery);*/
             searchUtil.matchPhrasePrefixQueryV2(new ArrayList<String>(){{
-                                                 add("search_data.email");add("search_data.mobile");add("search_data.custom_field");add("search_data.cname");
+                                                 add("search_data.cname");
                                              }},
                     keyword,
                     defaultquery);

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewConcrete implements Serializable {
 
-    private static final long serialVersionUID = -1347198538;
+    private static final long serialVersionUID = 1905764581;
 
     private Integer   id;
     private Integer   companyId;
@@ -45,6 +45,8 @@ public class HrInterviewConcrete implements Serializable {
     private Integer   disable;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private String    contactName;
+    private String    contactPhone;
 
     public HrInterviewConcrete() {}
 
@@ -69,6 +71,8 @@ public class HrInterviewConcrete implements Serializable {
         this.disable = value.disable;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.contactName = value.contactName;
+        this.contactPhone = value.contactPhone;
     }
 
     public HrInterviewConcrete(
@@ -91,7 +95,9 @@ public class HrInterviewConcrete implements Serializable {
         Integer   passed,
         Integer   disable,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        String    contactName,
+        String    contactPhone
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -113,6 +119,8 @@ public class HrInterviewConcrete implements Serializable {
         this.disable = disable;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.contactName = contactName;
+        this.contactPhone = contactPhone;
     }
 
     public Integer getId() {
@@ -275,6 +283,22 @@ public class HrInterviewConcrete implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getContactName() {
+        return this.contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getContactPhone() {
+        return this.contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrInterviewConcrete (");
@@ -299,6 +323,8 @@ public class HrInterviewConcrete implements Serializable {
         sb.append(", ").append(disable);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(contactName);
+        sb.append(", ").append(contactPhone);
 
         sb.append(")");
         return sb.toString();

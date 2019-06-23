@@ -335,7 +335,10 @@ public class ReceiverHandler {
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
-                log.info("元夕飞花令 handlerMessageTemplate 推荐 msgBody:{}", JSON.toJSONString(msgBody));
+                log.info("handlerMessageTemplate jsonObject:{}", jsonObject);
+                if (jsonObject.getInteger("company_id") != null && jsonObject.getInteger("company_id") == 1912646) {
+                    log.info("handlerMessageTemplate 元夕飞花令！");
+                }
                 int type = jsonObject.getIntValue("type");
                 log.info("type========================:{}", type);
                 this.addPropertyLogVO(logVo, jsonObject);

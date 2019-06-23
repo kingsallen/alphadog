@@ -82,5 +82,6 @@ service EmployeeService {
     employee_struct.ReferralCard getReferralCard(1: i32 referralLogId)throws (1: common_struct.BIZException e)
     //获取员工信息
     employee_struct.EmployeeInfo getEmployeeInfo(1: i32 userId)throws (1: common_struct.BIZException e)
-
+    //重新发送邮件
+    void retrySendVerificationMail(1: i32 userId, 2: i32 companyId, 3: i32 source)throws (1: common_struct.BIZException e)
 }

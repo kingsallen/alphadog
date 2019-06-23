@@ -1,9 +1,56 @@
 package moseeker.baseorm.dao.user;
 
+import com.moseeker.baseorm.config.AppConfig;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by eddie on 2017/3/9.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class UserEmployeeDaoTest {
+
+    @Autowired
+    UserEmployeeDao employeeDao;
+
+    @Test
+    public void casBatchInsert() throws BIZException {
+        List<UserEmployeeRecord> employees = new ArrayList<>();
+
+        UserEmployeeRecord temp1 = new UserEmployeeRecord();
+        temp1.setCompanyId(39978);
+        temp1.setCustomField("10000022");
+        temp1.setCname("林东建");
+        temp1.setAuthMethod((byte) 1);
+        employees.add(temp1);
+
+        UserEmployeeRecord temp2 = new UserEmployeeRecord();
+        temp2.setCompanyId(39978);
+        temp2.setCustomField("10000028");
+        temp2.setCname("孙汉文");
+        temp2.setEmail("sunhanwen@gmail.com");
+        temp2.setAuthMethod((byte) 0);
+        employees.add(temp2);
+
+        UserEmployeeRecord temp3 = new UserEmployeeRecord();
+        temp3.setCompanyId(39978);
+        temp3.setCustomField("10000030");
+        temp3.setCname("谢海珍");
+        temp3.setAuthMethod((byte) 2);
+        employees.add(temp3);
+
+        employeeDao.casBatchInsert(employees);
+    }
 
 //    private UserEmployeeDaoThriftService service;
 //
