@@ -139,7 +139,7 @@ public class BatchValidate {
 
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
-        AtomicInteger repeatCounts = new AtomicInteger(0;
+        AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
 
         /**
