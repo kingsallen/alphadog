@@ -28,6 +28,8 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -39,12 +41,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class BatchValidate {
-
-    @Autowired
-    private HrCompanyDao hrCompanyDao;
-
-    @Autowired
-    private UserEmployeeDao userEmployeeDao;
 
     @Autowired
     protected HrEmployeeCustomFieldsDao customFieldsDao;
@@ -132,14 +128,10 @@ public class BatchValidate {
     public ImportUserEmployeeStatistic importCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
 
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("BatchValidate importCheck initDateTime:{}", initDateTime.toString());
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
 
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
-        int repetitionCounts = 0;
-        int errorCounts = 0;
 
         /**
          * 为校验自定义下拉项数据做准备
@@ -147,88 +139,30 @@ public class BatchValidate {
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
 
-        LocalDateTime beforeCirculation = LocalDateTime.now();
-        logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
-        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
-            UserEmployeeDO userEmployeeDO = entry.getValue();
-            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-            // 姓名不能为空
-            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("员工姓名不能为空");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("员工姓名包含非法字符");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            }
-
-            if (userEmployeeDO.getCompanyId() == 0) {
-                userEmployeeDO.setCompanyId(companyId);
-            }
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
-                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
-                if (employeeCustomFiledValues.get(entry.getKey()) != null
-                        && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
-                    boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
-                    if (!flag) {
-                        logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", employeeCustomFiledValues.get(entry.getKey()));
-                        logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setMessage("自定义选项错误");
-                        errorCounts = errorCounts + 1;
-                        importErrorUserEmployee.setRowNum(entry.getKey());
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                        continue;
-                    } else {
-                        JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
-                        logger.info("BatchValidate importCheck success customFieldValues:{}", customFieldValues);
-                        userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
-                    }
+        AtomicInteger repeatCounts = new AtomicInteger(0);
+        AtomicInteger errorCount = new AtomicInteger(0);
+        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
+        userEmployeeMap.forEach((row, userEmployeeDO) -> {
+            threadPool.startTast(() -> {
+                try {
+                    checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
+                            employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
+                } finally {
+                    countDownLatch.countDown();
                 }
-            }
-            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-                continue;
-            }
-            if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
-                // 数据库的数据
-                for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
-                    // 非自定义员工,忽略检查
-                    if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
-                            || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
-                        continue;
-                    }
-                    // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
-                    if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
-                        repetitionCounts = repetitionCounts + 1;
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setRowNum(entry.getKey());
-                        importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                    }
-                }
-            }
-        }
+                return true;
+            });
+        });
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCounts);
-        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
+        importUserEmployeeStatistic.setErrorCounts(errorCount.get());
+        importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
         importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
-        if (repetitionCounts == 0 && errorCounts == 0) {
+        if (repeatCounts.get() == 0 && errorCount.get() == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
-        LocalDateTime afterCirculation = LocalDateTime.now();
-        logger.info("UserHrAccountService repetitionFilter afterCirculation:{}, Duration:{}", afterCirculation.toString(), Duration.between(beforeCirculation, afterCirculation).toMillis());
-
         return importUserEmployeeStatistic;
     }
 
@@ -419,6 +353,87 @@ public class BatchValidate {
             JSONArray jsonArray = convertNameToOptionId(map.get(i), dbCustomFieldValues);
             logger.info("BatchValidate convertToOptionId after convert:{}", jsonArray.toJSONString());
             userEmployeeDOS.get(i).setCustomFieldValues(jsonArray.toJSONString());
+        }
+    }
+
+    /**
+     * 检查导入数据是否正确
+     * @param row
+     * @param userEmployeeDO
+     * @param companyId
+     * @param importErrorUserEmployees
+     * @param repeatCounts
+     * @param errorCounts
+     * @param employeeCustomFiledValues
+     * @param dbCustomFieldValues
+     * @param dbEmployeeDOList
+     */
+    private void checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
+                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+                                     AtomicInteger repeatCounts, AtomicInteger errorCounts,
+                                     ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
+                                     Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
+                                     List<UserEmployeeDO> dbEmployeeDOList) {
+        ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+        // 姓名不能为空
+        if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("员工姓名不能为空");
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            errorCounts.incrementAndGet();
+            return;
+        } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("员工姓名包含非法字符");
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            errorCounts.incrementAndGet();
+            return;
+        }
+
+        if (userEmployeeDO.getCompanyId() == 0) {
+            userEmployeeDO.setCompanyId(companyId);
+        }
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+            if (employeeCustomFiledValues.get(row) != null
+                    && employeeCustomFiledValues.get(row).size() > 0) {
+                boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                if (!flag) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setMessage("自定义选项错误");
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                    errorCounts.incrementAndGet();
+                    return;
+                } else {
+                    JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                    userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
+                }
+            }
+        }
+        if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+            return;
+        }
+        if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
+            // 数据库的数据
+            for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
+                // 非自定义员工,忽略检查
+                if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
+                        || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
+                    continue;
+                }
+                // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
+                if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
+                        && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
+                    repeatCounts.incrementAndGet();
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                }
+            }
         }
     }
 
