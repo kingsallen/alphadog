@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
@@ -24,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -128,6 +131,9 @@ public class BatchValidate {
      */
     public ImportUserEmployeeStatistic importCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
+
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("BatchValidate importCheck initDateTime:{}", initDateTime.toString());
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
 
         // 重复的对象
@@ -141,6 +147,8 @@ public class BatchValidate {
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
 
+        LocalDateTime beforeCirculation = LocalDateTime.now();
+        logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
         for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
             UserEmployeeDO userEmployeeDO = entry.getValue();
@@ -153,7 +161,15 @@ public class BatchValidate {
                 importErrorUserEmployee.setRowNum(entry.getKey());
                 importErrorUserEmployees.add(importErrorUserEmployee);
                 continue;
+            } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("cname包含非法字符");
+                errorCounts = errorCounts + 1;
+                importErrorUserEmployee.setRowNum(entry.getKey());
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                continue;
             }
+
             if (userEmployeeDO.getCompanyId() == 0) {
                 userEmployeeDO.setCompanyId(companyId);
             }
@@ -210,6 +226,9 @@ public class BatchValidate {
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
+        LocalDateTime afterCirculation = LocalDateTime.now();
+        logger.info("UserHrAccountService repetitionFilter afterCirculation:{}, Duration:{}", afterCirculation.toString(), Duration.between(beforeCirculation, afterCirculation).toMillis());
+
         return importUserEmployeeStatistic;
     }
 
