@@ -93,6 +93,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1380,6 +1381,8 @@ public class UserHrAccountService {
     @Transactional
     public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
             fileName, Integer type, Integer hraccountId) throws CommonException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport initDateTime:{}", initDateTime.toString());
         Response response = new Response();
         logger.info("开始导入员工信息");
 
@@ -1395,8 +1398,12 @@ public class UserHrAccountService {
             throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
         }
 
+        LocalDateTime beforeRepetitionFilter = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport beforeRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(initDateTime, beforeRepetitionFilter).toMillis());
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
+        LocalDateTime afterRepetitionFilter = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(beforeRepetitionFilter, afterRepetitionFilter).toMillis());
 
         //校验自定义信息填写是否正确
         if (importUserEmployeeStatistic != null && !importUserEmployeeStatistic.insertAccept) {
@@ -1451,6 +1458,10 @@ public class UserHrAccountService {
 
         }
 
+        LocalDateTime afterUpdateEmployee = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterUpdateEmployee:{}, Duration:{}", afterRepetitionFilter.toString(), Duration.between(beforeRepetitionFilter, afterUpdateEmployee).toMillis());
+
+
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
             hrImporterMonitorDO.setSys(2);
@@ -1468,6 +1479,9 @@ public class UserHrAccountService {
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
+        LocalDateTime afterLog = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterLog:{}, Duration:{}", afterLog.toString(), Duration.between(afterUpdateEmployee, afterLog).toMillis());
+
         return response;
     }
 
@@ -1627,6 +1641,8 @@ public class UserHrAccountService {
      * @param companyId
      */
     private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1648,6 +1664,8 @@ public class UserHrAccountService {
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
+        LocalDateTime beforeCheck = LocalDateTime.now();
+        logger.info("UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
         return batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
     }

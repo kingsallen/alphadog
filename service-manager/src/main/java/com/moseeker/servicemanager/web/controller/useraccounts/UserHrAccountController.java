@@ -1047,6 +1047,9 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/checkbatchinsert", method = RequestMethod.POST)
     @ResponseBody
     public String checkBatchInsert(HttpServletRequest request) {
+
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("checkBatchInsert UserHrAccountController initDateTime:{}", initDateTime.toString());
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
@@ -1059,6 +1062,9 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("UserHrAccountController checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
         }
     }
 
@@ -1071,6 +1077,8 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/import", method = RequestMethod.POST)
     @ResponseBody
     public String employeeImport(HttpServletRequest request) {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("checkBatchInsert UserHrAccountController initDateTime:{}", initDateTime.toString());
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
@@ -1087,6 +1095,10 @@ public class UserHrAccountController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("UserHrAccountController checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
+
         }
     }
 

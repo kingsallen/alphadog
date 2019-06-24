@@ -60,7 +60,7 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID.in(idList))
-                //.and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.OPTION_TYPE.eq(0))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.OPTION_TYPE.eq(0))
                 .fetch();
         return convertToPojo(result);
     }
