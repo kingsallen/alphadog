@@ -60,7 +60,7 @@ public enum ThreadPool {
     }
 
     private void init() {
-        service = new ThreadPoolExecutor(0, 1000,
+        service = new ThreadPoolExecutor(4, 1000,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>());
     }
