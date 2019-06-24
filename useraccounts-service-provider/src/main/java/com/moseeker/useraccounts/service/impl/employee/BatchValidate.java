@@ -149,8 +149,12 @@ public class BatchValidate {
         CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
             threadPool.startTast(() -> {
-                checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
-                        employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList, countDownLatch);
+                try {
+                    checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
+                            employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
+                } finally {
+                    countDownLatch.countDown();
+                }
                 return true;
             });
         });
@@ -535,7 +539,7 @@ public class BatchValidate {
                                      AtomicInteger repeatCounts, AtomicInteger errorCounts,
                                      ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
                                      Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
-                                     List<UserEmployeeDO> dbEmployeeDOList, CountDownLatch countDownLatch) {
+                                     List<UserEmployeeDO> dbEmployeeDOList) {
         LocalDateTime startCirculation = LocalDateTime.now();
         logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
         ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
@@ -546,7 +550,6 @@ public class BatchValidate {
             importErrorUserEmployee.setRowNum(row);
             importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            countDownLatch.countDown();
             return;
         } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
             importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
@@ -554,7 +557,6 @@ public class BatchValidate {
             importErrorUserEmployee.setRowNum(row);
             importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            countDownLatch.countDown();
             return;
         }
 
@@ -574,7 +576,6 @@ public class BatchValidate {
                     importErrorUserEmployee.setRowNum(row);
                     importErrorUserEmployees.add(importErrorUserEmployee);
                     errorCounts.incrementAndGet();
-                    countDownLatch.countDown();
                     return;
                 } else {
                     JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
@@ -585,7 +586,6 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-            countDownLatch.countDown();
             return;
         }
         LocalDateTime errorCheck = LocalDateTime.now();
@@ -611,7 +611,6 @@ public class BatchValidate {
         }
         LocalDateTime endCirculation = LocalDateTime.now();
 
-        countDownLatch.countDown();
         logger.info("UserHrAccountService importCheck afterErrorCheck:{}, Duration:{}", endCirculation.toString(), Duration.between(errorCheck, endCirculation).toMillis());
         logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
     }
