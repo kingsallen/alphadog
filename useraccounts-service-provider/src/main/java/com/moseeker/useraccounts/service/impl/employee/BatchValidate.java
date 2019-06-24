@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -138,9 +139,8 @@ public class BatchValidate {
 
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
-        List<UserEmployeeDO> repeartCounts = new ArrayList<>();
-        int repetitionCounts = 0;
-        int errorCounts = 0;
+        AtomicInteger repeatCounts = new AtomicInteger(0;
+        AtomicInteger errorCount = new AtomicInteger(0);
 
         /**
          * 为校验自定义下拉项数据做准备
@@ -161,12 +161,14 @@ public class BatchValidate {
                 importErrorUserEmployee.setMessage("员工姓名不能为空");
                 importErrorUserEmployee.setRowNum(row);
                 importErrorUserEmployees.add(importErrorUserEmployee);
+                repeatCounts.incrementAndGet();
                 return;
             } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                 importErrorUserEmployee.setMessage("员工姓名包含非法字符");
                 importErrorUserEmployee.setRowNum(row);
                 importErrorUserEmployees.add(importErrorUserEmployee);
+                repeatCounts.incrementAndGet();
                 return;
             }
 
@@ -185,6 +187,7 @@ public class BatchValidate {
                         importErrorUserEmployee.setMessage("自定义选项错误");
                         importErrorUserEmployee.setRowNum(row);
                         importErrorUserEmployees.add(importErrorUserEmployee);
+                        repeatCounts.incrementAndGet();
                         return;
                     } else {
                         JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
@@ -212,7 +215,7 @@ public class BatchValidate {
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setRowNum(row);
                         importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
-                        repeartCounts.add(userEmployeeDO);
+                        errorCount.incrementAndGet();
                         importErrorUserEmployees.add(importErrorUserEmployee);
                     }
                 }
@@ -220,7 +223,6 @@ public class BatchValidate {
             LocalDateTime endCirculation = LocalDateTime.now();
             logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
         });
-        errorCounts = importErrorUserEmployees.size();
         /*for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
             LocalDateTime startCirculation = LocalDateTime.now();
             logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
@@ -295,10 +297,10 @@ public class BatchValidate {
             logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
         }*/
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCounts);
-        importUserEmployeeStatistic.setRepetitionCounts(repeartCounts.size());
+        importUserEmployeeStatistic.setErrorCounts(errorCount.get());
+        importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
         importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
-        if (repetitionCounts == 0 && errorCounts == 0) {
+        if (errorCount.get() == 0 && repeatCounts.get() == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
