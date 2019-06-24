@@ -153,23 +153,23 @@ public class BatchValidate {
         // 提交上的数据
         userEmployeeMap.entrySet()
                 .parallelStream()
-                .forEach(row -> {
+                .forEach(entry -> {
                     LocalDateTime startCirculation = LocalDateTime.now();
                     logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
                     ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-                    UserEmployeeDO userEmployeeDO = userEmployeeMap.get(row);
+                    UserEmployeeDO userEmployeeDO = userEmployeeMap.get(entry.getKey());
                     // 姓名不能为空
                     if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("员工姓名不能为空");
-                        importErrorUserEmployee.setRowNum(row);
+                        importErrorUserEmployee.setRowNum();
                         importErrorUserEmployees.add(importErrorUserEmployee);
                         repeatCounts.incrementAndGet();
                         return;
                     } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("员工姓名包含非法字符");
-                        importErrorUserEmployee.setRowNum(row);
+                        importErrorUserEmployee.setRowNum(entry.getKey());
                         importErrorUserEmployees.add(importErrorUserEmployee);
                         repeatCounts.incrementAndGet();
                         return;
@@ -180,20 +180,20 @@ public class BatchValidate {
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
                             && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
-                        if (employeeCustomFiledValues.get(row) != null
-                                && employeeCustomFiledValues.get(row).size() > 0) {
+                        if (employeeCustomFiledValues.get(entry.getKey()) != null
+                                && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
                             LocalDateTime startCheckOption = LocalDateTime.now();
                             logger.info("BatchValidate importCheck startCheckOption:{}", startCheckOption.toString());
-                            boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                            boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                             if (!flag) {
                                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                                 importErrorUserEmployee.setMessage("自定义选项错误");
-                                importErrorUserEmployee.setRowNum(row);
+                                importErrorUserEmployee.setRowNum(entry.getKey());
                                 importErrorUserEmployees.add(importErrorUserEmployee);
                                 repeatCounts.incrementAndGet();
                                 return;
                             } else {
-                                JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                                JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                                 userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
                             }
                             LocalDateTime endCheckOption = LocalDateTime.now();
@@ -217,7 +217,7 @@ public class BatchValidate {
                             if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
                                     && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
                                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                                importErrorUserEmployee.setRowNum(row);
+                                importErrorUserEmployee.setRowNum(entry.getKey());
                                 importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
                                 errorCount.incrementAndGet();
                                 importErrorUserEmployees.add(importErrorUserEmployee);
