@@ -158,14 +158,14 @@ public class BatchValidate {
             // 姓名不能为空
             if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("cname不能为空");
+                importErrorUserEmployee.setMessage("员工姓名不能为空");
                 errorCounts = errorCounts + 1;
                 importErrorUserEmployee.setRowNum(entry.getKey());
                 importErrorUserEmployees.add(importErrorUserEmployee);
                 continue;
             } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
                 importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("cname包含非法字符");
+                importErrorUserEmployee.setMessage("员工姓名包含非法字符");
                 errorCounts = errorCounts + 1;
                 importErrorUserEmployee.setRowNum(entry.getKey());
                 importErrorUserEmployees.add(importErrorUserEmployee);
@@ -214,7 +214,7 @@ public class BatchValidate {
                         repetitionCounts = repetitionCounts + 1;
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setRowNum(entry.getKey());
-                        importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
+                        importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
                         importErrorUserEmployees.add(importErrorUserEmployee);
                     }
                 }
