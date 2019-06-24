@@ -138,6 +138,7 @@ public class BatchValidate {
 
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
+        List<UserEmployeeDO> repeartCounts = new ArrayList<>();
         int repetitionCounts = 0;
         int errorCounts = 0;
 
@@ -150,7 +151,77 @@ public class BatchValidate {
         LocalDateTime beforeCirculation = LocalDateTime.now();
         logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
-        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
+        userEmployeeMap.forEach((row, userEmployeeDO) -> {
+            LocalDateTime startCirculation = LocalDateTime.now();
+            logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
+            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+            // 姓名不能为空
+            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("员工姓名不能为空");
+                importErrorUserEmployee.setRowNum(row);
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                return;
+            } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setMessage("员工姓名包含非法字符");
+                importErrorUserEmployee.setRowNum(row);
+                importErrorUserEmployees.add(importErrorUserEmployee);
+                return;
+            }
+
+            if (userEmployeeDO.getCompanyId() == 0) {
+                userEmployeeDO.setCompanyId(companyId);
+            }
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+                if (employeeCustomFiledValues.get(row) != null
+                        && employeeCustomFiledValues.get(row).size() > 0) {
+                    LocalDateTime startCheckOption = LocalDateTime.now();
+                    logger.info("BatchValidate importCheck startCheckOption:{}", startCheckOption.toString());
+                    boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                    if (!flag) {
+                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setMessage("自定义选项错误");
+                        importErrorUserEmployee.setRowNum(row);
+                        importErrorUserEmployees.add(importErrorUserEmployee);
+                        return;
+                    } else {
+                        JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                        userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
+                    }
+                    LocalDateTime endCheckOption = LocalDateTime.now();
+                    logger.info("UserHrAccountService importCheck afterCirculation:{}, Duration:{}", endCheckOption.toString(), Duration.between(startCheckOption, endCheckOption).toMillis());
+                }
+            }
+            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+                return;
+            }
+            logger.info("BatchValidate importCheck cname: {}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
+            if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
+                // 数据库的数据
+                for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
+                    // 非自定义员工,忽略检查
+                    if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
+                            || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
+                        continue;
+                    }
+                    // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
+                    if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
+                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
+                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                        importErrorUserEmployee.setRowNum(row);
+                        importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
+                        repeartCounts.add(userEmployeeDO);
+                        importErrorUserEmployees.add(importErrorUserEmployee);
+                    }
+                }
+            }
+            LocalDateTime endCirculation = LocalDateTime.now();
+            logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
+        });
+        errorCounts = importErrorUserEmployees.size();
+        /*for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
             LocalDateTime startCirculation = LocalDateTime.now();
             logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
             UserEmployeeDO userEmployeeDO = entry.getValue();
@@ -222,10 +293,10 @@ public class BatchValidate {
             }
             LocalDateTime endCirculation = LocalDateTime.now();
             logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
-        }
+        }*/
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCounts);
-        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
+        importUserEmployeeStatistic.setRepetitionCounts(repeartCounts.size());
         importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
         if (repetitionCounts == 0 && errorCounts == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
