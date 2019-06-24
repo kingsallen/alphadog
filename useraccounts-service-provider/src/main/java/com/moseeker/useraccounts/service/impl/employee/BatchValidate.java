@@ -145,9 +145,7 @@ public class BatchValidate {
          * 为校验自定义下拉项数据做准备
          */
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
-        logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues));
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
-        logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
 
         LocalDateTime beforeCirculation = LocalDateTime.now();
         logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
@@ -185,8 +183,6 @@ public class BatchValidate {
                     logger.info("BatchValidate importCheck startCheckOption:{}", startCheckOption.toString());
                     boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                     if (!flag) {
-                        logger.info("BatchValidate importCheck failed employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues.get(entry.getKey())));
-                        logger.info("BatchValidate importCheck failed dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("自定义选项错误");
                         errorCounts = errorCounts + 1;
@@ -195,7 +191,6 @@ public class BatchValidate {
                         continue;
                     } else {
                         JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
-                        logger.info("BatchValidate importCheck success customFieldValues:{}", customFieldValues);
                         userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
                     }
                     LocalDateTime endCheckOption = LocalDateTime.now();
