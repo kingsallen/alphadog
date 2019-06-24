@@ -180,7 +180,7 @@ public class BatchValidate {
         // 重复的数据
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
         int repetitionCounts = 0;
-        int errorCounts = 0;
+        AtomicInteger errorCounts = new AtomicInteger(0);
         // 提交上的数据
         List<Integer> employeeIdList;
         if (dbEmployeeDOList != null && dbEmployeeDOList.size() > 0) {
@@ -195,54 +195,30 @@ public class BatchValidate {
          * 为校验自定义下拉项数据做准备
          */
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
-        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
+        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues
+                = fetchOptionsValues(employeeCustomFiledValues, companyId);
+
+        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
 
         for (int i=0; i<userEmployeeMap.size(); i++) {
-            UserEmployeeDO userEmployeeDO = userEmployeeMap.get(i);
-            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-            if (userEmployeeDO.getId() <= 0) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("编号错误");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(i);
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            }
-            if (!employeeIdList.contains(userEmployeeDO.getId())) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("数据不允许修改");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(i);
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            }
-            if (userEmployeeDO.getActivation() != EmployeeActiveState.Actived.getState()
-                    && userEmployeeDO.getActivation() != EmployeeActiveState.Cancel.getState()) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("只允许修改成取消认证的状态");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(i);
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            }
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
-                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
-                if (employeeCustomFiledValues.get(i) != null
-                        && employeeCustomFiledValues.get(i).size() > 0) {
-                    boolean flag = checkOptions(employeeCustomFiledValues.get(i), dbCustomFieldValues);
-                    if (!flag) {
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setMessage("自定义选项错误");
-                        errorCounts = errorCounts + 1;
-                        importErrorUserEmployee.setRowNum(i);
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                        continue;
-                    }
-                }
+            int row = i;
+            try {
+                threadPool.startTast(() -> {
+                    checkUpdateEmployee(row, userEmployeeMap.get(row), errorCounts, employeeCustomFiledValues, dbCustomFieldValues,
+                            importErrorUserEmployees, employeeIdList);
+                    return true;
+                });
+            } finally {
+                countDownLatch.countDown();
             }
         }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw UserAccountException.IMPORT_DATA_CUSTOM_ERROR;
+        }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCounts);
+        importUserEmployeeStatistic.setErrorCounts(errorCounts.get());
         importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
 
         return importUserEmployeeStatistic;
@@ -353,6 +329,65 @@ public class BatchValidate {
             JSONArray jsonArray = convertNameToOptionId(map.get(i), dbCustomFieldValues);
             logger.info("BatchValidate convertToOptionId after convert:{}", jsonArray.toJSONString());
             userEmployeeDOS.get(i).setCustomFieldValues(jsonArray.toJSONString());
+        }
+    }
+
+    /**
+     * 检查批量修改的参数是否有问题
+     * @param row
+     * @param userEmployeeDO
+     * @param errorCounts
+     * @param employeeCustomFiledValues
+     * @param dbCustomFieldValues
+     * @param importErrorUserEmployees
+     * @param employeeIdList
+     */
+    private void checkUpdateEmployee(int row, UserEmployeeDO userEmployeeDO, AtomicInteger errorCounts,
+                                     ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
+                                     Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
+                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+                                     List<Integer> employeeIdList) {
+        ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+        if (userEmployeeDO.getId() <= 0) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("编号错误");
+            errorCounts.incrementAndGet();
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            return;
+        }
+        if (!employeeIdList.contains(userEmployeeDO.getId())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("数据不允许修改");
+            errorCounts.incrementAndGet();
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            return;
+        }
+        if (userEmployeeDO.getActivation() != EmployeeActiveState.Actived.getState()
+                && userEmployeeDO.getActivation() != EmployeeActiveState.Cancel.getState()) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("只允许修改成取消认证的状态");
+            errorCounts.incrementAndGet();
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            return;
+        }
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+            if (employeeCustomFiledValues.get(row) != null
+                    && employeeCustomFiledValues.get(row).size() > 0) {
+                boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                if (!flag) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setMessage("自定义选项错误");
+                    errorCounts.incrementAndGet();
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                    logger.info("BatchValidate updateEmployee updateCheck row:{} message:自定义选项错误", row);
+                    return;
+                }
+            }
         }
     }
 

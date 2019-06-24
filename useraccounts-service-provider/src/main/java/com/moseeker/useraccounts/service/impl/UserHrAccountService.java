@@ -3,7 +3,6 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
@@ -44,7 +43,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -1637,7 +1635,7 @@ public class UserHrAccountService {
      */
     private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
         LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1660,9 +1658,12 @@ public class UserHrAccountService {
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
         LocalDateTime beforeCheck = LocalDateTime.now();
-        logger.info("UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
-        return batchValidate.importCheck(userEmployeeMap,
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
+        LocalDateTime afterImportCheck = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter afterImportCheck:{}, duration importCheck:{}", afterImportCheck.toString(), Duration.between(beforeCheck, afterImportCheck).toMillis());
+        return importUserEmployeeStatistic;
     }
 
 
