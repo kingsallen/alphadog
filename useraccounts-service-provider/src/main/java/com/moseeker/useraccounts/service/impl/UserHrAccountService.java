@@ -1268,11 +1268,8 @@ public class UserHrAccountService {
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
-        logger.info("ES date:{}", response.getData());
-        logger.info("ES date:{}", response.getStatus());
         // ES取到数据
         if (response.getStatus() == 0) {
-            logger.info("ES date:{}", response.getData());
             EmployeeList rankObj = JSONObject.parseObject(response.getData(), EmployeeList.class);
             List<UserEmployeeDO> employees = rankObj.getData();
             if (employees != null && employees.size() > 0) {
@@ -1282,7 +1279,6 @@ public class UserHrAccountService {
                 // 封装查询条件
                 userEmployeeVOPageVO.setData(packageEmployeeVOs(employees, companyIds));
             }
-            logger.info("getEmployees employees:{}", JSONObject.toJSONString(employees));
         } else {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
