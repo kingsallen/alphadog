@@ -1282,6 +1282,7 @@ public class UserHrAccountService {
                 // 封装查询条件
                 userEmployeeVOPageVO.setData(packageEmployeeVOs(employees, companyIds));
             }
+            logger.info("getEmployees employees:{}", JSONObject.toJSONString(employees));
         } else {
             throw UserAccountException.SEARCH_ES_ERROR;
         }

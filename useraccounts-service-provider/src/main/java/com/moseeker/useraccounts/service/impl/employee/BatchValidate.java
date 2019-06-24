@@ -43,12 +43,6 @@ import java.util.stream.Collectors;
 public class BatchValidate {
 
     @Autowired
-    private HrCompanyDao hrCompanyDao;
-
-    @Autowired
-    private UserEmployeeDao userEmployeeDao;
-
-    @Autowired
     protected HrEmployeeCustomFieldsDao customFieldsDao;
 
     @Autowired
