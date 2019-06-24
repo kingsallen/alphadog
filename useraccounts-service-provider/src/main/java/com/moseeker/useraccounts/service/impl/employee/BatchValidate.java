@@ -162,7 +162,7 @@ public class BatchValidate {
                     if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
                         importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                         importErrorUserEmployee.setMessage("员工姓名不能为空");
-                        importErrorUserEmployee.setRowNum();
+                        importErrorUserEmployee.setRowNum(entry.getKey());
                         importErrorUserEmployees.add(importErrorUserEmployee);
                         repeatCounts.incrementAndGet();
                         return;
