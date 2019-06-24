@@ -150,7 +150,7 @@ public class BatchValidate {
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
 
         LocalDateTime beforeCirculation = LocalDateTime.now();
-        logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
+        logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
         CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
@@ -161,7 +161,12 @@ public class BatchValidate {
             });
         });
         try {
+            LocalDateTime beforeWait = LocalDateTime.now();
+            logger.info("UserHrAccountService importCheck beforeWait:{}, Duration:{}", beforeWait.toString(), Duration.between(beforeCirculation, beforeWait).toMillis());
             countDownLatch.await();
+            LocalDateTime afterCocurrent = LocalDateTime.now();
+            logger.info("UserHrAccountService importCheck afterCocurrent:{}, Duration:{}", afterCocurrent.toString(), Duration.between(beforeCirculation, afterCocurrent).toMillis());
+
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
