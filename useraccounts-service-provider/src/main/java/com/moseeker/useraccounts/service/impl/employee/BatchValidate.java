@@ -129,7 +129,7 @@ public class BatchValidate {
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
 
         LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("自定义认证导入 BatchValidate importCheck initDateTime:{}", initDateTime.toString());
+        logger.info("自定义认证导入1 BatchValidate importCheck initDateTime:{}", initDateTime.toString());
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
 
         // 重复的对象
@@ -144,10 +144,12 @@ public class BatchValidate {
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
 
         LocalDateTime beforeCirculation = LocalDateTime.now();
-        logger.info("自定义认证导入 UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
+        logger.info("自定义认证导入1 UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
         CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
+            LocalDateTime beforeCheckImportEmployee = LocalDateTime.now();
+            logger.info("自定义认证导入1 UserHrAccountService before checkImportEmployee :{}", beforeCheckImportEmployee.toString());
             threadPool.startTast(() -> {
                 try {
                     checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
@@ -155,15 +157,17 @@ public class BatchValidate {
                 } finally {
                     countDownLatch.countDown();
                 }
+                LocalDateTime afterCheckImportEmployee = LocalDateTime.now();
+                logger.info("自定义认证导入1 UserHrAccountService after checkImportEmployee :{}", afterCheckImportEmployee.toString());
                 return true;
             });
         });
         try {
             LocalDateTime beforeWait = LocalDateTime.now();
-            logger.info("自定义认证导入 UserHrAccountService importCheck beforeWait:{}, Duration:{}", beforeWait.toString(), Duration.between(beforeCirculation, beforeWait).toMillis());
+            logger.info("自定义认证导入1 UserHrAccountService importCheck beforeWait:{}, Duration:{}", beforeWait.toString(), Duration.between(beforeCirculation, beforeWait).toMillis());
             countDownLatch.await();
             LocalDateTime afterCocurrent = LocalDateTime.now();
-            logger.info("自定义认证导入 UserHrAccountService importCheck afterCocurrent:{}, Duration:{}", afterCocurrent.toString(), Duration.between(beforeCirculation, afterCocurrent).toMillis());
+            logger.info("自定义认证导入1 UserHrAccountService importCheck afterCocurrent:{}, Duration:{}", afterCocurrent.toString(), Duration.between(beforeCirculation, afterCocurrent).toMillis());
 
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
@@ -333,7 +337,7 @@ public class BatchValidate {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
         LocalDateTime afterCirculation = LocalDateTime.now();
-        logger.info("自定义认证导入 UserHrAccountService importCheck afterCirculation:{}, Duration:{}", afterCirculation.toString(), Duration.between(beforeCirculation, afterCirculation).toMillis());
+        logger.info("自定义认证导入1 UserHrAccountService importCheck afterCirculation:{}, Duration:{}", afterCirculation.toString(), Duration.between(beforeCirculation, afterCirculation).toMillis());
 
         return importUserEmployeeStatistic;
     }
@@ -541,7 +545,7 @@ public class BatchValidate {
                                      Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
                                      List<UserEmployeeDO> dbEmployeeDOList) {
         LocalDateTime startCirculation = LocalDateTime.now();
-        logger.info("自定义认证导入 BatchValidate importCheck startCirculation:{}", startCirculation.toString());
+        logger.info("自定义认证导入1 BatchValidate checkImportEmployee startCirculation:{}", startCirculation.toString());
         ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
         // 姓名不能为空
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
@@ -568,7 +572,7 @@ public class BatchValidate {
             if (employeeCustomFiledValues.get(row) != null
                     && employeeCustomFiledValues.get(row).size() > 0) {
                 LocalDateTime startCheckOption = LocalDateTime.now();
-                logger.info("自定义认证导入 BatchValidate importCheck startCheckOption:{}", startCheckOption.toString());
+                logger.info("自定义认证导入1 BatchValidate checkImportEmployee startCheckOption:{}", startCheckOption.toString());
                 boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
                 if (!flag) {
                     importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
@@ -582,14 +586,14 @@ public class BatchValidate {
                     userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
                 }
                 LocalDateTime endCheckOption = LocalDateTime.now();
-                logger.info("自定义认证导入 UserHrAccountService importCheck afterCirculation:{}, Duration:{}", endCheckOption.toString(), Duration.between(startCheckOption, endCheckOption).toMillis());
+                logger.info("自定义认证导入1 UserHrAccountService checkImportEmployee afterCirculation:{}, Duration:{}", endCheckOption.toString(), Duration.between(startCheckOption, endCheckOption).toMillis());
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
             return;
         }
         LocalDateTime errorCheck = LocalDateTime.now();
-        logger.info("自定义认证导入 BatchValidate importCheck start errorCheck:{}", errorCheck.toString());
+        logger.info("自定义认证导入1 BatchValidate checkImportEmployee start errorCheck:{}", errorCheck.toString());
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
             // 数据库的数据
             for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
@@ -611,8 +615,8 @@ public class BatchValidate {
         }
         LocalDateTime endCirculation = LocalDateTime.now();
 
-        logger.info("自定义认证导入 UserHrAccountService importCheck afterErrorCheck:{}, Duration:{}", endCirculation.toString(), Duration.between(errorCheck, endCirculation).toMillis());
-        logger.info("自定义认证导入 UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
+        logger.info("自定义认证导入1 UserHrAccountService checkImportEmployee afterErrorCheck:{}, Duration:{}", endCirculation.toString(), Duration.between(errorCheck, endCirculation).toMillis());
+        logger.info("自定义认证导入1 UserHrAccountService checkImportEmployee beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
     }
 
     /**

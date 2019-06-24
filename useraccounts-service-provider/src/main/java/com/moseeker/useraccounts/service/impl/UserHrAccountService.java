@@ -1639,7 +1639,7 @@ public class UserHrAccountService {
      */
     private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
         LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("自定义认证导入 UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
+        logger.info("自定义认证导入1 UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1662,7 +1662,7 @@ public class UserHrAccountService {
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
         LocalDateTime beforeCheck = LocalDateTime.now();
-        logger.info("自定义认证导入 UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
+        logger.info("自定义认证导入1 UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
         return batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
     }
