@@ -1,6 +1,8 @@
 package com.moseeker.common.thread;
 
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+
 import java.util.concurrent.*;
 
 /**
@@ -9,8 +11,14 @@ import java.util.concurrent.*;
  */
 public enum ThreadPool {
 
+    /**
+     * 线程池实例
+     */
     Instance;
 
+    /**
+     * JDK提供的线程池
+     */
     ExecutorService service;
 
     private ThreadPool() {
@@ -60,9 +68,13 @@ public enum ThreadPool {
     }
 
     private void init() {
-        service = new ThreadPoolExecutor(4, 1000,
-                60L, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>());
+        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("thread-pool").build();
+        service = new ThreadPoolExecutor(3,
+                1000,
+                60L,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<>(20000), threadFactory,
+                new ThreadPoolExecutor.AbortPolicy());
     }
 
 }
