@@ -134,8 +134,8 @@ public class BatchValidate {
 
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
-        AtomicInteger repeatCounts = new AtomicInteger(0);
-        AtomicInteger errorCount = new AtomicInteger(0);
+        int errorCounts = 0;
+        int repetitionCounts = 0;
 
         /**
          * 为校验自定义下拉项数据做准备
@@ -146,6 +146,9 @@ public class BatchValidate {
         LocalDateTime beforeCirculation = LocalDateTime.now();
         logger.info("自定义认证导入1 UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
+        /*
+        AtomicInteger repeatCounts = new AtomicInteger(0);
+        AtomicInteger errorCount = new AtomicInteger(0);
         CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
             LocalDateTime beforeCheckImportEmployee = LocalDateTime.now();
@@ -171,7 +174,7 @@ public class BatchValidate {
 
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
-        }
+        }*/
 
         /*userEmployeeMap.entrySet()
                 .parallelStream()
@@ -254,7 +257,7 @@ public class BatchValidate {
         /*userEmployeeMap.forEach((row, userEmployeeDO) -> {
 
         });*/
-        /*for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
+        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
             LocalDateTime startCirculation = LocalDateTime.now();
             logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
             UserEmployeeDO userEmployeeDO = entry.getValue();
@@ -326,12 +329,12 @@ public class BatchValidate {
             }
             LocalDateTime endCirculation = LocalDateTime.now();
             logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
-        }*/
+        }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCount.get());
-        importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
+        importUserEmployeeStatistic.setErrorCounts(errorCounts);
+        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
         importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
-        if (errorCount.get() == 0 && repeatCounts.get() == 0) {
+        if (errorCounts == 0 && repetitionCounts == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
