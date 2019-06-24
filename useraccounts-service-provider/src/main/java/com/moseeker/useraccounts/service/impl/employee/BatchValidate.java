@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -151,7 +152,21 @@ public class BatchValidate {
         LocalDateTime beforeCirculation = LocalDateTime.now();
         logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
-        userEmployeeMap.entrySet()
+        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
+        userEmployeeMap.forEach((row, userEmployeeDO) -> {
+            threadPool.startTast(() -> {
+                checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
+                        employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList, countDownLatch);
+                return true;
+            });
+        });
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        /*userEmployeeMap.entrySet()
                 .parallelStream()
                 .forEach(entry -> {
                     LocalDateTime startCirculation = LocalDateTime.now();
@@ -228,7 +243,7 @@ public class BatchValidate {
 
                     logger.info("UserHrAccountService importCheck afterErrorCheck:{}, Duration:{}", endCirculation.toString(), Duration.between(errorCheck, endCirculation).toMillis());
                     logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
-                });
+                });*/
         /*userEmployeeMap.forEach((row, userEmployeeDO) -> {
 
         });*/
@@ -514,6 +529,92 @@ public class BatchValidate {
             logger.info("BatchValidate convertToOptionId after convert:{}", jsonArray.toJSONString());
             userEmployeeDOS.get(i).setCustomFieldValues(jsonArray.toJSONString());
         }
+    }
+
+    private void checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
+                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+                                     AtomicInteger repeatCounts, AtomicInteger errorCounts,
+                                     ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
+                                     Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
+                                     List<UserEmployeeDO> dbEmployeeDOList, CountDownLatch countDownLatch) {
+        LocalDateTime startCirculation = LocalDateTime.now();
+        logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
+        ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+        // 姓名不能为空
+        if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("员工姓名不能为空");
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            errorCounts.incrementAndGet();
+            countDownLatch.countDown();
+            return;
+        } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("员工姓名包含非法字符");
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            errorCounts.incrementAndGet();
+            countDownLatch.countDown();
+            return;
+        }
+
+        if (userEmployeeDO.getCompanyId() == 0) {
+            userEmployeeDO.setCompanyId(companyId);
+        }
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+            if (employeeCustomFiledValues.get(row) != null
+                    && employeeCustomFiledValues.get(row).size() > 0) {
+                LocalDateTime startCheckOption = LocalDateTime.now();
+                logger.info("BatchValidate importCheck startCheckOption:{}", startCheckOption.toString());
+                boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                if (!flag) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setMessage("自定义选项错误");
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                    errorCounts.incrementAndGet();
+                    countDownLatch.countDown();
+                    return;
+                } else {
+                    JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                    userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
+                }
+                LocalDateTime endCheckOption = LocalDateTime.now();
+                logger.info("UserHrAccountService importCheck afterCirculation:{}, Duration:{}", endCheckOption.toString(), Duration.between(startCheckOption, endCheckOption).toMillis());
+            }
+        }
+        if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+            countDownLatch.countDown();
+            return;
+        }
+        LocalDateTime errorCheck = LocalDateTime.now();
+        logger.info("BatchValidate importCheck start errorCheck:{}", errorCheck.toString());
+        if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
+            // 数据库的数据
+            for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
+                // 非自定义员工,忽略检查
+                if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
+                        || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
+                    continue;
+                }
+                // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
+                if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
+                        && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
+                    repeatCounts.incrementAndGet();
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                }
+            }
+        }
+        LocalDateTime endCirculation = LocalDateTime.now();
+
+        countDownLatch.countDown();
+        logger.info("UserHrAccountService importCheck afterErrorCheck:{}, Duration:{}", endCirculation.toString(), Duration.between(errorCheck, endCirculation).toMillis());
+        logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
     }
 
     /**
