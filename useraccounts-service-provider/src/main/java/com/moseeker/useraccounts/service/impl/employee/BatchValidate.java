@@ -153,6 +153,8 @@ public class BatchValidate {
         logger.info("UserHrAccountService repetitionFilter beforeCirculation:{}, Duration:{}", beforeCirculation.toString(), Duration.between(initDateTime, beforeCirculation).toMillis());
         // 提交上的数据
         for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
+            LocalDateTime startCirculation = LocalDateTime.now();
+            logger.info("BatchValidate importCheck startCirculation:{}", startCirculation.toString());
             UserEmployeeDO userEmployeeDO = entry.getValue();
             ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
             // 姓名不能为空
@@ -179,6 +181,8 @@ public class BatchValidate {
                     && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
                 if (employeeCustomFiledValues.get(entry.getKey()) != null
                         && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
+                    LocalDateTime startCheckOption = LocalDateTime.now();
+                    logger.info("BatchValidate importCheck startCheckOption:{}", startCheckOption.toString());
                     boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
                     if (!flag) {
                         logger.info("BatchValidate importCheck failed employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues.get(entry.getKey())));
@@ -194,6 +198,8 @@ public class BatchValidate {
                         logger.info("BatchValidate importCheck success customFieldValues:{}", customFieldValues);
                         userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
                     }
+                    LocalDateTime endCheckOption = LocalDateTime.now();
+                    logger.info("UserHrAccountService importCheck afterCirculation:{}, Duration:{}", endCheckOption.toString(), Duration.between(startCheckOption, endCheckOption).toMillis());
                 }
             }
             if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
@@ -219,6 +225,8 @@ public class BatchValidate {
                     }
                 }
             }
+            LocalDateTime endCirculation = LocalDateTime.now();
+            logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
         }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCounts);
@@ -230,7 +238,7 @@ public class BatchValidate {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
         LocalDateTime afterCirculation = LocalDateTime.now();
-        logger.info("UserHrAccountService repetitionFilter afterCirculation:{}, Duration:{}", afterCirculation.toString(), Duration.between(beforeCirculation, afterCirculation).toMillis());
+        logger.info("UserHrAccountService importCheck afterCirculation:{}, Duration:{}", afterCirculation.toString(), Duration.between(beforeCirculation, afterCirculation).toMillis());
 
         return importUserEmployeeStatistic;
     }
