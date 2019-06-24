@@ -675,10 +675,10 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
         if (userEmployeeDOMap.size() > 4000) {
-            logger.info("UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 start");
+            logger.info("自定义认证导入 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 start");
         }
         LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("UserHrAccountServiceImpl checkBatchInsert initDateTime:{}", initDateTime.toString());
+        logger.info("自定义认证导入 UserHrAccountServiceImpl checkBatchInsert initDateTime:{}", initDateTime.toString());
         try {
             return service.checkBatchInsert(userEmployeeDOMap, companyId);
         } catch (CommonException e) {
@@ -688,9 +688,9 @@ public class UserHrAccountServiceImpl implements Iface {
             throw new SysBIZException();
         } finally {
             LocalDateTime lastDateTime = LocalDateTime.now();
-            logger.info("UserHrAccountServiceImpl checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
+            logger.info("自定义认证导入 UserHrAccountServiceImpl checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
             if (userEmployeeDOMap.size() > 4000) {
-                logger.info("UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 end");
+                logger.info("自定义认证导入 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 end");
             }
         }
     }
