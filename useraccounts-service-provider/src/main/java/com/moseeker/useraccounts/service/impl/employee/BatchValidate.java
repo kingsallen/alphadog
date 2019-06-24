@@ -200,7 +200,8 @@ public class BatchValidate {
             if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
                 return;
             }
-            logger.info("BatchValidate importCheck cname: {}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
+            LocalDateTime errorCheck = LocalDateTime.now();
+            logger.info("BatchValidate importCheck start errorCheck:{}", errorCheck.toString());
             if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
                 // 数据库的数据
                 for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
@@ -221,6 +222,8 @@ public class BatchValidate {
                 }
             }
             LocalDateTime endCirculation = LocalDateTime.now();
+
+            logger.info("UserHrAccountService importCheck afterErrorCheck:{}, Duration:{}", endCirculation.toString(), Duration.between(errorCheck, endCirculation).toMillis());
             logger.info("UserHrAccountService importCheck beforeCirculation:{}, Duration:{}", endCirculation.toString(), Duration.between(startCirculation, endCirculation).toMillis());
         });
         /*for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
