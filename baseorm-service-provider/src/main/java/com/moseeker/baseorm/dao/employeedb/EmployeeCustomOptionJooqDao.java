@@ -31,10 +31,6 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
         super(EMPLOYEE_OPTION_VALUE, EmployeeOptionValue.class);
     }
 
-    public EmployeeCustomOptionJooqDao(TableImpl<EmployeeOptionValueRecord> table, Class<EmployeeOptionValue> employeeOptionValueClass) {
-        super(table, employeeOptionValueClass);
-    }
-
     public int count(Integer fieldId, List<Integer> optionIdList) {
         if (fieldId == null || fieldId <= 0 || optionIdList == null || optionIdList.size() == 0) {
             return 0;
