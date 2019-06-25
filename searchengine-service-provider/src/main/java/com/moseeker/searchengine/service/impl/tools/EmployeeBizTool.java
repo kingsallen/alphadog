@@ -91,7 +91,7 @@ public class EmployeeBizTool {
                     }},
                     keyword,
                     defaultquery);*/
-            searchUtil.matchPhrasePrefixQueryV2(new ArrayList<String>(){{
+            searchUtil.matchPhrasePrefixQuery(new ArrayList<String>(){{
                                                  add("search_data.cname");
                                              }},
                     keyword,
