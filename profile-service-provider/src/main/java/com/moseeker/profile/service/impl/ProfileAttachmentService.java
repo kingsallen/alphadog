@@ -231,10 +231,11 @@ public class ProfileAttachmentService {
         if(profileDO==null){
             return ResponseUtils.fail(1,"简历不存在");
         }
-        int completeness=profileDO.getCompleteness();
+        //删除附件时，去除简历完整度小于70的校验
+        /*int completeness=profileDO.getCompleteness();
         if(completeness<70){
             return ResponseUtils.fail(1,"简历完整度小于70");
-        }
+        }*/
         int result=dao.delAttachmentsByProfileId(profileId);
         logger.info("del attachments  result=============="+result);
         if(result==0){

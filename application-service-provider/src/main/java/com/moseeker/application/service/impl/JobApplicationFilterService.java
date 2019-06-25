@@ -218,9 +218,9 @@ public class JobApplicationFilterService {
         List<Integer> applicaitionIds = new ArrayList<>();
         applicaitionIds.add(application_id);
         Response res = new Response();
-        if(type == 1){
-            res = talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId(), Constant.IS_NOT_OPEN_GRPD);
-        }else if(type == 2){
+        if(type == 1||type == 2){
+//            res = talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId(), Constant.IS_NOT_OPEN_GRPD);
+//        }else if(type == 2){
             talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId(),Constant.IS_NOT_OPEN_GRPD);
             res = talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds,Constant.IS_NOT_OPEN_GRPD);
         }else if(type == 3){

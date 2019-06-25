@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -22,6 +23,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -73,6 +75,9 @@ public abstract class EmployeeBinder {
     protected UserEmployeeDao employeeDao;
 
     @Autowired
+    protected HrCompanyDao companyDao;
+
+    @Autowired
     protected UserWxEntity wxEntity;
 
     @Autowired
@@ -104,6 +109,9 @@ public abstract class EmployeeBinder {
 
     @Autowired
     KafkaSender kafkaSender;
+
+    @Autowired
+    SensorSend sensorSend;
 
     @Autowired
     private Neo4jService neo4jService;
@@ -344,6 +352,15 @@ public abstract class EmployeeBinder {
         useremployee.setId(employeeId);
         response.setEmployeeId(employeeId);
         this.updateEsUsersAndProfile(useremployee.getSysuserId());
+
+        //神策埋点加入 pro
+        HrCompanyDO companyDO = companyDao.getCompanyById(useremployee.getCompanyId());
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("companyName", companyDO.getName());
+        properties.put("companyId", useremployee.getCompanyId());
+        properties.put("isEmployee", 1);
+        sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
+
         return response;
     }
 
