@@ -17,4 +17,17 @@ public class FormCheckTest {
         assertEquals(true, FormCheck.isEmail(email1));
     }
 
+    @Test
+    public void testIsChineseAndCharacter() throws Exception {
+        String str = "测试11";
+
+        String str1 = "wjf wjf";
+
+        String str2 = "测试华为";
+
+        assertEquals(false, FormCheck.isCharacter(str));
+        assertEquals(true, FormCheck.isCharacter(str1));
+        assertEquals(true, FormCheck.isCharacter(str2));
+
+    }
 }

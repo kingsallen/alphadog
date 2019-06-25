@@ -24,6 +24,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.time.LocalDate;
@@ -100,100 +101,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
     @Override
     protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException, InvalidArgumentException {
-        Result response = new Result();
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        query.clear();
-        query.where("id", String.valueOf(userEmployee.getCompanyId()));
-        HrCompanyDO companyDO = companyDao.getData(query.buildQuery());
-        query.clear();
-        query.where("company_id", String.valueOf(userEmployee.getCompanyId()));
-        HrWxWechatDO hrwechatResult = hrWxWechatDao.getData(query.buildQuery());
-        HrCompanyConfDO hrCompanyConfDO = new HrCompanyConfDO();
-        hrCompanyConfDO = hrCompanyConfDao.getData(query.buildQuery());
-        if (companyDO != null && companyDO.getId() != 0 && hrwechatResult != null && hrwechatResult.getId() != 0) {
-            // 激活码(MD5)： userId_companyId_groupId
-            String activationCode = MD5Util.encryptSHA(userEmployee.getId()+"-"+userEmployee.getEmail()+"-"+System.currentTimeMillis());
-            //MD5Util.encryptSHA(bindingParams.getUserId()+"_"+bindingParams.getCompanyId()+"_"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()));
-            Map<String, String> mesBody = new HashMap<>();
-            mesBody.put("#employee_slug#", org.apache.commons.lang.StringUtils.defaultIfEmpty(hrCompanyConfDO.getEmployeeSlug(), "员工"));
-            mesBody.put("#company_logo#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
-            mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployee.getCname(), userAccountEntity.genUsername(userEmployee.getSysuserId())));
-            mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
-            mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getName(), ""));
-            mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getQrcode(), ""));
-            mesBody.put("#date_today#",  LocalDate.now().toString());
-            String url = ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrwechatResult.getSignature());
-            if(bindEmailSource==EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
-                url = url.concat("&bind_email_source=").concat(EmployeeOperationEntrance.IMEMPLOYEE.getKey()+"");
-            }
-            mesBody.put("#auth_url#", url);
-            // 发件人信息
-            ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
-            String senderName = propertiesUtil.get("email.verify.sendName", String.class);
-            String subject = "请验证邮箱完成员工认证-".concat(org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
-            String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), "");
-            // 发送认证邮件
-            Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, userEmployee.getEmail(), subject, senderName, senderDisplay);
-            // 邮件发送成功
-            if (mailResponse.getStatus() == 0) {
-                userEmployee.setActivationCode(activationCode);
-                // 集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
-                String authInfoKey = employeeEntity.getAuthInfoKey(userEmployee.getSysuserId(), userEmployee.getCompanyId());
-                String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
-                String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
-                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
-                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , BeanUtils.convertStructToJSON(userEmployee));
-                log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, activationCode:{}, result: {}", userEmployee.getId(), activationCode , resultACode);
-
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("companyName", companyDO.getName());
-                jsonObject.put("companyAbbreviation", companyDO.getAbbreviation());
-                jsonObject.put("companyId", companyDO.getId());
-                jsonObject.put("userId", userEmployee.getSysuserId());
-
-                //延迟一小时通知
-                long oneHour =  60*60*1000;
-                //long oneHour =  5*1000;
-                redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
-                        KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(),
-                        oneHour+System.currentTimeMillis(), jsonObject.toJSONString());
-
-                response.setSuccess(true);
-                response.setMessage("发送激活邮件成功");
-                String distinctId =String.valueOf(userEmployee.getSysuserId());
-
-
-                //神策埋点加入 pro
-
-                Map<String, Object> properties = new HashMap<>();
-                properties.put("companyName", companyDO.getName());
-                properties.put("companyId", companyDO.getId());
-              //  properties.put("userId", userEmployee.getSysuserId());
-                properties.put("isEmployee", userEmployee.isSetActivation());
-                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
-            } else {
-                response.setMessage("发送激活邮件失败");
-
-                String distinctId =String.valueOf(userEmployee.getSysuserId());
-
-
-                //神策埋点加入 pro
-
-                Map<String, Object> properties = new HashMap<>();
-                properties.put("companyName", companyDO.getName());
-                properties.put("companyId", companyDO.getId());
-                //  properties.put("userId", userEmployee.getSysuserId());
-                properties.put("isEmployee", userEmployee.isSetActivation());
-                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
-
-
-            }
-        }
-        log.info("BindingParams response: {}", response);
-        return response;
-    }
-
-    public static void main(String[] args) {
+        return sendMail(userEmployee, bindEmailSource);
     }
 
     public Result emailActivation(String activationCode,int bindEmailSource) throws TException, InvalidArgumentException {
@@ -240,6 +148,132 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             }
         }
         log.info("emailActivation activationCode:{}, redisVal:{}, response: {}",activationCode , value, response);
+        return response;
+    }
+
+    /**
+     * 重新发激活邮件
+     * @param userId 用户编号
+     * @param companyId 公司编号
+     * @throws Exception 业务异常
+     */
+    public void retrySendVerificationMail(int userId, int companyId, int source) throws Exception {
+        log.info("EmployeeBindByEmail retrySendVerificationMail userId:{}, companyId:{}, source:{}", userId, companyId, source);
+        String authInfoKey = employeeEntity.getAuthInfoKey(userId, companyId);
+        log.info("EmployeeBindByEmail retrySendVerificationMail authInfoKey:{}", authInfoKey);
+        String employeeValue = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey);
+        log.info("EmployeeBindByEmail retrySendVerificationMail employeeValue:{}", employeeValue);
+        if (org.apache.commons.lang3.StringUtils.isBlank(employeeValue)) {
+            throw UserAccountException.EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED;
+        }
+        UserEmployeeDO employee = JSONObject.parseObject(employeeValue, UserEmployeeDO.class);
+        log.info("EmployeeBindByEmail retrySendVerificationMail authInfoKey:{}", JSONObject.toJSONString(employee));
+        sendMail(employee, source);
+
+    }
+
+    /**
+     * 发送员工认证邮箱确认邮件
+     * @param userEmployee 员工信息
+     * @param bindEmailSource 来源
+     * @return 执行结果
+     * @throws TException
+     */
+    private Result sendMail(UserEmployeeDO userEmployee,int bindEmailSource) throws TException {
+        Result response = new Result();
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.clear();
+        query.where("id", String.valueOf(userEmployee.getCompanyId()));
+        HrCompanyDO companyDO = companyDao.getData(query.buildQuery());
+        query.clear();
+        query.where("company_id", String.valueOf(userEmployee.getCompanyId()));
+        HrWxWechatDO hrwechatResult = hrWxWechatDao.getData(query.buildQuery());
+        HrCompanyConfDO hrCompanyConfDO = new HrCompanyConfDO();
+        hrCompanyConfDO = hrCompanyConfDao.getData(query.buildQuery());
+        log.info("EmployeeBindByEmail sendMail hrCompanyConfDO:{}", JSONObject.toJSONString(hrCompanyConfDO));
+        log.info("EmployeeBindByEmail sendMail hrwechatResult:{}", JSONObject.toJSONString(hrwechatResult));
+        if (companyDO != null && companyDO.getId() != 0 && hrwechatResult != null && hrwechatResult.getId() != 0) {
+            // 激活码(MD5)： userId_companyId_groupId
+            String activationCode = MD5Util.encryptSHA(userEmployee.getId()+"-"+userEmployee.getEmail()+"-"+System.currentTimeMillis());
+            //MD5Util.encryptSHA(bindingParams.getUserId()+"_"+bindingParams.getCompanyId()+"_"+employeeEntity.getGroupIdByCompanyId(bindingParams.getCompanyId()));
+            Map<String, String> mesBody = new HashMap<>();
+            mesBody.put("#employee_slug#", org.apache.commons.lang.StringUtils.defaultIfEmpty(hrCompanyConfDO.getEmployeeSlug(), "员工"));
+            mesBody.put("#company_logo#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
+            mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(userEmployee.getCname(), userAccountEntity.genUsername(userEmployee.getSysuserId())));
+            mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
+            mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getName(), ""));
+            mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getQrcode(), ""));
+            mesBody.put("#date_today#",  LocalDate.now().toString());
+            String url = ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrwechatResult.getSignature());
+            if(bindEmailSource==EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
+                url = url.concat("&bind_email_source=").concat(EmployeeOperationEntrance.IMEMPLOYEE.getKey()+"");
+            }
+            mesBody.put("#auth_url#", url);
+            // 发件人信息
+            ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
+            String senderName = propertiesUtil.get("email.verify.sendName", String.class);
+            String subject = "请验证邮箱完成员工认证-".concat(org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
+            String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), "");
+            // 发送认证邮件
+            Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, userEmployee.getEmail(), subject, senderName, senderDisplay);
+            log.info("EmployeeBindByEmail sendMail mailResponse:{}", JSONObject.toJSONString(mailResponse));
+            // 邮件发送成功
+            if (mailResponse.getStatus() == 0) {
+                userEmployee.setActivationCode(activationCode);
+                log.info("EmployeeBindByEmail sendMail activationCode:{}", activationCode);
+                // 集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
+                String authInfoKey = employeeEntity.getAuthInfoKey(userEmployee.getSysuserId(), userEmployee.getCompanyId());
+                String resultAINFO = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, authInfoKey, BeanUtils.convertStructToJSON(userEmployee));
+                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
+                String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
+                log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , BeanUtils.convertStructToJSON(userEmployee));
+                log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, activationCode:{}, result: {}", userEmployee.getId(), activationCode , resultACode);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("companyName", companyDO.getName());
+                jsonObject.put("companyAbbreviation", companyDO.getAbbreviation());
+                jsonObject.put("companyId", companyDO.getId());
+                jsonObject.put("userId", userEmployee.getSysuserId());
+
+                //延迟一小时通知
+                long oneHour =  60*60*1000;
+                //long oneHour =  5*1000;
+                redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
+                        KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(),
+                        oneHour+System.currentTimeMillis(), jsonObject.toJSONString());
+
+                response.setSuccess(true);
+                response.setMessage("发送激活邮件成功");
+                String distinctId =String.valueOf(userEmployee.getSysuserId());
+
+
+                //神策埋点加入 pro
+
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("companyName", companyDO.getName());
+                properties.put("companyId", companyDO.getId());
+                //  properties.put("userId", userEmployee.getSysuserId());
+                properties.put("isEmployee", userEmployee.isSetActivation());
+                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
+            } else {
+                response.setMessage("发送激活邮件失败");
+
+                String distinctId =String.valueOf(userEmployee.getSysuserId());
+
+
+                //神策埋点加入 pro
+
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("companyName", companyDO.getName());
+                properties.put("companyId", companyDO.getId());
+                //  properties.put("userId", userEmployee.getSysuserId());
+                properties.put("isEmployee", userEmployee.isSetActivation());
+                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
+
+
+            }
+        }
+        log.info("BindingParams response: {}", response);
         return response;
     }
 }

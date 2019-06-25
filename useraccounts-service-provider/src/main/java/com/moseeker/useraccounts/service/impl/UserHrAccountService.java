@@ -43,7 +43,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -92,6 +91,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1266,11 +1266,8 @@ public class UserHrAccountService {
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
-        logger.info("ES date:{}", response.getData());
-        logger.info("ES date:{}", response.getStatus());
         // ES取到数据
         if (response.getStatus() == 0) {
-            logger.info("ES date:{}", response.getData());
             EmployeeList rankObj = JSONObject.parseObject(response.getData(), EmployeeList.class);
             List<UserEmployeeDO> employees = rankObj.getData();
             if (employees != null && employees.size() > 0) {
@@ -1379,6 +1376,8 @@ public class UserHrAccountService {
     @Transactional
     public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
             fileName, Integer type, Integer hraccountId) throws CommonException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport initDateTime:{}", initDateTime.toString());
         Response response = new Response();
         logger.info("开始导入员工信息");
 
@@ -1394,8 +1393,12 @@ public class UserHrAccountService {
             throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
         }
 
+        LocalDateTime beforeRepetitionFilter = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport beforeRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(initDateTime, beforeRepetitionFilter).toMillis());
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
+        LocalDateTime afterRepetitionFilter = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(beforeRepetitionFilter, afterRepetitionFilter).toMillis());
 
         //校验自定义信息填写是否正确
         if (importUserEmployeeStatistic != null && !importUserEmployeeStatistic.insertAccept) {
@@ -1421,6 +1424,9 @@ public class UserHrAccountService {
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
         List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
         if (!StringUtils.isEmptyList(userEmployeeDOS)) {
+            batchValidate.convertToOptionId(userEmployeeDOS, companyId);
+            logger.info("employeeImport userEmployeeDOS: {}", JSONObject.toJSONString(userEmployeeDOS));
+
             // 查询出需要更新的数据
             for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
                 for (UserEmployeeDO user : userEmployeeDOS) {
@@ -1447,6 +1453,10 @@ public class UserHrAccountService {
 
         }
 
+        LocalDateTime afterUpdateEmployee = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterUpdateEmployee:{}, Duration:{}", afterRepetitionFilter.toString(), Duration.between(beforeRepetitionFilter, afterUpdateEmployee).toMillis());
+
+
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
             hrImporterMonitorDO.setSys(2);
@@ -1464,6 +1474,9 @@ public class UserHrAccountService {
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
+        LocalDateTime afterLog = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterLog:{}, Duration:{}", afterLog.toString(), Duration.between(afterUpdateEmployee, afterLog).toMillis());
+
         return response;
     }
 
@@ -1520,6 +1533,8 @@ public class UserHrAccountService {
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
+
+        batchValidate.convertToOptionId(userEmployeeMap, companyId);
 
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
@@ -1621,6 +1636,8 @@ public class UserHrAccountService {
      * @param companyId
      */
     private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1642,8 +1659,13 @@ public class UserHrAccountService {
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
-        return batchValidate.importCheck(userEmployeeMap,
+        LocalDateTime beforeCheck = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
+        LocalDateTime afterImportCheck = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter afterImportCheck:{}, duration importCheck:{}", afterImportCheck.toString(), Duration.between(beforeCheck, afterImportCheck).toMillis());
+        return importUserEmployeeStatistic;
     }
 
 
@@ -1685,14 +1707,6 @@ public class UserHrAccountService {
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
             userEmployeeDetailVO.setCustomFieldValues(list);
-            List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-            if (customFieldValues != null && customFieldValues.size() > 0) {
-                List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
-                userEmployeeDetailVO.setCustomFieldValues(jsonArray);
-            } else {
-                userEmployeeDetailVO.setCustomFieldValues(new ArrayList<>(0));
-            }
-
         }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
@@ -1781,23 +1795,23 @@ public class UserHrAccountService {
         }
 
         try {
-            UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            if (cname != null) {
+            //先查询原数据，在手机号，姓名没有传值的时候，不予更新
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
+            if (StringUtils.isNotNullOrEmpty(cname)) {
                 userEmployeeDO.setCname(cname);
             }
-            if (mobile != null) {
+            if (StringUtils.isNotNullOrEmpty(mobile)) {
                 userEmployeeDO.setMobile(mobile);
             }
-            if (customField != null) {
+            if (StringUtils.isNotNullOrEmpty(customField)) {
                 userEmployeeDO.setCustomField(customField);
             }
-            if (email != null) {
+            if (StringUtils.isNotNullOrEmpty(email)) {
                 userEmployeeDO.setEmail(email);
             }
-            if (customFieldValues != null) {
+            if (StringUtils.isNotNullOrEmpty(customFieldValues)) {
                 userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
-            userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
@@ -2199,6 +2213,12 @@ public class UserHrAccountService {
                 if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
                     userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
+                if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getUnbindTime())) {
+                    userEmployeeVO.setUnbindTime(new DateTime(userEmployeeDO.getUnbindTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
+                if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getImportTime())) {
+                    userEmployeeVO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
                 if(userEmployeeVO.getAward()<0){
                     userEmployeeVO.setAward(0);
                 }
@@ -2206,7 +2226,9 @@ public class UserHrAccountService {
 
                 if (userEmployeeDO.getCustomFieldValues() != null) {
 
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
                     List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues list:{}", JSONObject.toJSONString(list));
                     userEmployeeVO.setCustomFieldValues(list);
 
                     List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());

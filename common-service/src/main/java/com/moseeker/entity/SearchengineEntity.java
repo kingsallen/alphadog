@@ -184,12 +184,10 @@ public class SearchengineEntity {
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
 
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
-                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
-                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                        jsonObject.put("unbind_time", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf));
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
-                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
-                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                        jsonObject.put("import_time", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf));
                     }
 
                     JSONObject searchData = new JSONObject();
@@ -278,13 +276,6 @@ public class SearchengineEntity {
     }
 
 
-    /**
-     * 全量更新员工积分
-     *
-     * @param employeeIds
-     * @return
-     * @throws TException
-     */
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
@@ -365,17 +356,10 @@ public class SearchengineEntity {
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
-                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
-                        logger.info("SearchengineEntity updateEmployeeAwards unbind_time:{}", jsonObject.get("unbind_time"));
-                        LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli();
-                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
-                        logger.info("SearchengineEntity updateEmployeeAwards unbind_time_long:{}", jsonObject.get("unbind_time_long"));
+                        jsonObject.put("unbind_time", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf));
                     }
                     if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
-                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
-                        logger.info("SearchengineEntity updateEmployeeAwards import_time:{}", jsonObject.get("import_time"));
-                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
-                        logger.info("SearchengineEntity updateEmployeeAwards import_time_lonog:{}", jsonObject.get("import_time_long"));
+                        jsonObject.put("import_time", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf));
                     }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");

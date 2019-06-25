@@ -414,6 +414,15 @@ public class EmployeeServiceImpl implements Iface {
 		}
 	}
 
+	@Override
+	public void retrySendVerificationMail(int userId, int companyId, int source) throws BIZException, TException {
+		try {
+			service.retrySendVerificationMail(userId, companyId, source);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
 	private ReferralPosition convertReferralPosition(ReferralPositionInfo referralPositionInfo) {
 		ReferralPosition referralPosition = new ReferralPosition();
 

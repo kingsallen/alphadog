@@ -43,6 +43,8 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
     @Override
     protected UserEmployeeDO createEmployee(BindingParams bindingParams) {
         UserEmployeeDO userEmployeeDO = employeeThreadLocal.get();
+        log.info("EmployeeBindByCustomfield createEmployee userEmployeeDO:{}", userEmployeeDO);
+        log.info("EmployeeBindByCustomfield createEmployee bindingParams:{}", bindingParams);
         if (employeeThreadLocal.get().getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
@@ -53,6 +55,11 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
             if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() != 0) {
                 userEmployeeDO = userEmployeeDOThreadLocal.get();
             }
+        } else if(employeeThreadLocal.get().getSysuserId() != bindingParams.getUserId()
+                && employeeThreadLocal.get().getActivation() == EmployeeActiveState.Cancel.getState()) {
+            userEmployeeDO.setSysuserId(bindingParams.getUserId());
+            log.info("取消认证的自定义信息可以被其他用户使用!");
+
         } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
             throw new RuntimeException("员工认证信息不匹配");
         }
@@ -70,7 +77,11 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
             JSONArray jsonArray = new JSONArray();
-            jsonArray.add(bindingParams.getCustomFieldValues());
+            bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(key.toString(), value);
+                jsonArray.add(jsonObject);
+            });
             userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
         }
         log.info("EmployeeBindByCustomfield createEmployee customFieldValues:{}", userEmployeeDO.getCustomFieldValues());

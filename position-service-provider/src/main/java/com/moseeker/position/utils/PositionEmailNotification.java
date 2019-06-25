@@ -71,16 +71,17 @@ public class PositionEmailNotification {
 
     /**
      * 发送职位同步失败邮件
-     * @param form  页面填写的第三方职位信息
+     * @param positionForms  页面填写的第三方职位信息
      * @param channel   渠道
      * @param syncException  错误异常
      */
-    public void sendSyncFailureMail(ThirdPartyPositionForm form, IChannelType channel, Exception syncException) {
+    public void sendSyncFailureMail(List<ThirdPartyPositionForm> positionForms, IChannelType channel, Exception syncException) {
         List<String> mails=devMails;
         if (mails == null || mails.size() == 0) {
             logger.warn("没有配置同步邮箱地址!");
             return;
         }
+
 
         try {
 
@@ -95,11 +96,12 @@ public class PositionEmailNotification {
             }
 
             StringBuilder messageBuilder = new StringBuilder();
-            if(form!=null) {
-                if(SyncRequestType.hasType(form.getRequestType()) ){
-                    messageBuilder.append("【请求端】：").append(SyncRequestType.getInstance(form.getRequestType()).title()).append(br);
+            if(StringUtils.isEmptyList(positionForms)) {
+
+                if(SyncRequestType.hasType(positionForms.get(0).getRequestType()) ){
+                    messageBuilder.append("【请求端】：").append(SyncRequestType.getInstance(positionForms.get(0).getRequestType()).title()).append(br);
                 }
-                messageBuilder.append("【传送的json】：").append(JSON.toJSONString(form)).append(br);
+                messageBuilder.append("【传送的json】：").append(JSON.toJSONString(positionForms)).append(br);
             }
 
             messageBuilder.append("【失败信息】:").append(getExceptionAllinformation(syncException)).append(br);

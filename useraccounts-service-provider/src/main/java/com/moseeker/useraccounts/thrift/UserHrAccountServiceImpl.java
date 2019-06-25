@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -636,6 +638,8 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("UserHrAccountServiceImpl employeeImport initDateTime:{}", initDateTime.toString());
         try {
             return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
         } catch (CommonException e) {
@@ -643,6 +647,10 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("UserHrAccountServiceImpl employeeImport lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
+
         }
     }
 
@@ -666,6 +674,11 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+        if (userEmployeeDOMap.size() > 4000) {
+            logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 start");
+        }
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountServiceImpl checkBatchInsert initDateTime:{}", initDateTime.toString());
         try {
             return service.checkBatchInsert(userEmployeeDOMap, companyId);
         } catch (CommonException e) {
@@ -673,6 +686,12 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("自定义认证导入2 UserHrAccountServiceImpl checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
+            if (userEmployeeDOMap.size() > 4000) {
+                logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 end");
+            }
         }
     }
 

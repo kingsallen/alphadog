@@ -921,9 +921,11 @@ public class SearchengineService {
                 EmployeeBizTool.addKeywords(query, keywords, searchUtil);
                 EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
                 EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
+                logger.info("SearchengineService fetchEmployees query：{}", query.toString());
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
                 EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
                 EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
+                logger.info("SearchengineService fetchEmployees query：{}", searchRequestBuilder.toString());
                 response = searchRequestBuilder.execute().actionGet();
             }
             List<Map<String, Object>> data = new ArrayList<>();
