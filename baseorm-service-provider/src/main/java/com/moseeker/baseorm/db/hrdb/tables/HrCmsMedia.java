@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
 
-    private static final long serialVersionUID = -424784034;
+    private static final long serialVersionUID = -2119307393;
 
     /**
      * The reference instance of <code>hrdb.hr_cms_media</code>
@@ -69,7 +69,7 @@ public class HrCmsMedia extends TableImpl<HrCmsMediaRecord> {
     /**
      * The column <code>hrdb.hr_cms_media.attrs</code>. 扩展字段，地图存json
      */
-    public final TableField<HrCmsMediaRecord, String> ATTRS = createField("attrs", org.jooq.impl.SQLDataType.VARCHAR.length(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段，地图存json");
+    public final TableField<HrCmsMediaRecord, String> ATTRS = createField("attrs", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段，地图存json");
 
     /**
      * The column <code>hrdb.hr_cms_media.title</code>. 模板名称

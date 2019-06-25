@@ -197,4 +197,18 @@ public class HrInterviewConcreteDao extends DAOImpl<HrInterviewConcreteRecord, c
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewConcrete> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrInterviewConcrete.HR_INTERVIEW_CONCRETE.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>contact_name IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewConcrete> fetchByContactName(String... values) {
+        return fetch(HrInterviewConcrete.HR_INTERVIEW_CONCRETE.CONTACT_NAME, values);
+    }
+
+    /**
+     * Fetch records that have <code>contact_phone IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewConcrete> fetchByContactPhone(String... values) {
+        return fetch(HrInterviewConcrete.HR_INTERVIEW_CONCRETE.CONTACT_PHONE, values);
+    }
 }

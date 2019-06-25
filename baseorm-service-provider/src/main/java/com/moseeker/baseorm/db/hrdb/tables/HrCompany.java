@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = -1038629945;
+    private static final long serialVersionUID = 1103883974;
 
     /**
      * The reference instance of <code>hrdb.hr_company</code>
@@ -174,7 +174,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     /**
      * The column <code>hrdb.hr_company.employee_number</code>. 公司员工总数
      */
-    public final TableField<HrCompanyRecord, Integer> EMPLOYEE_NUMBER = createField("employee_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司员工总数");
+    public final TableField<HrCompanyRecord, Integer> EMPLOYEE_NUMBER = createField("employee_number", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司员工总数");
 
     /**
      * Create a <code>hrdb.hr_company</code> table reference

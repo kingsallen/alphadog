@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount implements Serializable {
 
-    private static final long serialVersionUID = -1109794723;
+    private static final long serialVersionUID = -648210934;
 
     private Integer   id;
     private Short     channel;
@@ -41,6 +41,7 @@ public class HrThirdPartyAccount implements Serializable {
     private String    ext2;
     private Byte      syncRequireCompany;
     private Byte      syncRequireDepartment;
+    private Integer   templateSender;
 
     public HrThirdPartyAccount() {}
 
@@ -61,6 +62,7 @@ public class HrThirdPartyAccount implements Serializable {
         this.ext2 = value.ext2;
         this.syncRequireCompany = value.syncRequireCompany;
         this.syncRequireDepartment = value.syncRequireDepartment;
+        this.templateSender = value.templateSender;
     }
 
     public HrThirdPartyAccount(
@@ -79,7 +81,8 @@ public class HrThirdPartyAccount implements Serializable {
         String    ext,
         String    ext2,
         Byte      syncRequireCompany,
-        Byte      syncRequireDepartment
+        Byte      syncRequireDepartment,
+        Integer   templateSender
     ) {
         this.id = id;
         this.channel = channel;
@@ -97,6 +100,7 @@ public class HrThirdPartyAccount implements Serializable {
         this.ext2 = ext2;
         this.syncRequireCompany = syncRequireCompany;
         this.syncRequireDepartment = syncRequireDepartment;
+        this.templateSender = templateSender;
     }
 
     public Integer getId() {
@@ -227,6 +231,14 @@ public class HrThirdPartyAccount implements Serializable {
         this.syncRequireDepartment = syncRequireDepartment;
     }
 
+    public Integer getTemplateSender() {
+        return this.templateSender;
+    }
+
+    public void setTemplateSender(Integer templateSender) {
+        this.templateSender = templateSender;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrThirdPartyAccount (");
@@ -247,6 +259,7 @@ public class HrThirdPartyAccount implements Serializable {
         sb.append(", ").append(ext2);
         sb.append(", ").append(syncRequireCompany);
         sb.append(", ").append(syncRequireDepartment);
+        sb.append(", ").append(templateSender);
 
         sb.append(")");
         return sb.toString();

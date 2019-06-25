@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -1320615504;
+    private static final long serialVersionUID = 1828412910;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
@@ -324,14 +324,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传, 104 员工主动推荐, 105 内推
+     * Setter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传, 104 员工主动推荐, 105 内推， 106 简历搬家，107 猎头上传
      */
     public void setSource(Short value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传, 104 员工主动推荐, 105 内推
+     * Getter for <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传, 104 员工主动推荐, 105 内推， 106 简历搬家，107 猎头上传
      */
     public Short getSource() {
         return (Short) get(21);

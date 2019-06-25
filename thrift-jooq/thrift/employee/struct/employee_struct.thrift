@@ -79,7 +79,8 @@ struct BindingParams {
     7: optional string name,
     8: optional string answer1,
     9: optional string answer2,
-    10: optional i32 source
+    10: optional i32 source,
+    11: optional map<i32, string> customFieldValues
 }
 
 struct Reward {

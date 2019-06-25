@@ -7,10 +7,6 @@
 package com.moseeker.thrift.gen.employee.struct;
 
 
-import java.util.Map;
-import java.util.HashMap;
-import org.apache.thrift.TEnum;
-
 public enum BindType implements org.apache.thrift.TEnum {
   EMAIL(0),
   CUSTOMFIELD(1),

@@ -141,4 +141,11 @@ public class HrInterviewNoticeDao extends DAOImpl<HrInterviewNoticeRecord, com.m
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewNotice> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrInterviewNotice.HR_INTERVIEW_NOTICE.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>fail_reason IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewNotice> fetchByFailReason(String... values) {
+        return fetch(HrInterviewNotice.HR_INTERVIEW_NOTICE.FAIL_REASON, values);
+    }
 }

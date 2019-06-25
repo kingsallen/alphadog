@@ -13,7 +13,9 @@ import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import org.apache.thrift.TException;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -411,16 +414,21 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Param<String> cnameParam = param(UserEmployee.USER_EMPLOYEE.CNAME.getName(), record.getCname());
         Param<String> customFieldParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), record.getCustomField());
         Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), record.getAuthMethod());
+        Param<Timestamp> importTimeParam = param(UserEmployee.USER_EMPLOYEE.IMPORT_TIME.getName(), record.getImportTime());
+        Param<String> customFieldValuesParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), record.getCustomFieldValues());
 
         UserEmployeeRecord record1 = create.insertInto(UserEmployee.USER_EMPLOYEE)
                 .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
                         UserEmployee.USER_EMPLOYEE.ACTIVATION,
                         UserEmployee.USER_EMPLOYEE.CNAME,
                         UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
+                        UserEmployee.USER_EMPLOYEE.IMPORT_TIME,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
                         UserEmployee.USER_EMPLOYEE.AUTH_METHOD)
                 .select(
                         select(
-                                companyIdParam, activationParam, cnameParam, customFieldParam, authMethodParam
+                                companyIdParam, activationParam, cnameParam, customFieldParam, importTimeParam,
+                                customFieldValuesParam, authMethodParam
                         )
                                 .whereNotExists(
                                         selectOne()
@@ -629,5 +637,21 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .limit(1)
                 .fetchOne();
         return record;
+    }
+
+    public UserEmployeeDO fetchUnActiveEmployeeByCustom(int companyId, String name, String customField) {
+        UserEmployeeRecord userEmployeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(name))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(customField))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.ne(EmployeeActiveState.Actived.getState()))
+                .limit(1)
+                .fetchOne();
+        if (userEmployeeRecord != null) {
+            return userEmployeeRecord.into(UserEmployeeDO.class);
+        } else {
+            return null;
+        }
     }
 }

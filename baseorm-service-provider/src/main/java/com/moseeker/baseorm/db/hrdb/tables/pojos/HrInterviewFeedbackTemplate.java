@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewFeedbackTemplate implements Serializable {
 
-    private static final long serialVersionUID = 2011506008;
+    private static final long serialVersionUID = -1137310736;
 
     private Integer   id;
     private String    templateName;
@@ -33,6 +33,7 @@ public class HrInterviewFeedbackTemplate implements Serializable {
     private Integer   defaultFlag;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   snapshot;
 
     public HrInterviewFeedbackTemplate() {}
 
@@ -45,6 +46,7 @@ public class HrInterviewFeedbackTemplate implements Serializable {
         this.defaultFlag = value.defaultFlag;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.snapshot = value.snapshot;
     }
 
     public HrInterviewFeedbackTemplate(
@@ -55,7 +57,8 @@ public class HrInterviewFeedbackTemplate implements Serializable {
         Integer   disable,
         Integer   defaultFlag,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   snapshot
     ) {
         this.id = id;
         this.templateName = templateName;
@@ -65,6 +68,7 @@ public class HrInterviewFeedbackTemplate implements Serializable {
         this.defaultFlag = defaultFlag;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.snapshot = snapshot;
     }
 
     public Integer getId() {
@@ -131,6 +135,14 @@ public class HrInterviewFeedbackTemplate implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getSnapshot() {
+        return this.snapshot;
+    }
+
+    public void setSnapshot(Integer snapshot) {
+        this.snapshot = snapshot;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrInterviewFeedbackTemplate (");
@@ -143,6 +155,7 @@ public class HrInterviewFeedbackTemplate implements Serializable {
         sb.append(", ").append(defaultFlag);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(snapshot);
 
         sb.append(")");
         return sb.toString();

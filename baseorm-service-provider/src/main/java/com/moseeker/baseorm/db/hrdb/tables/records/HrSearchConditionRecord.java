@@ -4,12 +4,12 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -466625948;
+    private static final long serialVersionUID = 1810498146;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -606,14 +606,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     // -------------------------------------------------------------------------
 
     /**
-     * Create a detached HrSearchConditionPO
+     * Create a detached HrSearchConditionRecord
      */
     public HrSearchConditionRecord() {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
     }
 
     /**
-     * Create a detached, initialised HrSearchConditionPO
+     * Create a detached, initialised HrSearchConditionRecord
      */
     public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, Integer positionStatus, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord, Timestamp startSubmitTime, Timestamp endSubmitTime, String hasAttachment, String departmentIds, String departmentNames, String remark) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);

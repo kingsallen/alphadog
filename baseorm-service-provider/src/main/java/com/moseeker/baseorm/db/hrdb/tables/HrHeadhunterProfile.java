@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterProfile extends TableImpl<HrHeadhunterProfileRecord> {
 
-    private static final long serialVersionUID = 599327144;
+    private static final long serialVersionUID = -987658230;
 
     /**
      * The reference instance of <code>hrdb.hr_headhunter_profile</code>
@@ -97,9 +97,9 @@ public class HrHeadhunterProfile extends TableImpl<HrHeadhunterProfileRecord> {
     public final TableField<HrHeadhunterProfileRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>hrdb.hr_headhunter_profile.status</code>. 简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历）
+     * The column <code>hrdb.hr_headhunter_profile.status</code>. 简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历），2. 被拒绝
      */
-    public final TableField<HrHeadhunterProfileRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历）");
+    public final TableField<HrHeadhunterProfileRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "简历状态 0 ： 猎头上传， 1 ： hr 接收（正式简历），2. 被拒绝");
 
     /**
      * Create a <code>hrdb.hr_headhunter_profile</code> table reference
