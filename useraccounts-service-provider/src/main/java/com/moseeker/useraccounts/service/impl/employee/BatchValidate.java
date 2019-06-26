@@ -437,22 +437,21 @@ public class BatchValidate {
             return;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
-            // 数据库的数据
-            for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
-                // 非自定义员工,忽略检查
-                if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
-                        || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
-                    continue;
-                }
-                // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
-                if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                        && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
-                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                    importErrorUserEmployee.setRowNum(row);
-                    importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
-                    repeatCounts.incrementAndGet();
-                    importErrorUserEmployees.add(importErrorUserEmployee);
-                }
+
+            Optional<UserEmployeeDO> optional = dbEmployeeDOList
+                    .parallelStream()
+                    .filter(u -> u.getCname() != null
+                            && u.getCustomField() != null
+                            && userEmployeeDO.getCname().trim().equals(u.getCname())
+                            && userEmployeeDO.getCustomField().trim().equals(u.getCustomField()))
+                    .findAny();
+
+            if (optional.isPresent()) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setRowNum(row);
+                importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
+                repeatCounts.incrementAndGet();
+                importErrorUserEmployees.add(importErrorUserEmployee);
             }
         }
     }
