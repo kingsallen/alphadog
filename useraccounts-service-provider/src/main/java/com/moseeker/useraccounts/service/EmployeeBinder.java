@@ -384,6 +384,10 @@ public abstract class EmployeeBinder {
                     !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
                 unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
             }
+            //添加source字段
+            if(useremployee.isSetSource()){
+                unActiveEmployee.setSource((byte)useremployee.getSource());
+            }
             unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
             log.info("doneBind unActiveEmployee update record");
             log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
