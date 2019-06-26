@@ -1728,8 +1728,11 @@ public class EmployeeEntity {
                 } else {
                     increase = userEmployeeList.size() - count;
                 }
-                logger.info("EmployeeEntity addEmployeeListIfNotExist increase:{}", increase);
-                List<UserEmployeeRecord> list = employeeDao.batchSave(userEmployeeList.subList(count, count+increase));
+                logger.info("EmployeeEntity addEmployeeListIfNotExist count:{}, increase:{}", count, increase);
+                List<UserEmployeeDO> tempList = userEmployeeList.subList(count, count+increase);
+                logger.info("EmployeeEntity list[0].cname:{}, list[0].customField:{}", tempList.get(0).getCname(), tempList.get(0).getCustomField());
+                List<UserEmployeeRecord> list = employeeDao.batchSave(tempList);
+
                 logger.info("EmployeeEntity addEmployeeListIfNotExist first id:{}", list.get(0).getId());
                 records.addAll(list);
                 count += increase;

@@ -277,6 +277,7 @@ public class SearchengineEntity {
 
 
     public Response updateEmployeeAwards(List<Integer> employeeIds, boolean updateAwards) throws CommonException {
+        logger.info("SearchengineEntity updateEmployeeAwards employeeIds.size:{}, updateAwards:{}", employeeIds.size(), updateAwards);
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
         TransportClient client = this.getTransportClient();
