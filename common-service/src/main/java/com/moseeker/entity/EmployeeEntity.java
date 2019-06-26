@@ -1721,8 +1721,6 @@ public class EmployeeEntity {
             List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
             for(UserEmployeeDO employee : userEmployeeList){
                 UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist employee:{}", employee);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist record:{}", record);
                 record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
                 UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
 
@@ -1736,6 +1734,20 @@ public class EmployeeEntity {
             return count;
         } else {
             return 0;
+        }
+    }
+
+    private void batchInsert(List<UserEmployeeDO> subList) {
+        if (subList != null && subList.size() > 0) {
+            List<UserEmployeeRecord> records = subList
+                    .stream()
+                    .map(userEmployeeDO -> {
+                        UserEmployeeRecord record = BeanUtils.structToDB(userEmployeeDO, UserEmployeeRecord.class);
+                        record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
+                        return record;
+                    })
+                    .collect(Collectors.toList());
+            employeeDao.insertCustomEmployeeIfNotExist(records);
         }
     }
 }
