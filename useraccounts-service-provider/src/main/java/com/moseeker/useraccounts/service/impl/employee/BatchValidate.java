@@ -131,6 +131,7 @@ public class BatchValidate {
          */
         logger.info("UserHrAccountServiceImpl importCheck before employeeParam");
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
+        logger.info("UserHrAccountServiceImpl importCheck employeeCustomFiledValues.size:{}", employeeCustomFiledValues.size());
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
         logger.info("UserHrAccountServiceImpl importCheck after fetchOptionsValues");
 
@@ -150,9 +151,11 @@ public class BatchValidate {
                 }
                 return true;
             });
+
         });
         try {
             countDownLatch.await();
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
