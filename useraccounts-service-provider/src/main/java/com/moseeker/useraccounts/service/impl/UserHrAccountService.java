@@ -1541,7 +1541,6 @@ public class UserHrAccountService {
 
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
-            logger.info("UserHrAccountService updateEmployees userEmployee:{}", userEmployee);
             if (errorEmployeeIdList.contains(userEmployee.getId())) {
                 continue;
             }
@@ -1556,17 +1555,12 @@ public class UserHrAccountService {
                 employeeIdList.add(userEmployee.getId());
             }
 
-            logger.info("UserHrAccountService updateEmployees dbEmployee:{}", JSONObject.toJSONString(dbEmployeeDOList));
             Optional<UserEmployeeDO> optional1 = dbEmployeeDOList
                     .parallelStream()
                     .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId())
                     .findAny();
-            logger.info("UserHrAccountService updateEmployees optional1.isPresent():{}", optional1.isPresent());
 
             if (optional1.isPresent()) {
-                logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}, dbEmployee.activation:{}", userEmployee.getActivation(), optional1.get().getActivation());
-                logger.info("UserHrAccountService updateEmployees userEmployee.getActivation() != optional1.get().getActivation():{}", userEmployee.getActivation() != optional1.get().getActivation());
-                logger.info("UserHrAccountService updateEmployees userEmployee.getActivation() == EmployeeActiveState.Cancel.getState():{}", userEmployee.getActivation() == EmployeeActiveState.Cancel.getState());
                 if (userEmployee.getActivation() != optional1.get().getActivation()
                         && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
                         && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
@@ -1589,20 +1583,16 @@ public class UserHrAccountService {
             userEmployeeDao.updateRecords(records);
         }
 
-        logger.info("UserHrAccountService updateEmployees employeeIdList.size():{}", employeeIdList.size());
 
         if (employeeIdList.size() == 0 && updateActivationList.size() == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
 
         if (employeeIdList.size() > 0) {
-            logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);
         }
 
-        logger.info("UserHrAccountService updateEmployees updateActivationList.size():{}", updateActivationList.size());
         if (updateActivationList.size() > 0) {
-            logger.info("UserHrAccountService updateEmployees updateActivationList:{}", JSONObject.toJSONString(updateActivationList));
             employeeEntity.unbind(updateActivationList);
         }
 
