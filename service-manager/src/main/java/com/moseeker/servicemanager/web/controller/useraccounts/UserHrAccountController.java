@@ -906,7 +906,6 @@ public class UserHrAccountController {
             String timespan = params.getString("timespan", "");
             String selectedIids = params.getString("selectedIds");
 
-            logger.info("UserHrAccountController employeeList params:{}", JSONObject.toJSONString(params));
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
                     order, asc, pageNumber, pageSize, email_isvalid,balanceType, timespan, selectedIids);
             return ResponseLogNotification.success(request,
