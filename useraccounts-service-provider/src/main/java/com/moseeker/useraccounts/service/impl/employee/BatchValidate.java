@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -25,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,8 +45,6 @@ public class BatchValidate {
     protected EmployeeCustomOptionJooqDao customOptionJooqDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 将员工自定义字段json字符串解析成List<Map<String,String>>
