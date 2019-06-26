@@ -46,7 +46,7 @@ public class BatchValidate {
 
     ThreadPool threadPool = ThreadPool.Instance;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 将员工自定义字段json字符串解析成List<Map<String,String>>
@@ -150,7 +150,11 @@ public class BatchValidate {
                 return true;
             });
         });
-        logger.info("UserHrAccountServiceImpl importCheck after userEmployeeMap.forEach");
+        try {
+            countDownLatch.wait();
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
