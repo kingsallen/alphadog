@@ -459,7 +459,19 @@ public class BatchValidate {
                 importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
                 repeatCounts.incrementAndGet();
                 importErrorUserEmployees.add(importErrorUserEmployee);
+                return;
             }
+        }
+        logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
+        Optional<UserEmployeeDO> optional = dbEmployeeDOList
+                .stream()
+                .filter(u -> u.getCname() != null
+                        && u.getCustomField() != null
+                        && userEmployeeDO.getCname().trim().equals(u.getCname())
+                        && userEmployeeDO.getCustomField().trim().equals(u.getCustomField()))
+                .findAny();
+        if (optional.isPresent()) {
+            logger.info("BatchValidate checkImportEmployee db.cname:{}, db.customField:{}", optional.get().getCname(), optional.get().getCustomField());
         }
     }
 
