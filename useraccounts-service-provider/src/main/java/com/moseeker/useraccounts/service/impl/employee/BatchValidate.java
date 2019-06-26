@@ -148,6 +148,8 @@ public class BatchValidate {
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
                     if (importErrorUserEmployee != null) {
                         importErrorUserEmployees.add(importErrorUserEmployee);
+                    } else {
+                        logger.info("UserHrAccountServiceImpl importCheck userEmployeeDO.cname:{}, userEmployeeDO.custonField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
                     }
                 } finally {
                     countDownLatch.countDown();
@@ -456,6 +458,7 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+            logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
             return null;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
