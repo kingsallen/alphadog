@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAiConf extends TableImpl<HrAiConfRecord> {
 
-    private static final long serialVersionUID = -1060082530;
+    private static final long serialVersionUID = 1172719884;
 
     /**
      * The reference instance of <code>hrdb.hr_ai_conf</code>
@@ -67,9 +67,9 @@ public class HrAiConf extends TableImpl<HrAiConfRecord> {
     public final TableField<HrAiConfRecord, Byte> FOLLOWER_SWITCH = createField("follower_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "粉丝推送开关 0:不开启，1:开启");
 
     /**
-     * The column <code>hrdb.hr_ai_conf.follower_percent</code>. 粉丝推送比例: 0.1 &lt;= x &lt;= 10
+     * The column <code>hrdb.hr_ai_conf.follower_percent</code>. 粉丝推送比例: 0 &lt; x &lt;= 10
      */
-    public final TableField<HrAiConfRecord, Double> FOLLOWER_PERCENT = createField("follower_percent", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.FLOAT)), this, "粉丝推送比例: 0.1 <= x <= 10");
+    public final TableField<HrAiConfRecord, Double> FOLLOWER_PERCENT = createField("follower_percent", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.FLOAT)), this, "粉丝推送比例: 0 < x <= 10");
 
     /**
      * The column <code>hrdb.hr_ai_conf.employee_switch</code>. 员工推送开关 0:不开启，1:开启
@@ -77,9 +77,9 @@ public class HrAiConf extends TableImpl<HrAiConfRecord> {
     public final TableField<HrAiConfRecord, Byte> EMPLOYEE_SWITCH = createField("employee_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "员工推送开关 0:不开启，1:开启");
 
     /**
-     * The column <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0.1 &lt;= x &lt;= 10
+     * The column <code>hrdb.hr_ai_conf.employee_percent</code>. 员工推送比例: 0 &lt; x &lt;= 10
      */
-    public final TableField<HrAiConfRecord, Double> EMPLOYEE_PERCENT = createField("employee_percent", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.FLOAT)), this, "员工推送比例: 0.1 <= x <= 10");
+    public final TableField<HrAiConfRecord, Double> EMPLOYEE_PERCENT = createField("employee_percent", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.FLOAT)), this, "员工推送比例: 0 < x <= 10");
 
     /**
      * The column <code>hrdb.hr_ai_conf.create_time</code>. 创建时间

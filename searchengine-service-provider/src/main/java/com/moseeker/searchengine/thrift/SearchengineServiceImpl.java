@@ -132,11 +132,11 @@ public class SearchengineServiceImpl implements Iface {
 
 	@Override
 	public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-								   String emailValidate, int pageSize, int pageNumber,int balanceType, String timeSpan)
+								   String emailValidate, int pageSize, int pageNumber,int balanceType, String timeSpan, String selectIds)
 			throws BIZException, TException {
 		try {
 			return service.fetchEmployees(companyIds, keywords, filter, order, asc, emailValidate, pageSize, pageNumber,
-					balanceType, timeSpan);
+					balanceType, timeSpan, selectIds);
 		}catch(Exception e){
 			throw ExceptionUtils.convertException(e);
 		}

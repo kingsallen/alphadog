@@ -22,7 +22,8 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
-    private static final long serialVersionUID = 223385824;
+
+    private static final long serialVersionUID = -1536467791;
 
     private Integer   id;
     private String    name;
@@ -111,46 +112,46 @@ public class HrSearchCondition implements Serializable {
     }
 
     public HrSearchCondition(
-            Integer   id,
-            String    name,
-            String    publisher,
-            String    positionId,
-            String    keyword,
-            String    submitTime,
-            String    workYears,
-            String    cityName,
-            String    degree,
-            String    pastPosition,
-            Integer   inLastJobSearchPosition,
-            Integer   minAge,
-            Integer   maxAge,
-            String    intentionCityName,
-            Integer   sex,
-            String    intentionSalaryCode,
-            String    companyName,
-            Integer   inLastJobSearchCompany,
-            Integer   hrAccountId,
-            Timestamp createTime,
-            Integer   updateTime,
-            Integer   type,
-            String    candidateSource,
-            Byte      isPublic,
-            String    origins,
-            Byte      isRecommend,
-            String    tagIds,
-            String    favoriteHrs,
-            String    cityCode,
-            String    intentionCityCode,
-            Integer   positionStatus,
-            String    positionKeyWord,
-            String    pastPositionKeyWord,
-            String    pastCompanyKeyWord,
-            Timestamp startSubmitTime,
-            Timestamp endSubmitTime,
-            String    hasAttachment,
-            String    departmentIds,
-            String    departmentNames,
-            String    remark
+        Integer   id,
+        String    name,
+        String    publisher,
+        String    positionId,
+        String    keyword,
+        String    submitTime,
+        String    workYears,
+        String    cityName,
+        String    degree,
+        String    pastPosition,
+        Integer   inLastJobSearchPosition,
+        Integer   minAge,
+        Integer   maxAge,
+        String    intentionCityName,
+        Integer   sex,
+        String    intentionSalaryCode,
+        String    companyName,
+        Integer   inLastJobSearchCompany,
+        Integer   hrAccountId,
+        Timestamp createTime,
+        Integer   updateTime,
+        Integer   type,
+        String    candidateSource,
+        Byte      isPublic,
+        String    origins,
+        Byte      isRecommend,
+        String    tagIds,
+        String    favoriteHrs,
+        String    cityCode,
+        String    intentionCityCode,
+        Integer   positionStatus,
+        String    positionKeyWord,
+        String    pastPositionKeyWord,
+        String    pastCompanyKeyWord,
+        Timestamp startSubmitTime,
+        Timestamp endSubmitTime,
+        String    hasAttachment,
+        String    departmentIds,
+        String    departmentNames,
+        String    remark
     ) {
         this.id = id;
         this.name = name;

@@ -113,4 +113,11 @@ public class HrInterviewFeedbackTemplateDao extends DAOImpl<HrInterviewFeedbackT
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewFeedbackTemplate> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrInterviewFeedbackTemplate.HR_INTERVIEW_FEEDBACK_TEMPLATE.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>snapshot IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrInterviewFeedbackTemplate> fetchBySnapshot(Integer... values) {
+        return fetch(HrInterviewFeedbackTemplate.HR_INTERVIEW_FEEDBACK_TEMPLATE.SNAPSHOT, values);
+    }
 }

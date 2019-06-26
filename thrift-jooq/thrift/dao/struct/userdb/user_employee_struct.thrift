@@ -59,6 +59,7 @@ struct UserEmployeeDO {
 	53: optional i32 teamId,
 	54: optional i8 jobGrade,
 	55: optional i32 cityCode,
-	56: optional i8 degree
-
+	56: optional i8 degree,
+	57: optional string unbindTime,
+	58: optional string importTime,
 }

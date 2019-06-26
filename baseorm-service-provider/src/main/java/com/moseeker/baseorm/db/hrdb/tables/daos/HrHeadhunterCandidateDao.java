@@ -149,4 +149,11 @@ public class HrHeadhunterCandidateDao extends DAOImpl<HrHeadhunterCandidateRecor
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHeadhunterCandidate> fetchByPositionName(String... values) {
         return fetch(HrHeadhunterCandidate.HR_HEADHUNTER_CANDIDATE.POSITION_NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>user_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHeadhunterCandidate> fetchByUserId(Integer... values) {
+        return fetch(HrHeadhunterCandidate.HR_HEADHUNTER_CANDIDATE.USER_ID, values);
+    }
 }

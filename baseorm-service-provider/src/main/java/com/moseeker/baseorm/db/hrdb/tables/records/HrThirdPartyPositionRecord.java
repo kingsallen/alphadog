@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 657874502;
+    private static final long serialVersionUID = 814011716;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -170,14 +170,14 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能,智联，猎聘，51用逗号分隔，代表多个职能
+     * Setter for <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
      */
     public void setOccupation(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能,智联，猎聘，51用逗号分隔，代表多个职能
+     * Getter for <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
      */
     public String getOccupation() {
         return (String) get(10);
@@ -450,14 +450,14 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.feature</code>.
+     * Setter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息，多个福利特色用','隔开
      */
     public void setFeature(String value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.feature</code>.
+     * Getter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息，多个福利特色用','隔开
      */
     public String getFeature() {
         return (String) get(30);

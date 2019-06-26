@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.Constant;
@@ -45,6 +46,11 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
     }
 
     @Override
+    protected void validateCustomFieldValues(BindingParams bindingParams) {
+        //do nothing
+    }
+
+    @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("公司编号",bindingParams.getCompanyId(), 1, Integer.MAX_VALUE);
@@ -80,7 +86,12 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils
-            .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+                .defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
+        if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.add(bindingParams.getCustomFieldValues());
+            userEmployeeDO.setCustomFieldValues(jsonArray.toJSONString());
+        }
         return userEmployeeDO;
     }
 
