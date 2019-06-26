@@ -54,6 +54,7 @@ service WholeProfileServices {
 }
 
 service ProfileServices {
+    bool healthCheck();
     common_struct.Response getResources(1:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
     common_struct.Response getPagination(2:common_struct.CommonQuery query) throws (1: common_struct.BIZException e);
     common_struct.Response postResources(1: list<profile_struct.Profile> resources) throws (1: common_struct.BIZException e);
