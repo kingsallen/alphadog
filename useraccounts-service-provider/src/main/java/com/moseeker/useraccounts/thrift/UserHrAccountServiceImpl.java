@@ -662,6 +662,7 @@ public class UserHrAccountServiceImpl implements Iface {
         try {
             return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }

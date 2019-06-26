@@ -233,7 +233,6 @@ public class EmployeeService {
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
                 evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());
                 response.setEmployeeVerificationConf(evc);
-                log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
                 response.setExists(true);
             } else {
                 response.setExists(false);

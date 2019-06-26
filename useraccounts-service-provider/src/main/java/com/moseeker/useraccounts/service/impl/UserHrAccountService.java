@@ -1496,6 +1496,7 @@ public class UserHrAccountService {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
 
+        logger.info("UserHrAccountService before query");
         // 查找已经存在的数据
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.clear();
@@ -1504,7 +1505,11 @@ public class UserHrAccountService {
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
+        logger.info("UserHrAccountService before batchValidate.updateCheck");
+
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.updateCheck(userEmployeeMap, companyId, dbEmployeeDOList);
+
+        logger.info("UserHrAccountService after batchValidate.updateCheck");
 
         List<UserEmployeeDO> updateCustomFieldList = new ArrayList<>();
         List<UserEmployeeDO> updateActivationList = new ArrayList<>();
@@ -1522,7 +1527,9 @@ public class UserHrAccountService {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
+        logger.info("UserHrAccountService before batchValidate.convertToOptionId");
         batchValidate.convertToOptionId(userEmployeeMap, companyId);
+        logger.info("UserHrAccountService after batchValidate.convertToOptionId");
 
         for (UserEmployeeDO userEmployee : userEmployeeMap) {
 
@@ -1555,6 +1562,7 @@ public class UserHrAccountService {
             }
         }
 
+        logger.info("UserHrAccountService before userEmployeeDao.updateRecords");
         if (updateCustomFieldList.size() > 0) {
             List<UserEmployeeRecord> records = updateCustomFieldList
                     .parallelStream()
@@ -1568,17 +1576,23 @@ public class UserHrAccountService {
             userEmployeeDao.updateRecords(records);
         }
 
+        logger.info("UserHrAccountService after userEmployeeDao.updateRecords");
+
         if (employeeIdList.size() == 0 && updateActivationList.size() == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
 
+        logger.info("UserHrAccountService before searchengineEntity.updateEmployeeAwards");
         if (employeeIdList.size() > 0) {
+            logger.info("UserHrAccountService updateEmployees employeeIdList.size:{}", employeeIdList.size());
             searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);
         }
-
+        logger.info("UserHrAccountService after searchengineEntity.updateEmployeeAwards");
         if (updateActivationList.size() > 0) {
+            logger.info("UserHrAccountService updateEmployees updateActivationList.size:{}", updateActivationList.size());
             employeeEntity.unbind(updateActivationList);
         }
+        logger.info("UserHrAccountService after employeeEntity.unbind");
 
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
