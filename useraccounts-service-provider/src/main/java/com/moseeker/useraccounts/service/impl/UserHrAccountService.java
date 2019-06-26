@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
-import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
@@ -70,6 +69,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
 import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
@@ -92,7 +92,6 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -1381,8 +1380,6 @@ public class UserHrAccountService {
     @Transactional
     public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
             fileName, Integer type, Integer hraccountId) throws CommonException {
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("UserHrAccountService employeeImport initDateTime:{}", initDateTime.toString());
         Response response = new Response();
         logger.info("开始导入员工信息");
 
@@ -1402,12 +1399,8 @@ public class UserHrAccountService {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
 
-        LocalDateTime beforeRepetitionFilter = LocalDateTime.now();
-        logger.info("UserHrAccountService employeeImport beforeRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(initDateTime, beforeRepetitionFilter).toMillis());
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
-        LocalDateTime afterRepetitionFilter = LocalDateTime.now();
-        logger.info("UserHrAccountService employeeImport afterRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(beforeRepetitionFilter, afterRepetitionFilter).toMillis());
 
         //校验自定义信息填写是否正确
         if (importUserEmployeeStatistic != null && !importUserEmployeeStatistic.insertAccept) {
@@ -1417,7 +1410,6 @@ public class UserHrAccountService {
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
-        logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
@@ -1435,7 +1427,6 @@ public class UserHrAccountService {
         List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
         if (!StringUtils.isEmptyList(userEmployeeDOS)) {
             batchValidate.convertToOptionId(userEmployeeDOS, companyId);
-            logger.info("employeeImport userEmployeeDOS: {}", JSONObject.toJSONString(userEmployeeDOS));
 
             // 查询出需要更新的数据
             for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
@@ -1449,7 +1440,6 @@ public class UserHrAccountService {
             }
             if (!StringUtils.isEmptyList(updateUserEmployee)) {
                 // 更新数据
-                logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
                 searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()), false);
                 // 去掉需要更新的数据
@@ -1457,15 +1447,10 @@ public class UserHrAccountService {
             }
         }
         // 新增数据
-        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         if (!StringUtils.isEmptyList(userEmployeeList)) {
             employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
 
         }
-
-        LocalDateTime afterUpdateEmployee = LocalDateTime.now();
-        logger.info("UserHrAccountService employeeImport afterUpdateEmployee:{}, Duration:{}", afterRepetitionFilter.toString(), Duration.between(beforeRepetitionFilter, afterUpdateEmployee).toMillis());
-
 
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
@@ -1484,9 +1469,6 @@ public class UserHrAccountService {
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
-        LocalDateTime afterLog = LocalDateTime.now();
-        logger.info("UserHrAccountService employeeImport afterLog:{}, Duration:{}", afterLog.toString(), Duration.between(afterUpdateEmployee, afterLog).toMillis());
-
         return response;
     }
 
@@ -1526,7 +1508,6 @@ public class UserHrAccountService {
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.updateCheck(userEmployeeMap, companyId, dbEmployeeDOList);
-        logger.info("UserHrAccountService updateEmployees importUserEmployeeStatistic:{}", importUserEmployeeStatistic);
 
         List<UserEmployeeDO> updateCustomFieldList = new ArrayList<>();
         List<UserEmployeeDO> updateActivationList = new ArrayList<>();
@@ -1565,10 +1546,8 @@ public class UserHrAccountService {
                     .parallelStream()
                     .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId())
                     .findAny();
-            logger.info("UserHrAccountService updateEmployees optional1.isPresent():{}", optional1.isPresent());
 
             if (optional1.isPresent()) {
-                logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}, dbEmployee.activation:{}", userEmployee.getActivation(), optional1.get().getActivation());
                 if (userEmployee.getActivation() != optional1.get().getActivation()
                         && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
                         && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
@@ -1591,20 +1570,15 @@ public class UserHrAccountService {
             userEmployeeDao.updateRecords(records);
         }
 
-        logger.info("UserHrAccountService updateEmployees employeeIdList.size():{}", employeeIdList.size());
-
         if (employeeIdList.size() == 0 && updateActivationList.size() == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
 
         if (employeeIdList.size() > 0) {
-            logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);
         }
 
-        logger.info("UserHrAccountService updateEmployees updateActivationList.size():{}", updateActivationList.size());
         if (updateActivationList.size() > 0) {
-            logger.info("UserHrAccountService updateEmployees updateActivationList:{}", JSONObject.toJSONString(updateActivationList));
             employeeEntity.unbind(updateActivationList);
         }
 
@@ -1669,12 +1643,8 @@ public class UserHrAccountService {
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
-        LocalDateTime beforeCheck = LocalDateTime.now();
-        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
-        LocalDateTime afterImportCheck = LocalDateTime.now();
-        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter afterImportCheck:{}, duration importCheck:{}", afterImportCheck.toString(), Duration.between(beforeCheck, afterImportCheck).toMillis());
         return importUserEmployeeStatistic;
     }
 
