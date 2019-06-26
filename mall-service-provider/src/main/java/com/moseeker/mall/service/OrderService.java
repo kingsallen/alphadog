@@ -210,7 +210,7 @@ public class OrderService {
             List<Integer> employeeIds = handleUpdatedOrder(updateForm);
             logger.info("==========employeeids:{}", employeeIds);
             // 更新ES中的user_employee数据，以便积分排行实时更新
-            pool.startTast(() -> searchengineEntity.updateEmployeeAwards(employeeIds));
+            pool.startTast(() -> searchengineEntity.updateEmployeeAwards(employeeIds, true));
         } catch (Exception e) {
             batchDelOrderRedisLock(updateForm.getIds(), updateForm.getHr_id());
             throw e;
@@ -309,7 +309,7 @@ public class OrderService {
 //        searchengineEntity.updateEmployeeAwards(userEmployeeDO.getId(), userEmployeePointsDO.getId());
         List<Integer> employeeIds = new ArrayList<>();
         employeeIds.add((int)userEmployeePointsDO.getEmployeeId());
-        searchengineEntity.updateEmployeeAwards(employeeIds);
+        searchengineEntity.updateEmployeeAwards(employeeIds, true);
         // 删除redis锁
         delOrderRedisLock(orderForm);
     }

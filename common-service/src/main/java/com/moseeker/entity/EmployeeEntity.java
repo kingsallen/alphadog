@@ -78,6 +78,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -702,7 +704,8 @@ public class EmployeeEntity {
                         .stream()
                         .map(UserEmployeeDO::getId).filter(id -> id > 0)
                         .collect(Collectors.toList());
-                searchengineEntity.updateEmployeeAwards(employeeIdList);
+                logger.info("EmployeeEntity unbind employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
+                searchengineEntity.updateEmployeeAwards(employeeIdList, false);
                 List<Integer> companyIdList = employees
                         .stream()
                         .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
@@ -1079,7 +1082,7 @@ public class EmployeeEntity {
                 employeeDOS.add(record);
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
         } else {
             return null;
@@ -1118,7 +1121,7 @@ public class EmployeeEntity {
         }
         UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
 
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()), false);
 
         return employeeDO;
     }
@@ -1139,7 +1142,7 @@ public class EmployeeEntity {
 
     public int updateData(UserEmployeeDO userEmployeeDO) {
         int result = employeeDao.updateData(userEmployeeDO);
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()), true);
         return result;
     }
 
@@ -1247,7 +1250,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addRegisterLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
 
     }
 
@@ -1270,7 +1273,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addCancelLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
     }
 
     /**
@@ -1716,22 +1719,23 @@ public class EmployeeEntity {
      */
     public int addEmployeeListIfNotExist(List<UserEmployeeDO> userEmployeeList) {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            List<UserEmployeeRecord> records = new ArrayList<>(userEmployeeList.size());
             int count = 0;
-            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
-            for(UserEmployeeDO employee : userEmployeeList){
-                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist employee:{}", employee);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist record:{}", record);
-                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
-                UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
-
-                if (userEmployeeRecord != null) {
-                    employeeDOS.add(userEmployeeRecord);
-                    count += 1;
+            while (count < userEmployeeList.size()) {
+                int increase;
+                if (userEmployeeList.size() - count > 500) {
+                    increase = 500;
+                } else {
+                    increase = userEmployeeList.size() - count;
                 }
+                List<UserEmployeeDO> tempList = userEmployeeList.subList(count, count+increase);
+                List<UserEmployeeRecord> list = employeeDao.batchSave(tempList);
+                records.addAll(list);
+                count += increase;
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(records.stream().map(UserEmployeeRecord::getId).collect(Collectors.toList()),
+                    false);
             return count;
         } else {
             return 0;

@@ -1416,6 +1416,7 @@ public class UserHrAccountService {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
             v.setImportTime(now.format(dateTimeFormatter));
+            v.setActivation(EmployeeActiveState.Init.getState());
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
@@ -1444,7 +1445,7 @@ public class UserHrAccountService {
                 // 更新数据
                 logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
-                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
+                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()), false);
                 // 去掉需要更新的数据
                 userEmployeeList.removeAll(updateUserEmployee);
             }
@@ -1587,7 +1588,7 @@ public class UserHrAccountService {
         logger.info("UserHrAccountService updateEmployees employeeIdList.size():{}", employeeIdList.size());
         if (employeeIdList.size() > 0) {
             logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
-            searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList));
+            searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);
         }
 
         logger.info("UserHrAccountService updateEmployees updateActivationList.size():{}", updateActivationList.size());
@@ -1813,7 +1814,7 @@ public class UserHrAccountService {
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
-                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId));
+                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId), false);
             } else {
                 response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
             }
