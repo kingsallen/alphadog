@@ -1427,7 +1427,6 @@ public class UserHrAccountService {
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
-        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
