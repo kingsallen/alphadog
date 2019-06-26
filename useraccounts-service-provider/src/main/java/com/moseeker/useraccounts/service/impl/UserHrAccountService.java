@@ -1679,7 +1679,6 @@ public class UserHrAccountService {
                 companyId, dbEmployeeDOList);
         LocalDateTime afterImportCheck = LocalDateTime.now();
         logger.info("自定义认证导入2 UserHrAccountService repetitionFilter afterImportCheck:{}, duration importCheck:{}", afterImportCheck.toString(), Duration.between(beforeCheck, afterImportCheck).toMillis());
-        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter importUserEmployeeStatistic:{}", JSONObject.toJSONString(importUserEmployeeStatistic));
         return importUserEmployeeStatistic;
     }
 
