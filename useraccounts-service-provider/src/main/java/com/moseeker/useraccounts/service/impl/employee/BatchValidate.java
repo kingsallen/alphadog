@@ -671,7 +671,7 @@ public class BatchValidate {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId()));
+                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
                             Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
                                     .parallelStream()
                                     .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
