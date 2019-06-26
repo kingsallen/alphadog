@@ -149,7 +149,9 @@ public class BatchValidate {
                     ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
                     if (importErrorUserEmployee != null) {
-                        importErrorUserEmployees.add(importErrorUserEmployee);
+                        synchronized (this.getClass()) {
+                            importErrorUserEmployees.add(importErrorUserEmployee);
+                        }
                     } else {
                         logger.info("UserHrAccountServiceImpl importCheck userEmployeeDO.cname:{}, userEmployeeDO.custonField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
                     }
