@@ -98,6 +98,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
 import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
 
@@ -1393,6 +1394,10 @@ public class UserHrAccountService {
             throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
         }
 
+        if (userEmployeeMap.size() > FIVE_THOUSAND) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
+        }
+
         LocalDateTime beforeRepetitionFilter = LocalDateTime.now();
         logger.info("UserHrAccountService employeeImport beforeRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(initDateTime, beforeRepetitionFilter).toMillis());
         // 判断是否有重复数据
@@ -1504,7 +1509,7 @@ public class UserHrAccountService {
             throw UserAccountException.validateFailed(errorMessage);
         }
 
-        if (userEmployeeMap.size() > 5000) {
+        if (userEmployeeMap.size() > FIVE_THOUSAND) {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
 
@@ -1588,6 +1593,11 @@ public class UserHrAccountService {
         }
 
         logger.info("UserHrAccountService updateEmployees employeeIdList.size():{}", employeeIdList.size());
+
+        if (employeeIdList.size() == 0 && updateActivationList.size() == 0) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
         if (employeeIdList.size() > 0) {
             logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);

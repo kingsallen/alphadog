@@ -47,6 +47,8 @@ public final class Constant {
     public static final int ENABLE_OLD = 0;
     public static final int DISABLE_OLD = 1;
 
+    public static final int FIVE_THOUSAND = 5000;
+
     // status ok状态
     public static final int OK = 0;
 
