@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
