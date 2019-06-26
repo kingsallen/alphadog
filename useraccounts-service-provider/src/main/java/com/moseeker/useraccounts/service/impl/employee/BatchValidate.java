@@ -460,10 +460,6 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-<<<<<<< HEAD
-            logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
-=======
->>>>>>> feature/emp_auth
             return null;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
@@ -484,20 +480,6 @@ public class BatchValidate {
                 return importErrorUserEmployee;
             }
         }
-<<<<<<< HEAD
-        logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
-        Optional<UserEmployeeDO> optional = dbEmployeeDOList
-                .stream()
-                .filter(u -> u.getCname() != null
-                        && u.getCustomField() != null
-                        && userEmployeeDO.getCname().trim().equals(u.getCname())
-                        && userEmployeeDO.getCustomField().trim().equals(u.getCustomField()))
-                .findAny();
-        if (optional.isPresent()) {
-            logger.info("BatchValidate checkImportEmployee db.cname:{}, db.customField:{}", optional.get().getCname(), optional.get().getCustomField());
-        }
-=======
->>>>>>> feature/emp_auth
         return null;
     }
 
