@@ -144,8 +144,9 @@ public class BatchValidate {
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
             threadPool.startTast(() -> {
                 try {
-                    checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
+                    ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
+                    importErrorUserEmployees.add(importErrorUserEmployee);
                 } finally {
                     countDownLatch.countDown();
                 }
@@ -405,15 +406,13 @@ public class BatchValidate {
      * @param row
      * @param userEmployeeDO
      * @param companyId
-     * @param importErrorUserEmployees
      * @param repeatCounts
      * @param errorCounts
      * @param employeeCustomFiledValues
      * @param dbCustomFieldValues
      * @param dbEmployeeDOList
      */
-    private void checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
-                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+    private ImportErrorUserEmployee checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
                                      AtomicInteger repeatCounts, AtomicInteger errorCounts,
                                      ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
                                      Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
@@ -424,16 +423,14 @@ public class BatchValidate {
             importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
             importErrorUserEmployee.setMessage("员工姓名不能为空");
             importErrorUserEmployee.setRowNum(row);
-            importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            return;
+            return importErrorUserEmployee;
         } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
             importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
             importErrorUserEmployee.setMessage("员工姓名包含非法字符");
             importErrorUserEmployee.setRowNum(row);
-            importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            return;
+            return importErrorUserEmployee;
         }
 
         if (userEmployeeDO.getCompanyId() == 0) {
@@ -448,9 +445,8 @@ public class BatchValidate {
                     importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                     importErrorUserEmployee.setMessage("自定义选项错误");
                     importErrorUserEmployee.setRowNum(row);
-                    importErrorUserEmployees.add(importErrorUserEmployee);
                     errorCounts.incrementAndGet();
-                    return;
+                    return importErrorUserEmployee;
                 } else {
                     JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
                     userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
@@ -458,7 +454,7 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-            return;
+            return null;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
 
@@ -475,8 +471,7 @@ public class BatchValidate {
                 importErrorUserEmployee.setRowNum(row);
                 importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
                 repeatCounts.incrementAndGet();
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                return;
+                return importErrorUserEmployee;
             }
         }
         logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
@@ -490,6 +485,7 @@ public class BatchValidate {
         if (optional.isPresent()) {
             logger.info("BatchValidate checkImportEmployee db.cname:{}, db.customField:{}", optional.get().getCname(), optional.get().getCustomField());
         }
+        return null;
     }
 
     /**
