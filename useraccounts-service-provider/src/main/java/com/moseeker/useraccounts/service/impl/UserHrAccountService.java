@@ -1414,7 +1414,6 @@ public class UserHrAccountService {
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
-        logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
@@ -1432,7 +1431,6 @@ public class UserHrAccountService {
         List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
         if (!StringUtils.isEmptyList(userEmployeeDOS)) {
             batchValidate.convertToOptionId(userEmployeeDOS, companyId);
-            logger.info("employeeImport userEmployeeDOS: {}", JSONObject.toJSONString(userEmployeeDOS));
 
             // 查询出需要更新的数据
             for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
@@ -1453,7 +1451,6 @@ public class UserHrAccountService {
             }
         }
         // 新增数据
-        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         if (!StringUtils.isEmptyList(userEmployeeList)) {
             employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
 
