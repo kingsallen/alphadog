@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.Employee;
+import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.service.UserProviderService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -25,6 +26,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +52,7 @@ public class HealthCheckController {
 
     UserProviderService.Iface userProviderService = ServiceManager.SERVICEMANAGER.getService(UserProviderService.Iface.class);
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-
+    ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
     /**
      * service-manager 健康检查
      * <p>
@@ -80,6 +82,16 @@ public class HealthCheckController {
     public String useraccountsCheck(HttpServletRequest request, HttpServletResponse response) {
         try {
             return ResponseLogNotification.successJson(request,userProviderService.healthCheck() );
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/profile/health_check")
+    @ResponseBody
+    public String profileCheck(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            return ResponseLogNotification.successJson(request,profileService.healthCheck() );
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

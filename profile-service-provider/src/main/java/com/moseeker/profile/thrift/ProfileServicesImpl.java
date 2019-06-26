@@ -438,6 +438,11 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public boolean healthCheck() throws TException {
+        return false;
+    }
+
+    @Override
     public Response getResources(CommonQuery query) throws TException {
         try {
             return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
