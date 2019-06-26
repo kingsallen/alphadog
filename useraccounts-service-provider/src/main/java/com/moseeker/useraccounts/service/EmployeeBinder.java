@@ -287,7 +287,7 @@ public abstract class EmployeeBinder {
             userDao.updateData(userUserDO);
         }
 
-        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}}, true);
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
         kafkaSender.sendEmployeeCertification(useremployee);
         //将属于本公司的潜在候选人设置为无效
@@ -384,6 +384,10 @@ public abstract class EmployeeBinder {
             if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
                     !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
                 unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+            }
+            //添加source字段
+            if(useremployee.isSetSource()){
+                unActiveEmployee.setSource((byte)useremployee.getSource());
             }
             unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
             log.info("doneBind unActiveEmployee update record");

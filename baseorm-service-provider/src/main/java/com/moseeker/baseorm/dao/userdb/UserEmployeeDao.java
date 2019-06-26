@@ -262,6 +262,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), useremployee.getAuthMethod());
         Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte) useremployee.getActivation());
         Param<Byte> emailValidate = param(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.getName(), useremployee.getEmailIsvalid());
+        Param<Byte> sourceParam = param(UserEmployee.USER_EMPLOYEE.SOURCE.getName(),(byte)useremployee.getSource());
         Param<String> customFieldValueParam;
         if (StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
             customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), useremployee.getCustomFieldValues());
@@ -301,7 +302,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 UserEmployee.USER_EMPLOYEE.CREATE_TIME,
                 UserEmployee.USER_EMPLOYEE.BINDING_TIME,
                 UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
-                UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID
+                UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID,
+                UserEmployee.USER_EMPLOYEE.SOURCE
                 )
 
                 .select(
@@ -318,7 +320,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                                 createTimeParam,
                                 BindingTimeParam,
                                 customFieldValueParam,
-                                emailValidate
+                                emailValidate,
+                                sourceParam
                         )
                                 .whereNotExists(
                                         selectOne()
@@ -440,6 +443,26 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .returning()
                 .fetchOne();
         return record1;
+    }
+
+    public List<UserEmployeeRecord> batchSave(List<UserEmployeeDO> userEmployeeDOS) {
+
+        InsertValuesStep7 insertValuesStep6 = create.insertInto(UserEmployee.USER_EMPLOYEE)
+                .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
+                        UserEmployee.USER_EMPLOYEE.ACTIVATION,
+                        UserEmployee.USER_EMPLOYEE.CNAME,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
+                        UserEmployee.USER_EMPLOYEE.IMPORT_TIME);
+        for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+            insertValuesStep6 = insertValuesStep6.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
+                    userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod(),
+                    userEmployeeDO.getCustomFieldValues(),
+                    BeanUtils.convertToSQLTimestamp(userEmployeeDO.getImportTime()));
+        }
+        Result result = insertValuesStep6.returning().fetch();
+        return result;
     }
 
     public UserEmployeeDO getEmployeeById(int employeeId) {

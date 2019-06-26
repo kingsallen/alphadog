@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
@@ -98,6 +99,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
 import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
 
@@ -1393,6 +1395,10 @@ public class UserHrAccountService {
             throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
         }
 
+        if (userEmployeeMap.size() > FIVE_THOUSAND) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
+        }
+
         LocalDateTime beforeRepetitionFilter = LocalDateTime.now();
         logger.info("UserHrAccountService employeeImport beforeRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(initDateTime, beforeRepetitionFilter).toMillis());
         // 判断是否有重复数据
@@ -1413,10 +1419,11 @@ public class UserHrAccountService {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
             v.setImportTime(now.format(dateTimeFormatter));
+            v.setActivation(EmployeeActiveState.Init.getState());
+            v.setAuthMethod((byte) EmployeeAuthMethod.CUSTOM_AUTH.getCode());
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
-        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
@@ -1441,7 +1448,7 @@ public class UserHrAccountService {
                 // 更新数据
                 logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
-                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
+                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()), false);
                 // 去掉需要更新的数据
                 userEmployeeList.removeAll(updateUserEmployee);
             }
@@ -1503,7 +1510,7 @@ public class UserHrAccountService {
             throw UserAccountException.validateFailed(errorMessage);
         }
 
-        if (userEmployeeMap.size() > 5000) {
+        if (userEmployeeMap.size() > FIVE_THOUSAND) {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
 
@@ -1587,9 +1594,14 @@ public class UserHrAccountService {
         }
 
         logger.info("UserHrAccountService updateEmployees employeeIdList.size():{}", employeeIdList.size());
+
+        if (employeeIdList.size() == 0 && updateActivationList.size() == 0) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
         if (employeeIdList.size() > 0) {
             logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
-            searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList));
+            searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);
         }
 
         logger.info("UserHrAccountService updateEmployees updateActivationList.size():{}", updateActivationList.size());
@@ -1626,6 +1638,7 @@ public class UserHrAccountService {
      */
 
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+        logger.info("UserHrAccountServiceImpl checkBatchInsert");
         return repetitionFilter(userEmployeeMap, companyId);
     }
 
@@ -1815,7 +1828,7 @@ public class UserHrAccountService {
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
-                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId));
+                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId), false);
             } else {
                 response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
             }
@@ -2253,7 +2266,6 @@ public class UserHrAccountService {
                 userEmployeeVOS.add(userEmployeeVO);
             }
         }
-        logger.info("UserHrAccountService packageEmployeeVOs userEmployeeVOs:{}", JSONObject.toJSONString(userEmployeeVOS));
         return userEmployeeVOS;
     }
 

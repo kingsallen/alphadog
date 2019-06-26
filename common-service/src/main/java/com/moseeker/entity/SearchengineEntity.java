@@ -276,7 +276,8 @@ public class SearchengineEntity {
     }
 
 
-    public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
+    public Response updateEmployeeAwards(List<Integer> employeeIds, boolean updateAwards) throws CommonException {
+        logger.info("SearchengineEntity updateEmployeeAwards employeeIds.size:{}, updateAwards:{}", employeeIds.size(), updateAwards);
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
         TransportClient client = this.getTransportClient();
@@ -373,17 +374,19 @@ public class SearchengineEntity {
                     }
 
 
-                    // 取年积分
-                    List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
-                    // 取季度积分
-                    List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
-                    // 取月积分
-                    List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
-                    JSONObject awards = new JSONObject();
-                    getAwards(awards, listYear);
-                    getAwards(awards, listQuarter);
-                    getAwards(awards, listMonth);
-                    jsonObject.put("awards", awards);
+                    if (updateAwards) {
+                        // 取年积分
+                        List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
+                        // 取季度积分
+                        List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
+                        // 取月积分
+                        List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
+                        JSONObject awards = new JSONObject();
+                        getAwards(awards, listYear);
+                        getAwards(awards, listQuarter);
+                        getAwards(awards, listMonth);
+                        jsonObject.put("awards", awards);
+                    }
                     // 积分信息
                     if (companyMap.containsKey(userEmployeeDO.getCompanyId())) {
                         HrCompanyDO hrCompanyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
@@ -425,7 +428,6 @@ public class SearchengineEntity {
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-                    logger.info(JSONObject.toJSONString(jsonObject));
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
                                     .setSource(jsonObject)
