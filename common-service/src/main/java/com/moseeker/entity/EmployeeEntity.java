@@ -1735,11 +1735,5 @@ public class EmployeeEntity {
             return 0;
         }
     }
-
-    private void batchInsert(List<UserEmployeeDO> subList) {
-        if (subList != null && subList.size() > 0) {
-            employeeDao.insertCustomEmployeeIfNotExist(subList);
-        }
-    }
 }
 
