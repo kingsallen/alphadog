@@ -119,6 +119,8 @@ public class BatchValidate {
     public ImportUserEmployeeStatistic importCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
 
+        logger.info("UserHrAccountServiceImpl importCheck");
+
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
 
         // 重复的对象
@@ -127,13 +129,16 @@ public class BatchValidate {
         /**
          * 为校验自定义下拉项数据做准备
          */
+        logger.info("UserHrAccountServiceImpl importCheck before employeeParam");
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
+        logger.info("UserHrAccountServiceImpl importCheck after fetchOptionsValues");
 
         // 提交上的数据
         AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
         CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
+        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.forEach");
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
             threadPool.startTast(() -> {
                 try {
@@ -145,6 +150,7 @@ public class BatchValidate {
                 return true;
             });
         });
+        logger.info("UserHrAccountServiceImpl importCheck after userEmployeeMap.forEach");
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
@@ -154,6 +160,7 @@ public class BatchValidate {
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
+        logger.info("UserHrAccountServiceImpl importCheck last");
         return importUserEmployeeStatistic;
     }
 
@@ -262,7 +269,6 @@ public class BatchValidate {
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
         if (notSupportList != null && notSupportList.size() > 0) {
-            logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
         }
 

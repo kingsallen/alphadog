@@ -1639,6 +1639,7 @@ public class UserHrAccountService {
         if (userEmployeeMap.size() == 0) {
             throw UserAccountException.IMPORT_DATA_EMPTY;
         }
+        logger.info("UserHrAccountServiceImpl repetitionFilter");
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
@@ -1656,6 +1657,7 @@ public class UserHrAccountService {
 
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
+        logger.info("UserHrAccountServiceImpl repetitionFilter last");
         return importUserEmployeeStatistic;
     }
 
