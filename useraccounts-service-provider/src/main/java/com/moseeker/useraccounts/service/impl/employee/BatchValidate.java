@@ -155,6 +155,10 @@ public class BatchValidate {
         });
         try {
             countDownLatch.await();
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        }
+        try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
