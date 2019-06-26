@@ -1620,8 +1620,6 @@ public class UserHrAccountService {
      * @param companyId
      */
     private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1842,7 +1840,6 @@ public class UserHrAccountService {
                 }
             }
         }
-        logger.info("===============rewardVOPageVO:{}", JSON.toJSONString(rewardVOPageVO));
         return rewardVOPageVO;
     }
 
