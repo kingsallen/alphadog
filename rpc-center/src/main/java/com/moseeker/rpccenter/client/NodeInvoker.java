@@ -85,7 +85,7 @@ public class NodeInvoker<T> implements Invoker {
                 }
                 LOGGER.info("NOC NodeInvoker name:{}", node.getName());
                 client = pool.borrowObject(node);
-                LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
+                LOGGER.info("node:{}, getNumActive:{}",node,pool.getNumActive());
                 Object result = method.invoke(client, args);
 
                 return result;
