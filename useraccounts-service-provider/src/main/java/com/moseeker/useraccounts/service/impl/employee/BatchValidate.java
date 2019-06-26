@@ -166,6 +166,16 @@ public class BatchValidate {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
         logger.info("UserHrAccountServiceImpl importCheck last");
+        logger.info("UserHrAccountServiceImpl importCheck last errorCounts:{}, " +
+                        "totalCounts:{}, " +
+                        "repeatCounts:{}, " +
+                        "userEmployeeDO.size:{}, " +
+                        "message:{}",
+                importUserEmployeeStatistic.getErrorCounts(),
+                importUserEmployeeStatistic.getTotalCounts(),
+                importUserEmployeeStatistic.getRepetitionCounts(),
+                importUserEmployeeStatistic.getUserEmployeeDO().size(),
+                importUserEmployeeStatistic.getMessage());
         return importUserEmployeeStatistic;
     }
 
