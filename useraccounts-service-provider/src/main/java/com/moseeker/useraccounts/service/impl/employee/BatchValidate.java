@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -139,45 +140,36 @@ public class BatchValidate {
         // 提交上的数据
         AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
-        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
-        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.forEach");
-        AtomicInteger count = new AtomicInteger(0);
+        List<Future<ImportErrorUserEmployee>> futures = new ArrayList<>(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
-            count.incrementAndGet();
-            threadPool.startTast(() -> {
+            Future<ImportErrorUserEmployee> future = threadPool.startTast(() -> {
                 try {
                     ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
-                    if (importErrorUserEmployee != null) {
-                        synchronized (this.getClass()) {
-                            importErrorUserEmployees.add(importErrorUserEmployee);
-                        }
-                    } else {
-                        logger.info("UserHrAccountServiceImpl importCheck userEmployeeDO.cname:{}, userEmployeeDO.custonField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
-                    }
-                } finally {
-                    countDownLatch.countDown();
+                    return importErrorUserEmployee;
+                } catch (Exception e) {
+                    ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployee.setMessage("数据异常");
+                    errorCount.incrementAndGet();
+                    return importErrorUserEmployee;
                 }
-                return true;
             });
-
+            futures.add(future);
         });
-        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
-        logger.info("UserHrAccountServiceImpl importCheck count:{}", count.get());
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+
+        for (Future<ImportErrorUserEmployee> future : futures) {
+            try {
+                ImportErrorUserEmployee importErrorUserEmployee = future.get();
+                if (importErrorUserEmployee != null) {
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+
         }
-        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
-        logger.info("UserHrAccountServiceImpl importCheck count:{}", count.get());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
-        }
-        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
-        logger.info("UserHrAccountServiceImpl importCheck count:{}", count.get());
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
@@ -468,7 +460,10 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+<<<<<<< HEAD
             logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
+=======
+>>>>>>> feature/emp_auth
             return null;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
@@ -489,6 +484,7 @@ public class BatchValidate {
                 return importErrorUserEmployee;
             }
         }
+<<<<<<< HEAD
         logger.info("BatchValidate checkImportEmployee cname:{}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
         Optional<UserEmployeeDO> optional = dbEmployeeDOList
                 .stream()
@@ -500,6 +496,8 @@ public class BatchValidate {
         if (optional.isPresent()) {
             logger.info("BatchValidate checkImportEmployee db.cname:{}, db.customField:{}", optional.get().getCname(), optional.get().getCustomField());
         }
+=======
+>>>>>>> feature/emp_auth
         return null;
     }
 
