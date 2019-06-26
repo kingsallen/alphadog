@@ -447,17 +447,21 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
     public List<UserEmployeeRecord> batchSave(List<UserEmployeeDO> userEmployeeDOS) {
 
-        InsertValuesStep5 insertValuesStep5 = create.insertInto(UserEmployee.USER_EMPLOYEE)
+        InsertValuesStep7 insertValuesStep6 = create.insertInto(UserEmployee.USER_EMPLOYEE)
                 .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
                         UserEmployee.USER_EMPLOYEE.ACTIVATION,
                         UserEmployee.USER_EMPLOYEE.CNAME,
                         UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
-                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD);
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
+                        UserEmployee.USER_EMPLOYEE.IMPORT_TIME);
         for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
-            insertValuesStep5 = insertValuesStep5.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
-                    userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod());
+            insertValuesStep6 = insertValuesStep6.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
+                    userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod(),
+                    userEmployeeDO.getCustomFieldValues()
+                    BeanUtils.convertToSQLTimestamp(userEmployeeDO.getImportTime()));
         }
-        Result result = insertValuesStep5.returning().fetch();
+        Result result = insertValuesStep6.returning().fetch();
         return result;
     }
 
