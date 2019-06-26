@@ -1446,7 +1446,6 @@ public class UserHrAccountService {
             }
             if (!StringUtils.isEmptyList(updateUserEmployee)) {
                 // 更新数据
-                logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
                 searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()), false);
                 // 去掉需要更新的数据
