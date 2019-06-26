@@ -233,7 +233,6 @@ public class EmployeeService {
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
                 evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());
                 response.setEmployeeVerificationConf(evc);
-                log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
                 response.setExists(true);
             } else {
                 response.setExists(false);
@@ -964,9 +963,6 @@ public class EmployeeService {
         if (org.apache.commons.lang3.StringUtils.isBlank(pendingEmployee)) {
             throw UserAccountException.EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED;
         }
-        UserEmployeeDO emp = new UserEmployeeDO();
-        JSONObject jsonObject = JSONObject.parseObject(pendingEmployee);
-
 
         EmployeeBindByEmail bindByEmail = (EmployeeBindByEmail)employeeBinder.get("auth_method_email");
         bindByEmail.retrySendVerificationMail(userId, companyId, source);

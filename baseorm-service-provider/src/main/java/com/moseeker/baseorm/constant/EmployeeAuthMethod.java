@@ -1,10 +1,12 @@
-package com.moseeker.useraccounts.constant;
+package com.moseeker.baseorm.constant;
 
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import org.jooq.Condition;
 
 public enum EmployeeAuthMethod {
     EMAIL_AUTH(0,"使用邮箱认证") {
@@ -31,6 +33,12 @@ public enum EmployeeAuthMethod {
         public boolean checkDataValid(UserEmployeeStruct struct) {
             return struct!=null && struct.isSetCompany_id() && struct.isSetEmail();
         }
+
+        @Override
+        public Condition duplicateCondition(UserEmployeeRecord e) {
+            return UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(e.getCompanyId())
+                    .and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(e.getEmail()));
+        }
     },
     CUSTOM_AUTH(1,"使用自定义认证") {
         @Override
@@ -56,6 +64,12 @@ public enum EmployeeAuthMethod {
         public boolean checkDataValid(UserEmployeeStruct struct) {
             return struct!=null && struct.isSetCompany_id() && struct.isSetCustom_field();
         }
+
+        @Override
+        public Condition duplicateCondition(UserEmployeeRecord e) {
+            return UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(e.getCompanyId())
+                    .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(e.getCustomField()));
+        }
     },
     QUESTION_AUTH(2,"使用问答认证") {
         @Override
@@ -80,6 +94,12 @@ public enum EmployeeAuthMethod {
         @Override
         public boolean checkDataValid(UserEmployeeStruct struct) {
             return struct!=null && struct.isSetCompany_id() && struct.isSetCname();
+        }
+
+        @Override
+        public Condition duplicateCondition(UserEmployeeRecord e) {
+            return UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(e.getCompanyId())
+                    .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(e.getCname()));
         }
     };
 
@@ -113,4 +133,5 @@ public enum EmployeeAuthMethod {
     public abstract String uniqueKey(UserEmployeeStruct employeeStruct);
     public abstract String uniqueKey(UserEmployeeRecord employeeRecord);
     public abstract boolean checkDataValid(UserEmployeeStruct struct);
+    public abstract Condition duplicateCondition(UserEmployeeRecord e);
 }

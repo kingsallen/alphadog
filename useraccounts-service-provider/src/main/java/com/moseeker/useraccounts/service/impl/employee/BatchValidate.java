@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -25,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -266,6 +262,7 @@ public class BatchValidate {
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
         if (notSupportList != null && notSupportList.size() > 0) {
+            logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
         }
 
@@ -563,6 +560,7 @@ public class BatchValidate {
                             Optional<EmployeeOptionValue> optionValue = list.parallelStream()
                                     .filter(employeeOptionValue -> employeeOptionValue.getName().equals(customOptionRel.getOption()))
                                     .findAny();
+
                             return optionValue.isPresent();
                         } else {
                             return false;

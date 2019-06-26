@@ -143,9 +143,13 @@ public class ServerRegistry {
         serverPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
                 .append(config.getServers()).append(config.getZkSeparator())
                 .append(dataCopy.getIp()).append(":").append(dataCopy.getPort());
+        logger.info("NOC ServerRegistry buildPath serverPath:{}", serverPath);
+
         try {
             if(client.checkExists().forPath(parentPath.toString()) == null) {
+                logger.info("NOC ServerRegistry buildPath parent not exist! parentPath:{}", parentPath);
                 try {
+                    logger.info("NOC ServerRegistry buildPath parent exist! create parentPath:{}", parentPath);
                     client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(parentPath.toString());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
@@ -154,7 +158,9 @@ public class ServerRegistry {
             }
 
             if(client.checkExists().forPath(serverPath.toString()) == null) {
+                logger.info("NOC ServerRegistry serverPath not exist! serverPath:{}", serverPath);
                 try {
+                    logger.info("NOC ServerRegistry create serverPath! serverPath:{}", serverPath);
                     client.create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(), JSON.toJSONString(dataCopy).getBytes(Constants.UTF8));
                 } catch (Exception e) {
                     client.inTransaction()
@@ -163,6 +169,7 @@ public class ServerRegistry {
                         .and().commit();
                 }
             } else {
+                logger.info("NOC ServerRegistry servicePatch exist! servicePath:{}", serverPath);
                 client.inTransaction()
                     .delete().forPath(serverPath.toString())
                     .and().create().forPath(serverPath.toString(), JSON.toJSONString(dataCopy).getBytes(Constants.UTF8))
@@ -183,6 +190,7 @@ public class ServerRegistry {
      */
     private void reBuild(String serverName) throws RegisterException {
 
+        logger.info("NOC ServerRegistry reBuild！ serverName:{}", serverName);
         StringBuffer serverPath = new StringBuffer();
         serverPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
                 .append(config.getServers()).append(config.getZkSeparator())

@@ -41,6 +41,7 @@ public class UserMcdUatEmployeeController {
         } else {
             jsonObject.put("data", false);
         }
+        logger.info("UserMcdUatEmployeeController jsonObject:{}", jsonObject);
         return jsonObject.toString();
     }
 }

@@ -1,10 +1,13 @@
 package com.moseeker.rpccenter.config;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.common.NetUtils;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
 import com.moseeker.rpccenter.exception.RpcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +17,8 @@ import java.util.Map;
  * Created by jack on 06/02/2017.
  */
 public class ThriftConfig implements ConfigCheck {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Map<String, Object> servers;        //服务名称和具体服务对应关系
     private final int port;                           //服务的端口号
@@ -93,6 +98,8 @@ public class ThriftConfig implements ConfigCheck {
      * thrift服务配置信息创建工具
      */
     public static class Builder {
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
 
         private int port;
         private String IP;
@@ -211,6 +218,7 @@ public class ThriftConfig implements ConfigCheck {
                 throw new IncompleteException();
             }
             ThriftConfig config = new ThriftConfig(IP, port, servers, initialCapacity, maxLength, selector, worker, retry);
+            logger.info("NOC Builder createConfig ThriftConfig:{}", JSONObject.toJSONString(config));
             return config;
         }
     }

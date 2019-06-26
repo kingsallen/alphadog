@@ -73,10 +73,10 @@ public class UserProfileParser extends AbstractResumeFileParser {
                     fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
             logger.info("........." + pdfName + " --------------pdf file ---> status = " + status);
 //            if(status == 1) {
-            fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
-            fileNameData.setFileName(pdfName);
-            fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
-                    .replace(".doc", Constant.WORD_PDF));
+                fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                fileNameData.setFileName(pdfName);
+                fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
+                        .replace(".doc", Constant.WORD_PDF));
 //            }
         }
     }

@@ -164,7 +164,7 @@ public class ReceiverHandler {
                 log.info("元夕飞花令 ReceiverHandler demonstrationEmployeeRegister params:{}", params);
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DEMONSTRATION_DELAY.toString(),
-                        delay*60*1000+System.currentTimeMillis(), params.toJSONString());
+                        delay*1000+System.currentTimeMillis(), params.toJSONString());
             }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -210,10 +210,11 @@ public class ReceiverHandler {
                 long sendTime=  now.getTime();
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.REFERRAL_SEEK_REFERRAL);
-                String distinctId = String.valueOf(postUserId);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
+                properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
+                String distinctId = String.valueOf(postUserId);
+                // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
@@ -224,7 +225,7 @@ public class ReceiverHandler {
                 Date nowTime= new Date();
                 long  sendTime= nowTime.getTime();
                 properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.REFERRA_RECOMMEND_EVALUATE);
+                properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
                 log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
                 String distinctId = String.valueOf(userId);
@@ -321,9 +322,11 @@ public class ReceiverHandler {
         LogVO logVo=this.handlerLogVO();
         try{
             log.info("message:{}", JSON.toJSONString(message));
+
             msgBody = new String(message.getBody(), "UTF-8");
-            log.info("msgBody:{}", JSON.toJSONString(msgBody));
+            log.info("元夕飞花令 handlerMessageTemplate msgBody:{}", JSON.toJSONString(msgBody));
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
+                log.info("元夕飞花令 handlerMessageTemplate 职位同步失败");
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int positionId = jsonObject.getIntValue("positionId");
                 String msg = jsonObject.getString("message");
@@ -341,9 +344,10 @@ public class ReceiverHandler {
                 this.addPropertyLogVO(logVo, jsonObject);
                 this.handlerTempLateLog(logVo, type);
                 if (type != 0) {
+                    log.info("元夕飞花令 handlerMessageTemplate type!=0");
                     AIRecomParams params = this.initRecomParams(message);
                     MessageTemplateNoticeStruct messageTemplate = messageTemplateEntity.handlerTemplate(params);
-                    log.info("messageTemplate========" + JSONObject.toJSONString(messageTemplate));
+                    log.info("元夕飞花令 handlerMessageTemplate messageTemplate========" + JSONObject.toJSONString(messageTemplate));
                     if (messageTemplate != null) {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
@@ -356,10 +360,12 @@ public class ReceiverHandler {
                             sensorSend.send(distinctId,"sendTemplateMessage",properties);
                         }
                     } else {
+                        log.info("元夕飞花令 handlerMessageTemplate messageTemplate == null");
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
                         logVo.setStatus_code(1);
                     }
                 } else {
+                    log.info("元夕飞花令 handlerMessageTemplate type=0");
                     logVo.setStatus_code(2);
                 }
             }

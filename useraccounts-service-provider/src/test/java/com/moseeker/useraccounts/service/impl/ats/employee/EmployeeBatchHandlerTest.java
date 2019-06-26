@@ -66,7 +66,7 @@ public class EmployeeBatchHandlerTest {
 
     private static final String url = "jdbc:mysql://db-d.dqprism.com:3306/userdb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull";
     private static final String username = "daqi";
-    private static final String password = "5F51692091B4031640E18E7C27430E071BC878C8";
+    private static final String password = "7f1a45eac5985519829c929e7bbf0557";
 
     @Test
     public void generateDoc() throws Exception {

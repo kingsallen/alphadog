@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -427,7 +428,6 @@ public class UserHrAccountController {
      *
      * @param request
      * @param response
-     * @return
      */
     @RequestMapping(value = "/hraccount/searchcondition", method = RequestMethod.GET)
     @ResponseBody
@@ -722,7 +722,11 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/unbind", method = RequestMethod.PUT)
     @ResponseBody
     public String unbindEmployee(HttpServletRequest request, HttpServletResponse response) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss SSS");
+        LocalDateTime start = LocalDateTime.now();
+        logger.info("UserHrAccountController before unbindEmployee now:{}", start.format(dateTimeFormatter));
         try {
+
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> ids = (ArrayList<Integer>) params.get("ids");
             int companyId = params.getInt("companyId", 0);
@@ -743,6 +747,10 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime after = LocalDateTime.now();
+            logger.info("UserHrAccountController after unbindEmployee now:{}", after.format(dateTimeFormatter));
+            logger.info("UserHrAccountController unbindEmployee duration:{}", Duration.between(start, after).toMillis());
         }
     }
 
@@ -898,7 +906,6 @@ public class UserHrAccountController {
             String timespan = params.getString("timespan", "");
             String selectedIids = params.getString("selectedIds");
 
-            logger.info("UserHrAccountController employeeList params:{}", JSONObject.toJSONString(params));
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
                     order, asc, pageNumber, pageSize, email_isvalid,balanceType, timespan, selectedIids);
             return ResponseLogNotification.success(request,
@@ -1105,9 +1112,10 @@ public class UserHrAccountController {
         Integer hraccountId = params.getInt("hraccountId", 0);
         String fileName = params.getString("fileName", "");
         String filePath = params.getString("filePath", "");
-        logger.info("userEmployees:{}", params.get("userEmployees"));
+        logger.info("batchUpdate userEmployees:{}", params.get("userEmployees"));
 
         List<UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseEmployees((List<Map<String, Object>>)params.get("userEmployees"));
+        logger.info("batchUpdate userEmployees:{}", userEmployees);
 
         ImportUserEmployeeStatistic importUserEmployeeStatistic = userHrAccountService.updateEmployee(userEmployees, companyId, filePath, fileName, type, hraccountId);
         return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(importUserEmployeeStatistic)));

@@ -34,7 +34,6 @@ public interface ReferralService {
      * @throws ProfileException
      */
     ProfileDocParseResult parseFileProfileByFilePath(String filePath, int userId) throws ProfileException;
-
     /**
      * 员工上传简历
      * @param employeeId 员工编辑

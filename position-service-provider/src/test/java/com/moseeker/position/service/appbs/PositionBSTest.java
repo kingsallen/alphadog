@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,6 +38,14 @@ public class PositionBSTest {
 //        String json="{\"paramId\":\"86125fe7-7254-4fd6-a1f9-7c9cc665743a\"}";
 //
 //        positionBS.getVerifyParam(json);
+    }
+
+    String json = "[{\"positionId\":19509969,\"appid\":4,\"channels\":[{\"addressId\":19217,\"addressName\":\"海南省项目部现场\",\"channel\":1,\"companyId\":1303,\"companyName\":\"上海大岂网络科技有限公司\",\"occupation\":[[\"0400\",\"0450\"],[\"0400\",\"0401\"],[\"0400\",\"0445\"]],\"departmentName\":\"CS\",\"salaryBottom\":\"10\",\"salaryTop\":\"11\",\"internship\":true}]},{\"positionId\":19512099,\"appid\":4,\"channels\":[{\"addressId\":19217,\"addressName\":\"海南省项目部现场\",\"channel\":1,\"companyId\":1303,\"companyName\":\"上海大岂网络科技有限公司\",\"occupation\":[[\"0400\",\"0450\"],[\"0400\",\"0401\"],[\"0400\",\"0445\"]],\"departmentName\":\"CS\",\"salaryBottom\":\"10\",\"salaryTop\":\"11\",\"internship\":true}]}]";
+
+    @Test
+    public void syncPositionToThirdParty() throws Exception {
+        List<ThirdPartyPositionForm> positionForms = JSON.parseArray(json,ThirdPartyPositionForm.class);
+        System.out.println(JSON.toJSONString(positionBS.syncPositionToThirdParty(positionForms)));
     }
 
 }

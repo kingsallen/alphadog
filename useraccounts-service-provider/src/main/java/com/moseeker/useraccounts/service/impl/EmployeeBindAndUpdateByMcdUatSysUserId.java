@@ -70,7 +70,7 @@ public class EmployeeBindAndUpdateByMcdUatSysUserId extends EmployeeBinder {
 
         userEmployeeDO.setCompanyId(bindingParams.getCompanyId());
         userEmployeeDO.setEmployeeid(
-            org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+                org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
         userEmployeeDO.setSysuserId(bindingParams.getUserId());
         userEmployeeDO.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), userEmployeeDO.getCname()));
         userEmployeeDO.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), userEmployeeDO.getMobile()));

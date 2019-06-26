@@ -1,12 +1,11 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.crud.LocalCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.pojo.CustomEmployeeInsertResult;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
@@ -240,7 +239,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 "  where uu.sysuser_id = " + sysuserId + " and uu.activation = 0 and uu.disable = 0) ut " +
                 " on u.sysuser_id = ut.user_id " +
                 " set u.activation = " + EmployeeActiveState.Actived.getState() +
-                " ,  u.binding_time = '" + time +"' "+
+                " , set u.binding_time = " + time +
                 " where u.activation = " + EmployeeActiveState.UnFollow.getState() + " " +
                 " and u.id = " + id + " and ut.id is null");
     }
@@ -447,19 +446,56 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     }
 
     public List<UserEmployeeRecord> batchSave(List<UserEmployeeDO> userEmployeeDOS) {
+        org.jooq.Condition condition = null;
 
-        InsertValuesStep5 insertValuesStep5 = create.insertInto(UserEmployee.USER_EMPLOYEE)
+        for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+            if (condition == null) {
+                condition = UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(userEmployeeDO.getCompanyId())
+                        .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(userEmployeeDO.getCname()))
+                        .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(userEmployeeDO.getCustomField()));
+            } else {
+                condition = condition.or(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(userEmployeeDO.getCompanyId())
+                        .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(userEmployeeDO.getCname()))
+                        .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(userEmployeeDO.getCustomField())));
+            }
+        }
+
+        Result<Record3<Integer, String, String>> dbCustom = create.select(UserEmployee.USER_EMPLOYEE.ID,
+                UserEmployee.USER_EMPLOYEE.CNAME,
+                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD)
+                .from(UserEmployee.USER_EMPLOYEE)
+                .where(condition)
+                .fetch();
+        if (dbCustom != null && dbCustom.size() > 0) {
+            userEmployeeDOS = userEmployeeDOS
+                    .stream()
+                    .filter(userEmployeeDO -> {
+                        Optional<Record3<Integer, String, String>> optional = dbCustom
+                                .stream()
+                                .filter(record -> record.value2().equals(userEmployeeDO.getCname()) && record.value3().equals(userEmployeeDO.getCustomField()))
+                                .findAny();
+                        return !optional.isPresent();
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        InsertValuesStep7 insertValuesStep6 = create.insertInto(UserEmployee.USER_EMPLOYEE)
                 .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
                         UserEmployee.USER_EMPLOYEE.ACTIVATION,
                         UserEmployee.USER_EMPLOYEE.CNAME,
                         UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
-                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD);
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
+                        UserEmployee.USER_EMPLOYEE.IMPORT_TIME);
+
         for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
-            insertValuesStep5 = insertValuesStep5.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
-                    userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod());
+            insertValuesStep6 = insertValuesStep6.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
+                    userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod(),
+                    userEmployeeDO.getCustomFieldValues(),
+                    BeanUtils.convertToSQLTimestamp(userEmployeeDO.getImportTime()));
         }
-        Result result = insertValuesStep5.returning().fetch();
-        return result;
+
+        return insertValuesStep6.returning().fetch();
     }
 
     public UserEmployeeDO getEmployeeById(int employeeId) {
@@ -656,6 +692,33 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .limit(1)
                 .fetchOne();
         return record;
+    }
+
+    @Transactional(rollbackFor = {TException.class,RuntimeException.class})
+    public List<UserEmployeeRecord> casBatchInsert(List<UserEmployeeRecord> employees) throws BIZException {
+        List<UserEmployeeRecord> result = new ArrayList<>();
+        for (UserEmployeeRecord e : employees) {
+            List<Field<?>> fields = UserEmployee.USER_EMPLOYEE.fieldStream().filter(f -> e.get(f) != null).collect(Collectors.toList());
+            List<Param<?>> params = fields.stream().map(f -> param(f.getName(), e.get(f))).collect(Collectors.toList());
+
+            org.jooq.Condition duplicateCondition = EmployeeAuthMethod.getAuthMethod(e.getAuthMethod()).duplicateCondition(e);
+            int id = create.insertInto(UserEmployee.USER_EMPLOYEE)
+                    .columns(fields)
+                    .select(
+                            select(params)
+                                    .whereNotExists(
+                                            selectOne()
+                                                    .from(UserEmployee.USER_EMPLOYEE)
+                                                    .where(duplicateCondition)
+                                    )
+                    ).execute();
+            if (id != 0) {
+                e.setId(id);
+                result.add(e);
+            }
+        }
+
+        return result;
     }
 
     public UserEmployeeDO fetchUnActiveEmployeeByCustom(int companyId, String name, String customField) {

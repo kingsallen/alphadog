@@ -11,7 +11,7 @@ import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
+import com.moseeker.baseorm.constant.EmployeeAuthMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class EmployeeBatchHandler {
     private final static int BATCH_DELETE_SIZE = 500;
 
 
-    public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws CommonException, BIZException {
+    public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws Exception {
         if (batchForm == null || batchForm.getData() == null || batchForm.getData().size() == 0) {
             return new int[0];
         }
@@ -162,9 +162,9 @@ public class EmployeeBatchHandler {
      * @return 添加好的员工记录。如果参数是空，那么返回值是null
      * @throws CommonException
      */
-    private List<UserEmployeeRecord> addEmployeeRecordList(List<UserEmployeeRecord> userEmployeeList) throws CommonException {
+    private List<UserEmployeeRecord> addEmployeeRecordList(List<UserEmployeeRecord> userEmployeeList) throws Exception {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
-            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(userEmployeeList);
+            List<UserEmployeeRecord> employeeDOS = employeeDao.casBatchInsert(userEmployeeList);
 
             searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), true);
 
@@ -180,7 +180,7 @@ public class EmployeeBatchHandler {
      * @param addDatas
      * @param batchForm
      */
-    private void addEmployees(List<UserEmployeeStruct> addDatas, UserEmployeeBatchForm batchForm) {
+    private void addEmployees(List<UserEmployeeStruct> addDatas, UserEmployeeBatchForm batchForm) throws Exception {
         //每次最多一次插入100条
         int start = 0;
         while ((start + BATCH_SIZE) < addDatas.size()) {

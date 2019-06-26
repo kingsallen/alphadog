@@ -277,6 +277,7 @@ public class SearchengineEntity {
 
 
     public Response updateEmployeeAwards(List<Integer> employeeIds, boolean updateAwards) throws CommonException {
+        logger.info("SearchengineEntity updateEmployeeAwards employeeIds.size:{}, updateAwards:{}", employeeIds.size(), updateAwards);
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
         TransportClient client = this.getTransportClient();
@@ -427,7 +428,6 @@ public class SearchengineEntity {
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-                    logger.info(JSONObject.toJSONString(jsonObject));
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
                                     .setSource(jsonObject)
@@ -606,13 +606,16 @@ public class SearchengineEntity {
                 GetResponse response = client.prepareGet("users", "users", id + "").execute().actionGet();
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
+                logger.info("SearchengineEntity removeApplication mapTemp:{}", JSONObject.toJSONString(mapTemp));
                 if (mapTemp != null) {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
+                        logger.info("removeApplication applications:{}", JSONObject.toJSONString(applications));
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            logger.info("removeApplication applicationOptional:{}", applicationOptional.get());
                             if (applicationOptional.isPresent()) {
                                 logger.info("removeApplication exists ");
                                 List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());

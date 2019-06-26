@@ -26,6 +26,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.moseeker.position.constants.position.PositionAsyncConstant.*;
+
 /**
  * Created by lucky8987 on 17/5/11.
  */
@@ -216,6 +218,30 @@ public class AppConfig {
             add(BindingBuilder.bind(positionRevertLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_RESYNC));
             add(BindingBuilder.bind(positionDownShelfLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_DOWNSHELF));
             add(BindingBuilder.bind(positionEditLiePinQueue()).to(positionSyncLiePinExchange()).with(PositionSyncVerify.POSITION_OPERATE_ROUTEKEY_EDIT));
+        }};
+    }
+
+    @Bean
+    public DirectExchange positionBatchHandleExchange() {
+        DirectExchange exchange = new DirectExchange(POSITION_BATCH_HANDLE_EXCHANGE, true, false);
+        return exchange;
+    }
+
+    @Bean
+    public Queue positionBatchHandleRequestQueue() {
+        return new Queue(POSITION_BATCH_HANDLE_REQUEST_QUEUE, true, false, false);
+    }
+
+    @Bean
+    public Queue positionBatchHandleResponseQueue() {
+        return new Queue(POSITION_BATCH_HANDLE_RESPONSE_QUEUE, true, false, false);
+    }
+
+    @Bean
+    public List<Binding> bindPositionBatchHandle() {
+        return new ArrayList<Binding>() {{
+            add(BindingBuilder.bind(positionBatchHandleRequestQueue()).to(positionBatchHandleExchange()).with(POSITION_BATCH_HANDLE_REQUEST_ROUTING_KEY));
+            add(BindingBuilder.bind(positionBatchHandleResponseQueue()).to(positionBatchHandleExchange()).with(POSITION_BATCH_HANDLE_RESPONSE_ROUTING_KEY));
         }};
     }
 }

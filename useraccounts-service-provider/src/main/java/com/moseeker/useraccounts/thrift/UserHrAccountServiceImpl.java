@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import org.apache.thrift.TException;
@@ -34,6 +35,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 
 /**
  * HR账号服务
@@ -659,6 +662,7 @@ public class UserHrAccountServiceImpl implements Iface {
         try {
             return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -674,11 +678,13 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
-        if (userEmployeeDOMap.size() > 4000) {
-            logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 start");
+
+        logger.info("UserHrAccountServiceImpl checkBatchInsert");
+
+        if (userEmployeeDOMap.size() > FIVE_THOUSAND) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("自定义认证导入2 UserHrAccountServiceImpl checkBatchInsert initDateTime:{}", initDateTime.toString());
+
         try {
             return service.checkBatchInsert(userEmployeeDOMap, companyId);
         } catch (CommonException e) {
@@ -687,11 +693,7 @@ public class UserHrAccountServiceImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         } finally {
-            LocalDateTime lastDateTime = LocalDateTime.now();
-            logger.info("自定义认证导入2 UserHrAccountServiceImpl checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
-            if (userEmployeeDOMap.size() > 4000) {
-                logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 end");
-            }
+            logger.info("UserHrAccountServiceImpl after checkBatchInsert");
         }
     }
 

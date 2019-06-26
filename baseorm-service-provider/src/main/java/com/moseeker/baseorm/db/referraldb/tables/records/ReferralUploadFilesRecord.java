@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralUploadFilesRecord extends UpdatableRecordImpl<ReferralUploadFilesRecord> implements Record10<Integer, String, String, String, Integer, String, String, Timestamp, Timestamp, Byte> {
 
-    private static final long serialVersionUID = -428759885;
+    private static final long serialVersionUID = -13760367;
 
     /**
      * Setter for <code>referraldb.referral_upload_files.id</code>. 主key
@@ -89,14 +89,14 @@ public class ReferralUploadFilesRecord extends UpdatableRecordImpl<ReferralUploa
     }
 
     /**
-     * Setter for <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电脑扫码上传
+     * Setter for <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电   扫码上传
      */
     public void setType(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电脑扫码上传
+     * Getter for <code>referraldb.referral_upload_files.type</code>. 上传渠道：1 微信小程序 2电   扫码上传
      */
     public Integer getType() {
         return (Integer) get(4);

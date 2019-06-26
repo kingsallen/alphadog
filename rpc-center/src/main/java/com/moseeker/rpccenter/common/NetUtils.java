@@ -1,5 +1,8 @@
 package com.moseeker.rpccenter.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -15,7 +18,7 @@ import java.util.regex.Pattern;
 public class NetUtils {
 
     /** LOGGER */
-    //private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 
     /** 本机回送地址 */
     public static final String LOCALHOST = "127.0.0.1";
@@ -241,6 +244,30 @@ public class NetUtils {
             //LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
         }
         try {
+
+            Enumeration<NetworkInterface> test = NetworkInterface.getNetworkInterfaces();
+            try {
+                if (test != null) {
+                    while (test.hasMoreElements()) {
+                        NetworkInterface network = test.nextElement();
+                        Enumeration<InetAddress> addresses = network.getInetAddresses();
+                        if (addresses != null) {
+                            while (addresses.hasMoreElements()) {
+                                InetAddress address = addresses.nextElement();
+                                LOGGER.info("NOC NetUtils getLocalAddress0 ", address.getHostAddress());
+                                if (isValidAddress(address)) {
+                                    LOGGER.info("NOC NetUtils getLocalAddress0 address is valid!");
+                                } else {
+                                    LOGGER.info("NOC NetUtils getLocalAddress0 address is not valid!");
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
             if (interfaces != null) {
                 while (interfaces.hasMoreElements()) {
