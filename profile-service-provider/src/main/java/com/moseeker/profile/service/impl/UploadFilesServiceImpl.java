@@ -11,7 +11,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.profile.utils.OfficeUtils;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.UploadFilesService;
