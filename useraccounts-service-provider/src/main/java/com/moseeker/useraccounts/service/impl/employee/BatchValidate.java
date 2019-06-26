@@ -146,7 +146,9 @@ public class BatchValidate {
                 try {
                     ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
-                    importErrorUserEmployees.add(importErrorUserEmployee);
+                    if (importErrorUserEmployee != null) {
+                        importErrorUserEmployees.add(importErrorUserEmployee);
+                    }
                 } finally {
                     countDownLatch.countDown();
                 }
