@@ -69,6 +69,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
 import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
@@ -1419,6 +1420,7 @@ public class UserHrAccountService {
         userEmployeeMap.forEach((k, v) -> {
             v.setImportTime(now.format(dateTimeFormatter));
             v.setActivation(EmployeeActiveState.Init.getState());
+            v.setAuthMethod((byte) EmployeeAuthMethod.CUSTOM_AUTH.getCode());
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
