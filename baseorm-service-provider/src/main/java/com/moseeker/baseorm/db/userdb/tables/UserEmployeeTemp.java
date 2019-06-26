@@ -4,18 +4,23 @@
 package com.moseeker.baseorm.db.userdb.tables;
 
 
+import com.moseeker.baseorm.db.userdb.Keys;
 import com.moseeker.baseorm.db.userdb.Userdb;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeTempRecord;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeTemp extends TableImpl<UserEmployeeTempRecord> {
 
-    private static final long serialVersionUID = -362287630;
+    private static final long serialVersionUID = -567611005;
 
     /**
      * The reference instance of <code>userdb.user_employee_temp</code>
@@ -50,7 +55,7 @@ public class UserEmployeeTemp extends TableImpl<UserEmployeeTempRecord> {
     /**
      * The column <code>userdb.user_employee_temp.id</code>.
      */
-    public final TableField<UserEmployeeTempRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<UserEmployeeTempRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>userdb.user_employee_temp.employeeid</code>. 员工ID
@@ -193,9 +198,9 @@ public class UserEmployeeTemp extends TableImpl<UserEmployeeTempRecord> {
     public final TableField<UserEmployeeTempRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "email");
 
     /**
-     * The column <code>userdb.user_employee_temp.activation</code>. '员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证 5:取消关注，再关注
+     * The column <code>userdb.user_employee_temp.activation</code>. 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证 5:取消关注公众号
      */
-    public final TableField<UserEmployeeTempRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "'员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证 5:取消关注，再关注");
+    public final TableField<UserEmployeeTempRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证 5:取消关注公众号");
 
     /**
      * The column <code>userdb.user_employee_temp.activation_code</code>. 激活码
@@ -248,9 +253,9 @@ public class UserEmployeeTemp extends TableImpl<UserEmployeeTempRecord> {
     public final TableField<UserEmployeeTempRecord, Long> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.BIGINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "登录次数");
 
     /**
-     * The column <code>userdb.user_employee_temp.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工
+     * The column <code>userdb.user_employee_temp.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证
      */
-    public final TableField<UserEmployeeTempRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工");
+    public final TableField<UserEmployeeTempRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证");
 
     /**
      * The column <code>userdb.user_employee_temp.download_token</code>. 下载行业报告的校验token
@@ -323,6 +328,11 @@ public class UserEmployeeTemp extends TableImpl<UserEmployeeTempRecord> {
     public final TableField<UserEmployeeTempRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "学历");
 
     /**
+     * The column <code>userdb.user_employee_temp.bonus</code>. 员工当前的奖金总额
+     */
+    public final TableField<UserEmployeeTempRecord, Integer> BONUS = createField("bonus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工当前的奖金总额");
+
+    /**
      * Create a <code>userdb.user_employee_temp</code> table reference
      */
     public UserEmployeeTemp() {
@@ -350,6 +360,30 @@ public class UserEmployeeTemp extends TableImpl<UserEmployeeTempRecord> {
     @Override
     public Schema getSchema() {
         return Userdb.USERDB;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<UserEmployeeTempRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_USER_EMPLOYEE_TEMP;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<UserEmployeeTempRecord> getPrimaryKey() {
+        return Keys.KEY_USER_EMPLOYEE_TEMP_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<UserEmployeeTempRecord>> getKeys() {
+        return Arrays.<UniqueKey<UserEmployeeTempRecord>>asList(Keys.KEY_USER_EMPLOYEE_TEMP_PRIMARY);
     }
 
     /**

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -1399857710;
+    private static final long serialVersionUID = 1700311483;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -245,6 +245,11 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      * The column <code>hrdb.hr_search_condition.department_names</code>. 部门名称，英文逗号连接的字符串
      */
     public final TableField<HrSearchConditionRecord, String> DEPARTMENT_NAMES = createField("department_names", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "部门名称，英文逗号连接的字符串");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.remark</code>. 是否有备注 0无1有空为不限
+     */
+    public final TableField<HrSearchConditionRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(16).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "是否有备注 0无1有空为不限");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference

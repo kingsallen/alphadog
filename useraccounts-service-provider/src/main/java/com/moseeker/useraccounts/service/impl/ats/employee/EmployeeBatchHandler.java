@@ -166,7 +166,7 @@ public class EmployeeBatchHandler {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
             List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(userEmployeeList);
 
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), true);
 
             return employeeDOS;
         } else {
@@ -207,7 +207,7 @@ public class EmployeeBatchHandler {
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), BATCH_SIZE, updateDatas.size() - start);
         }
         employeeDao.updateRecords(updateDatas.subList(start, updateDatas.size()));
-        searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
+        searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()), true);
         logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
     }
 

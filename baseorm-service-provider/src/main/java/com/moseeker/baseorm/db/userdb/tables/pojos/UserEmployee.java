@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee implements Serializable {
 
-    private static final long serialVersionUID = 256803549;
+    private static final long serialVersionUID = 1921855802;
 
     private Integer   id;
     private String    employeeid;
@@ -82,6 +82,8 @@ public class UserEmployee implements Serializable {
     private Integer   cityCode;
     private Byte      degree;
     private Integer   bonus;
+    private Timestamp unbindTime;
+    private Timestamp importTime;
 
     public UserEmployee() {}
 
@@ -142,6 +144,8 @@ public class UserEmployee implements Serializable {
         this.cityCode = value.cityCode;
         this.degree = value.degree;
         this.bonus = value.bonus;
+        this.unbindTime = value.unbindTime;
+        this.importTime = value.importTime;
     }
 
     public UserEmployee(
@@ -200,7 +204,9 @@ public class UserEmployee implements Serializable {
         Byte      jobGrade,
         Integer   cityCode,
         Byte      degree,
-        Integer   bonus
+        Integer   bonus,
+        Timestamp unbindTime,
+        Timestamp importTime
     ) {
         this.id = id;
         this.employeeid = employeeid;
@@ -258,6 +264,8 @@ public class UserEmployee implements Serializable {
         this.cityCode = cityCode;
         this.degree = degree;
         this.bonus = bonus;
+        this.unbindTime = unbindTime;
+        this.importTime = importTime;
     }
 
     public Integer getId() {
@@ -708,6 +716,22 @@ public class UserEmployee implements Serializable {
         this.bonus = bonus;
     }
 
+    public Timestamp getUnbindTime() {
+        return this.unbindTime;
+    }
+
+    public void setUnbindTime(Timestamp unbindTime) {
+        this.unbindTime = unbindTime;
+    }
+
+    public Timestamp getImportTime() {
+        return this.importTime;
+    }
+
+    public void setImportTime(Timestamp importTime) {
+        this.importTime = importTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserEmployee (");
@@ -768,6 +792,8 @@ public class UserEmployee implements Serializable {
         sb.append(", ").append(cityCode);
         sb.append(", ").append(degree);
         sb.append(", ").append(bonus);
+        sb.append(", ").append(unbindTime);
+        sb.append(", ").append(importTime);
 
         sb.append(")");
         return sb.toString();

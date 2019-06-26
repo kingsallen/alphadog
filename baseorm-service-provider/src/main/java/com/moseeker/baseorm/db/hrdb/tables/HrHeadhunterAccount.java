@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterAccount extends TableImpl<HrHeadhunterAccountRecord> {
 
-    private static final long serialVersionUID = -1600500578;
+    private static final long serialVersionUID = -762915368;
 
     /**
      * The reference instance of <code>hrdb.hr_headhunter_account</code>
@@ -68,14 +68,19 @@ public class HrHeadhunterAccount extends TableImpl<HrHeadhunterAccountRecord> {
     public final TableField<HrHeadhunterAccountRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "登录密码");
 
     /**
-     * The column <code>hrdb.hr_headhunter_account.company_id</code>. 公司ID
+     * The column <code>hrdb.hr_headhunter_account.company_id</code>. 猎头公司ID
      */
-    public final TableField<HrHeadhunterAccountRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司ID");
+    public final TableField<HrHeadhunterAccountRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "猎头公司ID");
 
     /**
      * The column <code>hrdb.hr_headhunter_account.hr_id</code>. hr_account.id
      */
     public final TableField<HrHeadhunterAccountRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_account.id");
+
+    /**
+     * The column <code>hrdb.hr_headhunter_account.hr_company_id</code>. hr_company.id hr的公司id
+     */
+    public final TableField<HrHeadhunterAccountRecord, Integer> HR_COMPANY_ID = createField("hr_company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_company.id hr的公司id");
 
     /**
      * The column <code>hrdb.hr_headhunter_account.username</code>. 猎头顾问名称
@@ -85,17 +90,22 @@ public class HrHeadhunterAccount extends TableImpl<HrHeadhunterAccountRecord> {
     /**
      * The column <code>hrdb.hr_headhunter_account.service_start_time</code>. 服务开始日期
      */
-    public final TableField<HrHeadhunterAccountRecord, Timestamp> SERVICE_START_TIME = createField("service_start_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "服务开始日期");
+    public final TableField<HrHeadhunterAccountRecord, Timestamp> SERVICE_START_TIME = createField("service_start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "服务开始日期");
 
     /**
      * The column <code>hrdb.hr_headhunter_account.service_end_time</code>. 服务结束日期
      */
-    public final TableField<HrHeadhunterAccountRecord, Timestamp> SERVICE_END_TIME = createField("service_end_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "服务结束日期");
+    public final TableField<HrHeadhunterAccountRecord, Timestamp> SERVICE_END_TIME = createField("service_end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "服务结束日期");
 
     /**
      * The column <code>hrdb.hr_headhunter_account.contract_file_path</code>. 合同文件路径
      */
-    public final TableField<HrHeadhunterAccountRecord, String> CONTRACT_FILE_PATH = createField("contract_file_path", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "合同文件路径");
+    public final TableField<HrHeadhunterAccountRecord, String> CONTRACT_FILE_PATH = createField("contract_file_path", org.jooq.impl.SQLDataType.VARCHAR.length(2000), this, "合同文件路径");
+
+    /**
+     * The column <code>hrdb.hr_headhunter_account.contract_file_name</code>. 合同文件名称
+     */
+    public final TableField<HrHeadhunterAccountRecord, String> CONTRACT_FILE_NAME = createField("contract_file_name", org.jooq.impl.SQLDataType.VARCHAR.length(500), this, "合同文件名称");
 
     /**
      * The column <code>hrdb.hr_headhunter_account.contract_type</code>. 合同类型

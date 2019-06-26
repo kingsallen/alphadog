@@ -48,6 +48,11 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
+	public boolean healthCheck() throws TException {
+		return true;
+	}
+
+	@Override
 	public Response query(String keywords, String cities, String industries, String occupations, String scale,
 						  String employment_type, String candidate_source, String experience, String degree, String salary,
 						  String company_name, int page_from, int page_size,String child_company_name,String department,
@@ -127,11 +132,11 @@ public class SearchengineServiceImpl implements Iface {
 
 	@Override
 	public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-								   String emailValidate, int pageSize, int pageNumber,int balanceType, String timeSpan)
+								   String emailValidate, int pageSize, int pageNumber,int balanceType, String timeSpan, String selectIds)
 			throws BIZException, TException {
 		try {
 			return service.fetchEmployees(companyIds, keywords, filter, order, asc, emailValidate, pageSize, pageNumber,
-					balanceType, timeSpan);
+					balanceType, timeSpan, selectIds);
 		}catch(Exception e){
 			throw ExceptionUtils.convertException(e);
 		}

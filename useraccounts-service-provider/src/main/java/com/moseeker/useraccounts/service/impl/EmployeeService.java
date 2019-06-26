@@ -946,4 +946,29 @@ public class EmployeeService {
         }
 
     }
+
+    public void retrySendVerificationMail(int userId, int companyId, int source) throws Exception {
+        // 查询集团公司companyID列表
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
+                .and("disable", String.valueOf(0)).and("activation", "0");
+        List<UserEmployeeDO> employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
+
+        if (employees != null && employees.size() > 0) {
+            throw UserAccountException.EMPLOYEE_ALREADY_VERIFIED;
+        }
+
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,
+                employeeEntity.getAuthInfoKey(userId, companyId));
+        if (org.apache.commons.lang3.StringUtils.isBlank(pendingEmployee)) {
+            throw UserAccountException.EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED;
+        }
+        UserEmployeeDO emp = new UserEmployeeDO();
+        JSONObject jsonObject = JSONObject.parseObject(pendingEmployee);
+
+
+        EmployeeBindByEmail bindByEmail = (EmployeeBindByEmail)employeeBinder.get("auth_method_email");
+        bindByEmail.retrySendVerificationMail(userId, companyId, source);
+    }
 }

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyReferralConfRecord extends UpdatableRecordImpl<HrCompanyReferralConfRecord> implements Record8<Integer, Integer, String, String, Byte, Timestamp, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1667238403;
+    private static final long serialVersionUID = 1517681155;
 
     /**
      * Setter for <code>hrdb.hr_company_referral_conf.id</code>.
@@ -75,14 +75,14 @@ public class HrCompanyReferralConfRecord extends UpdatableRecordImpl<HrCompanyRe
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_referral_conf.text</code>. 内推政策文案
+     * Setter for <code>hrdb.hr_company_referral_conf.TEXT</code>. 内推政策文案
      */
     public void setText(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_referral_conf.text</code>. 内推政策文案
+     * Getter for <code>hrdb.hr_company_referral_conf.TEXT</code>. 内推政策文案
      */
     public String getText() {
         return (String) get(3);

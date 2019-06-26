@@ -8,24 +8,27 @@ import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -67,11 +70,13 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
+import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeList;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
+import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -81,13 +86,14 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -161,9 +167,6 @@ public class UserHrAccountService {
     private HrCompanyAccountDao hrCompanyAccountDao;
 
     @Autowired
-    private JobApplicationDao applicationDao;
-
-    @Autowired
     CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
@@ -195,6 +198,15 @@ public class UserHrAccountService {
 
     @Autowired
     private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+
+    @Autowired
+    protected HrEmployeeCustomFieldsDao customFieldsDao;
+
+    @Autowired
+    protected EmployeeCustomOptionJooqDao customOptionJooqDao;
+
+    @Autowired
+    BatchValidate batchValidate;
     /**
      * 修改手机号码
      *
@@ -857,14 +869,14 @@ public class UserHrAccountService {
         stringBuffer.append("%");
         // 名字
         Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), stringBuffer.toString(), ValueOp.LIKE);
-        // 自定义字段
+       /* // 自定义字段
         Condition customField = new Condition(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 邮箱
         Condition email = new Condition(UserEmployee.USER_EMPLOYEE.EMAIL.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 手机号码
-        Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);
+        Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);*/
 
-        queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile);
+        queryBuilder.andInnerCondition(cname);
         return queryBuilder;
     }
 
@@ -1219,7 +1231,7 @@ public class UserHrAccountService {
 
     /**
      * 员工列表
-     *  @param keyword    关键字搜索
+     * @param keyword    关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
      * @param order      排序条件
@@ -1227,15 +1239,17 @@ public class UserHrAccountService {
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
      * @param timeSpan   时间区间
+     * @param selectIds
      */
     public UserEmployeeVOPageVO getEmployees(String keyword, Integer companyId, Integer filter, String order, String asc,
                                              Integer pageNumber, Integer pageSize, String emailValidate,
-                                             Integer balanceType, String timeSpan) throws CommonException {
+                                             Integer balanceType, String timeSpan, String selectIds) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
             throw UserAccountException.COMPANY_DATA_EMPTY;
         }
+
         // 取公司ID
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Response response;
@@ -1244,8 +1258,11 @@ public class UserHrAccountService {
         }
         try {
             logger.info("getEmployees pageNum:{}, pageSize:{}", pageNumber, pageSize);
+            /*if (org.apache.commons.lang.StringUtils.isNotBlank(order)) {
+                order = order.replace("unbind_time", "unbind_time_long").replace("import_time", "import_time_long");
+            }*/
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
-                    pageSize, pageNumber,balanceType, timeSpan);
+                    pageSize, pageNumber,balanceType, timeSpan, selectIds);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
@@ -1362,18 +1379,44 @@ public class UserHrAccountService {
     @Transactional
     public Response employeeImport(Integer companyId, Map<Integer, UserEmployeeDO> userEmployeeMap, String filePath, String
             fileName, Integer type, Integer hraccountId) throws CommonException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport initDateTime:{}", initDateTime.toString());
         Response response = new Response();
         logger.info("开始导入员工信息");
+
+        // 员工导入信息日志
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
+
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
+        }
+
+        LocalDateTime beforeRepetitionFilter = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport beforeRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(initDateTime, beforeRepetitionFilter).toMillis());
         // 判断是否有重复数据
         ImportUserEmployeeStatistic importUserEmployeeStatistic = repetitionFilter(userEmployeeMap, companyId);
+        LocalDateTime afterRepetitionFilter = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterRepetitionFilter:{}, Duration:{}", initDateTime.toString(), Duration.between(beforeRepetitionFilter, afterRepetitionFilter).toMillis());
+
+        //校验自定义信息填写是否正确
         if (importUserEmployeeStatistic != null && !importUserEmployeeStatistic.insertAccept) {
             throw UserAccountException.IMPORT_DATA_WRONG;
         }
+
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
         logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
+            v.setImportTime(now.format(dateTimeFormatter));
+            v.setActivation(EmployeeActiveState.Init.getState());
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
@@ -1385,6 +1428,9 @@ public class UserHrAccountService {
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
         List<UserEmployeeDO> updateUserEmployee = new ArrayList<>();
         if (!StringUtils.isEmptyList(userEmployeeDOS)) {
+            batchValidate.convertToOptionId(userEmployeeDOS, companyId);
+            logger.info("employeeImport userEmployeeDOS: {}", JSONObject.toJSONString(userEmployeeDOS));
+
             // 查询出需要更新的数据
             for (UserEmployeeDO userEmployeeDOTemp : userEmployeeList) {
                 for (UserEmployeeDO user : userEmployeeDOS) {
@@ -1399,7 +1445,7 @@ public class UserHrAccountService {
                 // 更新数据
                 logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
-                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
+                searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()), false);
                 // 去掉需要更新的数据
                 userEmployeeList.removeAll(updateUserEmployee);
             }
@@ -1410,17 +1456,11 @@ public class UserHrAccountService {
             employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
 
         }
-        // 员工导入信息日志
-        ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
-        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
-        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
-        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
 
-        String errorMessage = vu.validate();
-        if (!StringUtils.isNullOrEmpty(errorMessage)) {
-            throw UserAccountException.ADD_IMPORTERMONITOR_PARAMETER.setMess(errorMessage);
-        }
+        LocalDateTime afterUpdateEmployee = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterUpdateEmployee:{}, Duration:{}", afterRepetitionFilter.toString(), Duration.between(beforeRepetitionFilter, afterUpdateEmployee).toMillis());
+
+
         try {
             HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
             hrImporterMonitorDO.setSys(2);
@@ -1438,9 +1478,143 @@ public class UserHrAccountService {
         }
         response = ResultMessage.SUCCESS.toResponse();
         logger.info("导入员工信息结束");
+        LocalDateTime afterLog = LocalDateTime.now();
+        logger.info("UserHrAccountService employeeImport afterLog:{}, Duration:{}", afterLog.toString(), Duration.between(afterUpdateEmployee, afterLog).toMillis());
+
         return response;
     }
 
+    /**
+     * 员工信息导入
+     *
+     * @param companyId       公司ID
+     * @param userEmployeeMap 员工信息列表
+     */
+    @Transactional
+    public ImportUserEmployeeStatistic updateEmployees(Integer companyId, List<UserEmployeeDO> userEmployeeMap, String filePath, String
+            fileName, Integer type, Integer hraccountId) throws CommonException {
+        logger.info("开始批量修改");
+
+        // 员工导入信息日志
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("导入的数据类型", type, "不能为空", null, 0, 100);
+        vu.addIntTypeValidate("HR账号", hraccountId, "不能为空", null, 1, 1000000);
+        vu.addStringLengthValidate("导入文件的绝对路径", filePath, null, null, 0, 257);
+        vu.addStringLengthValidate("导入的文件名", fileName, null, null, 0, 257);
+
+        String errorMessage = vu.validate();
+        if (!StringUtils.isNullOrEmpty(errorMessage)) {
+            throw UserAccountException.validateFailed(errorMessage);
+        }
+
+        if (userEmployeeMap.size() > 5000) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
+        }
+
+        // 查找已经存在的数据
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.clear();
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+        // 数据库中取出来的数据
+        List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.updateCheck(userEmployeeMap, companyId, dbEmployeeDOList);
+        logger.info("UserHrAccountService updateEmployees importUserEmployeeStatistic:{}", importUserEmployeeStatistic);
+
+        List<UserEmployeeDO> updateCustomFieldList = new ArrayList<>();
+        List<UserEmployeeDO> updateActivationList = new ArrayList<>();
+
+        List<Integer> employeeIdList = new ArrayList<>();
+
+        List<Integer> errorEmployeeIdList = new ArrayList<>();
+        if (importUserEmployeeStatistic.getUserEmployeeDO() != null
+                && importUserEmployeeStatistic.getUserEmployeeDO().size() > 0) {
+            for (ImportErrorUserEmployee employeeDO : importUserEmployeeStatistic.getUserEmployeeDO()) {
+                errorEmployeeIdList.add(employeeDO.getUserEmployeeDO().getId());
+            }
+        }
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        batchValidate.convertToOptionId(userEmployeeMap, companyId);
+
+        for (UserEmployeeDO userEmployee : userEmployeeMap) {
+
+            if (errorEmployeeIdList.contains(userEmployee.getId())) {
+                continue;
+            }
+
+            Optional<UserEmployeeDO> optional = dbEmployeeDOList.parallelStream()
+                    .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId()
+                                    && !userEmployee.getCustomFieldValues().equals(dbEmployee.getCustomFieldValues()))
+                    .findAny();
+            if (optional.isPresent()) {
+                updateCustomFieldList.add(userEmployee);
+                employeeIdList.add(userEmployee.getId());
+            }
+
+            Optional<UserEmployeeDO> optional1 = dbEmployeeDOList
+                    .parallelStream()
+                    .filter(dbEmployee -> dbEmployee.getId() == userEmployee.getId())
+                    .findAny();
+            logger.info("UserHrAccountService updateEmployees optional1.isPresent():{}", optional1.isPresent());
+
+            if (optional1.isPresent()) {
+                logger.info("UserHrAccountService updateEmployees userEmployee.activation:{}, dbEmployee.activation:{}", userEmployee.getActivation(), optional1.get().getActivation());
+                if (userEmployee.getActivation() != optional1.get().getActivation()
+                        && optional1.get().getActivation() == EmployeeActiveState.Actived.getState()
+                        && userEmployee.getActivation() == EmployeeActiveState.Cancel.getState()) {
+                    userEmployee.setUnbindTime(now.format(dateTimeFormatter));
+                    updateActivationList.add(userEmployee);
+                }
+            }
+        }
+
+        if (updateCustomFieldList.size() > 0) {
+            List<UserEmployeeRecord> records = updateCustomFieldList
+                    .parallelStream()
+                    .map(userEmployeeDO -> {
+                        UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
+                        userEmployeeRecord.setId(userEmployeeDO.getId());
+                        userEmployeeRecord.setCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                        return userEmployeeRecord;
+                    })
+                    .collect(Collectors.toList());
+            userEmployeeDao.updateRecords(records);
+        }
+
+        logger.info("UserHrAccountService updateEmployees employeeIdList.size():{}", employeeIdList.size());
+        if (employeeIdList.size() > 0) {
+            logger.info("UserHrAccountService updateEmployees employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
+            searchengineEntity.updateEmployeeAwards(Lists.newArrayList(employeeIdList), false);
+        }
+
+        logger.info("UserHrAccountService updateEmployees updateActivationList.size():{}", updateActivationList.size());
+        if (updateActivationList.size() > 0) {
+            logger.info("UserHrAccountService updateEmployees updateActivationList:{}", JSONObject.toJSONString(updateActivationList));
+            employeeEntity.unbind(updateActivationList);
+        }
+
+        try {
+            HrImporterMonitorDO hrImporterMonitorDO = new HrImporterMonitorDO();
+            hrImporterMonitorDO.setSys(2);
+            hrImporterMonitorDO.setFile(filePath);
+            hrImporterMonitorDO.setCompanyId(companyId);
+            hrImporterMonitorDO.setName(fileName);
+            hrImporterMonitorDO.setStatus(2);
+            hrImporterMonitorDO.setType(type);
+            hrImporterMonitorDO.setMessage("导入成功");
+            hrImporterMonitorDO.setHraccountId(hraccountId);
+            hrImporterMonitorDao.addData(hrImporterMonitorDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        logger.info("批量修改结束");
+        return importUserEmployeeStatistic;
+    }
 
     /**
      * 检查员工重复(批量导入之前验证)
@@ -1460,7 +1634,9 @@ public class UserHrAccountService {
      * @param userEmployeeMap
      * @param companyId
      */
-    public ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+    private ImportUserEmployeeStatistic repetitionFilter(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId) throws CommonException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter initDateTime:{}", initDateTime.toString());
         if (companyId == 0) {
             throw UserAccountException.COMPANYID_ENPTY;
         }
@@ -1474,65 +1650,20 @@ public class UserHrAccountService {
         if (company == null) {
             throw UserAccountException.COMPANY_DATA_EMPTY;
         }
-        ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
+
         // 查找已经存在的数据
         queryBuilder.clear();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
-        // 重复的对象
-        List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
-        int repetitionCounts = 0;
-        int errorCounts = 0;
-        // 提交上的数据
-        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
-            UserEmployeeDO userEmployeeDO = entry.getValue();
-            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-            // 姓名不能为空
-            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("cname不能为空");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            }
-            if (userEmployeeDO.getCompanyId() == 0) {
-                userEmployeeDO.setCompanyId(companyId);
-            }
-            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-                continue;
-            }
-            if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
-                // 数据库的数据
-                for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
-                    // 非自定义员工,忽略检查
-                    if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
-                            || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
-                        continue;
-                    }
-                    // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
-                    if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
-                        repetitionCounts = repetitionCounts + 1;
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setRowNum(entry.getKey());
-                        importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                    }
-                }
-            }
-        }
-        importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCounts);
-        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
-        importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
-        if (repetitionCounts == 0 && errorCounts == 0) {
-            importUserEmployeeStatistic.setInsertAccept(true);
-        } else {
-            importUserEmployeeStatistic.setInsertAccept(false);
-        }
+
+        LocalDateTime beforeCheck = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter beforeCheck:{}, Duration:{}", beforeCheck.toString(), Duration.between(initDateTime, beforeCheck).toMillis());
+        ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
+                companyId, dbEmployeeDOList);
+        LocalDateTime afterImportCheck = LocalDateTime.now();
+        logger.info("自定义认证导入2 UserHrAccountService repetitionFilter afterImportCheck:{}, duration importCheck:{}", afterImportCheck.toString(), Duration.between(beforeCheck, afterImportCheck).toMillis());
         return importUserEmployeeStatistic;
     }
 
@@ -1573,8 +1704,8 @@ public class UserHrAccountService {
         userEmployeeDetailVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
 
         if (userEmployeeDO.getCustomFieldValues() != null) {
-            List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
-            userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
+            List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+            userEmployeeDetailVO.setCustomFieldValues(list);
         }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
@@ -1663,27 +1794,27 @@ public class UserHrAccountService {
         }
 
         try {
-            UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-            if (cname != null) {
+            //先查询原数据，在手机号，姓名没有传值的时候，不予更新
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(userEmployeeId);
+            if (StringUtils.isNotNullOrEmpty(cname)) {
                 userEmployeeDO.setCname(cname);
             }
-            if (mobile != null) {
+            if (StringUtils.isNotNullOrEmpty(mobile)) {
                 userEmployeeDO.setMobile(mobile);
             }
-            if (customField != null) {
+            if (StringUtils.isNotNullOrEmpty(customField)) {
                 userEmployeeDO.setCustomField(customField);
             }
-            if (email != null) {
+            if (StringUtils.isNotNullOrEmpty(email)) {
                 userEmployeeDO.setEmail(email);
             }
-            if (customFieldValues != null) {
+            if (StringUtils.isNotNullOrEmpty(customFieldValues)) {
                 userEmployeeDO.setCustomFieldValues(customFieldValues);
             }
-            userEmployeeDO.setId(userEmployeeId);
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
-                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId));
+                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId), false);
             } else {
                 response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
             }
@@ -2056,6 +2187,21 @@ public class UserHrAccountService {
             queryBuilder.clear();
             queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+
+            List<HrEmployeeCustomFields> fieldsList = customFieldsDao.listSystemCustomFieldByCompanyIdList(companyIds);
+            List<EmployeeOptionValue> employeeOptionValues;
+            if (fieldsList != null && fieldsList.size() > 0) {
+                List<Integer> fieldIdList = fieldsList
+                        .parallelStream()
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getOptionType() == OptionType.Select.getValue())
+                        .map(HrEmployeeCustomFields::getId)
+                        .collect(Collectors.toList());
+                employeeOptionValues = customOptionJooqDao.listByCustomIdList(fieldIdList);
+            } else {
+                employeeOptionValues = new ArrayList<>(0);
+            }
+
+
             // 查询公司信息
             Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
             for (UserEmployeeDO userEmployeeDO : employees) {
@@ -2066,14 +2212,28 @@ public class UserHrAccountService {
                 if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
                     userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
+                if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getUnbindTime())) {
+                    userEmployeeVO.setUnbindTime(new DateTime(userEmployeeDO.getUnbindTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
+                if (StringUtils.isNotNullOrEmpty(userEmployeeDO.getImportTime())) {
+                    userEmployeeVO.setImportTime(new DateTime(userEmployeeDO.getImportTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
                 if(userEmployeeVO.getAward()<0){
                     userEmployeeVO.setAward(0);
                 }
-                List customFieldValues = new ArrayList();
+                List<Map<String, String>> customFieldValues = new ArrayList(3);
+
                 if (userEmployeeDO.getCustomFieldValues() != null) {
-                    customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
+
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
+                    List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues list:{}", JSONObject.toJSONString(list));
+                    userEmployeeVO.setCustomFieldValues(list);
+
+                    List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());
+                    customFieldValues.addAll(list1);
                 }
-                userEmployeeVO.setCustomFieldValues(customFieldValues);
+                userEmployeeVO.setSystemFields(customFieldValues);
                 // 微信昵称
                 if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
                     userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());

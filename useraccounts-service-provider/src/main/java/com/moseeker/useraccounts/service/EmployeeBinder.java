@@ -1,9 +1,11 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -21,6 +23,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -32,6 +35,7 @@ import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import java.util.*;
 
+import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -57,7 +61,7 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
 @Component
 public abstract class EmployeeBinder {
 
-    private static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
+    protected static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
 
     protected MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
@@ -69,6 +73,9 @@ public abstract class EmployeeBinder {
 
     @Autowired
     protected UserEmployeeDao employeeDao;
+
+    @Autowired
+    protected HrCompanyDao companyDao;
 
     @Autowired
     protected UserWxEntity wxEntity;
@@ -104,7 +111,13 @@ public abstract class EmployeeBinder {
     KafkaSender kafkaSender;
 
     @Autowired
+    SensorSend sensorSend;
+
+    @Autowired
     private Neo4jService neo4jService;
+
+    @Autowired
+    BatchValidate batchValidate;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
@@ -127,6 +140,7 @@ public abstract class EmployeeBinder {
                 throw UserAccountException.EMPLOYEE_VERIFICATION_NOT_SUPPORT;
             }
             paramCheck(bindingParams, certConf);
+            validateCustomFieldValues(bindingParams);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
         } catch (CommonException e) {
@@ -140,6 +154,19 @@ public abstract class EmployeeBinder {
         }
         log.info("bind response: {}", response);
         return response;
+    }
+
+    /**
+     * 校验自定义信息
+     * @param bindingParams 认证参数
+     */
+    protected void validateCustomFieldValues(BindingParams bindingParams) {
+        boolean customValidateResult = batchValidate.validateCustomFieldValues(bindingParams.getCustomFieldValues(),
+                bindingParams.getCompanyId());
+
+        if (!customValidateResult) {
+            throw UserAccountException.EMPLOYEE_CUSTOM_FIELD_ERROR;
+        }
     }
 
     /**
@@ -174,6 +201,15 @@ public abstract class EmployeeBinder {
         userEmployee.setActivation((byte)0);
         userEmployee.setSource(bindingParams.getSource());
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        if (bindingParams.getCustomFieldValues() != null && bindingParams.getCustomFieldValues().size() > 0) {
+            JSONArray jsonArray = new JSONArray();
+            bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(key.toString(), value);
+                jsonArray.add(jsonObject);
+            });
+            userEmployee.setCustomFieldValues(jsonArray.toJSONString());
+        }
         userEmployeeDOThreadLocal.set(userEmployee);
         return userEmployee;
     }
@@ -189,6 +225,7 @@ public abstract class EmployeeBinder {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("公司信息", bindingParams.getCompanyId(), null, null, 1, null);
         validateUtil.addIntTypeValidate("用户信息", bindingParams.getUserId(), null, null, 1, null);
+
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             throw UserAccountException.validateFailed(result);
@@ -249,7 +286,7 @@ public abstract class EmployeeBinder {
             userDao.updateData(userUserDO);
         }
 
-        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}}, true);
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
         kafkaSender.sendEmployeeCertification(useremployee);
         //将属于本公司的潜在候选人设置为无效
@@ -315,6 +352,15 @@ public abstract class EmployeeBinder {
         useremployee.setId(employeeId);
         response.setEmployeeId(employeeId);
         this.updateEsUsersAndProfile(useremployee.getSysuserId());
+
+        //神策埋点加入 pro
+        HrCompanyDO companyDO = companyDao.getCompanyById(useremployee.getCompanyId());
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("companyName", companyDO.getName());
+        properties.put("companyId", useremployee.getCompanyId());
+        properties.put("isEmployee", 1);
+        sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
+
         return response;
     }
 
@@ -337,6 +383,10 @@ public abstract class EmployeeBinder {
             if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
                     !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
                 unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+            }
+            //添加source字段
+            if(useremployee.isSetSource()){
+                unActiveEmployee.setSource((byte)useremployee.getSource());
             }
             unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
             log.info("doneBind unActiveEmployee update record");
@@ -443,5 +493,4 @@ public abstract class EmployeeBinder {
             candidateCompanyDao.updateDatas(list);
         }
     }
-
 }

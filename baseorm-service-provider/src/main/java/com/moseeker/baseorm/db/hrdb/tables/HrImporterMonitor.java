@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrImporterMonitor extends TableImpl<HrImporterMonitorRecord> {
 
-    private static final long serialVersionUID = -1227762442;
+    private static final long serialVersionUID = -831210498;
 
     /**
      * The reference instance of <code>hrdb.hr_importer_monitor</code>
@@ -67,9 +67,9 @@ public class HrImporterMonitor extends TableImpl<HrImporterMonitorRecord> {
     public final TableField<HrImporterMonitorRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_account.id 账号编号");
 
     /**
-     * The column <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company
+     * The column <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company 3:? 4:批量修改 已认证的user_employee
      */
-    public final TableField<HrImporterMonitorRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "要导入的表：0：user_employee 1: job_position 2:hr_company");
+    public final TableField<HrImporterMonitorRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "要导入的表：0：user_employee 1: job_position 2:hr_company 3:? 4:批量修改 已认证的user_employee");
 
     /**
      * The column <code>hrdb.hr_importer_monitor.file</code>. 导入文件的绝对路径
