@@ -1416,6 +1416,7 @@ public class UserHrAccountService {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployeeMap.forEach((k, v) -> {
             v.setImportTime(now.format(dateTimeFormatter));
+            v.setActivation(EmployeeActiveState.Init.getState());
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
