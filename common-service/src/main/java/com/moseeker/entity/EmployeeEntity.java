@@ -702,7 +702,8 @@ public class EmployeeEntity {
                         .stream()
                         .map(UserEmployeeDO::getId).filter(id -> id > 0)
                         .collect(Collectors.toList());
-                searchengineEntity.updateEmployeeAwards(employeeIdList);
+                logger.info("EmployeeEntity unbind employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
+                searchengineEntity.updateEmployeeAwards(employeeIdList, false);
                 List<Integer> companyIdList = employees
                         .stream()
                         .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
@@ -1079,7 +1080,7 @@ public class EmployeeEntity {
                 employeeDOS.add(record);
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
         } else {
             return null;
@@ -1118,7 +1119,7 @@ public class EmployeeEntity {
         }
         UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
 
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()), false);
 
         return employeeDO;
     }
@@ -1139,7 +1140,7 @@ public class EmployeeEntity {
 
     public int updateData(UserEmployeeDO userEmployeeDO) {
         int result = employeeDao.updateData(userEmployeeDO);
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()), true);
         return result;
     }
 
@@ -1247,7 +1248,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addRegisterLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
 
     }
 
@@ -1270,7 +1271,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addCancelLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
     }
 
     /**
@@ -1717,21 +1718,18 @@ public class EmployeeEntity {
     public int addEmployeeListIfNotExist(List<UserEmployeeDO> userEmployeeList) {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
             int count = 0;
-            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
-            for(UserEmployeeDO employee : userEmployeeList){
-                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist employee:{}", employee);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist record:{}", record);
-                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
-                UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
-
-                if (userEmployeeRecord != null) {
-                    employeeDOS.add(userEmployeeRecord);
-                    count += 1;
+            while (count < userEmployeeList.size()) {
+                int crement = 0;
+                if (userEmployeeList.size() - count > 500) {
+                    crement = 500;
+                } else {
+                    crement = userEmployeeList.size() - count;
                 }
+                employeeDao.insertCustomEmployeeIfNotExist(userEmployeeList.subList(count, count+crement));
+                count += crement;
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(userEmployeeList.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
             return count;
         } else {
             return 0;

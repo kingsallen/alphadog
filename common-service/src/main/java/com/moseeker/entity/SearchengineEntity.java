@@ -276,7 +276,7 @@ public class SearchengineEntity {
     }
 
 
-    public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
+    public Response updateEmployeeAwards(List<Integer> employeeIds, boolean updateAwards) throws CommonException {
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
         TransportClient client = this.getTransportClient();
@@ -373,17 +373,19 @@ public class SearchengineEntity {
                     }
 
 
-                    // 取年积分
-                    List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
-                    // 取季度积分
-                    List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
-                    // 取月积分
-                    List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
-                    JSONObject awards = new JSONObject();
-                    getAwards(awards, listYear);
-                    getAwards(awards, listQuarter);
-                    getAwards(awards, listMonth);
-                    jsonObject.put("awards", awards);
+                    if (updateAwards) {
+                        // 取年积分
+                        List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
+                        // 取季度积分
+                        List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
+                        // 取月积分
+                        List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
+                        JSONObject awards = new JSONObject();
+                        getAwards(awards, listYear);
+                        getAwards(awards, listQuarter);
+                        getAwards(awards, listMonth);
+                        jsonObject.put("awards", awards);
+                    }
                     // 积分信息
                     if (companyMap.containsKey(userEmployeeDO.getCompanyId())) {
                         HrCompanyDO hrCompanyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
