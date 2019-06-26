@@ -141,7 +141,9 @@ public class BatchValidate {
         AtomicInteger errorCount = new AtomicInteger(0);
         CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
         logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.forEach");
+        AtomicInteger count = new AtomicInteger(0);
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
+            count.incrementAndGet();
             threadPool.startTast(() -> {
                 try {
                     ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
@@ -158,6 +160,8 @@ public class BatchValidate {
             });
 
         });
+        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
+        logger.info("UserHrAccountServiceImpl importCheck count", count.get());
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
