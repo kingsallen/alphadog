@@ -15,6 +15,11 @@ public class UserProviderThriftServiceImpl implements UserProviderService.Iface 
     private UserProviderServiceImpl userProviderService;
 
     @Override
+    public boolean healthCheck() throws TException {
+        return true;
+    }
+
+    @Override
     public UserUserDO getCompanyUser(int appid, String phone, int companyId) throws TException {
         try {
             return userProviderService.getCompanyUser(appid, phone, companyId);

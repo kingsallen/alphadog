@@ -48,6 +48,11 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
+	public boolean healthCheck() throws TException {
+		return true;
+	}
+
+	@Override
 	public Response query(String keywords, String cities, String industries, String occupations, String scale,
 						  String employment_type, String candidate_source, String experience, String degree, String salary,
 						  String company_name, int page_from, int page_size,String child_company_name,String department,
