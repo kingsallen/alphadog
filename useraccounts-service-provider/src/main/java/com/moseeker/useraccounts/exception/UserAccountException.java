@@ -14,7 +14,6 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException USEREMPLOYEES_DATE_EMPTY = new UserAccountException(42006, "员工ID为空！");
     public static final UserAccountException USEREMPLOYEES_WRONG = new UserAccountException(42007, "员工ID设置错误！");
     public static final UserAccountException USEREMPLOYEES_EMPTY = new UserAccountException(42008, "员工数据不存在！");
-    public static final UserAccountException USEREMPLOYEES_EMPTY_OR_NO_NEED_UPDATE = new UserAccountException(42008, "员工数据不存在或无需修改！");
     public static final UserAccountException IMPORT_DATA_WRONG = new UserAccountException(42009, "导入员工数据有误！");
     public static final UserAccountException IMPORT_DATA_EMPTY = new UserAccountException(42005, "导入员工数据为空！");
     public static final UserAccountException PERMISSION_DENIED = new UserAccountException(42010, "员工ID和公司ID不匹配！");
@@ -78,6 +77,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_CUSTOM_FIELD_ERROR = new UserAccountException(42065, "自定义信息有误！");
     public static final UserAccountException EMPLOYEE_BATCH_UPDAT_OVER_LIMIT = new UserAccountException(42066, "超过允许批量修改的上限！");
     public static final UserAccountException EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED = new UserAccountException(42067, "邮件认证的认证信息过期！");
+    public static final UserAccountException USEREMPLOYEES_EMPTY_OR_NO_NEED_UPDATE = new UserAccountException(42068, "员工数据不存在或无需修改！");
 
     private final int code;
 
