@@ -682,11 +682,6 @@ public class UserHrAccountServiceImpl implements Iface {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
 
-        if (userEmployeeDOMap.size() > 4000) {
-            logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 start");
-        }
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("自定义认证导入2 UserHrAccountServiceImpl checkBatchInsert initDateTime:{}", initDateTime.toString());
         try {
             return service.checkBatchInsert(userEmployeeDOMap, companyId);
         } catch (CommonException e) {
@@ -694,12 +689,6 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
-        } finally {
-            LocalDateTime lastDateTime = LocalDateTime.now();
-            logger.info("自定义认证导入2 UserHrAccountServiceImpl checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
-            if (userEmployeeDOMap.size() > 4000) {
-                logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 end");
-            }
         }
     }
 
