@@ -458,7 +458,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
             insertValuesStep6 = insertValuesStep6.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
                     userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod(),
-                    userEmployeeDO.getCustomFieldValues()
+                    userEmployeeDO.getCustomFieldValues(),
                     BeanUtils.convertToSQLTimestamp(userEmployeeDO.getImportTime()));
         }
         Result result = insertValuesStep6.returning().fetch();
