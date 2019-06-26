@@ -160,18 +160,22 @@ public class BatchValidate {
             });
 
         });
+        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
+        logger.info("UserHrAccountServiceImpl importCheck count:{}", count.get());
         try {
             countDownLatch.await();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
         logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
-        logger.info("UserHrAccountServiceImpl importCheck count", count.get());
+        logger.info("UserHrAccountServiceImpl importCheck count:{}", count.get());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
+        logger.info("UserHrAccountServiceImpl importCheck before userEmployeeMap.size:{}", userEmployeeMap.size());
+        logger.info("UserHrAccountServiceImpl importCheck count:{}", count.get());
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
