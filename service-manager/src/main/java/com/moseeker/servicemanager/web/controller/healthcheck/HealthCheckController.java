@@ -55,7 +55,7 @@ public class HealthCheckController {
      * service-manager 健康检查
      * <p>
      */
-    @RequestMapping(value = "/service-manager/healthcheck")
+    @RequestMapping(value = "/servicemanager/healthcheck")
     @ResponseBody
     public String check(HttpServletRequest request, HttpServletResponse response) {
         try {
