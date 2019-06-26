@@ -443,7 +443,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return record1;
     }
 
-    public void insertCustomEmployeeIfNotExist(List<UserEmployeeRecord> records) {
+    public void insertCustomEmployeeIfNotExist(List<UserEmployeeDO> records) {
 
         if (records != null && records.size() > 0) {
             InsertValuesStep7 step7 = create.insertInto(UserEmployee.USER_EMPLOYEE)
@@ -455,10 +455,11 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                             UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
                             UserEmployee.USER_EMPLOYEE.AUTH_METHOD
                     );
-            for (UserEmployeeRecord record : records) {
+            for (UserEmployeeDO record : records) {
+                Timestamp importTime = BeanUtils.convertToSQLTimestamp(record.getImportTime());
                 step7 = step7.values(record.getCompanyId(), record.getActivation(), record.getCname(),
-                        record.getCustomField(), record.getImportTime(), record.getCustomFieldValues(),
-                        record.getAuthMethod());
+                        record.getCustomField(), importTime, record.getCustomFieldValues(),
+                        Constant.AUTH_METHON_TYPE_CUSTOMIZE);
             }
             step7.execute();
         }
