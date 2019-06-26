@@ -1722,16 +1722,18 @@ public class EmployeeEntity {
             List<UserEmployeeRecord> records = new ArrayList<>(userEmployeeList.size());
             int count = 0;
             while (count < userEmployeeList.size()) {
-                int crement = 0;
+                int increase;
                 if (userEmployeeList.size() - count > 500) {
-                    crement = 500;
+                    increase = 500;
                 } else {
-                    crement = userEmployeeList.size() - count;
+                    increase = userEmployeeList.size() - count;
                 }
-                List<UserEmployeeRecord> list = employeeDao.batchSave(userEmployeeList.subList(count, count+crement));
+                logger.info("EmployeeEntity addEmployeeListIfNotExist increase:{}", increase);
+                List<UserEmployeeRecord> list = employeeDao.batchSave(userEmployeeList.subList(count, count+increase));
                 logger.info("EmployeeEntity addEmployeeListIfNotExist first id:{}", list.get(0).getId());
                 records.addAll(list);
-                count += crement;
+                count += increase;
+                logger.info("EmployeeEntity addEmployeeListIfNotExist count:{}", count);
             }
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(records.stream().map(UserEmployeeRecord::getId).collect(Collectors.toList()),
