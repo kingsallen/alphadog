@@ -897,7 +897,6 @@ public class SearchengineService {
                 EmployeeBizTool.addEmployeeIds(query, employeeIdList, searchUtil);
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
                 EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
-                EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
                 response = searchRequestBuilder.execute().actionGet();
 
             } else {
