@@ -70,6 +70,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
+import static com.moseeker.common.constants.Constant.ONE;
 import static com.moseeker.searchengine.service.impl.tools.EmployeeBizTool.buildSortScript;
 
 @Service
@@ -896,6 +898,8 @@ public class SearchengineService {
                 }
                 EmployeeBizTool.addEmployeeIds(query, employeeIdList, searchUtil);
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+                EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
+                EmployeeBizTool.addPagination(searchRequestBuilder, ONE, FIVE_THOUSAND);
                 response = searchRequestBuilder.execute().actionGet();
 
             } else {
