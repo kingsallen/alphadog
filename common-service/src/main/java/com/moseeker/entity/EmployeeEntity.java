@@ -1719,37 +1719,27 @@ public class EmployeeEntity {
      */
     public int addEmployeeListIfNotExist(List<UserEmployeeDO> userEmployeeList) {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            List<UserEmployeeRecord> records = new ArrayList<>(userEmployeeList.size());
             int count = 0;
-            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
-            List<Future<UserEmployeeRecord>> futures = new ArrayList<>(userEmployeeList.size());
-            for(UserEmployeeDO employee : userEmployeeList){
-                Future<UserEmployeeRecord> future = tp.startTast(() -> insertUserEmployee(employee));
-                futures.add(future);
-            }
-            for (Future<UserEmployeeRecord> future : futures) {
-                try {
-                    UserEmployeeRecord userEmployeeRecord = future.get();
-                    if (userEmployeeRecord != null) {
-                        employeeDOS.add(userEmployeeRecord);
-                        count += 1;
-                    }
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+            while (count < userEmployeeList.size()) {
+                int crement = 0;
+                if (userEmployeeList.size() - count > 500) {
+                    crement = 500;
+                } else {
+                    crement = userEmployeeList.size() - count;
                 }
+                List<UserEmployeeRecord> list = employeeDao.batchSave(userEmployeeList.subList(count, count+crement));
+                logger.info("EmployeeEntity addEmployeeListIfNotExist first id:{}", list.get(0).getId());
+                records.addAll(list);
+                count += crement;
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
+            searchengineEntity.updateEmployeeAwards(records.stream().map(UserEmployeeRecord::getId).collect(Collectors.toList()),
+                    false);
             return count;
         } else {
             return 0;
         }
-    }
-
-    private UserEmployeeRecord insertUserEmployee(UserEmployeeDO userEmployeeDO) {
-        UserEmployeeRecord record = BeanUtils.structToDB(userEmployeeDO, UserEmployeeRecord.class);
-        record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
-
-        return employeeDao.insertCustomEmployeeIfNotExist(record);
     }
 }
 
