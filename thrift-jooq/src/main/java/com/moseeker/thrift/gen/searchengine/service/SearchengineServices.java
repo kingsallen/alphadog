@@ -12,7 +12,7 @@ public class SearchengineServices {
 
   public interface Iface {
 
-    public boolean healthCheck() throws org.apache.thrift.TException;git
+    public boolean healthCheck() throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response query(java.lang.String keywords, java.lang.String cities, java.lang.String industries, java.lang.String occupations, java.lang.String scale, java.lang.String employment_type, java.lang.String candidate_source, java.lang.String experience, java.lang.String degree, java.lang.String salary, java.lang.String company_name, int page_from, int page_size, java.lang.String child_company_name, java.lang.String department, boolean order_by_priority, java.lang.String custom, java.lang.String hb_config_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -2088,7 +2088,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2114,7 +2114,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2143,7 +2143,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2172,7 +2172,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2201,7 +2201,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2230,7 +2230,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2259,7 +2259,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2288,7 +2288,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2317,7 +2317,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2346,7 +2346,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2376,7 +2376,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2405,7 +2405,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2434,7 +2434,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2463,7 +2463,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2492,7 +2492,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2521,7 +2521,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2550,7 +2550,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2579,7 +2579,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2608,7 +2608,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2637,7 +2637,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2667,7 +2667,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2697,7 +2697,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2726,7 +2726,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2755,7 +2755,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2780,7 +2780,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2809,7 +2809,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -2838,7 +2838,7 @@ public class SearchengineServices {
         return false;
       }
 
-      @Override
+      
       protected boolean rethrowUnhandledExceptions() {
         return false;
       }
@@ -4735,7 +4735,7 @@ public class SearchengineServices {
       return new healthCheck_args(this);
     }
 
-    @Override
+    
     public void clear() {
     }
 
@@ -4762,7 +4762,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -4780,14 +4780,14 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(healthCheck_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -4811,7 +4811,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("healthCheck_args(");
       boolean first = true;
@@ -4888,12 +4888,12 @@ public class SearchengineServices {
 
     private static class healthCheck_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<healthCheck_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, healthCheck_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, healthCheck_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       }
@@ -5009,7 +5009,7 @@ public class SearchengineServices {
       return new healthCheck_result(this);
     }
 
-    @Override
+    
     public void clear() {
       setSuccessIsSet(false);
       this.success = false;
@@ -5074,7 +5074,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -5101,7 +5101,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -5110,7 +5110,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(healthCheck_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -5144,7 +5144,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("healthCheck_result(");
       boolean first = true;
@@ -5239,7 +5239,7 @@ public class SearchengineServices {
 
     private static class healthCheck_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<healthCheck_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, healthCheck_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -5252,7 +5252,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, healthCheck_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -5577,7 +5577,7 @@ public class SearchengineServices {
       return new query_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.keywords = null;
       this.cities = null;
@@ -6303,7 +6303,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -6483,7 +6483,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -6556,7 +6556,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(query_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -6760,7 +6760,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("query_args(");
       boolean first = true;
@@ -7198,7 +7198,7 @@ public class SearchengineServices {
 
     private static class query_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<query_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, query_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -7313,7 +7313,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, query_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(18);
@@ -7512,7 +7512,7 @@ public class SearchengineServices {
       return new query_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -7617,7 +7617,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -7653,7 +7653,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -7668,7 +7668,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(query_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -7712,7 +7712,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("query_result(");
       boolean first = true;
@@ -7835,7 +7835,7 @@ public class SearchengineServices {
 
     private static class query_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<query_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, query_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -7854,7 +7854,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, query_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -7993,7 +7993,7 @@ public class SearchengineServices {
       return new updateposition_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.position = null;
       setIdIsSet(false);
@@ -8097,7 +8097,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -8133,7 +8133,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -8146,7 +8146,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(updateposition_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -8190,7 +8190,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("updateposition_args(");
       boolean first = true;
@@ -8304,7 +8304,7 @@ public class SearchengineServices {
 
     private static class updateposition_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateposition_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, updateposition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -8323,7 +8323,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, updateposition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -8458,7 +8458,7 @@ public class SearchengineServices {
       return new updateposition_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -8563,7 +8563,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -8599,7 +8599,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -8614,7 +8614,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(updateposition_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -8658,7 +8658,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("updateposition_result(");
       boolean first = true;
@@ -8781,7 +8781,7 @@ public class SearchengineServices {
 
     private static class updateposition_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateposition_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, updateposition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -8800,7 +8800,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, updateposition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -8987,7 +8987,7 @@ public class SearchengineServices {
       return new companyQuery_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.keyWords = null;
       this.citys = null;
@@ -9246,7 +9246,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -9318,7 +9318,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -9345,7 +9345,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(companyQuery_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -9429,7 +9429,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("companyQuery_args(");
       boolean first = true;
@@ -9621,7 +9621,7 @@ public class SearchengineServices {
 
     private static class companyQuery_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<companyQuery_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, companyQuery_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -9664,7 +9664,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, companyQuery_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(6);
@@ -9815,7 +9815,7 @@ public class SearchengineServices {
       return new companyQuery_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -9920,7 +9920,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -9956,7 +9956,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -9971,7 +9971,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(companyQuery_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -10015,7 +10015,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("companyQuery_result(");
       boolean first = true;
@@ -10138,7 +10138,7 @@ public class SearchengineServices {
 
     private static class companyQuery_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<companyQuery_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, companyQuery_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -10157,7 +10157,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, companyQuery_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -10440,7 +10440,7 @@ public class SearchengineServices {
       return new positionQuery_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.keyWords = null;
       this.citys = null;
@@ -11006,7 +11006,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -11150,7 +11150,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -11199,7 +11199,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(positionQuery_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -11363,7 +11363,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("positionQuery_args(");
       boolean first = true;
@@ -11693,7 +11693,7 @@ public class SearchengineServices {
 
     private static class positionQuery_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<positionQuery_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, positionQuery_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -11784,7 +11784,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, positionQuery_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(14);
@@ -11967,7 +11967,7 @@ public class SearchengineServices {
       return new positionQuery_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -12072,7 +12072,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -12108,7 +12108,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -12123,7 +12123,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(positionQuery_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -12167,7 +12167,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("positionQuery_result(");
       boolean first = true;
@@ -12290,7 +12290,7 @@ public class SearchengineServices {
 
     private static class positionQuery_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<positionQuery_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, positionQuery_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -12309,7 +12309,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, positionQuery_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -12498,7 +12498,7 @@ public class SearchengineServices {
       return new queryAwardRanking_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.companyIds = null;
       this.timespan = null;
@@ -12772,7 +12772,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -12844,7 +12844,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -12869,7 +12869,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryAwardRanking_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -12953,7 +12953,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryAwardRanking_args(");
       boolean first = true;
@@ -13156,7 +13156,7 @@ public class SearchengineServices {
 
     private static class queryAwardRanking_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryAwardRanking_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryAwardRanking_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -13205,7 +13205,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryAwardRanking_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(6);
@@ -13365,7 +13365,7 @@ public class SearchengineServices {
       return new queryAwardRanking_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -13470,7 +13470,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -13506,7 +13506,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -13521,7 +13521,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryAwardRanking_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -13565,7 +13565,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryAwardRanking_result(");
       boolean first = true;
@@ -13688,7 +13688,7 @@ public class SearchengineServices {
 
     private static class queryAwardRanking_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryAwardRanking_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryAwardRanking_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -13707,7 +13707,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryAwardRanking_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -13860,7 +13860,7 @@ public class SearchengineServices {
       return new queryAwardRankingInWx_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.companyIds = null;
       this.timespan = null;
@@ -14019,7 +14019,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -14064,7 +14064,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -14081,7 +14081,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryAwardRankingInWx_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -14135,7 +14135,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryAwardRankingInWx_args(");
       boolean first = true;
@@ -14287,7 +14287,7 @@ public class SearchengineServices {
 
     private static class queryAwardRankingInWx_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryAwardRankingInWx_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryAwardRankingInWx_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -14318,7 +14318,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryAwardRankingInWx_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(3);
@@ -14466,7 +14466,7 @@ public class SearchengineServices {
       return new queryAwardRankingInWx_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -14571,7 +14571,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -14607,7 +14607,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -14622,7 +14622,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryAwardRankingInWx_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -14666,7 +14666,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryAwardRankingInWx_result(");
       boolean first = true;
@@ -14789,7 +14789,7 @@ public class SearchengineServices {
 
     private static class queryAwardRankingInWx_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryAwardRankingInWx_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryAwardRankingInWx_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -14808,7 +14808,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryAwardRankingInWx_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -15057,7 +15057,7 @@ public class SearchengineServices {
       return new fetchEmployees_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.companyIds = null;
       this.keywords = null;
@@ -15525,7 +15525,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -15642,7 +15642,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -15685,7 +15685,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(fetchEmployees_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -15819,7 +15819,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("fetchEmployees_args(");
       boolean first = true;
@@ -16121,7 +16121,7 @@ public class SearchengineServices {
 
     private static class fetchEmployees_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<fetchEmployees_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, fetchEmployees_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -16200,7 +16200,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, fetchEmployees_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(11);
@@ -16380,7 +16380,7 @@ public class SearchengineServices {
       return new fetchEmployees_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -16485,7 +16485,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -16521,7 +16521,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -16536,7 +16536,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(fetchEmployees_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -16580,7 +16580,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("fetchEmployees_result(");
       boolean first = true;
@@ -16703,7 +16703,7 @@ public class SearchengineServices {
 
     private static class fetchEmployees_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<fetchEmployees_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, fetchEmployees_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -16722,7 +16722,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, fetchEmployees_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -16899,7 +16899,7 @@ public class SearchengineServices {
       return new listLeaderBoard_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.companyIds = null;
       this.timespan = null;
@@ -17134,7 +17134,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -17197,7 +17197,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -17218,7 +17218,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(listLeaderBoard_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -17292,7 +17292,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("listLeaderBoard_args(");
       boolean first = true;
@@ -17474,7 +17474,7 @@ public class SearchengineServices {
 
     private static class listLeaderBoard_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<listLeaderBoard_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, listLeaderBoard_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -17517,7 +17517,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, listLeaderBoard_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(5);
@@ -17673,7 +17673,7 @@ public class SearchengineServices {
       return new listLeaderBoard_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -17778,7 +17778,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -17814,7 +17814,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -17829,7 +17829,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(listLeaderBoard_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -17873,7 +17873,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("listLeaderBoard_result(");
       boolean first = true;
@@ -17996,7 +17996,7 @@ public class SearchengineServices {
 
     private static class listLeaderBoard_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<listLeaderBoard_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, listLeaderBoard_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -18015,7 +18015,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, listLeaderBoard_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -18154,7 +18154,7 @@ public class SearchengineServices {
       return new countLeaderBoard_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.companyIds = null;
       this.timespan = null;
@@ -18275,7 +18275,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -18311,7 +18311,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -18326,7 +18326,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(countLeaderBoard_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -18370,7 +18370,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("countLeaderBoard_args(");
       boolean first = true;
@@ -18505,7 +18505,7 @@ public class SearchengineServices {
 
     private static class countLeaderBoard_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<countLeaderBoard_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -18530,7 +18530,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -18676,7 +18676,7 @@ public class SearchengineServices {
       return new countLeaderBoard_result(this);
     }
 
-    @Override
+    
     public void clear() {
       setSuccessIsSet(false);
       this.success = 0;
@@ -18780,7 +18780,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -18816,7 +18816,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -18829,7 +18829,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(countLeaderBoard_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -18873,7 +18873,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("countLeaderBoard_result(");
       boolean first = true;
@@ -18990,7 +18990,7 @@ public class SearchengineServices {
 
     private static class countLeaderBoard_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<countLeaderBoard_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -19009,7 +19009,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -19135,7 +19135,7 @@ public class SearchengineServices {
       return new updateEmployeeAwards_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.employeeId = null;
     }
@@ -19217,7 +19217,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -19244,7 +19244,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -19255,7 +19255,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(updateEmployeeAwards_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -19289,7 +19289,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("updateEmployeeAwards_args(");
       boolean first = true;
@@ -19403,7 +19403,7 @@ public class SearchengineServices {
 
     private static class updateEmployeeAwards_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateEmployeeAwards_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, updateEmployeeAwards_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -19422,7 +19422,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, updateEmployeeAwards_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -19562,7 +19562,7 @@ public class SearchengineServices {
       return new updateEmployeeAwards_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -19667,7 +19667,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -19703,7 +19703,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -19718,7 +19718,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(updateEmployeeAwards_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -19762,7 +19762,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("updateEmployeeAwards_result(");
       boolean first = true;
@@ -19885,7 +19885,7 @@ public class SearchengineServices {
 
     private static class updateEmployeeAwards_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateEmployeeAwards_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, updateEmployeeAwards_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -19904,7 +19904,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, updateEmployeeAwards_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -20031,7 +20031,7 @@ public class SearchengineServices {
       return new deleteEmployeeDO_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.employeeId = null;
     }
@@ -20113,7 +20113,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -20140,7 +20140,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -20151,7 +20151,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(deleteEmployeeDO_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -20185,7 +20185,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("deleteEmployeeDO_args(");
       boolean first = true;
@@ -20299,7 +20299,7 @@ public class SearchengineServices {
 
     private static class deleteEmployeeDO_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<deleteEmployeeDO_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, deleteEmployeeDO_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -20318,7 +20318,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, deleteEmployeeDO_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -20458,7 +20458,7 @@ public class SearchengineServices {
       return new deleteEmployeeDO_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -20563,7 +20563,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -20599,7 +20599,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -20614,7 +20614,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(deleteEmployeeDO_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -20658,7 +20658,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("deleteEmployeeDO_result(");
       boolean first = true;
@@ -20781,7 +20781,7 @@ public class SearchengineServices {
 
     private static class deleteEmployeeDO_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<deleteEmployeeDO_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, deleteEmployeeDO_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -20800,7 +20800,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, deleteEmployeeDO_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -20928,7 +20928,7 @@ public class SearchengineServices {
       return new searchPositionSuggest_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -21005,7 +21005,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -21032,7 +21032,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -21043,7 +21043,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchPositionSuggest_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -21077,7 +21077,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchPositionSuggest_args(");
       boolean first = true;
@@ -21194,7 +21194,7 @@ public class SearchengineServices {
 
     private static class searchPositionSuggest_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchPositionSuggest_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchPositionSuggest_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -21214,7 +21214,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchPositionSuggest_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -21356,7 +21356,7 @@ public class SearchengineServices {
       return new searchPositionSuggest_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -21461,7 +21461,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -21497,7 +21497,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -21512,7 +21512,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchPositionSuggest_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -21556,7 +21556,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchPositionSuggest_result(");
       boolean first = true;
@@ -21679,7 +21679,7 @@ public class SearchengineServices {
 
     private static class searchPositionSuggest_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchPositionSuggest_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchPositionSuggest_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -21698,7 +21698,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchPositionSuggest_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -21826,7 +21826,7 @@ public class SearchengineServices {
       return new searchProfileSuggest_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -21903,7 +21903,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -21930,7 +21930,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -21941,7 +21941,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchProfileSuggest_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -21975,7 +21975,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchProfileSuggest_args(");
       boolean first = true;
@@ -22092,7 +22092,7 @@ public class SearchengineServices {
 
     private static class searchProfileSuggest_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchProfileSuggest_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchProfileSuggest_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -22112,7 +22112,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchProfileSuggest_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -22254,7 +22254,7 @@ public class SearchengineServices {
       return new searchProfileSuggest_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -22359,7 +22359,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -22395,7 +22395,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -22410,7 +22410,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchProfileSuggest_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -22454,7 +22454,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchProfileSuggest_result(");
       boolean first = true;
@@ -22577,7 +22577,7 @@ public class SearchengineServices {
 
     private static class searchProfileSuggest_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchProfileSuggest_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchProfileSuggest_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -22596,7 +22596,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchProfileSuggest_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -22724,7 +22724,7 @@ public class SearchengineServices {
       return new userQuery_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -22801,7 +22801,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -22828,7 +22828,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -22839,7 +22839,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(userQuery_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -22873,7 +22873,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("userQuery_args(");
       boolean first = true;
@@ -22990,7 +22990,7 @@ public class SearchengineServices {
 
     private static class userQuery_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<userQuery_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, userQuery_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -23010,7 +23010,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, userQuery_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -23152,7 +23152,7 @@ public class SearchengineServices {
       return new userQuery_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -23257,7 +23257,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -23293,7 +23293,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -23308,7 +23308,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(userQuery_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -23352,7 +23352,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("userQuery_result(");
       boolean first = true;
@@ -23475,7 +23475,7 @@ public class SearchengineServices {
 
     private static class userQuery_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<userQuery_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, userQuery_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -23494,7 +23494,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, userQuery_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -23622,7 +23622,7 @@ public class SearchengineServices {
       return new userAggInfo_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -23699,7 +23699,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -23726,7 +23726,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -23737,7 +23737,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(userAggInfo_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -23771,7 +23771,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("userAggInfo_args(");
       boolean first = true;
@@ -23888,7 +23888,7 @@ public class SearchengineServices {
 
     private static class userAggInfo_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<userAggInfo_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, userAggInfo_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -23908,7 +23908,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, userAggInfo_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -24050,7 +24050,7 @@ public class SearchengineServices {
       return new userAggInfo_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -24155,7 +24155,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -24191,7 +24191,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -24206,7 +24206,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(userAggInfo_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -24250,7 +24250,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("userAggInfo_result(");
       boolean first = true;
@@ -24373,7 +24373,7 @@ public class SearchengineServices {
 
     private static class userAggInfo_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<userAggInfo_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, userAggInfo_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -24392,7 +24392,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, userAggInfo_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -24735,7 +24735,7 @@ public class SearchengineServices {
       return new queryPositionIndex_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.keywords = null;
       this.cities = null;
@@ -25500,7 +25500,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -25689,7 +25689,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -25766,7 +25766,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryPositionIndex_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -25980,7 +25980,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryPositionIndex_args(");
       boolean first = true;
@@ -26439,7 +26439,7 @@ public class SearchengineServices {
 
     private static class queryPositionIndex_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryPositionIndex_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryPositionIndex_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -26560,7 +26560,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryPositionIndex_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(19);
@@ -26763,7 +26763,7 @@ public class SearchengineServices {
       return new queryPositionIndex_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -26868,7 +26868,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -26904,7 +26904,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -26919,7 +26919,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryPositionIndex_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -26963,7 +26963,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryPositionIndex_result(");
       boolean first = true;
@@ -27086,7 +27086,7 @@ public class SearchengineServices {
 
     private static class queryPositionIndex_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryPositionIndex_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryPositionIndex_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -27105,7 +27105,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryPositionIndex_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -27233,7 +27233,7 @@ public class SearchengineServices {
       return new queryPositionMini_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -27310,7 +27310,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -27337,7 +27337,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -27348,7 +27348,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryPositionMini_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -27382,7 +27382,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryPositionMini_args(");
       boolean first = true;
@@ -27499,7 +27499,7 @@ public class SearchengineServices {
 
     private static class queryPositionMini_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryPositionMini_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryPositionMini_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -27519,7 +27519,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryPositionMini_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -27661,7 +27661,7 @@ public class SearchengineServices {
       return new queryPositionMini_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -27766,7 +27766,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -27802,7 +27802,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -27817,7 +27817,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryPositionMini_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -27861,7 +27861,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryPositionMini_result(");
       boolean first = true;
@@ -27984,7 +27984,7 @@ public class SearchengineServices {
 
     private static class queryPositionMini_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryPositionMini_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryPositionMini_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -28003,7 +28003,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryPositionMini_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -28131,7 +28131,7 @@ public class SearchengineServices {
       return new queryCompanyTagUserIdList_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -28208,7 +28208,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -28235,7 +28235,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -28246,7 +28246,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryCompanyTagUserIdList_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -28280,7 +28280,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryCompanyTagUserIdList_args(");
       boolean first = true;
@@ -28397,7 +28397,7 @@ public class SearchengineServices {
 
     private static class queryCompanyTagUserIdList_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryCompanyTagUserIdList_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -28417,7 +28417,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -28561,7 +28561,7 @@ public class SearchengineServices {
       return new queryCompanyTagUserIdList_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -28682,7 +28682,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -28718,7 +28718,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -28733,7 +28733,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryCompanyTagUserIdList_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -28777,7 +28777,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryCompanyTagUserIdList_result(");
       boolean first = true;
@@ -28913,7 +28913,7 @@ public class SearchengineServices {
 
     private static class queryCompanyTagUserIdList_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryCompanyTagUserIdList_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -28938,7 +28938,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -29074,7 +29074,7 @@ public class SearchengineServices {
       return new queryCompanyTagUserIdListCount_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -29151,7 +29151,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -29178,7 +29178,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -29189,7 +29189,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryCompanyTagUserIdListCount_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -29223,7 +29223,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryCompanyTagUserIdListCount_args(");
       boolean first = true;
@@ -29340,7 +29340,7 @@ public class SearchengineServices {
 
     private static class queryCompanyTagUserIdListCount_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryCompanyTagUserIdListCount_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdListCount_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -29360,7 +29360,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdListCount_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -29504,7 +29504,7 @@ public class SearchengineServices {
       return new queryCompanyTagUserIdListCount_result(this);
     }
 
-    @Override
+    
     public void clear() {
       setSuccessIsSet(false);
       this.success = 0;
@@ -29608,7 +29608,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -29644,7 +29644,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -29657,7 +29657,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryCompanyTagUserIdListCount_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -29701,7 +29701,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryCompanyTagUserIdListCount_result(");
       boolean first = true;
@@ -29818,7 +29818,7 @@ public class SearchengineServices {
 
     private static class queryCompanyTagUserIdListCount_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryCompanyTagUserIdListCount_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdListCount_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -29837,7 +29837,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryCompanyTagUserIdListCount_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -29964,7 +29964,7 @@ public class SearchengineServices {
       return new talentSearchNum_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -30041,7 +30041,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -30068,7 +30068,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -30079,7 +30079,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(talentSearchNum_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -30113,7 +30113,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("talentSearchNum_args(");
       boolean first = true;
@@ -30230,7 +30230,7 @@ public class SearchengineServices {
 
     private static class talentSearchNum_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<talentSearchNum_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, talentSearchNum_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -30250,7 +30250,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, talentSearchNum_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -30394,7 +30394,7 @@ public class SearchengineServices {
       return new talentSearchNum_result(this);
     }
 
-    @Override
+    
     public void clear() {
       setSuccessIsSet(false);
       this.success = 0;
@@ -30498,7 +30498,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -30534,7 +30534,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -30547,7 +30547,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(talentSearchNum_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -30591,7 +30591,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("talentSearchNum_result(");
       boolean first = true;
@@ -30708,7 +30708,7 @@ public class SearchengineServices {
 
     private static class talentSearchNum_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<talentSearchNum_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, talentSearchNum_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -30727,7 +30727,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, talentSearchNum_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -30885,7 +30885,7 @@ public class SearchengineServices {
       return new queryProfileFilterUserIdList_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.filterMapList = null;
       setPage_numberIsSet(false);
@@ -31043,7 +31043,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -31088,7 +31088,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -31103,7 +31103,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryProfileFilterUserIdList_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -31157,7 +31157,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryProfileFilterUserIdList_args(");
       boolean first = true;
@@ -31323,7 +31323,7 @@ public class SearchengineServices {
 
     private static class queryProfileFilterUserIdList_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryProfileFilterUserIdList_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryProfileFilterUserIdList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -31361,7 +31361,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryProfileFilterUserIdList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(3);
@@ -31520,7 +31520,7 @@ public class SearchengineServices {
       return new queryProfileFilterUserIdList_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -31625,7 +31625,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -31661,7 +31661,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -31676,7 +31676,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(queryProfileFilterUserIdList_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -31720,7 +31720,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("queryProfileFilterUserIdList_result(");
       boolean first = true;
@@ -31843,7 +31843,7 @@ public class SearchengineServices {
 
     private static class queryProfileFilterUserIdList_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<queryProfileFilterUserIdList_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, queryProfileFilterUserIdList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -31862,7 +31862,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, queryProfileFilterUserIdList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -31989,7 +31989,7 @@ public class SearchengineServices {
       return new userQueryById_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.userIdlist = null;
     }
@@ -32071,7 +32071,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -32098,7 +32098,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -32109,7 +32109,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(userQueryById_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -32143,7 +32143,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("userQueryById_args(");
       boolean first = true;
@@ -32257,7 +32257,7 @@ public class SearchengineServices {
 
     private static class userQueryById_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<userQueryById_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, userQueryById_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -32276,7 +32276,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, userQueryById_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -32416,7 +32416,7 @@ public class SearchengineServices {
       return new userQueryById_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -32521,7 +32521,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -32557,7 +32557,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -32572,7 +32572,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(userQueryById_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -32616,7 +32616,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("userQueryById_result(");
       boolean first = true;
@@ -32739,7 +32739,7 @@ public class SearchengineServices {
 
     private static class userQueryById_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<userQueryById_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, userQueryById_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -32758,7 +32758,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, userQueryById_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -32886,7 +32886,7 @@ public class SearchengineServices {
       return new getTalentUserIdList_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -32963,7 +32963,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -32990,7 +32990,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -33001,7 +33001,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getTalentUserIdList_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -33035,7 +33035,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("getTalentUserIdList_args(");
       boolean first = true;
@@ -33152,7 +33152,7 @@ public class SearchengineServices {
 
     private static class getTalentUserIdList_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getTalentUserIdList_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getTalentUserIdList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -33172,7 +33172,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getTalentUserIdList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -33304,7 +33304,7 @@ public class SearchengineServices {
       return new getTalentUserIdList_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
     }
@@ -33386,7 +33386,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -33413,7 +33413,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -33424,7 +33424,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getTalentUserIdList_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -33458,7 +33458,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("getTalentUserIdList_result(");
       boolean first = true;
@@ -33572,7 +33572,7 @@ public class SearchengineServices {
 
     private static class getTalentUserIdList_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getTalentUserIdList_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getTalentUserIdList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -33591,7 +33591,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getTalentUserIdList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -33722,7 +33722,7 @@ public class SearchengineServices {
       return new searchpastPosition_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -33799,7 +33799,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -33826,7 +33826,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -33837,7 +33837,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchpastPosition_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -33871,7 +33871,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchpastPosition_args(");
       boolean first = true;
@@ -33988,7 +33988,7 @@ public class SearchengineServices {
 
     private static class searchpastPosition_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchpastPosition_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchpastPosition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -34008,7 +34008,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchpastPosition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -34150,7 +34150,7 @@ public class SearchengineServices {
       return new searchpastPosition_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -34255,7 +34255,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -34291,7 +34291,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -34306,7 +34306,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchpastPosition_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -34350,7 +34350,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchpastPosition_result(");
       boolean first = true;
@@ -34473,7 +34473,7 @@ public class SearchengineServices {
 
     private static class searchpastPosition_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchpastPosition_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchpastPosition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -34492,7 +34492,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchpastPosition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -34620,7 +34620,7 @@ public class SearchengineServices {
       return new searchpastCompany_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -34697,7 +34697,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -34724,7 +34724,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -34735,7 +34735,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchpastCompany_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -34769,7 +34769,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchpastCompany_args(");
       boolean first = true;
@@ -34886,7 +34886,7 @@ public class SearchengineServices {
 
     private static class searchpastCompany_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchpastCompany_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchpastCompany_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -34906,7 +34906,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchpastCompany_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -35048,7 +35048,7 @@ public class SearchengineServices {
       return new searchpastCompany_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -35153,7 +35153,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -35189,7 +35189,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -35204,7 +35204,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(searchpastCompany_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -35248,7 +35248,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("searchpastCompany_result(");
       boolean first = true;
@@ -35371,7 +35371,7 @@ public class SearchengineServices {
 
     private static class searchpastCompany_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<searchpastCompany_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, searchpastCompany_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -35390,7 +35390,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, searchpastCompany_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -35518,7 +35518,7 @@ public class SearchengineServices {
       return new mobotSearchPosition_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.params = null;
     }
@@ -35595,7 +35595,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -35622,7 +35622,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -35633,7 +35633,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(mobotSearchPosition_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -35667,7 +35667,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("mobotSearchPosition_args(");
       boolean first = true;
@@ -35784,7 +35784,7 @@ public class SearchengineServices {
 
     private static class mobotSearchPosition_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<mobotSearchPosition_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, mobotSearchPosition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -35804,7 +35804,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, mobotSearchPosition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -35946,7 +35946,7 @@ public class SearchengineServices {
       return new mobotSearchPosition_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -36051,7 +36051,7 @@ public class SearchengineServices {
       throw new java.lang.IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
@@ -36087,7 +36087,7 @@ public class SearchengineServices {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -36102,7 +36102,7 @@ public class SearchengineServices {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(mobotSearchPosition_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -36146,7 +36146,7 @@ public class SearchengineServices {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public java.lang.String toString() {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("mobotSearchPosition_result(");
       boolean first = true;
@@ -36269,7 +36269,7 @@ public class SearchengineServices {
 
     private static class mobotSearchPosition_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<mobotSearchPosition_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, mobotSearchPosition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -36288,7 +36288,7 @@ public class SearchengineServices {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, mobotSearchPosition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
