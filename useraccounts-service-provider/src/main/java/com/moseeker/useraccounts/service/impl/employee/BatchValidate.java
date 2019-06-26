@@ -151,7 +151,7 @@ public class BatchValidate {
             });
         });
         try {
-            countDownLatch.wait();
+            countDownLatch.await();
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         }
