@@ -134,6 +134,7 @@ public class BatchValidate {
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
         logger.info("UserHrAccountServiceImpl importCheck after fetchOptionsValues");
 
+        logger.info("UserHrAccountServiceImpl importCheck dbCustomFieldValues.size:{}", dbCustomFieldValues.size());
         // 提交上的数据
         AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);

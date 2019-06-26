@@ -1655,6 +1655,8 @@ public class UserHrAccountService {
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
+        logger.info("UserHrAccountServiceImpl repetitionFilter dbEmployeeDOList.size:{}", dbEmployeeDOList.size());
+
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
         logger.info("UserHrAccountServiceImpl repetitionFilter last");
