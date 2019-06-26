@@ -12,7 +12,7 @@ public class SearchengineServices {
 
   public interface Iface {
 
-    public boolean healthCheck() throws org.apache.thrift.TException;git
+    public boolean healthCheck() throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response query(java.lang.String keywords, java.lang.String cities, java.lang.String industries, java.lang.String occupations, java.lang.String scale, java.lang.String employment_type, java.lang.String candidate_source, java.lang.String experience, java.lang.String degree, java.lang.String salary, java.lang.String company_name, int page_from, int page_size, java.lang.String child_company_name, java.lang.String department, boolean order_by_priority, java.lang.String custom, java.lang.String hb_config_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
