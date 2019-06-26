@@ -287,7 +287,7 @@ public abstract class EmployeeBinder {
             userDao.updateData(userUserDO);
         }
 
-        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}}, true);
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
         kafkaSender.sendEmployeeCertification(useremployee);
         //将属于本公司的潜在候选人设置为无效

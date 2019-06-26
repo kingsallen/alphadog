@@ -703,7 +703,7 @@ public class EmployeeEntity {
                         .map(UserEmployeeDO::getId).filter(id -> id > 0)
                         .collect(Collectors.toList());
                 logger.info("EmployeeEntity unbind employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
-                searchengineEntity.updateEmployeeAwards(employeeIdList);
+                searchengineEntity.updateEmployeeAwards(employeeIdList, false);
                 List<Integer> companyIdList = employees
                         .stream()
                         .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
@@ -1080,7 +1080,7 @@ public class EmployeeEntity {
                 employeeDOS.add(record);
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
         } else {
             return null;
@@ -1119,7 +1119,7 @@ public class EmployeeEntity {
         }
         UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
 
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()), false);
 
         return employeeDO;
     }
@@ -1140,7 +1140,7 @@ public class EmployeeEntity {
 
     public int updateData(UserEmployeeDO userEmployeeDO) {
         int result = employeeDao.updateData(userEmployeeDO);
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()), true);
         return result;
     }
 
@@ -1248,7 +1248,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addRegisterLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
 
     }
 
@@ -1271,7 +1271,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addCancelLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
     }
 
     /**
@@ -1732,7 +1732,7 @@ public class EmployeeEntity {
                 }
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
             return count;
         } else {
             return 0;
