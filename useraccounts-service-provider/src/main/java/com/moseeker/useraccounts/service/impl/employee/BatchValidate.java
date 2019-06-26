@@ -120,8 +120,6 @@ public class BatchValidate {
     public ImportUserEmployeeStatistic importCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
 
-        logger.info("UserHrAccountServiceImpl importCheck");
-
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
 
         // 重复的对象
@@ -130,13 +128,9 @@ public class BatchValidate {
         /**
          * 为校验自定义下拉项数据做准备
          */
-        logger.info("UserHrAccountServiceImpl importCheck before employeeParam");
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
-        logger.info("UserHrAccountServiceImpl importCheck employeeCustomFiledValues.size:{}", employeeCustomFiledValues.size());
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
-        logger.info("UserHrAccountServiceImpl importCheck after fetchOptionsValues");
 
-        logger.info("UserHrAccountServiceImpl importCheck dbCustomFieldValues.size:{}", dbCustomFieldValues.size());
         // 提交上的数据
         AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
@@ -179,17 +173,6 @@ public class BatchValidate {
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
         }
-        logger.info("UserHrAccountServiceImpl importCheck last");
-        logger.info("UserHrAccountServiceImpl importCheck last errorCounts:{}, " +
-                        "totalCounts:{}, " +
-                        "repeatCounts:{}, " +
-                        "userEmployeeDO.size:{}, " +
-                        "message:{}",
-                importUserEmployeeStatistic.getErrorCounts(),
-                importUserEmployeeStatistic.getTotalCounts(),
-                importUserEmployeeStatistic.getRepetitionCounts(),
-                importUserEmployeeStatistic.getUserEmployeeDO().size(),
-                importUserEmployeeStatistic.getMessage());
         return importUserEmployeeStatistic;
     }
 

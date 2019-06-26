@@ -1639,7 +1639,6 @@ public class UserHrAccountService {
         if (userEmployeeMap.size() == 0) {
             throw UserAccountException.IMPORT_DATA_EMPTY;
         }
-        logger.info("UserHrAccountServiceImpl repetitionFilter");
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
@@ -1655,11 +1654,8 @@ public class UserHrAccountService {
         // 数据库中取出来的数据
         List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
 
-        logger.info("UserHrAccountServiceImpl repetitionFilter dbEmployeeDOList.size:{}", dbEmployeeDOList.size());
-
         ImportUserEmployeeStatistic importUserEmployeeStatistic = batchValidate.importCheck(userEmployeeMap,
                 companyId, dbEmployeeDOList);
-        logger.info("UserHrAccountServiceImpl repetitionFilter last");
         return importUserEmployeeStatistic;
     }
 
