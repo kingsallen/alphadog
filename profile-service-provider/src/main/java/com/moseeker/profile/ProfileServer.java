@@ -2,6 +2,7 @@ package com.moseeker.profile;
 
 import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.thrift.*;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
 import com.moseeker.rpccenter.exception.RpcException;
@@ -60,6 +61,7 @@ public class ProfileServer {
 				server.startServer();
 				server.shutDownHook();
 				synchronized (ProfileServer.class) {
+					OfficeUtils.checkAndStart(); // 启动libreoffice服务
                     while (true) {
                         try {
                             ProfileServer.class.wait();
