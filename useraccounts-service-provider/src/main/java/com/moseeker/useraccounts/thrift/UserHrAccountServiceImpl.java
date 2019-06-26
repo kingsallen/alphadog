@@ -678,6 +678,8 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
 
+        logger.info("UserHrAccountServiceImpl checkBatchInsert");
+
         if (userEmployeeDOMap.size() > FIVE_THOUSAND) {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
@@ -689,6 +691,8 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        } finally {
+            logger.info("UserHrAccountServiceImpl after checkBatchInsert");
         }
     }
 
