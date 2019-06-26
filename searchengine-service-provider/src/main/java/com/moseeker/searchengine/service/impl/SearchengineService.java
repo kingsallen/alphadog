@@ -896,6 +896,8 @@ public class SearchengineService {
                 }
                 EmployeeBizTool.addEmployeeIds(query, employeeIdList, searchUtil);
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+                EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
+                EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
                 response = searchRequestBuilder.execute().actionGet();
 
             } else {
@@ -907,7 +909,6 @@ public class SearchengineService {
                         List<Integer> employees = JSON.parseArray(str, Integer.class);
                         EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                     }
-                    logger.info("SearchengineService fetchEmployees companyId：{}", companyId);
                     if (filter == 1) {
                         String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
                         logger.info("SearchengineService fetchEmployees str1：{}", str1);
@@ -921,11 +922,9 @@ public class SearchengineService {
                 EmployeeBizTool.addKeywords(query, keywords, searchUtil);
                 EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
                 EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
-                logger.info("SearchengineService fetchEmployees query：{}", query.toString());
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
                 EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
                 EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
-                logger.info("SearchengineService fetchEmployees query：{}", searchRequestBuilder.toString());
                 response = searchRequestBuilder.execute().actionGet();
             }
             List<Map<String, Object>> data = new ArrayList<>();

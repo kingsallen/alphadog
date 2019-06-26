@@ -1728,15 +1728,10 @@ public class EmployeeEntity {
                 } else {
                     increase = userEmployeeList.size() - count;
                 }
-                logger.info("EmployeeEntity addEmployeeListIfNotExist count:{}, increase:{}", count, increase);
                 List<UserEmployeeDO> tempList = userEmployeeList.subList(count, count+increase);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist list[0].cname:{}, list[0].customField:{}", tempList.get(0).getCname(), tempList.get(0).getCustomField());
                 List<UserEmployeeRecord> list = employeeDao.batchSave(tempList);
-
-                logger.info("EmployeeEntity addEmployeeListIfNotExist first id:{}", list.get(0).getId());
                 records.addAll(list);
                 count += increase;
-                logger.info("EmployeeEntity addEmployeeListIfNotExist count:{}", count);
             }
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(records.stream().map(UserEmployeeRecord::getId).collect(Collectors.toList()),
