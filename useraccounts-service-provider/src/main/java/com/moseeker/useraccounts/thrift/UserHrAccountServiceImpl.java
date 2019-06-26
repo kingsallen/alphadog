@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import org.apache.thrift.TException;
@@ -34,6 +35,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 
 /**
  * HR账号服务
@@ -674,6 +677,11 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+
+        if (userEmployeeDOMap.size() > FIVE_THOUSAND) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
+        }
+
         if (userEmployeeDOMap.size() > 4000) {
             logger.info("自定义认证导入2 UserHrAccountService repetitionFilter userEmployeeDOMap > 4000 start");
         }
