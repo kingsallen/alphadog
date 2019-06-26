@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -133,23 +134,37 @@ public class BatchValidate {
         // 提交上的数据
         AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
-        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
+        List<Future<ImportErrorUserEmployee>> futures = new ArrayList<>(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
-            threadPool.startTast(() -> {
+            Future<ImportErrorUserEmployee> future = threadPool.startTast(() -> {
                 try {
-                    checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
+                    ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
-                } finally {
-                    countDownLatch.countDown();
+                    return importErrorUserEmployee;
+                } catch (Exception e) {
+                    ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployee.setMessage("数据异常");
+                    errorCount.incrementAndGet();
+                    return importErrorUserEmployee;
                 }
-                return true;
             });
+            futures.add(future);
         });
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            logger.error(e.getMessage(), e);
+
+        for (Future<ImportErrorUserEmployee> future : futures) {
+            try {
+                ImportErrorUserEmployee importErrorUserEmployee = future.get();
+                if (importErrorUserEmployee != null) {
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+
         }
+
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
@@ -381,15 +396,13 @@ public class BatchValidate {
      * @param row
      * @param userEmployeeDO
      * @param companyId
-     * @param importErrorUserEmployees
      * @param repeatCounts
      * @param errorCounts
      * @param employeeCustomFiledValues
      * @param dbCustomFieldValues
      * @param dbEmployeeDOList
      */
-    private void checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
-                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+    private ImportErrorUserEmployee checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
                                      AtomicInteger repeatCounts, AtomicInteger errorCounts,
                                      ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
                                      Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
@@ -400,16 +413,14 @@ public class BatchValidate {
             importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
             importErrorUserEmployee.setMessage("员工姓名不能为空");
             importErrorUserEmployee.setRowNum(row);
-            importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            return;
+            return importErrorUserEmployee;
         } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
             importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
             importErrorUserEmployee.setMessage("员工姓名包含非法字符");
             importErrorUserEmployee.setRowNum(row);
-            importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            return;
+            return importErrorUserEmployee;
         }
 
         if (userEmployeeDO.getCompanyId() == 0) {
@@ -424,9 +435,8 @@ public class BatchValidate {
                     importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                     importErrorUserEmployee.setMessage("自定义选项错误");
                     importErrorUserEmployee.setRowNum(row);
-                    importErrorUserEmployees.add(importErrorUserEmployee);
                     errorCounts.incrementAndGet();
-                    return;
+                    return importErrorUserEmployee;
                 } else {
                     JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
                     userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
@@ -434,7 +444,7 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-            return;
+            return null;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
 
@@ -451,9 +461,10 @@ public class BatchValidate {
                 importErrorUserEmployee.setRowNum(row);
                 importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
                 repeatCounts.incrementAndGet();
-                importErrorUserEmployees.add(importErrorUserEmployee);
+                return importErrorUserEmployee;
             }
         }
+        return null;
     }
 
     /**
