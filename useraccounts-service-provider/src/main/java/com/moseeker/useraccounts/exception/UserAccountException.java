@@ -14,6 +14,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException USEREMPLOYEES_DATE_EMPTY = new UserAccountException(42006, "员工ID为空！");
     public static final UserAccountException USEREMPLOYEES_WRONG = new UserAccountException(42007, "员工ID设置错误！");
     public static final UserAccountException USEREMPLOYEES_EMPTY = new UserAccountException(42008, "员工数据不存在！");
+    public static final UserAccountException USEREMPLOYEES_EMPTY_OR_NO_NEED_UPDATE = new UserAccountException(42008, "员工数据不存在或无需修改！");
     public static final UserAccountException IMPORT_DATA_WRONG = new UserAccountException(42009, "导入员工数据有误！");
     public static final UserAccountException IMPORT_DATA_EMPTY = new UserAccountException(42005, "导入员工数据为空！");
     public static final UserAccountException PERMISSION_DENIED = new UserAccountException(42010, "员工ID和公司ID不匹配！");
