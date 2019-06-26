@@ -561,15 +561,12 @@ public class BatchValidate {
                                     .filter(employeeOptionValue -> employeeOptionValue.getName().equals(customOptionRel.getOption()))
                                     .findAny();
 
-                            logger.info("BatchValidate checkOptions customOptionRel:{}", JSONObject.toJSONString(customOptionRel));
-                            logger.info("BatchValidate checkOptions optionValue.siPresent:{}", optionValue.isPresent());
                             return optionValue.isPresent();
                         } else {
                             return false;
                         }
                     })
                     .findAny();
-            logger.info("BatchValidate checkOptions optional.siPresent:{}", optional.isPresent());
             return optional.isPresent();
         } else {
             return false;
