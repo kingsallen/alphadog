@@ -284,12 +284,6 @@ public class BatchValidate {
             return false;
         }
 
-        for (Map.Entry<Integer, String> entry : customFieldValues.entrySet()) {
-            if (entry.getValue() == null || entry.getValue().equals("")) {
-                customFieldValues.remove(entry.getKey());
-            }
-        }
-
         if (customFieldValues == null || customFieldValues.size() == 0) {
             return true;
         }
@@ -298,6 +292,9 @@ public class BatchValidate {
          * 校验下拉项选择
          */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+
+        logger.info("BatchValidate validateCustomFieldValues rels:{}", JSONObject.toJSONString(rels));
+
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
                     .parallelStream()
