@@ -233,7 +233,6 @@ public class EmployeeService {
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
                 evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());
                 response.setEmployeeVerificationConf(evc);
-                log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
                 response.setExists(true);
             } else {
                 response.setExists(false);
@@ -259,6 +258,15 @@ public class EmployeeService {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");
         } else {
+            if (bindingParams.getCustomFieldValues() != null && !bindingParams.getCustomFieldValues().equals("")) {
+                Map<Integer, String> customFieldValues = new HashMap<>(bindingParams.getCustomFieldValues().size());
+                bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                    if (value != null && !value.trim().equals("")) {
+                        customFieldValues.put(key, value);
+                    }
+                });
+                bindingParams.setCustomFieldValues(customFieldValues);
+            }
             response = employeeBinder.get(authMethod).bind(bindingParams,bindSource);
         }
         return response;
@@ -945,5 +953,27 @@ public class EmployeeService {
                     employeeEntity.getAuthInfoKey(userId, companyId), JSONObject.toJSONString(employeeDO));
         }
 
+    }
+
+    public void retrySendVerificationMail(int userId, int companyId, int source) throws Exception {
+        // 查询集团公司companyID列表
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("sysuser_id", String.valueOf(userId)).and(new Condition("company_id", companyIds, ValueOp.IN))
+                .and("disable", String.valueOf(0)).and("activation", "0");
+        List<UserEmployeeDO> employees = employeeDao.getDatas(query.buildQuery(), UserEmployeeDO.class);
+
+        if (employees != null && employees.size() > 0) {
+            throw UserAccountException.EMPLOYEE_ALREADY_VERIFIED;
+        }
+
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,
+                employeeEntity.getAuthInfoKey(userId, companyId));
+        if (org.apache.commons.lang3.StringUtils.isBlank(pendingEmployee)) {
+            throw UserAccountException.EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED;
+        }
+
+        EmployeeBindByEmail bindByEmail = (EmployeeBindByEmail)employeeBinder.get("auth_method_email");
+        bindByEmail.retrySendVerificationMail(userId, companyId, source);
     }
 }

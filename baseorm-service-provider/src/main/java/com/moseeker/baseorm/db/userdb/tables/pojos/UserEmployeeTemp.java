@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeTemp implements Serializable {
 
-    private static final long serialVersionUID = -1187342382;
+    private static final long serialVersionUID = 329429701;
 
     private Integer   id;
     private String    employeeid;
@@ -81,6 +81,7 @@ public class UserEmployeeTemp implements Serializable {
     private Byte      jobGrade;
     private Integer   cityCode;
     private Byte      degree;
+    private Integer   bonus;
 
     public UserEmployeeTemp() {}
 
@@ -140,6 +141,7 @@ public class UserEmployeeTemp implements Serializable {
         this.jobGrade = value.jobGrade;
         this.cityCode = value.cityCode;
         this.degree = value.degree;
+        this.bonus = value.bonus;
     }
 
     public UserEmployeeTemp(
@@ -197,7 +199,8 @@ public class UserEmployeeTemp implements Serializable {
         Integer   teamId,
         Byte      jobGrade,
         Integer   cityCode,
-        Byte      degree
+        Byte      degree,
+        Integer   bonus
     ) {
         this.id = id;
         this.employeeid = employeeid;
@@ -254,6 +257,7 @@ public class UserEmployeeTemp implements Serializable {
         this.jobGrade = jobGrade;
         this.cityCode = cityCode;
         this.degree = degree;
+        this.bonus = bonus;
     }
 
     public Integer getId() {
@@ -696,6 +700,14 @@ public class UserEmployeeTemp implements Serializable {
         this.degree = degree;
     }
 
+    public Integer getBonus() {
+        return this.bonus;
+    }
+
+    public void setBonus(Integer bonus) {
+        this.bonus = bonus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserEmployeeTemp (");
@@ -755,6 +767,7 @@ public class UserEmployeeTemp implements Serializable {
         sb.append(", ").append(jobGrade);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(degree);
+        sb.append(", ").append(bonus);
 
         sb.append(")");
         return sb.toString();

@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import org.apache.thrift.TException;
@@ -30,8 +31,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 
 /**
  * HR账号服务
@@ -553,11 +558,11 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public UserEmployeeVOPageVO getEmployees(String keyword, int companyId, int filter, String order, String asc,
                                              int pageNumber, int pageSize, String email_validate,int balanceType,
-                                             String timeSpan)
+                                             String timeSpan, String selectIds)
             throws BIZException, TException {
         try {
             return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate,
-                    balanceType, timeSpan);
+                    balanceType, timeSpan, selectIds);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -636,6 +641,8 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("UserHrAccountServiceImpl employeeImport initDateTime:{}", initDateTime.toString());
         try {
             return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
         } catch (CommonException e) {
@@ -643,6 +650,20 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("UserHrAccountServiceImpl employeeImport lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
+
+        }
+    }
+
+    @Override
+    public ImportUserEmployeeStatistic updateEmployee(List<UserEmployeeDO> userEmployeeDOS, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        try {
+            return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -657,6 +678,13 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
+
+        logger.info("UserHrAccountServiceImpl checkBatchInsert");
+
+        if (userEmployeeDOMap.size() > FIVE_THOUSAND) {
+            throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
+        }
+
         try {
             return service.checkBatchInsert(userEmployeeDOMap, companyId);
         } catch (CommonException e) {
@@ -664,6 +692,8 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
+        } finally {
+            logger.info("UserHrAccountServiceImpl after checkBatchInsert");
         }
     }
 

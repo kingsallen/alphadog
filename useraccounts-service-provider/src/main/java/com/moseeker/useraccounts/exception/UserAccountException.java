@@ -73,6 +73,11 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_ALREADY_VERIFIED = new UserAccountException(42061, "已经是认证员工！");
     public static final UserAccountException EMPLOYEE_VERIFICATION_NOT_SUPPORT = new UserAccountException(42062, "暂时不支持员工认证！");
     public static final UserAccountException EMPLOYEE_VERIFICATION_INVALID= new UserAccountException(42063, "认证信息失效！");
+    public static final UserAccountException IMPORT_DATA_CUSTOM_ERROR = new UserAccountException(42064, "导入员工数据自定义信息有误！");
+    public static final UserAccountException EMPLOYEE_CUSTOM_FIELD_ERROR = new UserAccountException(42065, "自定义信息有误！");
+    public static final UserAccountException EMPLOYEE_BATCH_UPDAT_OVER_LIMIT = new UserAccountException(42066, "超过允许批量修改的上限！");
+    public static final UserAccountException EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED = new UserAccountException(42067, "邮件认证的认证信息过期！");
+    public static final UserAccountException USEREMPLOYEES_EMPTY_OR_NO_NEED_UPDATE = new UserAccountException(42068, "员工数据不存在或无需修改！");
 
     private final int code;
 

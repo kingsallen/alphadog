@@ -23,17 +23,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommend implements Serializable {
 
-    private static final long serialVersionUID = 2111553794;
+    private static final long serialVersionUID = 1320420544;
 
     private Integer   id;
     private Integer   postUserId;
     private Integer   presenteeId;
     private Integer   positionId;
     private Integer   appId;
-    private Integer   origin;
-    private Timestamp recommendTime;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   origin;
+    private Timestamp recommendTime;
 
     public ReferralSeekRecommend() {}
 
@@ -43,10 +43,10 @@ public class ReferralSeekRecommend implements Serializable {
         this.presenteeId = value.presenteeId;
         this.positionId = value.positionId;
         this.appId = value.appId;
-        this.origin = value.origin;
-        this.recommendTime = value.recommendTime;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.origin = value.origin;
+        this.recommendTime = value.recommendTime;
     }
 
     public ReferralSeekRecommend(
@@ -55,20 +55,20 @@ public class ReferralSeekRecommend implements Serializable {
         Integer   presenteeId,
         Integer   positionId,
         Integer   appId,
-        Integer   origin,
-        Timestamp recommendTime,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   origin,
+        Timestamp recommendTime
     ) {
         this.id = id;
         this.postUserId = postUserId;
         this.presenteeId = presenteeId;
         this.positionId = positionId;
         this.appId = appId;
-        this.origin = origin;
-        this.recommendTime = recommendTime;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.origin = origin;
+        this.recommendTime = recommendTime;
     }
 
     public Integer getId() {
@@ -111,22 +111,6 @@ public class ReferralSeekRecommend implements Serializable {
         this.appId = appId;
     }
 
-    public Integer getOrigin() {
-        return this.origin;
-    }
-
-    public void setOrigin(Integer origin) {
-        this.origin = origin;
-    }
-
-    public Timestamp getRecommendTime() {
-        return this.recommendTime;
-    }
-
-    public void setRecommendTime(Timestamp recommendTime) {
-        this.recommendTime = recommendTime;
-    }
-
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -143,6 +127,22 @@ public class ReferralSeekRecommend implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getOrigin() {
+        return this.origin;
+    }
+
+    public void setOrigin(Integer origin) {
+        this.origin = origin;
+    }
+
+    public Timestamp getRecommendTime() {
+        return this.recommendTime;
+    }
+
+    public void setRecommendTime(Timestamp recommendTime) {
+        this.recommendTime = recommendTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralSeekRecommend (");
@@ -152,10 +152,10 @@ public class ReferralSeekRecommend implements Serializable {
         sb.append(", ").append(presenteeId);
         sb.append(", ").append(positionId);
         sb.append(", ").append(appId);
-        sb.append(", ").append(origin);
-        sb.append(", ").append(recommendTime);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(origin);
+        sb.append(", ").append(recommendTime);
 
         sb.append(")");
         return sb.toString();

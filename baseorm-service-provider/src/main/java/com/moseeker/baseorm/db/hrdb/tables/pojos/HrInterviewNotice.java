@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewNotice implements Serializable {
 
-    private static final long serialVersionUID = 644600075;
+    private static final long serialVersionUID = -2042641405;
 
     private Integer   id;
     private Integer   interviewId;
@@ -37,6 +37,7 @@ public class HrInterviewNotice implements Serializable {
     private Integer   disable;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private String    failReason;
 
     public HrInterviewNotice() {}
 
@@ -53,6 +54,7 @@ public class HrInterviewNotice implements Serializable {
         this.disable = value.disable;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.failReason = value.failReason;
     }
 
     public HrInterviewNotice(
@@ -67,7 +69,8 @@ public class HrInterviewNotice implements Serializable {
         Integer   noticeScene,
         Integer   disable,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        String    failReason
     ) {
         this.id = id;
         this.interviewId = interviewId;
@@ -81,6 +84,7 @@ public class HrInterviewNotice implements Serializable {
         this.disable = disable;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.failReason = failReason;
     }
 
     public Integer getId() {
@@ -179,6 +183,14 @@ public class HrInterviewNotice implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getFailReason() {
+        return this.failReason;
+    }
+
+    public void setFailReason(String failReason) {
+        this.failReason = failReason;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrInterviewNotice (");
@@ -195,6 +207,7 @@ public class HrInterviewNotice implements Serializable {
         sb.append(", ").append(disable);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(failReason);
 
         sb.append(")");
         return sb.toString();

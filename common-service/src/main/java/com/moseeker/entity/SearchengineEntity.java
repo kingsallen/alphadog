@@ -62,10 +62,12 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.zip.DataFormatException;
 
 /**
  * Created by YYF
@@ -95,6 +97,7 @@ public class SearchengineEntity {
     @Autowired
     private UserWxUserDao userWxUserDao;
 
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 获取ES连接
@@ -179,6 +182,14 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf));
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf));
+                    }
+
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
@@ -265,14 +276,8 @@ public class SearchengineEntity {
     }
 
 
-    /**
-     * 全量更新员工积分
-     *
-     * @param employeeIds
-     * @return
-     * @throws TException
-     */
-    public Response updateEmployeeAwards(List<Integer> employeeIds) throws CommonException {
+    public Response updateEmployeeAwards(List<Integer> employeeIds, boolean updateAwards) throws CommonException {
+        logger.info("SearchengineEntity updateEmployeeAwards employeeIds.size:{}, updateAwards:{}", employeeIds.size(), updateAwards);
         logger.info("----开始全量更新员工积分-------");
         // 连接ES
         TransportClient client = this.getTransportClient();
@@ -351,6 +356,12 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf));
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf));
+                    }
                     JSONObject searchData = new JSONObject();
                     searchData.put("email", "");
                     if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
@@ -363,17 +374,19 @@ public class SearchengineEntity {
                     }
 
 
-                    // 取年积分
-                    List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
-                    // 取季度积分
-                    List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
-                    // 取月积分
-                    List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
-                    JSONObject awards = new JSONObject();
-                    getAwards(awards, listYear);
-                    getAwards(awards, listQuarter);
-                    getAwards(awards, listMonth);
-                    jsonObject.put("awards", awards);
+                    if (updateAwards) {
+                        // 取年积分
+                        List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
+                        // 取季度积分
+                        List<EmployeePointsRecordPojo> listQuarter = userEmployeePointsDao.getAwardByQuarter(userEmployeeDO.getId());
+                        // 取月积分
+                        List<EmployeePointsRecordPojo> listMonth = userEmployeePointsDao.getAwardByMonth(userEmployeeDO.getId());
+                        JSONObject awards = new JSONObject();
+                        getAwards(awards, listYear);
+                        getAwards(awards, listQuarter);
+                        getAwards(awards, listMonth);
+                        jsonObject.put("awards", awards);
+                    }
                     // 积分信息
                     if (companyMap.containsKey(userEmployeeDO.getCompanyId())) {
                         HrCompanyDO hrCompanyDO = (HrCompanyDO) companyMap.get(userEmployeeDO.getCompanyId());
@@ -415,7 +428,6 @@ public class SearchengineEntity {
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-                    logger.info(JSONObject.toJSONString(jsonObject));
                     bulkRequest.add(
                             client.prepareIndex("awards", "award", userEmployeeDO.getId() + "")
                                     .setSource(jsonObject)
@@ -594,13 +606,16 @@ public class SearchengineEntity {
                 GetResponse response = client.prepareGet("users", "users", id + "").execute().actionGet();
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
+                logger.info("SearchengineEntity removeApplication mapTemp:{}", JSONObject.toJSONString(mapTemp));
                 if (mapTemp != null) {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
+                        logger.info("removeApplication applications:{}", JSONObject.toJSONString(applications));
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            logger.info("removeApplication applicationOptional:{}", applicationOptional.get());
                             if (applicationOptional.isPresent()) {
                                 logger.info("removeApplication exists ");
                                 List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());

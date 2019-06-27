@@ -281,7 +281,7 @@ public class ProfileBasicService {
 				/* 计算用户基本信息的简历完整度 */
                     profileEntity.reCalculateUserUser(struct.getProfile_id());
                     profileEntity.reCalculateProfileBasic(struct.getProfile_id());
-                    this.handlerCompanyTag(struct.getProfile_id());
+
                     this.updateEsUsersAndProfile(struct.getProfile_id());
 
                 }
@@ -290,6 +290,8 @@ public class ProfileBasicService {
             }
 
         }
+        logger.info("======处理企业标签问题=========");
+        this.handlerCompanyTag(struct.getProfile_id());
         return i;
     }
 

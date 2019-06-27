@@ -64,11 +64,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
+import static com.moseeker.common.constants.Constant.ONE;
 import static com.moseeker.searchengine.service.impl.tools.EmployeeBizTool.buildSortScript;
 
 @Service
@@ -97,6 +100,8 @@ public class SearchengineService {
 
     @Autowired
     private LogMeetmobotRecomDao logMeetmobotRecomDao;
+
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -620,6 +625,16 @@ public class SearchengineService {
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("bonus",userEmployeeDO.getBonus());
+
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getUnbindTime())) {
+                        jsonObject.put("unbind_time", userEmployeeDO.getUnbindTime());
+                        jsonObject.put("unbind_time_long", LocalDateTime.parse(userEmployeeDO.getUnbindTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                    }
+                    if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getImportTime())) {
+                        jsonObject.put("import_time", userEmployeeDO.getImportTime());
+                        jsonObject.put("import_time_long", LocalDateTime.parse(userEmployeeDO.getImportTime(), dtf).toInstant(ZoneOffset.of("+8")).toEpochMilli());
+                    }
+
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -859,7 +874,8 @@ public class SearchengineService {
     }
 
     public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-                                   String emailValidate, int pageSize, int pageNumber, int balanceType, String timeSpan)
+                                   String emailValidate, int pageSize, int pageNumber, int balanceType, String timeSpan,
+                                   String selectIds)
             throws SearchEngineException {
         TransportClient searchClient;
         try {
@@ -868,32 +884,51 @@ public class SearchengineService {
             Map<String, Object> result = new HashMap<>();
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-            EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
-            EmployeeBizTool.addFilter(query, filter, searchUtil);
-            for(Integer companyId : companyIds){
-                String str = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
-                if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(str)){
-                    List<Integer> employees = JSON.parseArray(str, Integer.class);
-                    EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+
+            SearchResponse response;
+
+            /**
+             * 如果是指定员工编号，那么只查找员工编号的员工数据
+             */
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(selectIds)) {
+                String[] idArray = selectIds.split(",");
+                List<Integer> employeeIdList = new ArrayList<>(idArray.length);
+                for (int i=0; i<idArray.length; i++) {
+                    employeeIdList.add(Integer.valueOf(idArray[i].trim()));
                 }
-                logger.info("SearchengineService fetchEmployees companyId：{}", companyId);
-                if (filter == 1) {
-                    String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
-                    logger.info("SearchengineService fetchEmployees str1：{}", str1);
-                    if(StringUtils.isNotBlank(str1)){
-                        List<Integer> employees = JSON.parseArray(str1, Integer.class);
+                EmployeeBizTool.addEmployeeIds(query, employeeIdList, searchUtil);
+                SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+                EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
+                EmployeeBizTool.addPagination(searchRequestBuilder, ONE, FIVE_THOUSAND);
+                response = searchRequestBuilder.execute().actionGet();
+
+            } else {
+                EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
+                EmployeeBizTool.addFilter(query, filter, searchUtil);
+                for(Integer companyId : companyIds){
+                    String str = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
+                    if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(str)){
+                        List<Integer> employees = JSON.parseArray(str, Integer.class);
                         EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                     }
+                    if (filter == 1) {
+                        String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
+                        logger.info("SearchengineService fetchEmployees str1：{}", str1);
+                        if(StringUtils.isNotBlank(str1)){
+                            List<Integer> employees = JSON.parseArray(str1, Integer.class);
+                            EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+                        }
+                    }
                 }
+                searchUtil.handleTerm(String.valueOf(0), query, "disable");
+                EmployeeBizTool.addKeywords(query, keywords, searchUtil);
+                EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
+                EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
+                SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+                EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
+                EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
+                response = searchRequestBuilder.execute().actionGet();
             }
-            searchUtil.handleTerm(String.valueOf(0), query, "disable");
-            EmployeeBizTool.addKeywords(query, keywords, searchUtil);
-            EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
-            EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
-            SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
-            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
-            EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
-            SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             result.put("total", response.getHits().getTotalHits());
             for (SearchHit searchHit : response.getHits().getHits()) {
@@ -907,10 +942,6 @@ public class SearchengineService {
                 }
                 data.add(jsonObject);
             }
-            logger.info("==================================");
-            logger.info("fetchEmployees ======= "+searchRequestBuilder.toString());
-            logger.info("==================================");
-
             logger.info("==================================");
             logger.info("total ======="+response.getHits().getTotalHits());
             logger.info("==================================");

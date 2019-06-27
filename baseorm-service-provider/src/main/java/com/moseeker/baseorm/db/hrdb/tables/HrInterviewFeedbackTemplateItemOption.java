@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewFeedbackTemplateItemOption extends TableImpl<HrInterviewFeedbackTemplateItemOptionRecord> {
 
-    private static final long serialVersionUID = 777613978;
+    private static final long serialVersionUID = -1763785799;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_feedback_template_item_option</code>
@@ -74,7 +74,7 @@ public class HrInterviewFeedbackTemplateItemOption extends TableImpl<HrInterview
     /**
      * The column <code>hrdb.hr_interview_feedback_template_item_option.disable</code>. 状态：0 有效  1 无效 2 逻辑删除
      */
-    public final TableField<HrInterviewFeedbackTemplateItemOptionRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
+    public final TableField<HrInterviewFeedbackTemplateItemOptionRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
 
     /**
      * The column <code>hrdb.hr_interview_feedback_template_item_option.create_time</code>. 创建时间

@@ -107,7 +107,6 @@ public class CounterIfaceAop implements Ordered {
                 log.error("redis Connection refused");
             }
         });
-        log.info("counterInfo:{}", jsonStr);
     }
 
     @Override

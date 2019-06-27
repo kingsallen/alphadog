@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeamMember extends TableImpl<HrTeamMemberRecord> {
 
-    private static final long serialVersionUID = -1242037139;
+    private static final long serialVersionUID = 686585651;
 
     /**
      * The reference instance of <code>hrdb.hr_team_member</code>
@@ -107,9 +107,9 @@ public class HrTeamMember extends TableImpl<HrTeamMemberRecord> {
     public final TableField<HrTeamMemberRecord, String> RES_ATTRS = createField("res_attrs", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "素材库图片处理参数,七牛格式");
 
     /**
-     * The column <code>hrdb.hr_team_member.orders</code>.
+     * The column <code>hrdb.hr_team_member.orders</code>. 团队成员显示顺序
      */
-    public final TableField<HrTeamMemberRecord, Integer> ORDERS = createField("orders", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<HrTeamMemberRecord, Integer> ORDERS = createField("orders", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "团队成员显示顺序");
 
     /**
      * Create a <code>hrdb.hr_team_member</code> table reference

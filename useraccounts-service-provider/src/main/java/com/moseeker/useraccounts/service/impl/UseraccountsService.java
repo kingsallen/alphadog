@@ -1263,24 +1263,32 @@ public class UseraccountsService {
      * @return 每个认领id对应的认领结果
      */
     public List<ClaimResult> batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) {
+        logger.info("UseraccountsService batchClaimReferralCard");
+
+        logger.info("UseraccountsService batchClaimReferralCard userId:{}, name:{}, mobile:{}, vcode:{}, " +
+                "referralRecordIds:{}", userId, name, mobile, vcode, JSONObject.toJSON(referralRecordIds));
         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
 
         List<ReferralLog> referralLogs = referralEntity.fetchReferralLogs(referralRecordIds);
+        logger.info("UseraccountsService batchClaimReferralCard userUserDO:{}", JSONObject.toJSONString(referralLogs));
         if (referralLogs == null) {
 
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
         // 检验推荐记录已认领
         checkReferralClaim(referralLogs);
+        logger.info("UseraccountsService batchClaimReferralCard after checkReferralClaim");
         // 批量认领只能认领一个用户
         List<Integer> referrenceIds = referralLogs.stream().map(ReferralLog::getReferenceId).distinct().collect(Collectors.toList());
+        logger.info("UseraccountsService batchClaimReferralCard after referrenceIds:{}", JSONObject.toJSONString(referrenceIds));
         if(referrenceIds.size() > 1){
             throw UserAccountException.ERMPLOYEE_REFERRAL_CLAIMED_SINGLE;
         }
         // 检验认领的名字是否和user_user名字相同
         UserUserDO referralUser = userdao.getUser(referrenceIds.get(0));
+        logger.info("UseraccountsService batchClaimReferralCard referralUser:{}", JSONObject.toJSONString(referralUser));
         if (referralUser == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
@@ -1289,6 +1297,7 @@ public class UseraccountsService {
         }
 
         UserUserDO userUserDO = userdao.getUser(userId);
+        logger.info("UseraccountsService batchClaimReferralCard userUserDO:{}", JSONObject.toJSONString(userUserDO));
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
@@ -1310,6 +1319,7 @@ public class UseraccountsService {
                 }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
+                    logger.error("员工认领异常信息:{}", e.getMessage());
                     throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
@@ -1384,28 +1394,39 @@ public class UseraccountsService {
     @Transactional(rollbackFor = Exception.class)
     protected void claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
 
+        logger.info("UseraccountsService claimReferral");
+
+        logger.info("UseraccountsService claimReferral referralLog:{}, userUserDO:{}, userId:{}, name:{}, mobile:{}, vcode:{}",
+                JSONObject.toJSONString(referralLog), JSONObject.toJSONString(userUserDO), userId, name, mobile, vcode);
         ReferralLog repeatReferralLog = referralEntity.fetchReferralLog(referralLog.getEmployeeId(),
                 referralLog.getPositionId(),userId);
+        logger.info("UseraccountsService claimReferral repeatReferralLog:{}",
+                JSONObject.toJSONString(repeatReferralLog));
         if (repeatReferralLog != null && repeatReferralLog.getClaim() != null
                 && repeatReferralLog.getClaim() == ClaimType.Claimed.getValue()) {
+            logger.info("UseraccountsService claimReferral UserAccountException:{}",JSONObject.toJSONString(UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM));
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
         }
 
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(referralLog.getEmployeeId());
+        logger.info("UseraccountsService claimReferral employeeDO:{}",JSONObject.toJSONString(employeeDO));
         if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
+            logger.info("UseraccountsService claimReferral 修改手机号码");
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredStringValidate("手机号码", mobile);
             validateUtil.addRequiredStringValidate("验证码", vcode);
             String validateResult = validateUtil.validate();
             if (org.apache.commons.lang.StringUtils.isNotBlank(validateResult)) {
+                logger.info("UseraccountsService claimReferral validateResult:{}", validateResult);
                 throw UserAccountException.validateFailed(validateResult);
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
             boolean validateVerifyResult = smsScene.validateVerifyCode("", mobile, vcode, redisClient);
+            logger.info("UseraccountsService claimReferral validateVerifyResult:{}", validateVerifyResult);
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }
@@ -1420,7 +1441,11 @@ public class UseraccountsService {
             userdao.updateRecord(userUserRecord);
         }
         referralEntity.claimReferralCard(userUserDO, referralLog);
+        logger.info("UseraccountsService claimReferral after claimReferralCard!");
+        logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
+
         kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
+        logger.info("UseraccountsService claimReferral after sendUserClaimToKafka!");
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {

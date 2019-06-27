@@ -149,7 +149,7 @@ public class UserHrAccountServiceTest {
     public void checkBatchInsert() {
         try {
             List<UserEmployeeDO> list = new ArrayList<>();
-//            userHrAccountService.repetitionFilter(list, 3);
+//            userHrAccountService.importCheck(list, 3);
 
 //            System.out.println(list);
         } catch (Exception e) {

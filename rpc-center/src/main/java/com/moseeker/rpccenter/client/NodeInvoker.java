@@ -5,12 +5,11 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.SocketException;
 
-import com.moseeker.rpccenter.common.ThriftUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TApplicationException;
-import org.apache.thrift.TServiceClient;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +75,7 @@ public class NodeInvoker<T> implements Invoker {
         for (int i = 0; i < 1; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
+                LOGGER.info("NodeInvoker invoke node.name:{}, node.data:{}", JSONObject.toJSONString(node.getName()), JSONObject.toJSONString(node.getData()));
                 if (node == null) {
                 	LOGGER.error("retry:"+(i+1));
                 	LOGGER.error(parentName+"  Can't find node!");
@@ -83,12 +83,11 @@ public class NodeInvoker<T> implements Invoker {
                     continue;
                 }
                 client = pool.borrowObject(node);
-                LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
+                LOGGER.info("node:{}, getNumActive:{}",node,pool.getNumActive());
                 Object result = method.invoke(client, args);
 
                 return result;
             } catch (CURDException | BIZException ce) {
-                ce.printStackTrace();
                 throw ce;
             } catch (ConnectException ce) {
             	LOGGER.error(ce.getMessage(), ce);

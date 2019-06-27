@@ -60,6 +60,7 @@ public class ProfileServer {
 				server.startServer();
 				server.shutDownHook();
 				synchronized (ProfileServer.class) {
+					//OfficeUtils.checkAndStart(); // 启动libreoffice服务
                     while (true) {
                         try {
                             ProfileServer.class.wait();

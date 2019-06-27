@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewNotice extends TableImpl<HrInterviewNoticeRecord> {
 
-    private static final long serialVersionUID = -1666132916;
+    private static final long serialVersionUID = -27941286;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_notice</code>
@@ -99,7 +99,7 @@ public class HrInterviewNotice extends TableImpl<HrInterviewNoticeRecord> {
     /**
      * The column <code>hrdb.hr_interview_notice.disable</code>. 状态：0 有效  1 无效 2 逻辑删除
      */
-    public final TableField<HrInterviewNoticeRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
+    public final TableField<HrInterviewNoticeRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "状态：0 有效  1 无效 2 逻辑删除");
 
     /**
      * The column <code>hrdb.hr_interview_notice.create_time</code>. 创建时间
@@ -110,6 +110,11 @@ public class HrInterviewNotice extends TableImpl<HrInterviewNoticeRecord> {
      * The column <code>hrdb.hr_interview_notice.update_time</code>. 更新时间
      */
     public final TableField<HrInterviewNoticeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>hrdb.hr_interview_notice.fail_reason</code>. 发送失败原因
+     */
+    public final TableField<HrInterviewNoticeRecord, String> FAIL_REASON = createField("fail_reason", org.jooq.impl.SQLDataType.VARCHAR.length(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发送失败原因");
 
     /**
      * Create a <code>hrdb.hr_interview_notice</code> table reference
