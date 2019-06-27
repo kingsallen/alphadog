@@ -529,6 +529,9 @@ public class BatchValidate {
         if (customFieldValues != null && customFieldValues.size() > 0) {
             List<CustomOptionRel> rels = new ArrayList<>(customFieldValues.size());
             customFieldValues.forEach((key, value) -> {
+                if (value == null || value.equals("")) {
+                    return;
+                }
                 CustomOptionRel customOptionRel = new CustomOptionRel();
                 customOptionRel.setCustomId(Integer.valueOf(key));
                 customOptionRel.setOption(value);
