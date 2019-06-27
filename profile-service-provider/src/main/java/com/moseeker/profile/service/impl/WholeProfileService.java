@@ -30,7 +30,7 @@ import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.thread.ProfileThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
@@ -83,7 +83,7 @@ public class WholeProfileService {
     Logger logger = LoggerFactory.getLogger(WholeProfileService.class);
     ProfileExtUtils profileUtils = new ProfileExtUtils();
 
-    ThreadPool pool = ThreadPool.Instance;
+    ProfileThreadPool pool = ProfileThreadPool.Instance;
     @Autowired
     ProfileEntity profileEntity;
 
