@@ -270,11 +270,17 @@ public class BatchValidate {
      * 校验单个员工的自定义配置是否正确
      * @param customFieldValues 自定义配置
      */
-    public boolean validateCustomFieldValues(Map<Integer, String> customFieldValues, int companyId) {
+    public boolean validateCustomFieldValues(Map<Integer, String> customFieldValues1, int companyId) {
 
         /**
          * 校验必填项
          */
+        Map<Integer, String> customFieldValues = new HashMap<>(customFieldValues1.size());
+        customFieldValues1.forEach((key, value) -> {
+            if (value != null && !value.equals("")) {
+                customFieldValues1.put(key, value);
+            }
+        });
         List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
         List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
                 .parallelStream()
