@@ -694,15 +694,22 @@ public class BatchValidate {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            if (optionValueOptional.isPresent()) {
-                                department.put("department", optionValueOptional.get().getName());
-                            } else {
+
+                            logger.info("departmentValueOptional.get().get(departmentOptional.get().getId().toString()):{}", departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
+                            if (departmentValueOptional.get().get(departmentOptional.get().getId().toString()).equals("")) {
                                 department.put("department", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    department.put("department", optionValueOptional.get().getName());
+                                } else {
+
+                                }
+                              department.put("department", "");
                             }
                         } else {
                             department.put("department", "");
@@ -721,16 +728,21 @@ public class BatchValidate {
                     Optional<Map<String, String>> positionValueOptional = parseFilter(list, positionOptional);
                     if (positionValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            if (optionValueOptional.isPresent()) {
-                                position.put("position", optionValueOptional.get().getName());
-                            } else {
+                            if (positionValueOptional.get().get(positionOptional.get().getId().toString()).equals("")) {
                                 position.put("position", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    position.put("position", optionValueOptional.get().getName());
+                                } else {
+                                    position.put("position", "");
+                                }
                             }
+
                         } else {
                             position.put("position", "");
                         }
@@ -748,16 +760,21 @@ public class BatchValidate {
                     Optional<Map<String, String>> cityValueOptional = parseFilter(list, cityOptional);
                     if (cityValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            if (optionValueOptional.isPresent()) {
-                                city.put("city", optionValueOptional.get().getName());
-                            } else {
+                            if (cityValueOptional.get().get(cityOptional.get().getId().toString()).equals("")) {
                                 city.put("city", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    city.put("city", optionValueOptional.get().getName());
+                                } else {
+                                    city.put("city", "");
+                                }
                             }
+                            
                         } else {
                             city.put("city", "");
                         }
