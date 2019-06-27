@@ -284,6 +284,12 @@ public class BatchValidate {
             return false;
         }
 
+        for (Map.Entry<Integer, String> entry : customFieldValues.entrySet()) {
+            if (entry.getValue() == null || entry.getValue().equals("")) {
+                customFieldValues.remove(entry.getKey());
+            }
+        }
+
         if (customFieldValues == null || customFieldValues.size() == 0) {
             return true;
         }
