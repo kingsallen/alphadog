@@ -259,6 +259,15 @@ public class EmployeeService {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");
         } else {
+            if (bindingParams.getCustomFieldValues() != null && !bindingParams.getCustomFieldValues().equals("")) {
+                Map<Integer, String> customFieldValues = new HashMap<>(bindingParams.getCustomFieldValues().size());
+                bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                    if (value != null && !value.equals("")) {
+                        customFieldValues.put(key, value);
+                    }
+                });
+                bindingParams.setCustomFieldValues(customFieldValues);
+            }
             response = employeeBinder.get(authMethod).bind(bindingParams,bindSource);
         }
         return response;
