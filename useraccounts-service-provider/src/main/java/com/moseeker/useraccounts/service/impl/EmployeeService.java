@@ -267,7 +267,6 @@ public class EmployeeService {
                 });
                 bindingParams.setCustomFieldValues(customFieldValues);
             }
-
             response = employeeBinder.get(authMethod).bind(bindingParams,bindSource);
         }
         return response;
