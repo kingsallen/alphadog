@@ -152,7 +152,7 @@ public class PositionBS {
                     throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "unknow sync error:" + result);
                 } else {
                     JSONObject resultObject = JSON.parseObject(result);
-                    if (resultObject.getIntValue("code") != 0) {
+                    if (!"0".equals(resultObject.getString("code"))) {
                         throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, "sync error:" + resultObject.getString("message"));
                     } else {
                         results.addAll(JSON.parseArray(resultObject.getString("data"), PositionSyncResultPojo.class));
