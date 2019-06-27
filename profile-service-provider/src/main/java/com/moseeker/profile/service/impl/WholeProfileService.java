@@ -67,6 +67,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -1063,6 +1065,8 @@ public class WholeProfileService {
 
     private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, Query query,
                                            List<DictConstantRecord> constantRecords) throws Exception {
+        LocalDateTime startBuildBasic = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic start task! time:{}", startBuildBasic.toString());
         Map<String, Object> map = new HashMap<>(64);
 
         Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getRecord(query));
@@ -1074,6 +1078,9 @@ public class WholeProfileService {
         UserUserRecord userRecord = userRecordFuture.get(FIVE_HUNDRED, TimeUnit.MILLISECONDS);
         ProfileWorkexpRecord lastWorkExp = lastWorkExpFuture.get(FIVE_HUNDRED, TimeUnit.MILLISECONDS);
         UserSettingsRecord userSettingsRecord = userSettingsRecordFuture.get(FIVE_HUNDRED, TimeUnit.MILLISECONDS);
+
+        LocalDateTime afterFetchDBData = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic afterFetchDBData:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, afterFetchDBData));
 
         HrCompanyRecord company = null;
         if (lastWorkExp != null) {
@@ -1100,6 +1107,8 @@ public class WholeProfileService {
             map.put("name", userRecord.getName());
             map.put("nickname",userRecord.getNickname());
         }
+        LocalDateTime afterFetchUserAndCompany = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic afterFetchUserAndCompany:{}, duration:{}", afterFetchUserAndCompany.toString(), Duration.between(afterFetchDBData, afterFetchUserAndCompany));
         if (lastWorkExp != null) {
             if (company != null) {
                 map.put("company_id", company.getId().intValue());
@@ -1146,6 +1155,12 @@ public class WholeProfileService {
             map.put("weixin", basicRecord.getWeixin());
             map.put("profile_id", basicRecord.getProfileId().intValue());
         }
+
+        LocalDateTime afterPackageData = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic afterPackageData:{}, duration:{}", afterPackageData.toString(), Duration.between(afterFetchUserAndCompany, afterPackageData));
+
+        LocalDateTime endBuildBasic = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic end task! time:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, endBuildBasic));
         return map;
     }
 
