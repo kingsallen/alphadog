@@ -687,23 +687,19 @@ public class BatchValidate {
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
 
-                            logger.info("departmentValueOptional.get().get(departmentOptional.get().getId().toString()):{}", departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
                             if (departmentValueOptional.get().get(departmentOptional.get().getId().toString()).equals("")) {
                                 department.put("department", "");
                             } else {
                                 Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
-                                logger.info("BatchValidate convertToListDisplay department optionId:{}", optionId);
                                 Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
                                         .parallelStream()
                                         .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
                                         .findAny();
-                                logger.info("BatchValidate convertToListDisplay department optionValueOptional:{}", optionValueOptional.isPresent());
                                 if (optionValueOptional.isPresent()) {
                                     department.put("department", optionValueOptional.get().getName());
                                 } else {
-
+                                    department.put("department", "");
                                 }
-                              department.put("department", "");
                             }
                         } else {
                             department.put("department", "");
