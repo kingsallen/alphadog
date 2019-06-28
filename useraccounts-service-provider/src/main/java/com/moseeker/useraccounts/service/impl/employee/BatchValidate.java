@@ -684,8 +684,6 @@ public class BatchValidate {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-
-                            logger.info("departmentValueOptional.get().get(departmentOptional.get().getId().toString()):{}", departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
                             if (departmentValueOptional.get().get(departmentOptional.get().getId().toString()).equals("")) {
                                 department.put("department", "");
                             } else {
@@ -697,9 +695,8 @@ public class BatchValidate {
                                 if (optionValueOptional.isPresent()) {
                                     department.put("department", optionValueOptional.get().getName());
                                 } else {
-
+                                    department.put("department", "");
                                 }
-                              department.put("department", "");
                             }
                         } else {
                             department.put("department", "");
