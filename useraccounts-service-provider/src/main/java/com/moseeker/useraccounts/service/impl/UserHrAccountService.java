@@ -2216,7 +2216,9 @@ public class UserHrAccountService {
 
                 if (userEmployeeDO.getCustomFieldValues() != null) {
 
+                    logger.info("UserHrAccountService packageEmployeeVOs userEmployeeDO.customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
                     List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                    logger.info("UserHrAccountService packageEmployeeVOs customFieldValues:{}", list);
                     userEmployeeVO.setCustomFieldValues(list);
 
                     List<Map<String, String>> list1 = batchValidate.convertToListDisplay(list, fieldsList, employeeOptionValues, userEmployeeDO.getCompanyId());

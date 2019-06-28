@@ -62,8 +62,9 @@ public class BatchValidate {
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
                     Map<String, String> jsonObject = new HashMap<>();
-
+                    logger.info("BatchValidate parseCustomFieldValues customFieldValue:{}", JSONObject.toJSONString(customFieldValue));
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
+                    logger.info("BatchValidate parseCustomFieldValues customFieldJSONObject:{}", customFieldJSONObject);
                     customFieldJSONObject.forEach((key, value) -> {
                         if (value instanceof JSONArray) {
                             String valueStr;

@@ -321,17 +321,19 @@ public class CompanyService {
      */
     public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws Exception {
 
+        logger.info("CompanyService getGroupCompanies companyId:{}", companyId);
         /** 如果是子公司的话，则查找母公司的所属集团 */
         companyId = findSuperCompanyId(companyId);
-
+        logger.info("CompanyService getGroupCompanies companyId:{}", companyId);
         HrGroupCompanyRelDO groupCompanyDO = findGroupCompanyRelByCompanyId(companyId);
+        logger.info("CompanyService getGroupCompanies groupCompanyDO:{}", JSONObject.toJSONString(groupCompanyDO));
         if (groupCompanyDO == null) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
         }
 
         /** 查找集团下公司的编号 */
         List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
-
+        logger.info("CompanyService getGroupCompanies companyIdList:{}", JSONObject.toJSONString(companyIdList));
         if (companyIdList == null || companyIdList.size() == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
         }
