@@ -261,7 +261,7 @@ public class EmployeeService {
             if (bindingParams.getCustomFieldValues() != null && !bindingParams.getCustomFieldValues().equals("")) {
                 Map<Integer, String> customFieldValues = new HashMap<>(bindingParams.getCustomFieldValues().size());
                 bindingParams.getCustomFieldValues().forEach((key, value) -> {
-                    if (value != null && !value.equals("")) {
+                    if (value != null && !value.trim().equals("")) {
                         customFieldValues.put(key, value);
                     }
                 });
