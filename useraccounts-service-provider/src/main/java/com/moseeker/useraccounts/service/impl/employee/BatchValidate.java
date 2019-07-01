@@ -62,8 +62,9 @@ public class BatchValidate {
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
                     Map<String, String> jsonObject = new HashMap<>();
-
+                    logger.info("BatchValidate parseCustomFieldValues customFieldValue:{}", JSONObject.toJSONString(customFieldValue));
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
+                    logger.info("BatchValidate parseCustomFieldValues customFieldJSONObject:{}", customFieldJSONObject);
                     customFieldJSONObject.forEach((key, value) -> {
                         if (value instanceof JSONArray) {
                             String valueStr;
@@ -164,7 +165,6 @@ public class BatchValidate {
             }
 
         }
-
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
@@ -279,7 +279,6 @@ public class BatchValidate {
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
         if (notSupportList != null && notSupportList.size() > 0) {
-            logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
         }
 
@@ -291,6 +290,9 @@ public class BatchValidate {
          * 校验下拉项选择
          */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+
+        logger.info("BatchValidate validateCustomFieldValues rels:{}", JSONObject.toJSONString(rels));
+
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
                     .parallelStream()
