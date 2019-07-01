@@ -686,7 +686,6 @@ public class BatchValidate {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-
                             if (departmentValueOptional.get().get(departmentOptional.get().getId().toString()).equals("")) {
                                 department.put("department", "");
                             } else {

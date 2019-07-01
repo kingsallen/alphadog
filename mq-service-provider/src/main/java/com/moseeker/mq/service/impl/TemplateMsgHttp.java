@@ -145,7 +145,7 @@ public class TemplateMsgHttp {
 
     private static String NoticeEmployeeVerifyFirstTemplateId = "I0r7v2HKg4-flc6IaPVwoT8wud6hX2l_w4BUGIAAUSM";
 
-    private static String NoticeEmployeeReferralBonusFirst = "恭喜你获得内推入职奖励";
+    private static String NoticeEmployeeReferralBonusFirst = "恭喜您成功推荐候选人入职，您将在后续获得内推奖金~";
     private static String NoticeEmployeeReferralBonusRemark = "请点击查看详情";
     private static String NoticeEmployeeReferralBonusTemplateId = "OPENTM411613026";
     private static String NoticeEmployeeReferralBonusTitle = "简历推荐成功提醒";
@@ -754,7 +754,7 @@ public class TemplateMsgHttp {
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
                     String link = env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature());
-                    link = link+"&from_template_message="+TEMPLATES_REFERRAL_BONUS_NOTICE_TPL+"&send_time=" + new Date().getTime();
+                    link = link+"&from_template_message="+TEMPLATES_REFERRAL_BONUS_NOTICE_TPL+"&send_time=" + System.currentTimeMillis();
                     applierTemplate.put("url", link);
 
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
