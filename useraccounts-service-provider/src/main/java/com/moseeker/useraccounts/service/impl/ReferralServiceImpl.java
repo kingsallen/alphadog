@@ -254,6 +254,7 @@ public class ReferralServiceImpl implements ReferralService {
         List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
         long logListTime = System.currentTimeMillis();
         logger.info("profile tab getReferralProfileTabList groupCompanyRelTime:{}", logListTime- startTime);
+        logger.info("ReferralServiceImpl getReferralProfileTabList logList:{}", JSONObject.toJSONString(logList));
         ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
         logger.info("ReferralServiceImpl getReferralProfileTabList profileData:{}", JSONObject.toJSONString(profileData));
         long profileDataTime = System.currentTimeMillis();
