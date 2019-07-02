@@ -66,11 +66,7 @@ public class OfficeUtils {
      */
     public static int Word2Pdf(String sourceFileName, String targetFileName) {
 
-        //若未获取到许可证书，返回
-        if (!isLicense()) {
-            logger.info("toPDF Word2Pdf:isLicense false");
-            return 0;
-        }
+        logger.error("Word2Pdf({},{}) ",sourceFileName,targetFileName );
         File targetFile = new File(targetFileName);
         try {
             if(!convertThroughAsposeWord(sourceFileName,targetFileName)){
