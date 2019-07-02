@@ -604,6 +604,7 @@ public class ReferralEntity {
             if(StringUtils.isEmptyList(logs)){
                 employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
             }
+            logger.info("ReferralEntity fetchReferralLog referralLog.employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             long employeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- positionTime);
             List<Integer> temp = employeeIdList;
@@ -613,16 +614,20 @@ public class ReferralEntity {
                     () -> historyUserEmployeeDao.getHistoryEmployeeByIds(temp));;
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
             if (!StringUtils.isEmptyList(employeeList)){
+                logger.info("ReferralEntity fetchReferralLog employeeList{}", JSONObject.toJSONString(employeeList));
                 List<Integer> employeeIds1 = employeeList.stream().filter(f -> companyIds.contains(f.getCompanyId()))
                         .map(m -> m.getId()).collect(Collectors.toList());
+                logger.info("ReferralEntity fetchReferralLog employeeIds1{}", JSONObject.toJSONString(employeeIds1));
                 employeeIds.addAll(employeeIds1);
             }
             long midTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- midTime);
             List<UserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
             if (!StringUtils.isEmptyList(historyUserEmployees)){
+                logger.info("ReferralEntity fetchReferralLog historyUserEmployees{}", JSONObject.toJSONString(historyUserEmployees));
                 List<Integer> employeeIds2 = historyUserEmployees.stream().filter(f -> companyIds.contains(f.getCompanyId()))
                         .map(m -> m.getId()).collect(Collectors.toList());
+                logger.info("ReferralEntity fetchReferralLog employeeIds2{}", JSONObject.toJSONString(employeeIds2));
                 employeeIds.addAll(employeeIds2);
             }
             long historyUserEmployeeTime = System.currentTimeMillis();
