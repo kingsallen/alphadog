@@ -110,7 +110,7 @@ public class OfficeUtils {
                 */
             }
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error(" Word2Pdf error ",e );
             return 0;
         } finally {
             boolean exist = new File(targetFileName).exists();
