@@ -50,11 +50,11 @@ public class OfficeUtils {
     private static DefaultDocumentFormatRegistry DOC_FMT_REGISTRY = new DefaultDocumentFormatRegistry();
     static{
         DOC_FMT_REGISTRY.addDocumentFormat(DOCX_FMT);
-        /*try {
+        try {
             checkAndStart();
         } catch (IOException|InterruptedException e) {
             logger.error("OfficeUtils 初始化启动libreoffice服务失败",e);
-        }*/
+        }
     }
 
     /**
@@ -75,7 +75,6 @@ public class OfficeUtils {
         try {
             FileOutputStream fos = new FileOutputStream(targetFile);
             Document document = new Document(sourceFileName);
-
             document.save(fos, SaveFormat.PDF);
             fos.close();
 
@@ -89,26 +88,37 @@ public class OfficeUtils {
             //判断生成的pdf内容是否包含错误内容
             if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare){
 
-                logger.info("使用备用方案生成pdf文件g");
+                logger.info("使用备用方案生成pdf文件");
                 //采用备用方案
                 File errorPdf = new File(targetFileName);
                 if(errorPdf.exists()){
                     errorPdf.delete();
                 }
+                convertThroughUNO(new File(sourceFileName),targetFile);
+                /*
                 //只传入文件夹路径
-                targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
-                String command = String.format(COMMAND,targetFileName, sourceFileName);
-                logger.info("The word2pdf command is {}",command);
+                String outdir = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
+                String command = COMMAND.replace("$outdir$",outdir).replace("$src$", sourceFileName);
+                logger.info("[{}]The word2pdf command is {}",Thread.currentThread().getName(),command);
                 //执行生成命令
-                String output = executeCommand(command);
-                logger.info("The pdf profile has been created at {}",output);
+                // 多线程调用libreoffice有可能存在部分word没有转换
+                //synchronized (OfficeUtils.class){
+                    String output = executeCommand(command);
+                    logger.info("The pdf profile has been created at {}",output);
+                //}
+
+                */
             }
         }catch (Exception e){
             logger.error(e.getMessage());
             return 0;
+        } finally {
+            boolean exist = new File(targetFileName).exists();
+            logger.info("file {} {} {}",targetFileName,(exist?" exists":"doesn't exist)"));
+            return exist ? 1:0 ;
         }
-        return 1;
     }
+
 
     /**
      * 校验许可证 无许可证会出现水印
