@@ -574,6 +574,7 @@ public class ReferralEntity {
     }
 
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
+        logger.info("ReferralEntity fetchReferralLog userId:{}, companyIds:{}, hrId:{}", userId, companyIds, hrId);
         ReferralProfileData data = new ReferralProfileData();
         long startTime = System.currentTimeMillis();
         Future<UserHrAccountDO> accountFuture = threadPool.startTast(
@@ -591,12 +592,14 @@ public class ReferralEntity {
             }
             long positionTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog positionTime:{}", positionTime- accountTime);
+            logger.info("ReferralEntity fetchReferralLog account:{}", JSONObject.toJSONString(account));
             if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
                 positionIds = positionDao.getPositionIdByPublisher(hrId);
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(userId, positionIds);
             }else {
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(userId);
             }
+            logger.info("ReferralEntity fetchReferralLog logs:{}", JSONObject.toJSONString(logs));
             List<Integer> employeeIdList = new ArrayList<>();
             if(StringUtils.isEmptyList(logs)){
                 employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
@@ -624,6 +627,7 @@ public class ReferralEntity {
             }
             long historyUserEmployeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog historyUserEmployeeTime:{}", historyUserEmployeeTime- employeeTime);
+            logger.info("ReferralEntity fetchReferralLog employeeIds:{}", JSONObject.toJSONString(employeeIds));
 
         }catch (Exception e){
             logger.error(e.getMessage(), e);
@@ -639,6 +643,7 @@ public class ReferralEntity {
                 }
             }
         }
+        logger.info("ReferralEntity fetchReferralLog logList:{}", JSONObject.toJSONString(logList));
         long endTime = System.currentTimeMillis();
         logger.info("profile tab fetchReferralLog endTime:{}", endTime- startTime);
         return logList;
@@ -1060,7 +1065,9 @@ public class ReferralEntity {
                             break;
                         }
                     }
-                    if(status)records.add(recommendRecord);
+                    if (status) {
+                        records.add(recommendRecord);
+                    }
                 }
                 return records;
             }
