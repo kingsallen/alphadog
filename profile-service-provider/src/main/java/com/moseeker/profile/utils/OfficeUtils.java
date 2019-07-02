@@ -132,10 +132,12 @@ public class OfficeUtils {
             if (pdfContent.contains(ERROR_PDF) || com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare) {
                 return false;
             }
+            return targetFile.exists();
         }catch (Exception e){
             logger.error(" convertThroughAsposeWord({},{}) error ",sourceFileName,targetFileName );
+            return false ;
         }
-        return targetFile.exists();
+
     }
 
     /**
