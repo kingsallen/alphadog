@@ -602,7 +602,7 @@ public class ReferralEntity {
             logger.info("ReferralEntity fetchReferralLog logs:{}", JSONObject.toJSONString(logs));
             List<Integer> employeeIdList = new ArrayList<>();
             if(!StringUtils.isEmptyList(logs)){
-                employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+                employeeIdList = logs.stream().map(ReferralLog::getEmployeeId).collect(Collectors.toList());
             }
             logger.info("ReferralEntity fetchReferralLog referralLog.employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             long employeeTime = System.currentTimeMillis();
