@@ -313,6 +313,8 @@ public class BatchValidate {
                 }
                 int count = customOptionJooqDao.countByCustomIdAndId(params);
                 return count == fields.size();
+            } else {
+                return true;
             }
         }
         return false;
