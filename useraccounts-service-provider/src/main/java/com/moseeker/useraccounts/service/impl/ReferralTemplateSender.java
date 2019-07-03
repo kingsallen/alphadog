@@ -176,6 +176,8 @@ public class ReferralTemplateSender {
             logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
             Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
             Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
+            logger.info("beforeTenMinite-> {}",new Date(timestamp));
+            logger.info("tenMinite-> {}",new Date(timestamp-TEN_MINUTE));
             // 获取指定时间前十分钟内的职位浏览人
             List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
             //对十分钟内的职位浏览人查询结果进行判空操作
