@@ -147,7 +147,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private SensorSend sensorSend;
 
-    private static final long TEN_MINUTE = 10*60*100;
+    private static final long TEN_MINUTE = 3*60*100;
 
     @Override
     @RadarSwitchLimit
