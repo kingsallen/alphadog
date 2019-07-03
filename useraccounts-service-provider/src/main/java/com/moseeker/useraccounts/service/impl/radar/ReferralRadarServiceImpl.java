@@ -147,6 +147,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private SensorSend sensorSend;
 
+    private static final long TEN_MINUTE = 10*60*100;
+
     @Override
     @RadarSwitchLimit
     public String getRadarCards(int companyId, ReferralCardInfo cardInfo) {
@@ -420,12 +422,25 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             logger.info("======无员工信息");
             return;
         }
-        long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
-                String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
-        if(flag == 0){
+        //过期时间
+        int liveTime = (int)(TEN_MINUTE-(System.currentTimeMillis()-cardInfo.getTimestamp()))/1000;
+        /*long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
+                String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");*/
+
+
+        String flag = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
+                String.valueOf(cardInfo.getUserId()),String.valueOf(cardInfo.getCompanyId()));
+        if("1".equals(flag)){//若不为空
             logger.info("十分钟内转发，消息模板不发送");
             return;
         }
+
+        redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
+                String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1",liveTime);
+/*        if(flag == 0){
+            logger.info("十分钟内转发，消息模板不发送");
+            return;
+        }*/
         logger.info("ReferralCardInfo:{}", cardInfo);
         templateHelper.sendTenMinuteTemplate(cardInfo);
     }
