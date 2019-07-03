@@ -2833,7 +2833,7 @@ public class PositionService {
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
                 updateField.put("updateTime", dateStr);
-                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), positionDO.getCompanyId());
+                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), accountDO.getCompanyId());
 
                 // 猎聘api新增
                 if (updateField.get("status") != null) {
