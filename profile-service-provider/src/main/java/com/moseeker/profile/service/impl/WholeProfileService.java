@@ -608,7 +608,7 @@ public class WholeProfileService {
         if (result.getProfileRecord() != null && result.getProfileRecord().getId() != null && result.getProfileRecord().getId() > 0) {
 
             try {
-                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id,
+                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(result.getProfileRecord().getId(),
                         userRecord.getId().intValue(), (byte) 0, profilePojo.getImportRecords());
                 profileUtils.logForStatistics("importCV", new JSONObject() {{
                     this.put("profile", profile);
