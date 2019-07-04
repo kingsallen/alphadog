@@ -4,6 +4,7 @@ public class CandidateTempForm {
     private Integer appid;
     private Integer userId;
     private Integer companyId;
+    private Long shareTime;
 
     public Integer getCompanyId() {
         return companyId;
@@ -29,4 +30,11 @@ public class CandidateTempForm {
         this.userId = userId;
     }
 
+    public Long getShareTime() {
+        return shareTime;
+    }
+
+    public void setShareTime(Long shareTime) {
+        this.shareTime = shareTime;
+    }
 }

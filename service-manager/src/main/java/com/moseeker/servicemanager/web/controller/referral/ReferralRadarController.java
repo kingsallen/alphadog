@@ -205,10 +205,17 @@ public class ReferralRadarController {
         validateUtil.addRequiredValidate("员工userId", tempForm.getUserId());
         validateUtil.addRequiredValidate("appid", tempForm.getAppid());
         validateUtil.addRequiredValidate("companyId", tempForm.getCompanyId());
+        validateUtil.addRequiredValidate("转发时间戳",tempForm.getShareTime());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
+            if(System.currentTimeMillis()-tempForm.getShareTime()>10*60*1000){//判断是否超过十分钟
+                return com.moseeker.servicemanager.web.controller.Result.fail("转发已经超过十分钟").toJson();
+            }
             ReferralCardInfo cardInfo = new ReferralCardInfo();
-            BeanUtils.copyProperties(tempForm, cardInfo);
+            cardInfo.setTimestamp(tempForm.getShareTime());
+            cardInfo.setUserId(tempForm.getUserId());
+            cardInfo.setCompanyId(tempForm.getCompanyId());
+//            BeanUtils.copyProperties(tempForm, cardInfo);
             referralService.saveTenMinuteCandidateShareChain(cardInfo);
             return Result.success().toJson();
         } else {

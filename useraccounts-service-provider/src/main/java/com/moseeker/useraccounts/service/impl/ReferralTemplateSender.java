@@ -160,9 +160,10 @@ public class ReferralTemplateSender {
         jsonObject.put("pageNumber",cardInfo.getPageNumber());
         jsonObject.put("pageSize",cardInfo.getPageSize());
         jsonObject.put("timestamp",cardInfo.getTimestamp());
+        Long liveTime = TEN_MINUTE-(System.currentTimeMillis()-cardInfo.getTimestamp());
         Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
-                .setHeaderIfAbsent("x-delay",TEN_MINUTE).build();
+                .setHeaderIfAbsent("x-delay",liveTime).build();
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
 
