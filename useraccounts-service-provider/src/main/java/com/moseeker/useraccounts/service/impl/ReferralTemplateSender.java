@@ -67,7 +67,7 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
-    private static final Integer TEN_MINUTE = 10*60*1000;
+    private static final Integer TEN_MINUTE = 3*60*1000;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -160,9 +160,10 @@ public class ReferralTemplateSender {
         jsonObject.put("pageNumber",cardInfo.getPageNumber());
         jsonObject.put("pageSize",cardInfo.getPageSize());
         jsonObject.put("timestamp",cardInfo.getTimestamp());
+        Long liveTime = TEN_MINUTE-(System.currentTimeMillis()-cardInfo.getTimestamp());
         Message message = MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                 .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
-                .setHeaderIfAbsent("x-delay",TEN_MINUTE).build();
+                .setHeaderIfAbsent("x-delay",liveTime).build();
         amqpTemplate.convertAndSend(ACTIVITY_DELAY_EXCHANGE, ACTIVITY_DELAY_ROUTING_KEY,message);
     }
 
@@ -175,6 +176,8 @@ public class ReferralTemplateSender {
             logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
             Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
             Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
+            logger.info("beforeTenMinite-> {}",new Date(timestamp));
+            logger.info("tenMinite-> {}",new Date(timestamp-TEN_MINUTE));
             // 获取指定时间前十分钟内的职位浏览人
             List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
             //对十分钟内的职位浏览人查询结果进行判空操作
