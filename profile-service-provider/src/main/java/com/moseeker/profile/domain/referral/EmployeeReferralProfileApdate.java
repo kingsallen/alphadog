@@ -90,6 +90,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             userId = userRecord.getId();
             ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
             logger.info("EmployeeReferralProfileApdate storeReferralUser profileDO:{}", JSONObject.toJSONString(profileDO));
+            logger.info("EmployeeReferralProfileApdate storeReferralUser profileId:{}", profileDO.getId());
             ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
             logger.info("EmployeeReferralProfileApdate storeReferralUser attachmentRecord:{}", JSONObject.toJSONString(attachmentRecord));
             if(attachmentRecord!=null) {
