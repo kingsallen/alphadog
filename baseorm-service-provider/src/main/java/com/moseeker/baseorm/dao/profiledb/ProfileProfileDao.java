@@ -6,6 +6,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileSaveResult;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.dictdb.tables.*;
@@ -27,7 +28,6 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 
-import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -39,8 +39,6 @@ import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -496,7 +494,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         return profileId;
     }
     @CounterIface
-    public int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
+    public ProfileSaveResult saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
                            List<ProfileAttachmentRecord> attachmentRecords, List<ProfileAwardsRecord> awardsRecords,
                            List<ProfileCredentialsRecord> credentialsRecords, List<ProfileEducationRecord> educationRecords,
                            ProfileImportRecord importRecord, List<IntentionRecord> intentionRecords,
@@ -504,7 +502,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                            List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
                            List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords, UserUserRecord userRecord,
                            List<ProfileProfileRecord> oldProfile) {
-        int profileId = 0;
+        ProfileSaveResult profileSaveResult = new ProfileSaveResult();
 
         if (oldProfile != null && oldProfile.size() > 0) {
             for (ProfileProfileRecord record : oldProfile) {
@@ -522,6 +520,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             logger.info("saveProfile userId:{},   uuid:{},  source:{} ", profileRecord.getUserId(),  profileRecord.getUuid(), profileRecord.getSource());
             create.attach(profileRecord);
             profileRecord.insert();
+            profileSaveResult.setProfileRecord(profileRecord);
 
 				/* 计算profile完整度 */
             ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
@@ -552,6 +551,8 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             }
                         }
                         basicRecord.insert();
+                        profileSaveResult.setBasicRecord(basicRecord);
+
                         //计算basic完整度，由于修改规则，mobile或者微信号有一个即计入，为了不改变数据库表结构所以将mobile传入basic的完整度计算程序当中
                         int basicCompleteness = CompletenessCalculator.calculateProfileBasic(basicRecord, userRecord.getMobile());
                         completenessRecord.setProfileBasic(basicCompleteness);
@@ -574,6 +575,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             attachmentRecord.setCreateTime(now);
                             create.attach(attachmentRecord);
                             attachmentRecord.insert();
+                            profileSaveResult.setAttachmentRecord(attachmentRecord);
                         });
                     }
                 } catch (Exception e) {
@@ -593,6 +595,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             awardsRecord.setCreateTime(now);
                             create.attach(awardsRecord);
                             awardsRecord.insert();
+                            profileSaveResult.setAwardsRecords(awardsRecord);
                         });
                         // 计算奖项完整度
                         int awardCompleteness = CompletenessCalculator.calculateAwards(awardsRecords);
@@ -615,6 +618,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             credentialsRecord.setCreateTime(now);
                             create.attach(credentialsRecord);
                             credentialsRecord.insert();
+                            profileSaveResult.setCredentialsRecord(credentialsRecord);
                         });
                         //计算证书完整度
                         int credentialsCompleteness = CompletenessCalculator.calculateCredentials(credentialsRecords);
@@ -646,6 +650,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             }
                             create.attach(educationRecord);
                             educationRecord.insert();
+                            profileSaveResult.setEducationRecord(educationRecord);
                         });
                         //计算教育经历完整度
                         int educationCompleteness = CompletenessCalculator.calculateProfileEducations(educationRecords);
@@ -666,6 +671,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         importRecord.setCreateTime(now);
                         importRecord.setProfileId(profileRecord.getId());
                         importRecord.insert();
+                        profileSaveResult.setImportRecord(importRecord);
                     }
                 } catch (Exception e) {
                     logger.error(e.getMessage(),e);
@@ -686,6 +692,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             intentionRecord.setCreateTime(now);
                             create.attach(intentionRecord);
                             intentionRecord.insert();
+                            profileSaveResult.setIntentionRecord(intentionRecord);
                             if (intentionRecord.getCities().size() > 0) {
                                 intentionRecord.getCities().forEach(city -> {
                                     city.setProfileIntentionId(intentionRecord.getId());
@@ -756,6 +763,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             language.setCreateTime(now);
                             create.attach(language);
                             language.insert();
+                            profileSaveResult.setLanguages(language);
                         });
                         //计算语言完整度
                         int languageCompleteness = CompletenessCalculator.calculateLanguages(languages);
@@ -777,6 +785,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         otherRecord.setCreateTime(now);
                         otherRecord.setProfileId(profileRecord.getId());
                         otherRecord.insert();
+                        profileSaveResult.setOtherRecord(otherRecord);
                     }
 
                 } catch (Exception e) {
@@ -795,6 +804,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             skill.setCreateTime(now);
                             create.attach(skill);
                             skill.insert();
+                            profileSaveResult.setSkillRecord(skill);
                         });
                         //计算技能完整度
                         int skillCompleteness = CompletenessCalculator.calculateSkills(skillRecords);
@@ -860,6 +870,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
                             create.attach(workexp);
                             workexp.insert();
+                            profileSaveResult.setWorkexpRecord(workexp);
                         });
                         //计算工作经历完整度
                         int workExpCompleteness = CompletenessCalculator.calculateProfileWorkexps(workexpRecords, educationRecords, birthDay);
@@ -881,6 +892,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             projectExp.setCreateTime(now);
                             create.attach(projectExp);
                             projectExp.insert();
+                            profileSaveResult.setProjectExp(projectExp);
                         });
                         //计算项目经历完整度
                         int projectExpCompleteness = CompletenessCalculator.calculateProjectexps(projectExps, workexpRecords);
@@ -902,6 +914,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                             worksRecord.setCreateTime(now);
                             create.attach(worksRecord);
                             worksRecord.insert();
+                            profileSaveResult.setWorksRecord(worksRecord);
                         });
                         int worksCompleteness = CompletenessCalculator.calculateWorks(worksRecords);
                         completenessRecord.setProfileWorks(worksCompleteness);
@@ -978,14 +991,13 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 create.attach(userRecord);
                 userRecord.update();
             }
-            profileId = profileRecord.getId().intValue();
 //            String distinctId = profileRecord.getUserId().toString();
 //            String property=String.valueOf(totalComplementness);
 //            Map<String, Object> properties = new HashMap<String, Object>();
 //            properties.put("totalComplementness", property);
 //            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
-        return profileId;
+        return profileSaveResult;
     }
 
     private int clearProfile(int profileId) {

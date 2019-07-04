@@ -1,5 +1,6 @@
 package com.moseeker.profile.domain.referral;
 
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileSaveResult;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.entity.ProfileEntity;
@@ -9,14 +10,13 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.domain.ProfileAttementVO;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 /**
  * Created by moseeker on 2018/11/22.
@@ -40,6 +40,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
+    @Override
     public void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
                                   UserEmployeeDO employeeDO, ProfileAttementVO attementVO){
         int userId = 0;
@@ -81,19 +82,19 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                 });
             }
         } else {
-            userRecord = profileEntity.storeReferralUser(profilePojo, profileNotice.getEmployeeId(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
-            profilePojo.getProfileRecord().setUserId(userRecord.getId());
-            userId = userRecord.getId();
-            ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
-            ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
-            if(attachmentRecord!=null) {
-                attachementId = attachmentRecord.getId();
+            ProfileSaveResult result = profileEntity.storeReferralUser(profilePojo, profileNotice.getEmployeeId(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
+            if (result != null) {
+                userId = result.getProfileRecord().getUserId();
+                profilePojo.getProfileRecord().setUserId(result.getProfileRecord().getUserId());
+                if(result.getAttachmentRecords() != null && result.getAttachmentRecords().size() > 0) {
+                    attachementId = result.getAttachmentRecords().get(0).getId();
+                }
+                int temp= userId;
+                tp.startTast(() -> {
+                    companyTagService.handlerCompanyTagByUserId(temp);
+                    return true;
+                });
             }
-            int temp= userId;
-            tp.startTast(() -> {
-                companyTagService.handlerCompanyTagByUserId(temp);
-                return true;
-            });
         }
         attementVO.setUserId(userId);
         attementVO.setAttachmentId(attachementId);
