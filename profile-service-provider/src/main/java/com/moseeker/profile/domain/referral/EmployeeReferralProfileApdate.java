@@ -44,6 +44,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                                   UserEmployeeDO employeeDO, ProfileAttementVO attementVO){
         int userId = 0;
         int attachementId = 0;
+        logger.info("EmployeeReferralProfileApdate storeReferralUser userRecord:{}", userRecord);
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
             UserUserRecord userUserRecord = new UserUserRecord();
@@ -64,6 +65,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             }
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            logger.info("EmployeeReferralProfileApdate storeReferralUser userName:{}", userRecord.getUsername());
             if (StringUtils.isBlank(userRecord.getUsername())) {
                 if (profilePojo.getProfileRecord() != null) {
                     profilePojo.getProfileRecord().setUserId(userRecord.getId());
@@ -74,6 +76,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                     id = logRecord.getAttementId();
                 }
                 attachementId = profileEntity.mergeProfileReferral(profilePojo, userId, id);
+                logger.info("EmployeeReferralProfileApdate storeReferralUser attachementId:{}", attachementId);
                 int temp= userId;
                 tp.startTast(() -> {
                     companyTagService.handlerCompanyTagByUserId(temp);
@@ -85,9 +88,11 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
             ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
+            logger.info("");
             ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
             if(attachmentRecord!=null) {
                 attachementId = attachmentRecord.getId();
+                logger.info("EmployeeReferralProfileApdate storeReferralUser attachementId:{}", attachementId);
             }
             int temp= userId;
             tp.startTast(() -> {
