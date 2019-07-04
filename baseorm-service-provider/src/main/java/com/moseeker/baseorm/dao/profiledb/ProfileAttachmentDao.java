@@ -87,4 +87,12 @@ public class ProfileAttachmentDao extends JooqCrudImpl<ProfileAttachmentDO, Prof
                 .where(ProfileAttachment.PROFILE_ATTACHMENT.NAME.eq(oldName))
                 .execute();
     }
+
+    public ProfileAttachmentRecord fetchByProfileId(int profileId) {
+        return create
+                .selectFrom(ProfileAttachment.PROFILE_ATTACHMENT)
+                .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.eq(profileId))
+                .limit(1)
+                .fetchOne();
+    }
 }
