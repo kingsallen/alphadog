@@ -1,5 +1,6 @@
 package com.moseeker.profile.domain.referral;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.entity.ProfileEntity;
@@ -88,8 +89,9 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
             ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
-            logger.info("");
+            logger.info("EmployeeReferralProfileApdate storeReferralUser profileDO:{}", JSONObject.toJSONString(profileDO));
             ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
+            logger.info("EmployeeReferralProfileApdate storeReferralUser attachmentRecord:{}", JSONObject.toJSONString(attachmentRecord));
             if(attachmentRecord!=null) {
                 attachementId = attachmentRecord.getId();
                 logger.info("EmployeeReferralProfileApdate storeReferralUser attachementId:{}", attachementId);
