@@ -561,6 +561,7 @@ public class ReferralServiceImpl implements ReferralService {
                     JobApplicationDO jobApplicationDO = new JobApplicationDO();
                     BeanUtils.copyProperties(application,jobApplicationDO);
                     applicationDao.updateData(jobApplicationDO);
+                    updateApplicationESIndex(presenteeId);
                     return;
                 }
                 throw UserAccountException.NODATA_EXCEPTION;
@@ -587,11 +588,15 @@ public class ReferralServiceImpl implements ReferralService {
         if (response.getStatus() == 0) {
             JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
             applicationId = jsonObject1.getInteger("jobApplicationId");
-            logger.info("==========更新data/profile==============");
-            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
-            logger.info("==========更新data/profile===userId=={}==============",userId);
+            updateApplicationESIndex(userId);
         }
 
         return applicationId;
+    }
+
+    private void updateApplicationESIndex(int userId) {
+        logger.info("==========更新data/profile==============");
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        logger.info("==========更新data/profile===userId=={}==============",userId);
     }
 }
