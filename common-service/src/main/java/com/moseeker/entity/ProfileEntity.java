@@ -823,7 +823,11 @@ public class ProfileEntity {
         String property=String.valueOf(result.getProfileRecord() != null ? result.getProfileRecord().getCompleteness().intValue():0);
         sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
-            logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(), EmployeeOperationIsSuccess.SUCCESS.getKey(),companyId,profileId);
+            logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId, appid,
+                    EmployeeOperationType.RESUMERECOMMEND.getKey(),
+                    EmployeeOperationIsSuccess.SUCCESS.getKey(),
+                    companyId,
+                    result.getProfileRecord().getId());
         }
 
         return result;
