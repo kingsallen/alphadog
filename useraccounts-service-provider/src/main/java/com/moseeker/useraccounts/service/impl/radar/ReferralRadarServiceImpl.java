@@ -430,7 +430,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 liveTime,System.currentTimeMillis(),cardInfo.getTimestamp());
 
         if(liveTime<0){
-            logger.info("十分钟内转发，消息模板不发送");
+            logger.info("超过十分钟，消息模版不发送");
             return;
         }
 
