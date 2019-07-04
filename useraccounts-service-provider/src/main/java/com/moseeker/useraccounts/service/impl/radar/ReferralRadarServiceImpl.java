@@ -426,7 +426,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         int liveTime = (int)(TEN_MINUTE-(System.currentTimeMillis()-cardInfo.getTimestamp()))/1000;
         /*long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");*/
+        if(liveTime<0){
+            logger.info("十分钟内转发，消息模板不发送");
+            return;
+        }
 
+        logger.info("saveTenMinuteCandidateShareChain -> liveTime: {} System.currentTimeMillis: {} timestamp: {}",
+                liveTime,System.currentTimeMillis(),cardInfo.getTimestamp());
 
         String flag = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()),String.valueOf(cardInfo.getCompanyId()));
