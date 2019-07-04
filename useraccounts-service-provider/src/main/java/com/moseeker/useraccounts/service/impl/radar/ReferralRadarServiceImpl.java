@@ -429,9 +429,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         logger.info("saveTenMinuteCandidateShareChain -> liveTime: {} System.currentTimeMillis: {} timestamp: {}",
                 liveTime,System.currentTimeMillis(),cardInfo.getTimestamp());
 
-        if(liveTime<0){
-            logger.info("超过十分钟，消息模版不发送");
-            return;
+        if(liveTime<0||liveTime>720){
+            logger.info("redis的过期时间有误");
+            throw UserAccountException.ERROR_REDIS_LIVE_TIME;
         }
 
 
