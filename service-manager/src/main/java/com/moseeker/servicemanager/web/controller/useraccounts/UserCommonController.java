@@ -23,7 +23,7 @@ public class UserCommonController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-	UserCommonService.Iface userCommonService = ServiceManager.SERVICEMANAGER
+	UserCommonService.Iface userCommonService = ServiceManager.SERVICE_MANAGER
 			.getService(UserCommonService.Iface.class);
 	
 	@RequestMapping(value = "/user/platform/newsletter", method = RequestMethod.POST)

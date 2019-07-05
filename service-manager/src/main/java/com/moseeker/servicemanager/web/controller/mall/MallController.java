@@ -34,7 +34,7 @@ public class MallController {
 
     private Logger logger = LoggerFactory.getLogger(MallController.class);
 
-    MallService.Iface mallService = ServiceManager.SERVICEMANAGER.getService(MallService.Iface.class);
+    MallService.Iface mallService = ServiceManager.SERVICE_MANAGER.getService(MallService.Iface.class);
 
     /**
      * 获取公司是否开通过积分商城

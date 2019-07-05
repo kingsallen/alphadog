@@ -17,9 +17,6 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictCountryService;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 国家字典数据服务
  * <p>
@@ -33,7 +30,7 @@ public class DictCountryController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(DictCountryController.class);
 
-    DictCountryService.Iface dictCountryService = ServiceManager.SERVICEMANAGER.getService(DictCountryService.Iface.class);
+    DictCountryService.Iface dictCountryService = ServiceManager.SERVICE_MANAGER.getService(DictCountryService.Iface.class);
 
     @RequestMapping(value = "/dict/country", method = RequestMethod.GET)
     @ResponseBody

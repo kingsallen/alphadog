@@ -20,7 +20,7 @@ import java.util.Map;
 public class ChaosHandler implements IBindRequest {
     Logger logger = LoggerFactory.getLogger(ChaosHandler.class);
 
-    ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+    ChaosServices.Iface chaosService = ServiceManager.SERVICE_MANAGER.getService(ChaosServices.Iface.class);
 
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) throws Exception {
         String data = "";

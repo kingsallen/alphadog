@@ -26,7 +26,7 @@ public class ProfileImportController {
 
 	Logger logger = LoggerFactory.getLogger(ProfileImportController.class);
 
-	ProfileImportServices.Iface profileImportService = ServiceManager.SERVICEMANAGER
+	ProfileImportServices.Iface profileImportService = ServiceManager.SERVICE_MANAGER
 			.getService(ProfileImportServices.Iface.class);
 
 	@RequestMapping(value = "/profile/profileimport", method = RequestMethod.GET)

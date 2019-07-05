@@ -29,7 +29,7 @@ public class ProfileProfileController {
 
 	Logger logger = LoggerFactory.getLogger(ProfileProfileController.class);
 
-	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+	ProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/profile", method = RequestMethod.GET)
 	@ResponseBody

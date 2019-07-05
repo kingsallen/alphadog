@@ -24,7 +24,7 @@ public class CollegeController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CollegeController.class);
 
-	CollegeServices.Iface collegeServices = ServiceManager.SERVICEMANAGER.getService(CollegeServices.Iface.class);
+	CollegeServices.Iface collegeServices = ServiceManager.SERVICE_MANAGER.getService(CollegeServices.Iface.class);
 
 	@RequestMapping(value = "/dict/college/all", method = RequestMethod.GET)
 	@ResponseBody

@@ -37,7 +37,7 @@ public class WechatController {
 
 	Logger logger = LoggerFactory.getLogger(WechatController.class);
 
-	CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+	CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
 	/**
 	 * 查询公众号信息

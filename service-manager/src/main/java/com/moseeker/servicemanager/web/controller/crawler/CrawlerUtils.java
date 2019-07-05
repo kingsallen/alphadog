@@ -5,7 +5,6 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -17,14 +16,12 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.net.ConnectException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +31,7 @@ public class CrawlerUtils {
 
     Logger logger = LoggerFactory.getLogger(CrawlerUtils.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     private static final String PROFILE_IMPORT_UPPER_LIMIT = "PROFILE_IMPORT_UPPER_LIMIT";
 

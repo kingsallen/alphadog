@@ -26,7 +26,7 @@ public class EducationController {
 
 	Logger logger = LoggerFactory.getLogger(EducationController.class);
 
-	EducationServices.Iface educationService = ServiceManager.SERVICEMANAGER.getService(EducationServices.Iface.class);
+	EducationServices.Iface educationService = ServiceManager.SERVICE_MANAGER.getService(EducationServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/education", method = RequestMethod.GET)
 	@ResponseBody

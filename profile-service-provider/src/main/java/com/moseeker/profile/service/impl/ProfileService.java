@@ -146,7 +146,7 @@ public class ProfileService {
 
 
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     ThreadPool pool = ThreadPool.Instance;

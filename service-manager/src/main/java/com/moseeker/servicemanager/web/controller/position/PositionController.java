@@ -6,9 +6,7 @@ import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
@@ -27,7 +25,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
-import com.moseeker.thrift.gen.position.service.PositionATSServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
 import org.slf4j.Logger;
@@ -35,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.tags.Param;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,8 +50,8 @@ public class PositionController {
 
     private Logger logger = LoggerFactory.getLogger(PositionController.class);
 
-    private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
-    private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
+    private PositionServices.Iface positonServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
+    private PositionBS.Iface positionBS = ServiceManager.SERVICE_MANAGER.getService(PositionBS.Iface.class);
 
     @Autowired
     private JobOccupationDao occuPationdao;

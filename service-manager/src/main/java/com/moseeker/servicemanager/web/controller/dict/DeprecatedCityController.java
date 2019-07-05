@@ -24,7 +24,7 @@ public class DeprecatedCityController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-	CityServices.Iface cityServices = ServiceManager.SERVICEMANAGER.getService(CityServices.Iface.class);
+	CityServices.Iface cityServices = ServiceManager.SERVICE_MANAGER.getService(CityServices.Iface.class);
 
 	@RequestMapping(value = "/dict/city", method = RequestMethod.GET)
 	@ResponseBody

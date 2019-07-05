@@ -62,7 +62,7 @@ public class NodeInvoker<T> implements Invoker {
 		T client = null;
         ZKPath root = null;
 		try {
-			root = NodeManager.NODEMANAGER.getRoot();
+			root = NodeManager.NODE_MANAGER.getRoot();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			LOGGER.error(e1.getMessage(), e1);
@@ -74,14 +74,14 @@ public class NodeInvoker<T> implements Invoker {
         ZKPath node = null;
         for (int i = 0; i < 1; i++) {
             try {
-                node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
-                LOGGER.info("NodeInvoker invoke node.name:{}, node.data:{}", JSONObject.toJSONString(node.getName()), JSONObject.toJSONString(node.getData()));
-                if (node == null) {
+                node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName, NodeManager.NODE_MANAGER.getLock());
+                if (node == null || node.getData() == null) {
                 	LOGGER.error("retry:"+(i+1));
                 	LOGGER.error(parentName+"  Can't find node!");
                 	//warning
                     continue;
                 }
+                LOGGER.info("NodeInvoker invoke node.name:{}, node.data:{}", JSONObject.toJSONString(node.getName()), JSONObject.toJSONString(node.getData()));
                 client = pool.borrowObject(node);
                 LOGGER.info("node:{}, getNumActive:{}",node,pool.getNumActive());
                 Object result = method.invoke(client, args);
@@ -93,11 +93,9 @@ public class NodeInvoker<T> implements Invoker {
             	LOGGER.error(ce.getMessage(), ce);
             	pool.clear(node);
             	LOGGER.error("ConnectException:"+ce.getMessage(), ce);
-                NodeManager.NODEMANAGER.removePath(node);
+                NodeManager.NODE_MANAGER.removePath(node);
             } catch (InvocationTargetException ite) {
-                // XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
-                //  cause.getMessage()
                 if (cause != null) {
                     if (cause instanceof CURDException) {
                         throw  (CURDException)cause;
@@ -108,23 +106,14 @@ public class NodeInvoker<T> implements Invoker {
                     if (cause instanceof TTransportException || cause instanceof TApplicationException) {
 
                         // 超时
-                        // hostSet.addDeadInstance(serverNode); // 加入dead集合中
                         exception = cause;
                         try {
-                            // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
-                            // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
-                            	//有节点重建任务，一般不存在超时问题
-                                //warning
-                                //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
                                 pool.clear(node);
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
                                 LOGGER.debug("after clear getNumActive:{}",pool.getNumActive());
                             } else {
-                                // XXX:其他异常的情况，需要将当前链接置为无效
-                            	//warning
-                                //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:{}",pool.getNumActive());
                                 pool.invalidateObject(node, client);

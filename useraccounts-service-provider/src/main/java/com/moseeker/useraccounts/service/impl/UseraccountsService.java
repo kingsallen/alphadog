@@ -94,7 +94,7 @@ public class UseraccountsService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     @Autowired
     protected UserWxUserDao wxuserdao;
