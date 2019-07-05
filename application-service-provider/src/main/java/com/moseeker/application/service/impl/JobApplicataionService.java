@@ -78,7 +78,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -159,11 +158,11 @@ public class JobApplicataionService {
     @Autowired
     private RabbitMQOperationRecord rabbitMQOperationRecord;
 
-    MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
-    ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
+    ChatService.Iface chatService = ServiceManager.SERVICE_MANAGER.getService(ChatService.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     @Autowired
     ApplicationRepository applicationRepository;

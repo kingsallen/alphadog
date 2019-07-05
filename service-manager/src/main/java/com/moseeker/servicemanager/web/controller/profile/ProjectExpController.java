@@ -1,7 +1,6 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -14,7 +13,6 @@ import com.moseeker.thrift.gen.profile.struct.ProjectExp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,7 +28,7 @@ public class ProjectExpController {
 
     Logger logger = LoggerFactory.getLogger(ProjectExpController.class);
 
-    ProjectExpServices.Iface projectExpService = ServiceManager.SERVICEMANAGER
+    ProjectExpServices.Iface projectExpService = ServiceManager.SERVICE_MANAGER
             .getService(ProjectExpServices.Iface.class);
 
     @RequestMapping(value = "/profile/projectexp", method = RequestMethod.GET)

@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.UserSource;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.EmojiFilter;
@@ -37,13 +35,13 @@ import java.util.Map;
 @Transactional
 public class ProfileBS {
 
-    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER
+    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER
             .getService(UseraccountsServices.Iface.class);
 
-    WholeProfileServices.Iface wholeProfileService = ServiceManager.SERVICEMANAGER
+    WholeProfileServices.Iface wholeProfileService = ServiceManager.SERVICE_MANAGER
             .getService(WholeProfileServices.Iface.class);
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
 

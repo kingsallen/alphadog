@@ -1,12 +1,11 @@
 package com.moseeker.rpccenter.loadbalance;
 
-import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.rpccenter.listener.ZKPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  *
@@ -20,60 +19,59 @@ import java.util.Map;
 public enum NodeLoadBalance {
 
 	/**
-	 * 负载均衡工具
+	 * 轮询负载均衡
 	 */
 	LoadBalance;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private HashMap<String, Integer> index = new HashMap<>();
-	private Map<ZKPath, Long> errorStorage = new HashMap<>();
 
-	/**
-	 * 定时报错
-	 */
-	private ScheduledThread scheduledThread = ScheduledThread.Instance;
-
-	public synchronized ZKPath getNextNode(ZKPath root, String name) {
+	public ZKPath getNextNode(ZKPath root, String name, ReentrantReadWriteLock lock) {
+		lock.readLock().lock();
 		ZKPath node = null;
-		if (root != null && root.getChirldren() != null && root.getChirldren().size() > 0) {
-			for (ZKPath parentPath : root.getChirldren()) {
-				if (parentPath.getName().equals(name) && parentPath.getChirldren() != null
-						&& parentPath.getChirldren().size() > 0) {
-					int position = calculatePosition(parentPath.getChirldren().size(), parentPath.getName());
-					node = getNode(position, parentPath, 0);
-					break;
-				}
-			}
-		} else {
-			logger.info("index.clear()");
-			index.clear();
-			//warning
-		}
-		if (node == null){
-			logger.info("getNextNode name:{},root:{},children:{}",name,root,root.getChirldren());
-			for (ZKPath parentPath : root.getChirldren()) {
-				logger.debug("parentPath:{},children:{}",parentPath,parentPath.getChirldren());
-				if (parentPath.getName().equals(name) && parentPath.getChirldren() != null
-						&& parentPath.getChirldren().size() > 0) {
-					if(!index.containsKey(name)) {
-						//index.put(name, 0);
-					}
-					int position = index.get(name);
-					if(position >= parentPath.getChirldren().size()) {
-						position = 0;
-						//index.put(name, 0);
-					}
-					node = parentPath.getChirldren().get(position);
-					logger.debug("position:{},node:{}",position,node);
-					if(position+1 >= parentPath.getChirldren().size()) {
-						//index.put(name, 0);
-					} else {
-						//index.put(name, position+1);
-					}
-					break;
-				}
-			}
+		try {
+			if (root != null && root.getChirldren() != null && root.getChirldren().size() > 0) {
+                for (ZKPath parentPath : root.getChirldren()) {
+                    if (parentPath.getName().equals(name) && parentPath.getChirldren() != null
+                            && parentPath.getChirldren().size() > 0) {
+                        int position = calculatePosition(parentPath.getChirldren().size(), parentPath.getName());
+                        node = parentPath.getChirldren().get(position);
+                        break;
+                    }
+                }
+            } else {
+                logger.info("index.clear()");
+                index.clear();
+                //warning
+            }
+			if (node == null){
+                logger.info("getNextNode name:{},root:{},children:{}",name,root,root.getChirldren());
+                for (ZKPath parentPath : root.getChirldren()) {
+                    logger.debug("parentPath:{},children:{}",parentPath,parentPath.getChirldren());
+                    if (parentPath.getName().equals(name) && parentPath.getChirldren() != null
+                            && parentPath.getChirldren().size() > 0) {
+                        if(!index.containsKey(name)) {
+                            //index.put(name, 0);
+                        }
+                        int position = index.get(name);
+                        if(position >= parentPath.getChirldren().size()) {
+                            position = 0;
+                            //index.put(name, 0);
+                        }
+                        node = parentPath.getChirldren().get(position);
+                        logger.debug("position:{},node:{}",position,node);
+                        if(position+1 >= parentPath.getChirldren().size()) {
+                            //index.put(name, 0);
+                        } else {
+                            //index.put(name, position+1);
+                        }
+                        break;
+                    }
+                }
 
+            }
+		} finally {
+			lock.readLock().unlock();
 		}
 
 		return node;
@@ -95,36 +93,5 @@ public enum NodeLoadBalance {
 			index.put(name, 0);
 		}
 		return position;
-	}
-
-	/**
-	 * 根据位置查找可用节点
-	 * 如果查找的节点是不可用节点，那么跳过该节点，获取下一个节点。
-	 *
-	 * @param position 位置
-	 * @param parentPath 父节点
-	 * @param operationCount 操作次数
-	 * @return
-	 */
-	private ZKPath getNode(int position, ZKPath parentPath, int operationCount) {
-		if (operationCount >= parentPath.getChirldren().size()) {
-			return null;
-		}
-		ZKPath node = parentPath.getChirldren().get(position);
-		if (errorStorage.containsKey(node)) {
-			return getNode(position+1, parentPath, operationCount+1);
-		} else {
-			return parentPath.getChirldren().get(position);
-		}
-	}
-
-	/**
-	 * 添加错误节点
-	 * 如果发生ConnectionException，那么该节点进入异常节点。
-	 * 对外提供可用节点时，过滤这些异常节点
-	 * @param zkPath 节点数据
-	 */
-	public void addErrorNode(ZKPath zkPath) {
-		this.errorStorage.put(zkPath, System.currentTimeMillis());
 	}
 }

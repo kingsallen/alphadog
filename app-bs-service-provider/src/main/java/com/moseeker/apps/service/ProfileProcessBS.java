@@ -80,10 +80,10 @@ public class ProfileProcessBS {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private MqService.Iface mqService = ServiceManager.SERVICEMANAGER
+    private MqService.Iface mqService = ServiceManager.SERVICE_MANAGER
             .getService(MqService.Iface.class);
 
-    CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER
+    CompanyServices.Iface companyService = ServiceManager.SERVICE_MANAGER
             .getService(CompanyServices.Iface.class);
 
     private final String ms = "{'tableName':'job_application'}";

@@ -34,10 +34,10 @@ public enum ScheduledThread {
         return (Future<T>) this.executorService.schedule(task,time,TimeUnit.MILLISECONDS);
     }
 
-    public ScheduledFuture scheduleAtFixedRate(Runnable command,
+    public ScheduledFuture scheduleWithFixedDelay(Runnable command,
                                              long initialDelay,
                                              long period,
                                              TimeUnit unit) {
-        return this.executorService.scheduleAtFixedRate(command, initialDelay, period, unit);
+        return this.executorService.scheduleWithFixedDelay(command, initialDelay, period, unit);
     }
 }

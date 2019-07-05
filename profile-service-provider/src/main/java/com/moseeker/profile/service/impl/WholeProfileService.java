@@ -195,9 +195,9 @@ public class WholeProfileService {
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
 
-    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
+    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
 
-    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
+    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICE_MANAGER.getService(TalentpoolServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();

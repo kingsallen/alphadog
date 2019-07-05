@@ -63,7 +63,7 @@ public abstract class EmployeeBinder {
 
     protected static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
 
-    protected MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    protected MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     @Resource(name = "cacheClient")
     protected RedisClient client;

@@ -82,7 +82,7 @@ import java.util.stream.Collectors;
 @CounterIface
 public class ReferralServiceImpl implements ReferralService {
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     @Autowired

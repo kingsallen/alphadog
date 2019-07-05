@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 @CounterIface
 public class UserEmailPositionController {
 	Logger logger = LoggerFactory.getLogger(getClass());
-	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
+	UserQxService.Iface userQxService = ServiceManager.SERVICE_MANAGER.getService(UserQxService.Iface.class);
 	@RequestMapping(value = "/user/email/recommendposition", method=RequestMethod.GET)
 	@ResponseBody
 	public String sendEmailPosition(HttpServletRequest request, HttpServletResponse response) {
