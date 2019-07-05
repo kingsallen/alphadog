@@ -67,7 +67,7 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
-    private static final Integer TEN_MINUTE = 3*60*1000;
+    private static final Integer TEN_MINUTE = 10*60*1000;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
