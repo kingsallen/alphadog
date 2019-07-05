@@ -436,7 +436,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
 
         redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
-                String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1",-3);
+                String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1",-2);
 /*        if(flag == 0){
             logger.info("十分钟内转发，消息模板不发送");
             return;
