@@ -417,12 +417,6 @@ public class BatchValidate {
             importErrorUserEmployee.setRowNum(row);
             errorCounts.incrementAndGet();
             return importErrorUserEmployee;
-        } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
-            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-            importErrorUserEmployee.setMessage("员工姓名包含非法字符");
-            importErrorUserEmployee.setRowNum(row);
-            errorCounts.incrementAndGet();
-            return importErrorUserEmployee;
         }
 
         if (userEmployeeDO.getCompanyId() == 0) {
