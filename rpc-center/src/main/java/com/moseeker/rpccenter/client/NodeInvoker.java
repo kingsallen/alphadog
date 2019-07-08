@@ -33,9 +33,18 @@ public class NodeInvoker<T> implements Invoker {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-	private int retry = 1;								//重试次数
-	private GenericKeyedObjectPool<ZKPath, T> pool;		//节点对象池
-	private String parentName;							//二级节点名称(/services(一级节点名称)/com.moseeker.thrift.gen.profile.service.WholeProfileServices(二级节点名称)/servers
+    /**
+     * 重试次数
+     */
+	private int retry = 1;
+    /**
+     * 节点对象池
+     */
+	private GenericKeyedObjectPool<ZKPath, T> pool;
+    /**
+     * 二级节点名称(/services(一级节点名称)/com.moseeker.thrift.gen.profile.service.WholeProfileServices(二级节点名称)/servers
+     */
+	private String parentName;
 
 	/**
 	 * 初始化执行类
