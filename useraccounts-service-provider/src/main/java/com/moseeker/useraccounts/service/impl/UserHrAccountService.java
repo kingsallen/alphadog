@@ -1413,6 +1413,9 @@ public class UserHrAccountService {
             v.setImportTime(now.format(dateTimeFormatter));
             v.setActivation(EmployeeActiveState.Init.getState());
             v.setAuthMethod((byte) EmployeeAuthMethod.CUSTOM_AUTH.getCode());
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCname())) {
+                v.setCname(v.getCname().trim());
+            }
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
