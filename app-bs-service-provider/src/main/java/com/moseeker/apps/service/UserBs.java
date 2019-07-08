@@ -17,10 +17,10 @@ import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 @Transactional
 public class UserBs {
 	
-	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER
+	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER
 			.getService(UseraccountsServices.Iface.class);
 	
-	WholeProfileServices.Iface wholeService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
+	WholeProfileServices.Iface wholeService = ServiceManager.SERVICE_MANAGER.getService(WholeProfileServices.Iface.class);
 	@CounterIface
 	public Response bindOnAccount(int appid, String unionid, String code,
 			String mobile, BindType bindType,String countryCode) throws TException {

@@ -26,7 +26,7 @@ public class AwardsController {
 
 	Logger logger = LoggerFactory.getLogger(AwardsController.class);
 
-	AwardsServices.Iface awardService = ServiceManager.SERVICEMANAGER.getService(AwardsServices.Iface.class);
+	AwardsServices.Iface awardService = ServiceManager.SERVICE_MANAGER.getService(AwardsServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/awards", method = RequestMethod.GET)
 	@ResponseBody

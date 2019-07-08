@@ -3,7 +3,6 @@ package com.moseeker.chat.thriftservice;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.chat.struct.*;
-import org.junit.Test;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  */
 public class ChatThriftServiceTest {
 
-    ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
+    ChatService.Iface chatService = ServiceManager.SERVICE_MANAGER.getService(ChatService.Iface.class);
 
     ////@Test
     public void listHRChatRoom() throws Exception {

@@ -1,16 +1,13 @@
 package com.moseeker.useraccounts.aspect;
 
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
 import org.aspectj.lang.JoinPoint;
@@ -29,7 +26,7 @@ public class RadarSwitchAspect {
 
     public static final String RADAR_LANAGUE="人脉雷达";
 
-    CompanyServices.Iface service = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface service = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     private static final String POINCUT = "@annotation(com.moseeker.useraccounts.annotation.RadarSwitchLimit)";
 

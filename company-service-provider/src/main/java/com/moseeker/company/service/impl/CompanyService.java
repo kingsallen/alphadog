@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ValidGeneralType;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigOmsSwitchManagementDao;
-import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -84,7 +83,7 @@ public class CompanyService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+	ChaosServices.Iface chaosService = ServiceManager.SERVICE_MANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
     protected HrCompanyDao companyDao;
@@ -161,7 +160,7 @@ public class CompanyService {
     @Autowired
     CompanySwitchFactory companySwitchFactory;
 
-    MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     public Response getResource(CommonQuery query) throws TException {
         try {

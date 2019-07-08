@@ -44,7 +44,7 @@ public class JobApplicationController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(JobApplicationController.class);
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     /**

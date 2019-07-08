@@ -29,7 +29,7 @@ public class AttachmentController {
 
 	Logger logger = LoggerFactory.getLogger(AttachmentController.class);
 
-	AttachmentServices.Iface attachmentService = ServiceManager.SERVICEMANAGER
+	AttachmentServices.Iface attachmentService = ServiceManager.SERVICE_MANAGER
 			.getService(AttachmentServices.Iface.class);
 
 	@RequestMapping(value = "/profile/attachment", method = RequestMethod.GET)

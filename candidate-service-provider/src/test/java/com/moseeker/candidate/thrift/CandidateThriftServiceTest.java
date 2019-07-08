@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class CandidateThriftServiceTest {
 
-    CandidateService.Iface candidateService = ServiceManager.SERVICEMANAGER.getService(CandidateService.Iface.class);
+    CandidateService.Iface candidateService = ServiceManager.SERVICE_MANAGER.getService(CandidateService.Iface.class);
 
     @Before
     public void before() throws Exception {

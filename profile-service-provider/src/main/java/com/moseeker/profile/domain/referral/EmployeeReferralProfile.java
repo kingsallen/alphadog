@@ -79,7 +79,7 @@ public abstract class EmployeeReferralProfile {
     @Autowired
     private JobApplicationDao applicationDao;
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     ThreadPool tp = ThreadPool.Instance;
