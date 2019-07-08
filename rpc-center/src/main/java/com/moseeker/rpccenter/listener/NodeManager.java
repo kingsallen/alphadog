@@ -669,7 +669,7 @@ public enum NodeManager {
 			if (errorStorage.size() > 0) {
 				if (errorStorage.size() > 0) {
 					logger.error("NodeManager 有错误节点！！！");
-					for (Map.Entry<ZKPath, Long> entry : errorStorage) {
+					for (Map.Entry<ZKPath, Long> entry : errorStorage.entrySet()) {
 						if (entry.getKey() == null) {
 							continue;
 						}
