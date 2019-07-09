@@ -1,6 +1,7 @@
 package com.moseeker.rpccenter.pool;
 
-import com.moseeker.thrift.gen.demo.service.DemoThriftService;
+import com.moseeker.rpccenter.exception.RpcException;
+import com.moseeker.rpccenter.listener.ZKPath;
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;
@@ -12,9 +13,6 @@ import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.moseeker.rpccenter.exception.RpcException;
-import com.moseeker.rpccenter.listener.ZKPath;
 
 /**
  * 

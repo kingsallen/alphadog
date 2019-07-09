@@ -34,6 +34,7 @@ import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ProfileException;
+import com.moseeker.entity.pojo.profile.ProfileRecord;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -785,6 +786,46 @@ public class ProfileEntity {
         } else {
             throw ProfileException.PROGRAM_DOUBLE_CLICK;
         }
+    }
+
+    public ProfileRecord fetchByUserId(int userId) {
+        UserUserRecord userUserRecord = userDao.getUserById(userId);
+        if (userUserRecord != null ) {
+            ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserRecord.getId());
+            if (profileProfileRecord != null) {
+                ProfileRecord profileRecord = new ProfileRecord();
+                profileRecord.setUserRecord(userUserRecord);
+                profileRecord.setProfileRecord(profileProfileRecord);
+
+                QueryUtil qu = new QueryUtil();
+                qu.addEqualFilter("profile_id", String.valueOf(profileProfileRecord.getId()));
+                ProfileBasicRecord basic = profileBasicDao.getRecord(qu);
+                profileRecord.setBasicRecord(basic);
+
+                List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setAttachmentRecords(attachmentRecords);
+
+                List<ProfileAwardsRecord> awardsRecords = awardsDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setAwardsRecords(awardsRecords);
+
+                List<ProfileCredentialsRecord> credentialsRecords = credentialsDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setCredentialsRecords(credentialsRecords);
+
+                List<ProfileEducationRecord> educationRecords = educationDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setEducationRecords(educationRecords);
+
+                List<IntentionRecord> intentionRecords = intentionDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setIntentionRecords(intentionRecords);
+
+                List<ProfileLanguageRecord> languageRecords;
+                ProfileOtherRecord otherRecord;
+                List<ProfileProjectexpRecord> projectExps;
+                List<ProfileSkillRecord> skillRecords;
+                List<ProfileWorkexpRecord> workexpRecords;
+                List<ProfileWorksRecord> worksRecords;
+            }
+        }
+        return null;
     }
 
     private UserUserRecord storeUserRecord(ProfilePojo profilePojo, UserSource source,Integer appid,Integer referenceId,Integer companyId) {

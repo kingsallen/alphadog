@@ -8,10 +8,7 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.*;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCompletenessRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
@@ -215,5 +212,41 @@ public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, Profil
         profileIntention.setTag(intentionRecord.getTag());
         profileIntention.setWorkstate(intentionRecord.getWorkstate());
         profileIntention.setWorktype(intentionRecord.getWorktype());
+    }
+
+    public List<IntentionRecord> fetchByProfileId(Integer profileId) {
+        if (profileId != null && profileId > 0) {
+            Result<ProfileIntentionRecord> intentionRecordList = create
+                    .selectFrom(ProfileIntention.PROFILE_INTENTION)
+                    .where(ProfileIntention.PROFILE_INTENTION.PROFILE_ID.eq(profileId))
+                    .fetch();
+            if (intentionRecordList != null && intentionRecordList.size() > 0) {
+                List<Integer> intentionIdList = intentionRecordList
+                        .stream()
+                        .map(ProfileIntentionRecord::getId)
+                        .collect(Collectors.toList());
+                List<ProfileIntentionCityRecord> cities = create
+                        .selectFrom(ProfileIntentionCity.PROFILE_INTENTION_CITY)
+                        .where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID.in(intentionIdList))
+                        .fetch();
+                List<ProfileIntentionPositionRecord> positions = create
+                        .selectFrom(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
+                        .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.in(intentionIdList))
+                        .fetch();
+                List<ProfileIntentionIndustryRecord> industries = create
+                        .selectFrom(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY)
+                        .where(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.PROFILE_INTENTION_ID.in(intentionIdList))
+                        .fetch();
+                return intentionRecordList
+                        .stream()
+                        .map(profileIntentionRecord -> {
+                            
+                        })
+            }
+            return create
+                    .selectFrom(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
+                    .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.)
+        }
+
     }
 }

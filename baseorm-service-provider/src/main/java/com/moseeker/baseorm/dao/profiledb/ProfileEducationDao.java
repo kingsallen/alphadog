@@ -13,6 +13,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,5 +99,16 @@ public class ProfileEducationDao extends JooqCrudImpl<ProfileEducationDO, Profil
 
         }
         return count;
+    }
+
+    public List<ProfileEducationRecord> fetchByProfileId(Integer profileId) {
+        if (profileId != null && profileId > 0) {
+            return create
+                    .selectFrom(ProfileEducation.PROFILE_EDUCATION)
+                    .where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.eq(profileId))
+                    .fetch();
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 }
