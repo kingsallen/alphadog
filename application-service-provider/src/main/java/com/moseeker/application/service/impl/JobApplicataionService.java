@@ -206,7 +206,9 @@ public class JobApplicataionService {
         }
         Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
                 jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
-        if (responseCheck != null && responseCheck.getStatus() != 0) {
+        if (responseCheck != null
+                && responseCheck.getStatus() != 0
+                && jobApplication.getOrigin()!=ApplicationOriginEnum.HR_RECOMMEND.getKey()) {
             updateOrigin(jobApplication);
             return responseCheck;
         }
@@ -336,7 +338,8 @@ public class JobApplicataionService {
             if (jobApplicationVO.isCreate()) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
-                if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
+                if ((jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0)
+                        && jobApplication.getOrigin()!=ApplicationOriginEnum.HR_RECOMMEND.getKey()) {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }
