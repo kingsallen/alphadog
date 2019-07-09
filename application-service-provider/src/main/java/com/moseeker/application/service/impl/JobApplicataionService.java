@@ -211,6 +211,9 @@ public class JobApplicataionService {
             return responseCheck;
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
+        if(jobApplicationId==-1){
+            return ResponseUtils.fail(ApplicationException.APPLICATION_POSITION_DUPLICATE.getMessage());
+        }
         if (jobApplicationId > 0) {
             sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
                     jobApplication.getApply_type(), jobApplication.getEmail_status(),
@@ -317,8 +320,8 @@ public class JobApplicataionService {
             String result=redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             if(StringUtils.isNotNullOrEmpty(result)){
-                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
-
+//                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
+                return -1;
             }
             redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "","1");
