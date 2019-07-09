@@ -18,6 +18,7 @@ import org.jooq.Param;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -240,13 +241,31 @@ public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, Profil
                 return intentionRecordList
                         .stream()
                         .map(profileIntentionRecord -> {
-                            
-                        })
-            }
-            return create
-                    .selectFrom(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
-                    .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.)
-        }
+                            IntentionRecord intentionRecord = new IntentionRecord();
+                            BeanUtils.copyProperties(profileIntentionRecord, intentionRecord);
+                            List<ProfileIntentionCityRecord> cityRecords = cities
+                                    .stream()
+                                    .filter(city -> city.getProfileIntentionId().equals(profileIntentionRecord.getId()))
+                                    .collect(Collectors.toList());
+                            intentionRecord.setCities(cityRecords);
 
+                            List<ProfileIntentionPositionRecord> positionRecords = positions
+                                    .stream()
+                                    .filter(position -> position.getProfileIntentionId().equals(profileIntentionRecord.getId()))
+                                    .collect(Collectors.toList());
+                            intentionRecord.setPositions(positionRecords);
+
+                            List<ProfileIntentionIndustryRecord> industryRecords = industries
+                                    .stream()
+                                    .filter(industry -> industry.getProfileIntentionId().equals(intentionRecord.getId()))
+                                    .collect(Collectors.toList());
+                            intentionRecord.setIndustries(industryRecords);
+
+                            return intentionRecord;
+                        })
+                        .collect(Collectors.toList());
+            }
+        }
+        return new ArrayList<>(0);
     }
 }

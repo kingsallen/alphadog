@@ -39,6 +39,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
@@ -51,6 +52,7 @@ import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.EmployeeException;
+import com.moseeker.entity.pojo.profile.ProfileRecord;
 import com.moseeker.entity.pojos.*;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -170,6 +172,9 @@ public class ReferralEntity {
     @Autowired
     private UserUserDao userDao;
 
+    @Autowired
+    private  ProfileEntity profileEntity;
+
     //redis的客户端
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -287,8 +292,8 @@ public class ReferralEntity {
 
         logger.info("ReferralEntity claimReferralCard userUserDO:{}", JSONObject.toJSONString(application));
         logger.info("ReferralEntity claimReferralCard application:{}", JSONObject.toJSONString(userUserDO));
+        ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
         if (application != null) {
-
             JobApplicationRecord record = new JobApplicationRecord();
             BeanUtils.copyProperties(application, record);
             record.setApplierId(userUserDO.getId());
@@ -296,7 +301,7 @@ public class ReferralEntity {
             record.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()));
             Timestamp updateTime = new Timestamp(System.currentTimeMillis());
             record.setUpdateTime(updateTime);
-            applicationDao.addIfNotExists(record);
+            resultVO = applicationDao.addIfNotExists(record);
 
             logger.info("ReferralEntity claimReferralCard");
         }
@@ -322,7 +327,9 @@ public class ReferralEntity {
         if (postUserId > 0) {
             recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
         }
-        updateApplicationEsIndex(userUserDO.getId());
+        if (resultVO.isCreate()) {
+            updateApplicationEsIndex(userUserDO.getId());
+        }
         logger.info("ReferralEntity claimReferralCard end!");
     }
 
@@ -569,14 +576,15 @@ public class ReferralEntity {
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
         if (profileProfileRecord == null) {
 
-            ProfilePojo profilePojo = new ProfilePojo();
+            ProfileRecord profileRecord = profileEntity.fetchByUserId(referenceId);
+            profileEntity.mergeProfile(profileRecord, userId);
 
-            ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
+            /*ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
             if (record != null) {
                 if (profileDao.changUserId(record, userId) > 0) {
                     completeness.reCalculateProfileCompleteness(record.getId());
                 }
-            }
+            }*/
         }
     }
 

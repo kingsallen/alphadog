@@ -59,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
 
@@ -115,6 +116,23 @@ public class ProfileEntity {
 
     /**
      * 如果存在简历则合并，不存在则添加
+     * @param profileRecord 简历数据
+     * @param userId 用户编号
+     */
+    public int mergeProfile(ProfileRecord profileRecord, int userId) {
+
+        ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
+        int profileId= mergeProfileCommon(profileRecord, profileDB);
+        if (profileDB != null) {
+            improveAttachment(profileRecord.getAttachmentRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+            profileId = profileDB.getId();
+        }
+        return profileId;
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
      * @param profilePojo 简历数据
      * @param userId 用户编号
      */
@@ -140,6 +158,33 @@ public class ProfileEntity {
             attachmentId = id;
         }
         return attachmentId;
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
+     * @param profileRecord 简历数据
+     * @param profileDB 用户编号
+     */
+    public int mergeProfileCommon(ProfileRecord profileRecord, ProfileProfileRecord profileDB) {
+
+        if (profileDB != null) {
+            improveProfile(profileRecord.getProfileRecord(), profileDB);
+            improveBasic(profileRecord.getBasicRecord(), profileDB.getId());
+            improveAwards(profileRecord.getAwardsRecords(), profileDB.getId());
+            improveCredentials(profileRecord.getCredentialsRecords(), profileDB.getId());
+            improveEducation(profileRecord.getEducationRecords(), profileDB.getId());
+            improveIntention(profileRecord.getIntentionRecords(), profileDB.getId());
+            improveLanguage(profileRecord.getLanguageRecords(), profileDB.getId());
+            improveOther(profileRecord.getOtherRecord(), profileDB.getId());
+            improveProjectexp(profileRecord.getProjectExps(), profileDB.getId());
+            improveSkill(profileRecord.getSkillRecords(), profileDB.getId());
+            improveWorkexpRecrds(profileRecord.getWorkexpRecords(), profileDB.getId());
+            improveWorks(profileRecord.getWorksRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+            return profileDB.getId();
+        } else {
+            return storeProfile(profileRecord);
+        }
     }
 
     /**
@@ -372,6 +417,20 @@ public class ProfileEntity {
                 skill.setProfileId((int) (profileId));
             });
             worksDao.addAllRecord(worksRecords);
+        }
+    }
+
+    @Transactional
+    public void improveWorkexpRecrds(List<ProfileWorkexpRecord> workexpRecords, int profileId) {
+        if (workexpRecords != null && workexpRecords.size() > 0) {
+            workExpDao.delWorkExpsByProfileId(profileId);
+            List<ProfileWorkexpRecord> records = new ArrayList<>();
+            workexpRecords.forEach(skill -> {
+                skill.setId(null);
+                skill.setProfileId((int) (profileId));
+                records.add(skill);
+            });
+            workExpDao.addAllRecord(records);
         }
     }
 
@@ -688,6 +747,42 @@ public class ProfileEntity {
     }
 
     /**
+     * 持久化简历数据
+     * @param profileRecord 简历数据
+     * @return 简历编号
+     */
+    public int storeProfile(ProfileRecord profileRecord) {
+
+        List<ProfileWorkexpEntity> workexpEntities = new ArrayList<>();
+        if (profileRecord.getWorkexpRecords() != null && profileRecord.getWorkexpRecords().size() > 0) {
+            workexpEntities = profileRecord.getWorkexpRecords()
+                    .stream()
+                    .map(profileWorkexpRecord -> {
+                        ProfileWorkexpEntity entity = new ProfileWorkexpEntity();
+                        org.springframework.beans.BeanUtils.copyProperties(profileWorkexpRecord, entity);
+                        entity.setCompany(null);
+                        return entity;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profileRecord.getProfileRecord().getSource(),
+                profileRecord.getProfileRecord().getOrigin(), profileRecord.getProfileRecord().getUuid());
+        logger.info("ProfileEntity storeProfile userId:{}", profileRecord.getUserRecord().getId());
+        int id= profileDao.saveProfile(profileRecord.getProfileRecord(), profileRecord.getBasicRecord(),
+                profileRecord.getAttachmentRecords(), profileRecord.getAwardsRecords(), profileRecord.getCredentialsRecords(),
+                profileRecord.getEducationRecords(), profileRecord.getImportRecords(), profileRecord.getIntentionRecords(),
+                profileRecord.getLanguageRecords(), profileRecord.getOtherRecord(), profileRecord.getProjectExps(),
+                profileRecord.getSkillRecords(), workexpEntities, profileRecord.getWorksRecords(),
+                profileRecord.getUserRecord(), null);
+        String distinctId = profileRecord.getUserRecord().getId().toString();
+        String property=String.valueOf(profileRecord.getProfileRecord().getCompleteness());
+        logger.info("ProfileEntity.storeProfile684  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+        return id;
+    }
+
+    /**
      * 查找用户是否有简历
      * @param userIdList 用户编号集合
      * @return
@@ -817,12 +912,25 @@ public class ProfileEntity {
                 List<IntentionRecord> intentionRecords = intentionDao.fetchByProfileId(profileProfileRecord.getId());
                 profileRecord.setIntentionRecords(intentionRecords);
 
-                List<ProfileLanguageRecord> languageRecords;
-                ProfileOtherRecord otherRecord;
-                List<ProfileProjectexpRecord> projectExps;
-                List<ProfileSkillRecord> skillRecords;
-                List<ProfileWorkexpRecord> workexpRecords;
-                List<ProfileWorksRecord> worksRecords;
+                List<ProfileLanguageRecord> languageRecords = languageDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setLanguageRecords(languageRecords);
+
+                ProfileOtherRecord otherRecord = otherDao.fetchProfileOther(profileProfileRecord.getId());
+                profileRecord.setOtherRecord(otherRecord);
+
+                List<ProfileProjectexpRecord> projectExps = projectExpDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setProjectExps(projectExps);
+
+                List<ProfileSkillRecord> skillRecords = skillDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setSkillRecords(skillRecords);
+
+                List<ProfileWorkexpRecord> workexpRecords = workExpDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setWorkexpRecords(workexpRecords);
+
+                List<ProfileWorksRecord> worksRecords = worksDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setWorksRecords(worksRecords);
+
+                return profileRecord;
             }
         }
         return null;
