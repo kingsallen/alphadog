@@ -51,7 +51,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ScheduledThread;
-import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -74,11 +73,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -204,13 +205,13 @@ public class JobApplicataionService {
         if (responseJob.status > 0) {
             return responseJob;
         }
-        Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
-                jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
-        if (responseCheck != null
-                && responseCheck.getStatus() != 0
-                && jobApplication.getOrigin()!=ApplicationOriginEnum.HR_RECOMMEND.getKey()) {
-            updateOrigin(jobApplication);
-            return responseCheck;
+        if (jobApplication.getOrigin() != ApplicationOriginEnum.HR_RECOMMEND.getKey()) {
+            Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
+                    jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
+            if (responseCheck != null && responseCheck.getStatus() != 0) {
+                updateOrigin(jobApplication);
+                return responseCheck;
+            }
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
         if (jobApplicationId > 0) {
