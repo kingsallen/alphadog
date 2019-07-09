@@ -11,11 +11,11 @@ import java.util.Arrays;
 public class EmployeeServiceTest {
 
 
-	public EmployeeService.Iface service  = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);;
+	public EmployeeService.Iface service  = ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);;
 
     //@Before
 	public void init() {
-		service = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+		service = ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
 	}
 
     ////@Test

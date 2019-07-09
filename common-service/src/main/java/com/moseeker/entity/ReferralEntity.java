@@ -574,6 +574,7 @@ public class ReferralEntity {
     }
 
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
+        logger.info("ReferralEntity fetchReferralLog userId:{}, companyIds:{}, hrId:{}", userId, companyIds, hrId);
         ReferralProfileData data = new ReferralProfileData();
         long startTime = System.currentTimeMillis();
         Future<UserHrAccountDO> accountFuture = threadPool.startTast(
@@ -591,16 +592,19 @@ public class ReferralEntity {
             }
             long positionTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog positionTime:{}", positionTime- accountTime);
+            logger.info("ReferralEntity fetchReferralLog account:{}", JSONObject.toJSONString(account));
             if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
                 positionIds = positionDao.getPositionIdByPublisher(hrId);
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(userId, positionIds);
             }else {
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(userId);
             }
+            logger.info("ReferralEntity fetchReferralLog logs:{}", JSONObject.toJSONString(logs));
             List<Integer> employeeIdList = new ArrayList<>();
-            if(StringUtils.isEmptyList(logs)){
-                employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+            if(!StringUtils.isEmptyList(logs)){
+                employeeIdList = logs.stream().map(ReferralLog::getEmployeeId).collect(Collectors.toList());
             }
+            logger.info("ReferralEntity fetchReferralLog referralLog.employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             long employeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- positionTime);
             List<Integer> temp = employeeIdList;
@@ -610,20 +614,25 @@ public class ReferralEntity {
                     () -> historyUserEmployeeDao.getHistoryEmployeeByIds(temp));;
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
             if (!StringUtils.isEmptyList(employeeList)){
+                logger.info("ReferralEntity fetchReferralLog employeeList{}", JSONObject.toJSONString(employeeList));
                 List<Integer> employeeIds1 = employeeList.stream().filter(f -> companyIds.contains(f.getCompanyId()))
                         .map(m -> m.getId()).collect(Collectors.toList());
+                logger.info("ReferralEntity fetchReferralLog employeeIds1{}", JSONObject.toJSONString(employeeIds1));
                 employeeIds.addAll(employeeIds1);
             }
             long midTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- midTime);
             List<UserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
             if (!StringUtils.isEmptyList(historyUserEmployees)){
+                logger.info("ReferralEntity fetchReferralLog historyUserEmployees{}", JSONObject.toJSONString(historyUserEmployees));
                 List<Integer> employeeIds2 = historyUserEmployees.stream().filter(f -> companyIds.contains(f.getCompanyId()))
                         .map(m -> m.getId()).collect(Collectors.toList());
+                logger.info("ReferralEntity fetchReferralLog employeeIds2{}", JSONObject.toJSONString(employeeIds2));
                 employeeIds.addAll(employeeIds2);
             }
             long historyUserEmployeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog historyUserEmployeeTime:{}", historyUserEmployeeTime- employeeTime);
+            logger.info("ReferralEntity fetchReferralLog employeeIds:{}", JSONObject.toJSONString(employeeIds));
 
         }catch (Exception e){
             logger.error(e.getMessage(), e);
@@ -639,6 +648,7 @@ public class ReferralEntity {
                 }
             }
         }
+        logger.info("ReferralEntity fetchReferralLog logList:{}", JSONObject.toJSONString(logList));
         long endTime = System.currentTimeMillis();
         logger.info("profile tab fetchReferralLog endTime:{}", endTime- startTime);
         return logList;
@@ -647,6 +657,7 @@ public class ReferralEntity {
     public ReferralProfileData fetchReferralProfileData(List<ReferralLog> logs){
         ReferralProfileData data = new ReferralProfileData();
         if(StringUtils.isEmptyList(logs)){
+            logger.info("ReferralServiceImpl getReferralProfileTabList logs is null");
             return null;
         }
         long startTime = System.currentTimeMillis();List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
@@ -662,6 +673,7 @@ public class ReferralEntity {
                 () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
         try {
             List<JobPositionDO> positionList = positionListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList positionList:{}", JSONObject.toJSONString(positionList));
             if(!StringUtils.isEmptyList(positionList)){
                 Map<Integer, String> positionTitileMap = new HashMap<>();
                 positionList.forEach(position
@@ -674,6 +686,7 @@ public class ReferralEntity {
             logger.info("profile tab fetchReferralProfileData positionListTime:{}", positionListTime-startTime);
             Map<Integer, String> employeeNameMap = new HashMap<>();
             List<UserEmployeeDO> empList = empListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList empList:{}", JSONObject.toJSONString(empList));
             if(!StringUtils.isEmptyList(empList)){
                 empList.forEach( employee ->
                     employeeNameMap.put(employee.getId(), employee.getCname())
@@ -682,6 +695,7 @@ public class ReferralEntity {
             long empTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralProfileData empTime:{}", empTime- positionListTime);
             List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList historyEmpList:{}", JSONObject.toJSONString(historyEmpList));
             if(!StringUtils.isEmptyList(historyEmpList)){
                 historyEmpList.forEach(employee ->
                     employeeNameMap.put(employee.getId(), employee.getCname())
@@ -691,6 +705,7 @@ public class ReferralEntity {
             long hisEmpTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralProfileData empTime:{}", hisEmpTime - empTime);
             List<ProfileAttachmentDO> attachmentList = attachmentListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList attachmentList:{}", JSONObject.toJSONString(attachmentList));
             long attachmentTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralProfileData attachmentTime:{}", attachmentTime - empTime);
             if(StringUtils.isEmptyList(attachmentList)){
@@ -1060,7 +1075,9 @@ public class ReferralEntity {
                             break;
                         }
                     }
-                    if(status)records.add(recommendRecord);
+                    if (status) {
+                        records.add(recommendRecord);
+                    }
                 }
                 return records;
             }

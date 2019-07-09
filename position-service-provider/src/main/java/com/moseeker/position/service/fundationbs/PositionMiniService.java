@@ -6,7 +6,6 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionShareTplConfDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
@@ -66,7 +65,7 @@ public class PositionMiniService {
     @Autowired
     public JobPositionShareTplConfDao tplConfDao;
 
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
     @CounterIface
     public PositionMiniBean getPositionMiniList(int accountId,String keyword,int page,int pageSize) throws TException {
         CompanyAccount account=this.getAccountInfo(accountId);

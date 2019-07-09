@@ -78,7 +78,7 @@ public class UserHrAccountServiceImplTest {
 
     ////@Test
     public void userHrAccount() throws TException {
-        UserHrAccountService.Iface user = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+        UserHrAccountService.Iface user = ServiceManager.SERVICE_MANAGER.getService(UserHrAccountService.Iface.class);
         Response response = user.userHrAccount(0, 1, 1, 10);
         System.out.println(response.getData());
     }
@@ -87,7 +87,7 @@ public class UserHrAccountServiceImplTest {
 
     @Before
     public void init() {
-        service = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+        service = ServiceManager.SERVICE_MANAGER.getService(UserHrAccountService.Iface.class);
     }
 
     //    @Test

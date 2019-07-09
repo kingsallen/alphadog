@@ -13,7 +13,7 @@
 //
 //public class SmsTest {
 //	
-//	MqService.Iface service = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+//	MqService.Iface service = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 //	
 //	//@Test
 //	public void sendSMSTest() {

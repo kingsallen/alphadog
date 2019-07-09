@@ -1,15 +1,12 @@
 package com.moseeker.common.thread;
 
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 import java.util.concurrent.*;
 
 /**
- * 为所有的需要使用线程的地方提供统一的线程池，避免开启的线程过多。
- * Created by jack on 13/02/2017.
+ * 提供新的线程池用于尝试处理简历服务异常问题
  */
-public enum ThreadPool {
+public enum ProfileThreadPool {
 
     /**
      * 线程池实例
@@ -21,7 +18,7 @@ public enum ThreadPool {
      */
     ExecutorService service;
 
-    private ThreadPool() {
+    private ProfileThreadPool() {
         init();
     }
 
@@ -68,13 +65,9 @@ public enum ThreadPool {
     }
 
     private void init() {
-        ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("thread-pool").build();
-        service = new ThreadPoolExecutor(3,
-                1000,
-                60L,
-                TimeUnit.SECONDS,
-                new SynchronousQueue<>(), threadFactory,
-                new ThreadPoolExecutor.AbortPolicy());
+        service = new ThreadPoolExecutor(0, 1000,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<Runnable>());
     }
 
 }

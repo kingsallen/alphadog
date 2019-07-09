@@ -31,7 +31,7 @@ public class UserCenterController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-	UserCenterService.Iface userCenterService = ServiceManager.SERVICEMANAGER
+	UserCenterService.Iface userCenterService = ServiceManager.SERVICE_MANAGER
 			.getService(UserCenterService.Iface.class);
 	
 	@RequestMapping(value = "/user/{id}/applications", method = RequestMethod.GET)

@@ -36,7 +36,7 @@ public class TalentpoolNewController {
 
     Logger logger = LoggerFactory.getLogger(TalentpoolNewController.class);
 
-    TalentpoolNewServices.Iface service = ServiceManager.SERVICEMANAGER.getService(TalentpoolNewServices.Iface.class);
+    TalentpoolNewServices.Iface service = ServiceManager.SERVICE_MANAGER.getService(TalentpoolNewServices.Iface.class);
 
 
     /*

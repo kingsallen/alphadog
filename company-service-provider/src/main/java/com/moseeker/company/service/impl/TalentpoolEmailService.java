@@ -29,7 +29,6 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.company.bean.email.*;
 import com.moseeker.entity.*;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
@@ -46,23 +45,18 @@ import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailListStruct;
-import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import org.apache.thrift.TException;
 
-import org.apache.thrift.TSerializer;
-import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,15 +128,15 @@ public class TalentpoolEmailService {
     @Autowired
     private Environment env;
 
-    SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    SearchengineServices.Iface searchService = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
 
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     private ThreadPool tp = ThreadPool.Instance;
 
     @Autowired
     private UserWxEntity userWxEntity;
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     @Autowired
     MandrillMailListConsumer mandrillMailListConsumer;

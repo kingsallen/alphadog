@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CompanyThriftServiceTest {
 
-	CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+	CompanyServices.Iface companyService = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
 
 	//@Test

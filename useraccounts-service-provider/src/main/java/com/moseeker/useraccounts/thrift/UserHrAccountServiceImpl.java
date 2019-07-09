@@ -641,8 +641,6 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("UserHrAccountServiceImpl employeeImport initDateTime:{}", initDateTime.toString());
         try {
             return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
         } catch (CommonException e) {
@@ -650,10 +648,6 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
-        } finally {
-            LocalDateTime lastDateTime = LocalDateTime.now();
-            logger.info("UserHrAccountServiceImpl employeeImport lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
-
         }
     }
 
@@ -662,6 +656,7 @@ public class UserHrAccountServiceImpl implements Iface {
         try {
             return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -678,8 +673,6 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
 
-        logger.info("UserHrAccountServiceImpl checkBatchInsert");
-
         if (userEmployeeDOMap.size() > FIVE_THOUSAND) {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
@@ -691,8 +684,6 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
-        } finally {
-            logger.info("UserHrAccountServiceImpl after checkBatchInsert");
         }
     }
 

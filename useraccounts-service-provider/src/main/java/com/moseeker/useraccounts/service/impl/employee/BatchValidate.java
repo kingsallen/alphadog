@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class BatchValidate {
 
     ThreadPool threadPool = ThreadPool.Instance;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 将员工自定义字段json字符串解析成List<Map<String,String>>
@@ -61,8 +62,9 @@ public class BatchValidate {
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
                     Map<String, String> jsonObject = new HashMap<>();
-
+                    logger.info("BatchValidate parseCustomFieldValues customFieldValue:{}", JSONObject.toJSONString(customFieldValue));
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
+                    logger.info("BatchValidate parseCustomFieldValues customFieldJSONObject:{}", customFieldJSONObject);
                     customFieldJSONObject.forEach((key, value) -> {
                         if (value instanceof JSONArray) {
                             String valueStr;
@@ -133,18 +135,36 @@ public class BatchValidate {
         // 提交上的数据
         AtomicInteger repeatCounts = new AtomicInteger(0);
         AtomicInteger errorCount = new AtomicInteger(0);
-        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
+        List<Future<ImportErrorUserEmployee>> futures = new ArrayList<>(userEmployeeMap.size());
         userEmployeeMap.forEach((row, userEmployeeDO) -> {
-            threadPool.startTast(() -> {
+            Future<ImportErrorUserEmployee> future = threadPool.startTast(() -> {
                 try {
-                    checkImportEmployee(row, userEmployeeDO, companyId, importErrorUserEmployees, repeatCounts, errorCount,
+                    ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
                             employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
-                } finally {
-                    countDownLatch.countDown();
+                    return importErrorUserEmployee;
+                } catch (Exception e) {
+                    ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployee.setMessage("数据异常");
+                    errorCount.incrementAndGet();
+                    return importErrorUserEmployee;
                 }
-                return true;
             });
+            futures.add(future);
         });
+
+        for (Future<ImportErrorUserEmployee> future : futures) {
+            try {
+                ImportErrorUserEmployee importErrorUserEmployee = future.get();
+                if (importErrorUserEmployee != null) {
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+
+        }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
         importUserEmployeeStatistic.setErrorCounts(errorCount.get());
         importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
@@ -253,16 +273,12 @@ public class BatchValidate {
      */
     public boolean validateCustomFieldValues(Map<Integer, String> customFieldValues, int companyId) {
 
-        /**
-         * 校验必填项
-         */
         List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
         List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
                 .parallelStream()
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
         if (notSupportList != null && notSupportList.size() > 0) {
-            logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
         }
 
@@ -274,6 +290,9 @@ public class BatchValidate {
          * 校验下拉项选择
          */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+
+        logger.info("BatchValidate validateCustomFieldValues rels:{}", JSONObject.toJSONString(rels));
+
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
                     .parallelStream()
@@ -294,6 +313,8 @@ public class BatchValidate {
                 }
                 int count = customOptionJooqDao.countByCustomIdAndId(params);
                 return count == fields.size();
+            } else {
+                return true;
             }
         }
         return false;
@@ -377,15 +398,13 @@ public class BatchValidate {
      * @param row
      * @param userEmployeeDO
      * @param companyId
-     * @param importErrorUserEmployees
      * @param repeatCounts
      * @param errorCounts
      * @param employeeCustomFiledValues
      * @param dbCustomFieldValues
      * @param dbEmployeeDOList
      */
-    private void checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
-                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+    private ImportErrorUserEmployee checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
                                      AtomicInteger repeatCounts, AtomicInteger errorCounts,
                                      ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
                                      Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
@@ -396,16 +415,8 @@ public class BatchValidate {
             importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
             importErrorUserEmployee.setMessage("员工姓名不能为空");
             importErrorUserEmployee.setRowNum(row);
-            importErrorUserEmployees.add(importErrorUserEmployee);
             errorCounts.incrementAndGet();
-            return;
-        } else if (!FormCheck.isChineseAndCharacter(userEmployeeDO.getCname().trim())) {
-            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-            importErrorUserEmployee.setMessage("员工姓名包含非法字符");
-            importErrorUserEmployee.setRowNum(row);
-            importErrorUserEmployees.add(importErrorUserEmployee);
-            errorCounts.incrementAndGet();
-            return;
+            return importErrorUserEmployee;
         }
 
         if (userEmployeeDO.getCompanyId() == 0) {
@@ -420,9 +431,8 @@ public class BatchValidate {
                     importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
                     importErrorUserEmployee.setMessage("自定义选项错误");
                     importErrorUserEmployee.setRowNum(row);
-                    importErrorUserEmployees.add(importErrorUserEmployee);
                     errorCounts.incrementAndGet();
-                    return;
+                    return importErrorUserEmployee;
                 } else {
                     JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
                     userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
@@ -430,27 +440,27 @@ public class BatchValidate {
             }
         }
         if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-            return;
+            return null;
         }
         if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
-            // 数据库的数据
-            for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
-                // 非自定义员工,忽略检查
-                if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
-                        || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
-                    continue;
-                }
-                // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
-                if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                        && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
-                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                    importErrorUserEmployee.setRowNum(row);
-                    importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
-                    repeatCounts.incrementAndGet();
-                    importErrorUserEmployees.add(importErrorUserEmployee);
-                }
+
+            Optional<UserEmployeeDO> optional = dbEmployeeDOList
+                    .parallelStream()
+                    .filter(u -> u.getCname() != null
+                            && u.getCustomField() != null
+                            && userEmployeeDO.getCname().trim().equals(u.getCname())
+                            && userEmployeeDO.getCustomField().trim().equals(u.getCustomField()))
+                    .findAny();
+
+            if (optional.isPresent()) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setRowNum(row);
+                importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
+                repeatCounts.incrementAndGet();
+                return importErrorUserEmployee;
             }
         }
+        return null;
     }
 
     /**
@@ -516,6 +526,9 @@ public class BatchValidate {
         if (customFieldValues != null && customFieldValues.size() > 0) {
             List<CustomOptionRel> rels = new ArrayList<>(customFieldValues.size());
             customFieldValues.forEach((key, value) -> {
+                if (value == null || value.equals("")) {
+                    return;
+                }
                 CustomOptionRel customOptionRel = new CustomOptionRel();
                 customOptionRel.setCustomId(Integer.valueOf(key));
                 customOptionRel.setOption(value);
@@ -669,15 +682,19 @@ public class BatchValidate {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            if (optionValueOptional.isPresent()) {
-                                department.put("department", optionValueOptional.get().getName());
-                            } else {
+                            if (departmentValueOptional.get().get(departmentOptional.get().getId().toString()).equals("")) {
                                 department.put("department", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    department.put("department", optionValueOptional.get().getName());
+                                } else {
+                                    department.put("department", "");
+                                }
                             }
                         } else {
                             department.put("department", "");
@@ -696,16 +713,21 @@ public class BatchValidate {
                     Optional<Map<String, String>> positionValueOptional = parseFilter(list, positionOptional);
                     if (positionValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            if (optionValueOptional.isPresent()) {
-                                position.put("position", optionValueOptional.get().getName());
-                            } else {
+                            if (positionValueOptional.get().get(positionOptional.get().getId().toString()).equals("")) {
                                 position.put("position", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    position.put("position", optionValueOptional.get().getName());
+                                } else {
+                                    position.put("position", "");
+                                }
                             }
+
                         } else {
                             position.put("position", "");
                         }
@@ -723,16 +745,21 @@ public class BatchValidate {
                     Optional<Map<String, String>> cityValueOptional = parseFilter(list, cityOptional);
                     if (cityValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            if (optionValueOptional.isPresent()) {
-                                city.put("city", optionValueOptional.get().getName());
-                            } else {
+                            if (cityValueOptional.get().get(cityOptional.get().getId().toString()).equals("")) {
                                 city.put("city", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    city.put("city", optionValueOptional.get().getName());
+                                } else {
+                                    city.put("city", "");
+                                }
                             }
+                            
                         } else {
                             city.put("city", "");
                         }

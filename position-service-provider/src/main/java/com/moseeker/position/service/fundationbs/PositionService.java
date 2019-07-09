@@ -179,8 +179,8 @@ public class PositionService {
 
     private ThreadPool pool = ThreadPool.Instance;
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-    PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
+    PositionServices.Iface positionServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
 
     private static List dictAlipaycampusJobcategorylist;
 
@@ -2833,7 +2833,7 @@ public class PositionService {
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
                 updateField.put("updateTime", dateStr);
-                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), positionDO.getCompanyId());
+                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), accountDO.getCompanyId());
 
                 // 猎聘api新增
                 if (updateField.get("status") != null) {

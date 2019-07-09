@@ -239,7 +239,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 "  where uu.sysuser_id = " + sysuserId + " and uu.activation = 0 and uu.disable = 0) ut " +
                 " on u.sysuser_id = ut.user_id " +
                 " set u.activation = " + EmployeeActiveState.Actived.getState() +
-                " , set u.binding_time = " + time +
+                " ,  u.binding_time = '" + time +"' "+
                 " where u.activation = " + EmployeeActiveState.UnFollow.getState() + " " +
                 " and u.id = " + id + " and ut.id is null");
     }
@@ -446,6 +446,38 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     }
 
     public List<UserEmployeeRecord> batchSave(List<UserEmployeeDO> userEmployeeDOS) {
+        org.jooq.Condition condition = null;
+
+        for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
+            if (condition == null) {
+                condition = UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(userEmployeeDO.getCompanyId())
+                        .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(userEmployeeDO.getCname()))
+                        .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(userEmployeeDO.getCustomField()));
+            } else {
+                condition = condition.or(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(userEmployeeDO.getCompanyId())
+                        .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(userEmployeeDO.getCname()))
+                        .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(userEmployeeDO.getCustomField())));
+            }
+        }
+
+        Result<Record3<Integer, String, String>> dbCustom = create.select(UserEmployee.USER_EMPLOYEE.ID,
+                UserEmployee.USER_EMPLOYEE.CNAME,
+                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD)
+                .from(UserEmployee.USER_EMPLOYEE)
+                .where(condition)
+                .fetch();
+        if (dbCustom != null && dbCustom.size() > 0) {
+            userEmployeeDOS = userEmployeeDOS
+                    .stream()
+                    .filter(userEmployeeDO -> {
+                        Optional<Record3<Integer, String, String>> optional = dbCustom
+                                .stream()
+                                .filter(record -> record.value2().equals(userEmployeeDO.getCname()) && record.value3().equals(userEmployeeDO.getCustomField()))
+                                .findAny();
+                        return !optional.isPresent();
+                    })
+                    .collect(Collectors.toList());
+        }
 
         InsertValuesStep7 insertValuesStep6 = create.insertInto(UserEmployee.USER_EMPLOYEE)
                 .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
@@ -455,14 +487,15 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                         UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
                         UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES,
                         UserEmployee.USER_EMPLOYEE.IMPORT_TIME);
+
         for (UserEmployeeDO userEmployeeDO : userEmployeeDOS) {
             insertValuesStep6 = insertValuesStep6.values(userEmployeeDO.getCompanyId(), userEmployeeDO.getActivation(),
                     userEmployeeDO.getCname(), userEmployeeDO.getCustomField(), userEmployeeDO.getAuthMethod(),
                     userEmployeeDO.getCustomFieldValues(),
                     BeanUtils.convertToSQLTimestamp(userEmployeeDO.getImportTime()));
         }
-        Result result = insertValuesStep6.returning().fetch();
-        return result;
+
+        return insertValuesStep6.returning().fetch();
     }
 
     public UserEmployeeDO getEmployeeById(int employeeId) {

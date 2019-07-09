@@ -52,9 +52,9 @@ import org.springframework.web.bind.annotation.*;
 @CounterIface
 public class UserEmployeeController {
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-    UserEmployeeService.Iface service = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
+    UserEmployeeService.Iface service = ServiceManager.SERVICE_MANAGER.getService(UserEmployeeService.Iface.class);
 
-    EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+    EmployeeService.Iface employeeService =  ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
