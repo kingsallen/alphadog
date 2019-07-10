@@ -67,6 +67,7 @@ public class BatchValidate {
                 for (Object customFieldValue : customFieldValues) {
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
 
+                    Map<String, String> jsonObject = new HashMap<>();
                     customFieldJSONObject.forEach((key, value) -> {
 
                         Optional<Integer> optional = fieldsList
@@ -77,8 +78,6 @@ public class BatchValidate {
                         if (!optional.isPresent()) {
                             return;
                         }
-
-                        Map<String, String> jsonObject = new HashMap<>();
 
                         if (value instanceof JSONArray) {
                             String valueStr;
