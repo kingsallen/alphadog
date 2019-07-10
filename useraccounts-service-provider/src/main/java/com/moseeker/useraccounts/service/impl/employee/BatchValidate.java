@@ -63,31 +63,37 @@ public class BatchValidate {
             List customFieldValues = JSONObject.parseObject(customFieldValueStr, List.class);
             if (customFieldValues != null && customFieldValues.size() > 0) {
 
-                List<String> customIdStrList = fieldsList
-                        .stream()
-                        .map(hrEmployeeCustomFields -> hrEmployeeCustomFields.getId().toString())
-                        .collect(Collectors.toList());
-
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
 
-                    Map<String, String> jsonObject = new HashMap<>();
                     customFieldJSONObject.forEach((key, value) -> {
 
-                        if (!customIdStrList.contains(key)) {
+                        Optional<Integer> optional = fieldsList
+                                .stream()
+                                .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getId().toString().equals(key))
+                                .map(HrEmployeeCustomFields::getOptionType)
+                                .findAny();
+                        if (!optional.isPresent()) {
                             return;
                         }
+
+                        Map<String, String> jsonObject = new HashMap<>();
+
                         if (value instanceof JSONArray) {
                             String valueStr;
                             if (((JSONArray)value).get(0) instanceof String) {
                                 valueStr = (String) ((JSONArray)value).get(0);
-                                if (employeeOptionValues.contains(valueStr)) {
+                                if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                } else {
                                     jsonObject.put(key, valueStr);
                                 }
                             } else if(((JSONArray)value).get(0) instanceof Integer) {
                                 valueStr = ((JSONArray)value).get(0).toString();
-                                if (employeeOptionValues.contains(valueStr)) {
+                                if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                } else {
                                     jsonObject.put(key, valueStr);
                                 }
                             } else {
@@ -98,12 +104,16 @@ public class BatchValidate {
                                 String valueStr;
                                 if (valueValue instanceof String) {
                                     valueStr = (String) valueValue;
-                                    if (employeeOptionValues.contains(valueStr)) {
+                                    if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                        jsonObject.put(key, valueStr);
+                                    } else {
                                         jsonObject.put(key, valueStr);
                                     }
                                 } else if(valueValue instanceof Integer) {
                                     valueStr = valueValue.toString();
-                                    if (employeeOptionValues.contains(valueStr)) {
+                                    if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                        jsonObject.put(key, valueStr);
+                                    } else {
                                         jsonObject.put(key, valueStr);
                                     }
                                 } else {
@@ -113,7 +123,9 @@ public class BatchValidate {
                         } else {
                             String valueStr = BeanUtils.converToString(value);
                             if (valueStr != null) {
-                                if (employeeOptionValues.contains(valueStr)) {
+                                if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                } else {
                                     jsonObject.put(key, valueStr);
                                 }
                             }
