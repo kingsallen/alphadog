@@ -10,7 +10,6 @@ import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ImportErrorUserEmployee;
@@ -52,28 +51,45 @@ public class BatchValidate {
     /**
      * 将员工自定义字段json字符串解析成List<Map<String,String>>
      * @param customFieldValueStr 自定义字段json字符串
+     * @param fieldsList
+     * @param employeeOptionValues
      * @return list
      */
-    public List<Map<String, String>> parseCustomFieldValues(String customFieldValueStr) {
+    public List<Map<String, String>> parseCustomFieldValues(String customFieldValueStr,
+                                                            List<HrEmployeeCustomFields> fieldsList,
+                                                            List<String> employeeOptionValues) {
         if (org.apache.commons.lang.StringUtils.isNotBlank(customFieldValueStr) && !customFieldValueStr.equals("[]")) {
 
             List customFieldValues = JSONObject.parseObject(customFieldValueStr, List.class);
             if (customFieldValues != null && customFieldValues.size() > 0) {
+
+                List<String> customIdStrList = fieldsList
+                        .stream()
+                        .map(hrEmployeeCustomFields -> hrEmployeeCustomFields.getId().toString())
+                        .collect(Collectors.toList());
+
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
-                    Map<String, String> jsonObject = new HashMap<>();
-                    logger.info("BatchValidate parseCustomFieldValues customFieldValue:{}", JSONObject.toJSONString(customFieldValue));
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
-                    logger.info("BatchValidate parseCustomFieldValues customFieldJSONObject:{}", customFieldJSONObject);
+
+                    Map<String, String> jsonObject = new HashMap<>();
                     customFieldJSONObject.forEach((key, value) -> {
+
+                        if (!customIdStrList.contains(key)) {
+                            return;
+                        }
                         if (value instanceof JSONArray) {
                             String valueStr;
                             if (((JSONArray)value).get(0) instanceof String) {
                                 valueStr = (String) ((JSONArray)value).get(0);
-                                jsonObject.put(key, valueStr);
+                                if (employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                }
                             } else if(((JSONArray)value).get(0) instanceof Integer) {
                                 valueStr = ((JSONArray)value).get(0).toString();
-                                jsonObject.put(key, valueStr);
+                                if (employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                }
                             } else {
                                 //do nothing
                             }
@@ -82,10 +98,14 @@ public class BatchValidate {
                                 String valueStr;
                                 if (valueValue instanceof String) {
                                     valueStr = (String) valueValue;
-                                    jsonObject.put(keyKey, valueStr);
+                                    if (employeeOptionValues.contains(valueStr)) {
+                                        jsonObject.put(key, valueStr);
+                                    }
                                 } else if(valueValue instanceof Integer) {
                                     valueStr = valueValue.toString();
-                                    jsonObject.put(keyKey, valueStr);
+                                    if (employeeOptionValues.contains(valueStr)) {
+                                        jsonObject.put(key, valueStr);
+                                    }
                                 } else {
                                     //do nothing
                                 }
@@ -93,7 +113,9 @@ public class BatchValidate {
                         } else {
                             String valueStr = BeanUtils.converToString(value);
                             if (valueStr != null) {
-                                jsonObject.put(key, BeanUtils.converToString(value));
+                                if (employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                }
                             }
                         }
                     });
