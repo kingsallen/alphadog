@@ -1698,8 +1698,28 @@ public class UserHrAccountService {
         userEmployeeDetailVO.setAuthMethod(new Integer(userEmployeeDO.getAuthMethod()).intValue());
         userEmployeeDetailVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
 
-        if (userEmployeeDO.getCustomFieldValues() != null) {
-            List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+        if (userEmployeeDO.getCustomFieldValues() != null && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+            List<Integer> companyIds = new ArrayList<>(1);
+            companyIds.add(companyId);
+            List<HrEmployeeCustomFields> fieldsList = customFieldsDao.listCustomFieldByCompanyIdList(companyIds);
+            List<EmployeeOptionValue> employeeOptionValues;
+            if (fieldsList != null && fieldsList.size() > 0) {
+                List<Integer> fieldIdList = fieldsList
+                        .parallelStream()
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getOptionType() == OptionType.Select.getValue())
+                        .map(HrEmployeeCustomFields::getId)
+                        .collect(Collectors.toList());
+                employeeOptionValues = customOptionJooqDao.listByCustomIdList(fieldIdList);
+            } else {
+                employeeOptionValues = new ArrayList<>(0);
+            }
+
+            List<String> optionIdStrList = employeeOptionValues
+                    .stream()
+                    .map(employeeOptionValue -> employeeOptionValue.getId().toString())
+                    .collect(Collectors.toList());
+
+            List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues(), fieldsList, optionIdStrList);
             userEmployeeDetailVO.setCustomFieldValues(list);
         }
         // 查询微信信息
@@ -2182,7 +2202,14 @@ public class UserHrAccountService {
             queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
 
-            List<HrEmployeeCustomFields> fieldsList = customFieldsDao.listSystemCustomFieldByCompanyIdList(companyIds);
+            List<HrEmployeeCustomFields> customFieldList = customFieldsDao.listCustomFieldByCompanyIdList(companyIds);
+            List<HrEmployeeCustomFields> fieldsList = customFieldList
+                    .stream()
+                    .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(0)
+                            || hrEmployeeCustomFields.getFieldType().equals(1)
+                            || hrEmployeeCustomFields.getFieldType().equals(2)
+                    )
+                    .collect(Collectors.toList());
             List<EmployeeOptionValue> employeeOptionValues;
             if (fieldsList != null && fieldsList.size() > 0) {
                 List<Integer> fieldIdList = fieldsList
@@ -2194,6 +2221,11 @@ public class UserHrAccountService {
             } else {
                 employeeOptionValues = new ArrayList<>(0);
             }
+
+            List<String> optionIdStrList = employeeOptionValues
+                    .stream()
+                    .map(employeeOptionValue -> employeeOptionValue.getId().toString())
+                    .collect(Collectors.toList());
 
 
             // 查询公司信息
@@ -2220,7 +2252,7 @@ public class UserHrAccountService {
                 if (userEmployeeDO.getCustomFieldValues() != null) {
 
                     logger.info("UserHrAccountService packageEmployeeVOs userEmployeeDO.customFieldValues:{}", userEmployeeDO.getCustomFieldValues());
-                    List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues());
+                    List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues(), customFieldList, optionIdStrList);
                     logger.info("UserHrAccountService packageEmployeeVOs customFieldValues:{}", list);
                     userEmployeeVO.setCustomFieldValues(list);
 
