@@ -2203,6 +2203,7 @@ public class UserHrAccountService {
             List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
 
             List<HrEmployeeCustomFields> customFieldList = customFieldsDao.listCustomFieldByCompanyIdList(companyIds);
+            logger.info("UserHrAccountService packageEmployeeVOs customFieldList:{}", customFieldList);
             List<HrEmployeeCustomFields> fieldsList = customFieldList
                     .stream()
                     .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(0)
@@ -2226,7 +2227,7 @@ public class UserHrAccountService {
                     .stream()
                     .map(employeeOptionValue -> employeeOptionValue.getId().toString())
                     .collect(Collectors.toList());
-
+            logger.info("UserHrAccountService packageEmployeeVOs optionIdStrList:{}", optionIdStrList);
 
             // 查询公司信息
             Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
