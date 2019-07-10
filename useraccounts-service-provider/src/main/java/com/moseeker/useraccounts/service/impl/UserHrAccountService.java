@@ -1718,7 +1718,7 @@ public class UserHrAccountService {
                     .stream()
                     .map(employeeOptionValue -> employeeOptionValue.getId().toString())
                     .collect(Collectors.toList());
-            
+
             List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues(), fieldsList, optionIdStrList);
             userEmployeeDetailVO.setCustomFieldValues(list);
         }
