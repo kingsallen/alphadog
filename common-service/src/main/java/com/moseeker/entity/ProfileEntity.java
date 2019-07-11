@@ -182,6 +182,61 @@ public class ProfileEntity {
             completenessImpl.reCalculateProfileBasic(profileDB.getId());
             return profileDB.getId();
         } else {
+            profileRecord.getProfileRecord().setId(null);
+            if (profileRecord.getWorkexpRecords() != null) {
+                profileRecord.getWorkexpRecords().forEach(wrkexp -> wrkexp.setId(null));
+            }
+            if (profileRecord.getAttachmentRecords() != null) {
+                profileRecord.getAttachmentRecords()
+                        .forEach(profileAttachmentRecord -> profileAttachmentRecord.setId(null));
+            }
+            if (profileRecord.getAwardsRecords() != null) {
+                profileRecord.getAwardsRecords()
+                        .forEach(awardsRecord -> awardsRecord.setId(null));
+            }
+            if (profileRecord.getCredentialsRecords() != null) {
+                profileRecord.getCredentialsRecords()
+                        .forEach(profileCredentialsRecord -> profileCredentialsRecord.setId(null));
+            }
+            if (profileRecord.getEducationRecords() != null) {
+                profileRecord.getEducationRecords()
+                        .forEach(profileEducationRecord -> profileEducationRecord.setId(null));
+            }
+            if (profileRecord.getIntentionRecords() != null) {
+                profileRecord.getIntentionRecords()
+                        .forEach(intentionRecord -> {
+                            intentionRecord.setId(null);
+                            if (intentionRecord.getIndustries() != null) {
+                                intentionRecord.getIndustries()
+                                        .forEach(industry -> industry.setId(null));
+                            }
+                            if (intentionRecord.getPositions() != null) {
+                                intentionRecord.getPositions()
+                                        .forEach(position -> position.setId(null));
+                            }
+                            if (intentionRecord.getCities() != null) {
+                                intentionRecord.getCities()
+                                        .forEach(city -> city.setId(null));
+                            }
+                        });
+            }
+            if (profileRecord.getLanguageRecords() != null) {
+                profileRecord.getLanguageRecords()
+                        .forEach(language -> language.setId(null));
+            }
+            if (profileRecord.getProjectExps() != null) {
+                profileRecord.getProjectExps()
+                        .forEach(profileProjectexpRecord -> profileProjectexpRecord.setId(null));
+            }
+            if (profileRecord.getSkillRecords() != null) {
+                profileRecord.getSkillRecords()
+                        .forEach(skill -> skill.setId(null));
+            }
+            if (profileRecord.getWorksRecords() != null) {
+                profileRecord.getWorksRecords()
+                        .forEach(works -> works.setId(null));
+            }
+
             return storeProfile(profileRecord);
         }
     }
