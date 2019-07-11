@@ -8,6 +8,9 @@ namespace java com.moseeker.thrift.gen.application.service
 */
 service JobApplicationServices {
 
+
+    bool healthCheck();
+
     // 添加申请
     common_struct.Response postApplication(1: application_struct.JobApplication application);
     //添加申请
