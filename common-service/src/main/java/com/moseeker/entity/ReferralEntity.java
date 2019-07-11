@@ -306,7 +306,6 @@ public class ReferralEntity {
             logger.info("ReferralEntity claimReferralCard");
         }
 
-
         // 更新简历中的userId，计算简历完整度
         updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
         logger.info("ReferralEntity claimReferralCard updateProfileUserIdAndCompleteness");
@@ -575,8 +574,8 @@ public class ReferralEntity {
     private void updateProfileUserIdAndCompleteness(int userId, Integer referenceId) {
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
         if (profileProfileRecord == null) {
-
             ProfileRecord profileRecord = profileEntity.fetchByUserId(referenceId);
+            profileRecord.getProfileRecord().setUserId(userId);
             profileEntity.mergeProfile(profileRecord, userId);
 
             /*ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
