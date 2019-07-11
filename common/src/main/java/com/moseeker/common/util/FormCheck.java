@@ -12,7 +12,7 @@ public class FormCheck {
 	private static String GLOBAL_MOBILE_EXP = "^\\d{6,15}$";
 	private static String EMAIL_EXP = "^([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
 	private static String URL_EXP = "[a-zA-z]+://[^\\s]*";
-	private static String EMPLOYEE_NAME = "^[\u4e00-\u9fa5a-zA-Z.·•\\s]{2,100}$";
+	private static String EMPLOYEE_NAME = "^[\u4e00-\u9fa5a-zA-Z.·•\\s\\d]{2,100}$";
 
 	public static String getMobileExp() {
 		return GLOBAL_MOBILE_EXP;

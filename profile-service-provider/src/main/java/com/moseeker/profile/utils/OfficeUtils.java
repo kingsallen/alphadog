@@ -50,11 +50,11 @@ public class OfficeUtils {
     private static DefaultDocumentFormatRegistry DOC_FMT_REGISTRY = new DefaultDocumentFormatRegistry();
     static{
         DOC_FMT_REGISTRY.addDocumentFormat(DOCX_FMT);
-        /*try {
+        try {
             checkAndStart();
         } catch (IOException|InterruptedException e) {
             logger.error("OfficeUtils 初始化启动libreoffice服务失败",e);
-        }*/
+        }
     }
 
     /**
@@ -66,48 +66,78 @@ public class OfficeUtils {
      */
     public static int Word2Pdf(String sourceFileName, String targetFileName) {
 
-        //若未获取到许可证书，返回
-        if (!isLicense()) {
-            logger.info("toPDF Word2Pdf:isLicense false");
-            return 0;
-        }
+        logger.error("Word2Pdf({},{}) ",sourceFileName,targetFileName );
         File targetFile = new File(targetFileName);
         try {
+            if(!convertThroughAsposeWord(sourceFileName,targetFileName)){
+                logger.info("使用备用方案生成pdf文件");
+                //采用备用方案
+                if(targetFile.exists()){
+                    targetFile.delete();
+                }
+                convertThroughUNO(new File(sourceFileName),targetFile);
+                /*
+                //只传入文件夹路径
+                String outdir = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
+                String command = COMMAND.replace("$outdir$",outdir).replace("$src$", sourceFileName);
+                logger.info("[{}]The word2pdf command is {}",Thread.currentThread().getName(),command);
+                //执行生成命令
+                // 多线程调用libreoffice有可能存在部分word没有转换
+                //synchronized (OfficeUtils.class){
+                    String output = executeCommand(command);
+                    logger.info("The pdf profile has been created at {}",output);
+                //}
+
+                */
+            }
+        }catch(Exception e){
+            logger.error(" Word2Pdf error ",e );
+            return 0;
+        }finally {
+            boolean exist = new File(targetFileName).exists();
+            logger.info("file {} {} {}",targetFileName,(exist?" exists":"doesn't exist)"));
+            return exist ? 1:0 ;
+        }
+    }
+
+    /**
+     * 使用aspose word 转pdf
+     *
+     * @param sourceFileName 源文件路径名称
+     * @param targetFileName 目标文件路径名称
+     * @throws Exception
+     */
+    public static boolean convertThroughAsposeWord(String sourceFileName, String targetFileName) {
+        File targetFile = new File(targetFileName);
+        try {
+            //若未获取到许可证书，返回
+            if (!isLicense()) {
+                logger.info("toPDF Word2Pdf:isLicense false");
+                return false;
+            }
+
             FileOutputStream fos = new FileOutputStream(targetFile);
             Document document = new Document(sourceFileName);
-
             document.save(fos, SaveFormat.PDF);
             fos.close();
 
             //获取pdf的内容
             String pdfContent = getTextFromPdf(targetFileName);
 
-            boolean errorCompare = new File(sourceFileName).length()>new File(targetFileName).length();
-            logger.info("pdfContent.contains(ERROR_PDF) {}",pdfContent.contains(ERROR_PDF));
-            logger.info("com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) {}",com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent));
-            logger.info("errorCompare {}",errorCompare);
+            boolean errorCompare = new File(sourceFileName).length() > new File(targetFileName).length();
+            logger.info("pdfContent.contains(ERROR_PDF) {}", pdfContent.contains(ERROR_PDF));
+            logger.info("com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) {}", com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent));
+            logger.info("errorCompare {}", errorCompare);
             //判断生成的pdf内容是否包含错误内容
-            if(pdfContent.contains(ERROR_PDF)|| com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare){
-
-                logger.info("使用备用方案生成pdf文件g");
-                //采用备用方案
-                File errorPdf = new File(targetFileName);
-                if(errorPdf.exists()){
-                    errorPdf.delete();
-                }
-                //只传入文件夹路径
-                targetFileName = targetFileName.substring(0,targetFileName.lastIndexOf("/"));
-                String command = String.format(COMMAND,targetFileName, sourceFileName);
-                logger.info("The word2pdf command is {}",command);
-                //执行生成命令
-                String output = executeCommand(command);
-                logger.info("The pdf profile has been created at {}",output);
+            if (pdfContent.contains(ERROR_PDF) || com.moseeker.common.util.StringUtils.isNullOrEmpty(pdfContent) || errorCompare) {
+                return false;
             }
+            return targetFile.exists();
         }catch (Exception e){
-            logger.error(e.getMessage());
-            return 0;
+            logger.error(" convertThroughAsposeWord({},{}) error ",sourceFileName,targetFileName );
+            return false ;
         }
-        return 1;
+
     }
 
     /**
@@ -413,7 +443,8 @@ public class OfficeUtils {
         new File(dir).listFiles((f)->{if(f.getName().endsWith(".pdf")) f.delete();return true ;});
         new File(dir).listFiles((f)->{
             if(f.getName().endsWith(".docx")){
-                pool.submit(()->convertThroughUNO(f, new File(f.getAbsolutePath().replace(".docx",".pdf"))));
+                //pool.submit(()->convertThroughUNO(f, new File(f.getAbsolutePath().replace(".docx",".pdf"))));
+                pool.submit(()->Word2Pdf(f.getAbsolutePath(), f.getAbsolutePath().replace(".docx",".pdf")));
             }
             return true ;
         });

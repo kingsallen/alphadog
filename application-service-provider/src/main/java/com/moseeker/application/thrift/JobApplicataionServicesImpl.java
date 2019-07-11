@@ -47,6 +47,13 @@ public class JobApplicataionServicesImpl implements Iface {
     private JobApplicataionService service;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+
+    @Override
+    public boolean healthCheck() throws TException {
+        return true;
+    }
+
     /**
      * 创建申请
      *
