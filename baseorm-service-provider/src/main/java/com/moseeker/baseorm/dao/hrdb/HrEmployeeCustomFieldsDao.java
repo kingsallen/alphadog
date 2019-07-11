@@ -76,6 +76,27 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
         return convertToPojo(result);
     }
 
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> listSystemCustomFieldByCompanyIdList(List<Integer> companyIds) {
+        Result<HrEmployeeCustomFieldsRecord> result = create
+                .selectFrom(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
+                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.in(companyIds))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE.in(new ArrayList<Integer>(){{add(0); add(1); add(2);}}))
+                .fetch();
+        return convertToPojo(result);
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> listCustomFieldByCompanyIdList(List<Integer> companyIdList) {
+        Result<HrEmployeeCustomFieldsRecord> result = create
+                .selectFrom(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
+                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.in(companyIdList))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetch();
+        return convertToPojo(result);
+    }
+
     private List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> convertToPojo(List<HrEmployeeCustomFieldsRecord> result) {
         if (result != null && result.size() > 0) {
             return result.parallelStream()
@@ -87,16 +108,5 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
         } else {
             return new ArrayList<>(0);
         }
-    }
-
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> listSystemCustomFieldByCompanyIdList(List<Integer> companyIds) {
-        Result<HrEmployeeCustomFieldsRecord> result = create
-                .selectFrom(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
-                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.in(companyIds))
-                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
-                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
-                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE.in(new ArrayList<Integer>(){{add(0); add(1); add(2);}}))
-                .fetch();
-        return convertToPojo(result);
     }
 }

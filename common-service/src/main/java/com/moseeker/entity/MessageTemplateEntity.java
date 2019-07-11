@@ -113,6 +113,8 @@ public class MessageTemplateEntity {
         if(url.contains("{hr_id}")){
             url=url.replace("{hr_id}",company.getHraccountId()+"");
         }
+        url = handlerURL(url, params.getType());
+
         Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName(), company.getAbbreviation(),params.getAiTemplateType());
         log.info("元夕飞花令 MessageTemplateEntity MessageTemplateNoticeStruct colMap:{}", JSONObject.toJSONString(colMap));
         if(colMap==null||colMap.isEmpty()){
@@ -123,6 +125,23 @@ public class MessageTemplateEntity {
         this.handlerRecomLog(params,MDString,1);
         log.info("元夕飞花令 MessageTemplateEntity MessageTemplateNoticeStruct messageTemplateNoticeStruct:{}", messageTemplateNoticeStruct);
         return messageTemplateNoticeStruct;
+    }
+
+    /**
+     * 根据类型添加跳转链接中的srouce字段
+     * @param url
+     * @param type
+     * @return
+     */
+    private String handlerURL(String url, int type) {
+        switch (type) {
+            case 1: url += "&source=3";break;
+            case 2: url += "&source=2";break;
+            case 3: url += "&source=4";break;
+            case 4: url += "&source=1";break;
+            default:
+        }
+        return url;
     }
 
 

@@ -613,8 +613,8 @@ public class ReferralEntity {
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(userId);
             }
             List<Integer> employeeIdList = new ArrayList<>();
-            if(StringUtils.isEmptyList(logs)){
-                employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+            if(!StringUtils.isEmptyList(logs)){
+                employeeIdList = logs.stream().map(ReferralLog::getEmployeeId).collect(Collectors.toList());
             }
             long employeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- positionTime);

@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileSaveResult;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -530,15 +531,18 @@ public class WholeProfileService {
         logger.info("开始 importCV");
         int id=0;
         try {
-            id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+            ProfileSaveResult result = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                     profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                     profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                     profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                     profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                     userRecord, oldProfile);
+            if (result.getProfileRecord() != null && result.getProfileRecord().getId() != null && result.getProfileRecord().getId() > 0) {
+                id = result.getProfileRecord().getId();
+            }
         }catch (Exception e){
           logger.error(e.getMessage(),e);
-        };
+        }
         if (id > 0) {
             logger.info("importCV 添加成功");
             try {
@@ -595,16 +599,16 @@ public class WholeProfileService {
         }
         ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
-        int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+        ProfileSaveResult result = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userRecord, null);
-        if (id > 0) {
+        if (result.getProfileRecord() != null && result.getProfileRecord().getId() != null && result.getProfileRecord().getId() > 0) {
 
             try {
-                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id,
+                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(result.getProfileRecord().getId(),
                         userRecord.getId().intValue(), (byte) 0, profilePojo.getImportRecords());
                 profileUtils.logForStatistics("importCV", new JSONObject() {{
                     this.put("profile", profile);
@@ -616,7 +620,7 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            return id;
+            return result.getProfileRecord().getId();
         } else {
             return 0;
         }
