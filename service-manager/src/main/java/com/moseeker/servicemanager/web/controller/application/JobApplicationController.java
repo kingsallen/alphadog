@@ -47,6 +47,17 @@ public class JobApplicationController {
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
+    @RequestMapping(value = "/application/health_check", method = RequestMethod.GET)
+    @ResponseBody
+    public String healthCheck(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            boolean result = applicationService.healthCheck();
+            return ResponseLogNotification.successJson(request,result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     /**
      * 用户申请
      * <p>
