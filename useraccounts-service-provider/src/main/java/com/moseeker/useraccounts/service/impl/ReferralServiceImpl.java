@@ -29,6 +29,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -151,7 +152,6 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private SensorSend sensorSend;
-
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

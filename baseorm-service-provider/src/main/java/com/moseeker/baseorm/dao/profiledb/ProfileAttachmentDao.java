@@ -9,6 +9,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,11 +89,14 @@ public class ProfileAttachmentDao extends JooqCrudImpl<ProfileAttachmentDO, Prof
                 .execute();
     }
 
-    public ProfileAttachmentRecord fetchByProfileId(int profileId) {
-        return create
-                .selectFrom(ProfileAttachment.PROFILE_ATTACHMENT)
-                .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.eq(profileId))
-                .limit(1)
-                .fetchOne();
+    public List<ProfileAttachmentRecord> fetchByProfileId(Integer profileId) {
+        if (profileId != null && profileId > 0) {
+            return create
+                    .selectFrom(ProfileAttachment.PROFILE_ATTACHMENT)
+                    .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.eq(profileId))
+                    .fetch();
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 }

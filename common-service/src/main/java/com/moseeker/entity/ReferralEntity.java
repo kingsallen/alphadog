@@ -39,16 +39,20 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
+import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.EmployeeException;
+import com.moseeker.entity.pojo.profile.ProfileRecord;
 import com.moseeker.entity.pojos.*;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -57,23 +61,24 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -167,6 +172,9 @@ public class ReferralEntity {
     @Autowired
     private UserUserDao userDao;
 
+    @Autowired
+    private  ProfileEntity profileEntity;
+
     //redis的客户端
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -174,10 +182,10 @@ public class ReferralEntity {
     @Autowired
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 
-
-
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPool threadPool = ThreadPool.Instance;
+
+    private ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     /**
      * 计算给定时间内的员工内推带来的转发次数
@@ -281,21 +289,21 @@ public class ReferralEntity {
         // 更新申请记录的申请人
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
+
         logger.info("ReferralEntity claimReferralCard userUserDO:{}", JSONObject.toJSONString(application));
         logger.info("ReferralEntity claimReferralCard application:{}", JSONObject.toJSONString(userUserDO));
+        ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
         if (application != null) {
+            JobApplicationRecord record = new JobApplicationRecord();
+            BeanUtils.copyProperties(application, record);
+            record.setApplierId(userUserDO.getId());
+            record.setApplierName(userUserDO.getName());
+            record.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()));
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            record.setUpdateTime(updateTime);
+            resultVO = applicationDao.addIfNotExists(record);
 
             logger.info("ReferralEntity claimReferralCard");
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            applicationDao.updateIfNotExist(application.getId(), userUserDO.getId(), userUserDO.getName(),
-                    ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()), updateTime,
-                    application.getPositionId());
-            logger.info("ReferralEntity claimReferralCard updateIfNotExist");
-
-            logger.info("ReferralEntity claimReferralCard before removeApplication");
-            searchengineEntity.removeApplication(application.getApplierId(), application.getId(),
-                    application.getApplierId(), application.getApplierName(), updateTime);
-            logger.info("ReferralEntity claimReferralCard removeApplication");
         }
 
 
@@ -318,6 +326,9 @@ public class ReferralEntity {
         }
         if (postUserId > 0) {
             recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
+        }
+        if (resultVO.isCreate()) {
+            updateApplicationEsIndex(userUserDO.getId());
         }
         logger.info("ReferralEntity claimReferralCard end!");
     }
@@ -564,12 +575,16 @@ public class ReferralEntity {
     private void updateProfileUserIdAndCompleteness(int userId, Integer referenceId) {
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
         if (profileProfileRecord == null) {
-            ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
+
+            ProfileRecord profileRecord = profileEntity.fetchByUserId(referenceId);
+            profileEntity.mergeProfile(profileRecord, userId);
+
+            /*ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
             if (record != null) {
                 if (profileDao.changUserId(record, userId) > 0) {
                     completeness.reCalculateProfileCompleteness(record.getId());
                 }
-            }
+            }*/
         }
     }
 
@@ -1110,4 +1125,12 @@ public class ReferralEntity {
         }
     }
 
+    private void updateApplicationEsIndex(int userId){
+        scheduledThread.startTast(()->{
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            logger.info("====================redis==============application更新=============");
+            logger.info("================userid={}=================",userId);
+        },3000);
+    }
 }
