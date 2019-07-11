@@ -609,13 +609,13 @@ public class BatchValidate {
 
                             return optionValue.isPresent();
                         } else {
-                            return false;
+                            return true;
                         }
                     })
                     .findAny();
             return optional.isPresent();
         } else {
-            return false;
+            return true;
         }
     }
 
