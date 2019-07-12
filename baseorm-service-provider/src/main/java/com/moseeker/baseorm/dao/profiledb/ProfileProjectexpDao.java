@@ -9,6 +9,7 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,5 +57,16 @@ public class ProfileProjectexpDao extends JooqCrudImpl<ProfileProjectexpDO, Prof
                 .execute();
 
         return count;
+    }
+
+    public List<ProfileProjectexpRecord> fetchByProfileId(Integer profileId) {
+        if (profileId != null && profileId > 0) {
+            return create
+                    .selectFrom(ProfileProjectexp.PROFILE_PROJECTEXP)
+                    .where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.eq(profileId))
+                    .fetch();
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 }

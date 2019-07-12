@@ -170,4 +170,15 @@ public class ProfileWorkexpDao extends JooqCrudImpl<ProfileWorkexpDO, ProfileWor
 
         return count;
     }
+
+    public List<ProfileWorkexpRecord> fetchByProfileId(Integer profileId) {
+        if (profileId != null && profileId > 0) {
+            return create
+                    .selectFrom(ProfileWorkexp.PROFILE_WORKEXP)
+                    .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.eq(profileId))
+                    .fetch();
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
 }
