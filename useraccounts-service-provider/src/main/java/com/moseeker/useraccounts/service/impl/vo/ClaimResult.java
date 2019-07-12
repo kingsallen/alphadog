@@ -10,7 +10,7 @@ public class ClaimResult {
 
     private Integer referral_id;
     private Integer position_id;
-    private Integer app_id;
+    private Integer apply_id;
     private String title;
     private Boolean success;
     private String errmsg;
@@ -55,12 +55,12 @@ public class ClaimResult {
         this.success = success;
     }
 
-    public Integer getApp_id() {
-        return app_id;
+    public Integer getApply_id() {
+        return apply_id;
     }
 
-    public void setApp_id(Integer app_id) {
-        this.app_id = app_id;
+    public void setApply_id(Integer apply_id) {
+        this.apply_id = apply_id;
     }
 }
 

@@ -1316,7 +1316,7 @@ public class UseraccountsService {
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
                     int appid = claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
-                    claimResult.setApp_id(appid);
+                    claimResult.setApply_id(appid);
                 }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
