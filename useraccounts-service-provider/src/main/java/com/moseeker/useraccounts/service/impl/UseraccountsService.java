@@ -1315,7 +1315,8 @@ public class UseraccountsService {
                 claimResult.setPosition_id(referralLog.getPositionId());
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
-                    claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
+                    int appid = claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
+                    claimResult.setApp_id(appid);
                 }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
@@ -1392,7 +1393,7 @@ public class UseraccountsService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    protected void claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
+    protected int claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
 
         logger.info("UseraccountsService claimReferral");
 
@@ -1440,12 +1441,13 @@ public class UseraccountsService {
             userUserRecord.setMobile(Long.valueOf(mobile.trim()));
             userdao.updateRecord(userUserRecord);
         }
-        referralEntity.claimReferralCard(userUserDO, referralLog);
+        int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
         logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
 
         kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
         logger.info("UseraccountsService claimReferral after sendUserClaimToKafka!");
+        return appid;
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {

@@ -276,7 +276,7 @@ public class ReferralEntity {
     }
 
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
-    public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
+    public int claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
         logger.info("ReferralEntity claimReferralCard");
 
         logger.info("ReferralEntity claimReferralCard userUserDO:{}, referralLog:{}",
@@ -330,6 +330,7 @@ public class ReferralEntity {
             updateApplicationEsIndex(userUserDO.getId());
         }
         logger.info("ReferralEntity claimReferralCard end!");
+        return resultVO.getApplicationId();
     }
 
     public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
