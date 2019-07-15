@@ -316,5 +316,6 @@ struct MobotReferralResult{
     3: optional string title,
     4: optional string reason,
     5: optional i32 errorCode,
-    6: optional bool success
+    6: optional bool success,
+    7: optional double reward
 }

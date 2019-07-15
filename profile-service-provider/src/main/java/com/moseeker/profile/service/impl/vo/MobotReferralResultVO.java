@@ -14,6 +14,15 @@ public class MobotReferralResultVO {
     private String reason;
     private int errorCode ;
     private Boolean success;
+    private double reward;
+
+    public double getReward() {
+        return reward;
+    }
+
+    public void setReward(double reward) {
+        this.reward = reward;
+    }
 
     public Integer getId() {
         return id;

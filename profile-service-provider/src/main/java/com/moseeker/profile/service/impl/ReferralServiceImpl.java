@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -36,6 +37,7 @@ import com.moseeker.profile.service.impl.vo.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
@@ -556,6 +558,13 @@ public class ReferralServiceImpl implements ReferralService {
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        //获取积分
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
+        HrPointsConfDO confDO = employeeEntity.fetchByCompanyId(employeeDO.getCompanyId());
+        referralResultVOS = referralResultVOS.stream().map(resultVO -> {
+            resultVO.setReward(confDO.getReward());
+            return resultVO;
+        }).collect(Collectors.toList());
         return referralResultVOS;
     }
 
@@ -995,6 +1004,7 @@ public class ReferralServiceImpl implements ReferralService {
     private ProfileParseUtil profileParseUtil;
     private PositionEntity positionEntity;
     private ReferralEntity referralEntity;
+    private HrPointsConfDao hrPointsConfDao;
 
     private Environment env;
 
