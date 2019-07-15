@@ -535,6 +535,27 @@ public class ReferralServiceImpl implements ReferralService {
         return referralIds.get(0);
     }
 
+    @Override
+    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,
+                                                               List<String> referralReasons, List<Integer> positions,
+                                                               byte relationship, String referralText,
+                                                               byte referralType) throws ProfileException, BIZException {
+        logger.info("Multi positions recommendation start {}",positions);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildPosition(positions)
+                .buildRecomReason(relationship,referralText,referralType)
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
+        checkReferralResult(referralResultVOS);
+        List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
+        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        return referralResultVOS;
+    }
+
     /**
      * 员工提交候选人关键信息
      * @param employeeId 员工编号
