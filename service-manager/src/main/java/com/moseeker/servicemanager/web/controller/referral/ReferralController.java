@@ -148,22 +148,22 @@ public class ReferralController {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
-        validateUtil.addRequiredValidate("姓名", referralForm.getName());
-        validateUtil.addRequiredValidate("推荐关系", referralForm.getRelationship());
+        validateUtil.addRequiredValidate("姓名", referralForm.getRealname());
+        validateUtil.addRequiredValidate("推荐关系", referralForm.getRelation());
         validateUtil.addIntTypeValidate("员工", referralForm.getEmployeeId(), 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
-        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) &&
-                com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getRecomTags()) &&
+                com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomText())){
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
-                    referralForm.getName(),referralForm.getMobile(), referralForm.getReferralReasons(),
-                        referralForm.getPositions(),(byte)referralForm.getRelationship(),
-                            referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
+                    referralForm.getRealname(),referralForm.getMobile(), referralForm.getRecomTags(),
+                        referralForm.getIds(),(byte)referralForm.getRelation(),
+                            referralForm.getRecomText(),(byte) referralForm.getReferralType());
             return Result.success(results).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
