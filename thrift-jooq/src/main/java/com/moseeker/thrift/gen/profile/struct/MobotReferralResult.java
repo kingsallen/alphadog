@@ -17,6 +17,7 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
   private static final org.apache.thrift.protocol.TField REASON_FIELD_DESC = new org.apache.thrift.protocol.TField("reason", org.apache.thrift.protocol.TType.STRING, (short)4);
   private static final org.apache.thrift.protocol.TField ERROR_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("errorCode", org.apache.thrift.protocol.TType.I32, (short)5);
   private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.BOOL, (short)6);
+  private static final org.apache.thrift.protocol.TField REWARD_FIELD_DESC = new org.apache.thrift.protocol.TField("reward", org.apache.thrift.protocol.TType.DOUBLE, (short)7);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new MobotReferralResultStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new MobotReferralResultTupleSchemeFactory();
@@ -27,6 +28,7 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
   public String reason; // optional
   public int errorCode; // optional
   public boolean success; // optional
+  public double reward; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -35,7 +37,8 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
     TITLE((short)3, "title"),
     REASON((short)4, "reason"),
     ERROR_CODE((short)5, "errorCode"),
-    SUCCESS((short)6, "success");
+    SUCCESS((short)6, "success"),
+    REWARD((short)7, "reward");
 
     private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
@@ -62,6 +65,8 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
           return ERROR_CODE;
         case 6: // SUCCESS
           return SUCCESS;
+        case 7: // REWARD
+          return REWARD;
         default:
           return null;
       }
@@ -106,8 +111,9 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
   private static final int __POSITION_ID_ISSET_ID = 1;
   private static final int __ERRORCODE_ISSET_ID = 2;
   private static final int __SUCCESS_ISSET_ID = 3;
+  private static final int __REWARD_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.POSITION_ID,_Fields.TITLE,_Fields.REASON,_Fields.ERROR_CODE,_Fields.SUCCESS};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.POSITION_ID,_Fields.TITLE,_Fields.REASON,_Fields.ERROR_CODE,_Fields.SUCCESS,_Fields.REWARD};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -123,6 +129,8 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+    tmpMap.put(_Fields.REWARD, new org.apache.thrift.meta_data.FieldMetaData("reward", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(MobotReferralResult.class, metaDataMap);
   }
@@ -145,6 +153,7 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
     }
     this.errorCode = other.errorCode;
     this.success = other.success;
+    this.reward = other.reward;
   }
 
   public MobotReferralResult deepCopy() {
@@ -163,6 +172,8 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
     this.errorCode = 0;
     setSuccessIsSet(false);
     this.success = false;
+    setRewardIsSet(false);
+    this.reward = 0.0;
   }
 
   public int getId() {
@@ -305,6 +316,29 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
   }
 
+  public double getReward() {
+    return this.reward;
+  }
+
+  public MobotReferralResult setReward(double reward) {
+    this.reward = reward;
+    setRewardIsSet(true);
+    return this;
+  }
+
+  public void unsetReward() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __REWARD_ISSET_ID);
+  }
+
+  /** Returns true if field reward is set (has been assigned a value) and false otherwise */
+  public boolean isSetReward() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __REWARD_ISSET_ID);
+  }
+
+  public void setRewardIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __REWARD_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case ID:
@@ -355,6 +389,14 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
       }
       break;
 
+    case REWARD:
+      if (value == null) {
+        unsetReward();
+      } else {
+        setReward((Double)value);
+      }
+      break;
+
     }
   }
 
@@ -377,6 +419,9 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
 
     case SUCCESS:
       return isSuccess();
+
+    case REWARD:
+      return getReward();
 
     }
     throw new IllegalStateException();
@@ -401,6 +446,8 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
       return isSetErrorCode();
     case SUCCESS:
       return isSetSuccess();
+    case REWARD:
+      return isSetReward();
     }
     throw new IllegalStateException();
   }
@@ -474,6 +521,15 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
         return false;
     }
 
+    boolean this_present_reward = true && this.isSetReward();
+    boolean that_present_reward = true && that.isSetReward();
+    if (this_present_reward || that_present_reward) {
+      if (!(this_present_reward && that_present_reward))
+        return false;
+      if (this.reward != that.reward)
+        return false;
+    }
+
     return true;
   }
 
@@ -504,6 +560,10 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
     hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
     if (isSetSuccess())
       hashCode = hashCode * 8191 + ((success) ? 131071 : 524287);
+
+    hashCode = hashCode * 8191 + ((isSetReward()) ? 131071 : 524287);
+    if (isSetReward())
+      hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(reward);
 
     return hashCode;
   }
@@ -576,6 +636,16 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetReward()).compareTo(other.isSetReward());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetReward()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.reward, other.reward);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -637,6 +707,12 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
       if (!first) sb.append(", ");
       sb.append("success:");
       sb.append(this.success);
+      first = false;
+    }
+    if (isSetReward()) {
+      if (!first) sb.append(", ");
+      sb.append("reward:");
+      sb.append(this.reward);
       first = false;
     }
     sb.append(")");
@@ -732,6 +808,14 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 7: // REWARD
+            if (schemeField.type == org.apache.thrift.protocol.TType.DOUBLE) {
+              struct.reward = iprot.readDouble();
+              struct.setRewardIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -781,6 +865,11 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
         oprot.writeBool(struct.success);
         oprot.writeFieldEnd();
       }
+      if (struct.isSetReward()) {
+        oprot.writeFieldBegin(REWARD_FIELD_DESC);
+        oprot.writeDouble(struct.reward);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -817,7 +906,10 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
       if (struct.isSetSuccess()) {
         optionals.set(5);
       }
-      oprot.writeBitSet(optionals, 6);
+      if (struct.isSetReward()) {
+        optionals.set(6);
+      }
+      oprot.writeBitSet(optionals, 7);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
@@ -836,12 +928,15 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
       if (struct.isSetSuccess()) {
         oprot.writeBool(struct.success);
       }
+      if (struct.isSetReward()) {
+        oprot.writeDouble(struct.reward);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, MobotReferralResult struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(6);
+      java.util.BitSet incoming = iprot.readBitSet(7);
       if (incoming.get(0)) {
         struct.id = iprot.readI32();
         struct.setIdIsSet(true);
@@ -865,6 +960,10 @@ public class MobotReferralResult implements org.apache.thrift.TBase<MobotReferra
       if (incoming.get(5)) {
         struct.success = iprot.readBool();
         struct.setSuccessIsSet(true);
+      }
+      if (incoming.get(6)) {
+        struct.reward = iprot.readDouble();
+        struct.setRewardIsSet(true);
       }
     }
   }

@@ -35,4 +35,5 @@ public class HrPointsConfDao extends JooqCrudImpl<HrPointsConfDO, HrPointsConfRe
                 .limit(1)
                 .fetchOne();
     }
+
 }

@@ -268,6 +268,8 @@ public class EmployeeEntity {
     }
 
 
+
+
     /**
      * 增加员工积点
      *
@@ -1740,6 +1742,11 @@ public class EmployeeEntity {
         } else {
             return 0;
         }
+    }
+
+    public HrPointsConfDO fetchByCompanyId(Integer companyId){
+        Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId);
+        return hrPointsConfDao.getData(query.buildQuery());
     }
 }
 
