@@ -11,13 +11,13 @@ public class ReferralsForm {
 
     private int employeeId;
     private int appid;
-    private String name;
+    private String realname;
     private String mobile;
-    private List<Integer> positions;
+    private List<Integer> ids;
     private int referralType;
-    private List<String> referralReasons;
-    private int relationship;
-    private String recomReasonText;
+    private List<String> recomTags;
+    private int relation;
+    private String recomText;
     private String fileName;
 
     public int getEmployeeId() {
@@ -36,12 +36,12 @@ public class ReferralsForm {
         this.appid = appid;
     }
 
-    public String getName() {
-        return name;
+    public String getRealname() {
+        return realname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRealname(String realname) {
+        this.realname = realname;
     }
 
     public String getMobile() {
@@ -52,12 +52,12 @@ public class ReferralsForm {
         this.mobile = mobile;
     }
 
-    public List<Integer> getPositions() {
-        return positions;
+    public List<Integer> getIds() {
+        return ids;
     }
 
-    public void setPositions(List<Integer> positions) {
-        this.positions = positions;
+    public void setIds(List<Integer> ids) {
+        this.ids = ids;
     }
 
     public int getReferralType() {
@@ -68,12 +68,28 @@ public class ReferralsForm {
         this.referralType = referralType;
     }
 
-    public List<String> getReferralReasons() {
-        return referralReasons;
+    public List<String> getRecomTags() {
+        return recomTags;
     }
 
-    public void setReferralReasons(List<String> referralReasons) {
-        this.referralReasons = referralReasons;
+    public void setRecomTags(List<String> recomTags) {
+        this.recomTags = recomTags;
+    }
+
+    public int getRelation() {
+        return relation;
+    }
+
+    public void setRelation(int relation) {
+        this.relation = relation;
+    }
+
+    public String getRecomText() {
+        return recomText;
+    }
+
+    public void setRecomText(String recomText) {
+        this.recomText = recomText;
     }
 
     public String getFileName() {
@@ -82,22 +98,6 @@ public class ReferralsForm {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-    public int getRelationship() {
-        return relationship;
-    }
-
-    public void setRelationship(int relationship) {
-        this.relationship = relationship;
-    }
-
-    public String getRecomReasonText() {
-        return recomReasonText;
-    }
-
-    public void setRecomReasonText(String recomReasonText) {
-        this.recomReasonText = recomReasonText;
     }
 }
 
