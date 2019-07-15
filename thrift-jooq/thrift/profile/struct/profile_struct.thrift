@@ -309,3 +309,12 @@ struct ReferralUploadFiles{
     9: optional string update_time,
     10: optional i32 status
 }
+
+struct MobotReferralResult{
+    1: optional i32 id,
+    2: optional i32 position_id,
+    3: optional string title,
+    4: optional string reason,
+    5: optional i32 errorCode,
+    6: optional bool success
+}

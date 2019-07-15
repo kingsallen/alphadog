@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
@@ -45,6 +46,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -58,6 +60,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -533,6 +536,27 @@ public class ReferralServiceImpl implements ReferralService {
             throw CommonException.PROGRAM_EXCEPTION;
         }
         return referralIds.get(0);
+    }
+
+    @Override
+    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,
+                                                               List<String> referralReasons, List<Integer> positions,
+                                                               byte relationship, String referralText,
+                                                               byte referralType) throws ProfileException, BIZException {
+        logger.info("Multi positions recommendation start {}",positions);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildPosition(positions)
+                .buildRecomReason(relationship,referralText,referralType)
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
+        checkReferralResult(referralResultVOS);
+        List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
+        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        return referralResultVOS;
     }
 
     /**

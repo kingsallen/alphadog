@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -127,6 +128,42 @@ public class ReferralController {
                     referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
                     (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
             return Result.success(referralId).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工推荐简历(多职位)
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/referrals", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfiles(@RequestBody ReferralsForm referralForm) throws Exception {
+
+        logger.info("ReferralController referralProfile");
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", referralForm.getName());
+        validateUtil.addRequiredValidate("推荐关系", referralForm.getRelationship());
+        validateUtil.addIntTypeValidate("员工", referralForm.getEmployeeId(), 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) &&
+                com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
+                    referralForm.getName(),referralForm.getMobile(), referralForm.getReferralReasons(),
+                        referralForm.getPositions(),(byte)referralForm.getRelationship(),
+                            referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
+            return Result.success(results).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
