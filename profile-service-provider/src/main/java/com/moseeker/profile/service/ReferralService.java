@@ -6,6 +6,7 @@ import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -74,7 +75,7 @@ public interface ReferralService {
      * @throws ProfileException 业务异常
      */
     List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, List<Integer> positions,
-                                                        byte relationship, String referralText, byte referralType)throws ProfileException, BIZException;
+                                                      byte relationship, String referralText, byte referralType)throws ProfileException, BIZException;
 
     /**
      * 员工提交候选人关键信息
