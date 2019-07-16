@@ -228,7 +228,7 @@ public class EmployeeEntity {
     // 转发点击操作 前置
     @Transactional
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
-                               int applicationId) throws Exception {
+                               int applicationId) throws EmployeeException {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
@@ -361,32 +361,26 @@ public class EmployeeEntity {
     }
 
     @Transactional
-    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws EmployeeException {
         // 获取积分点数
         if (companyId == 0 || templateId == 0) {
             throw EmployeeException.PROGRAM_PARAM_NOTEXIST;
         } else {
-            int award;
+            int award = 0;
             int awardConfigId = 0;
             Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", templateId);
             HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
             if (hrPointsConfDO != null) {
-                if (hrPointsConfDO.getReward() == 0) {
-                    throw new Exception("添加积分点数不能为0");
-                } else {
-                    award = (int) hrPointsConfDO.getReward();
-                    reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
-                    awardConfigId = hrPointsConfDO.getId();
-                }
+                award = (int) hrPointsConfDO.getReward();
+                reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
+                awardConfigId = hrPointsConfDO.getId();
             } else {
                 query.clear();
                 query.where("id", templateId);
                 ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
-                if (confTplDO != null && confTplDO.getAward() != 0) {
+                if (confTplDO != null) {
                     award = confTplDO.getAward();
                     reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
-                } else {
-                    throw EmployeeException.EMPLOYEE_AWARD_ZERO;
                 }
             }
             UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
