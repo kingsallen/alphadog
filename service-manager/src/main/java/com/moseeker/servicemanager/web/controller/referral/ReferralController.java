@@ -162,7 +162,7 @@ public class ReferralController {
 
             List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
                     referralForm.getRealname(),referralForm.getMobile(), referralForm.getRecomTags(),
-                        referralForm.getIds(),(byte)referralForm.getRelation(),
+                        referralForm.getPids(),(byte)referralForm.getRelation(),
                             referralForm.getRecomText(),(byte) referralForm.getReferralType());
             return Result.success(results).toJson();
         } else {

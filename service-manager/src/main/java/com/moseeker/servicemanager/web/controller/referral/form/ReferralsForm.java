@@ -13,7 +13,7 @@ public class ReferralsForm {
     private int appid;
     private String realname;
     private String mobile;
-    private List<Integer> ids;
+    private List<Integer> pids;
     private int referralType;
     private List<String> recomTags;
     private int relation;
@@ -52,12 +52,12 @@ public class ReferralsForm {
         this.mobile = mobile;
     }
 
-    public List<Integer> getIds() {
-        return ids;
+    public List<Integer> getPids() {
+        return pids;
     }
 
-    public void setIds(List<Integer> ids) {
-        this.ids = ids;
+    public void setPids(List<Integer> pids) {
+        this.pids = pids;
     }
 
     public int getReferralType() {
