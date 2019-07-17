@@ -552,17 +552,17 @@ public class ReferralServiceImpl implements ReferralService {
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();
         List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
-//        checkReferralResult(referralResultVOS);
         List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
         client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){
             throw CommonException.PROGRAM_EXCEPTION;
         }
-        //获取积分
-        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
-        HrPointsConfDO confDO = employeeEntity.fetchByCompanyId(employeeDO.getCompanyId());
+
         referralResultVOS = referralResultVOS.stream().map(resultVO -> {
-            resultVO.setReward(confDO.getReward());
+            //获取该职位应得的积分
+            Double reward = employeeEntity.calcReward(
+                    employeeId,Constant.RECRUIT_STATUS_UPLOAD_PROFILE,resultVO.getPosition_id());
+            resultVO.setReward(reward);
             return resultVO;
         }).collect(Collectors.toList());
         return referralResultVOS;
