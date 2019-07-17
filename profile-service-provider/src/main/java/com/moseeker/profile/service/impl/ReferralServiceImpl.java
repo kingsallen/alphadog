@@ -552,7 +552,7 @@ public class ReferralServiceImpl implements ReferralService {
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();
         List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
-        checkReferralResult(referralResultVOS);
+//        checkReferralResult(referralResultVOS);
         List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
         client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){
