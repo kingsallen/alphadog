@@ -900,6 +900,7 @@ public class SearchengineService {
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
                 EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
                 EmployeeBizTool.addPagination(searchRequestBuilder, ONE, FIVE_THOUSAND);
+                logger.info("SearchengineService fetchEmployees 查询条件：{}", searchRequestBuilder.toString());
                 response = searchRequestBuilder.execute().actionGet();
 
             } else {
@@ -927,6 +928,7 @@ public class SearchengineService {
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
                 EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
                 EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
+                logger.info("SearchengineService fetchEmployees 查询条件：{}", searchRequestBuilder.toString());
                 response = searchRequestBuilder.execute().actionGet();
             }
             List<Map<String, Object>> data = new ArrayList<>();
