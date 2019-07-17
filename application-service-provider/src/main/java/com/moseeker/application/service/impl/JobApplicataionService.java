@@ -220,6 +220,7 @@ public class JobApplicataionService {
             handleReferralState(jobApplicationId);
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
+
             this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
             // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
