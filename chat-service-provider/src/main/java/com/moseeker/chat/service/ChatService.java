@@ -105,17 +105,7 @@ public class ChatService {
 
     private ThreadPool pool = ThreadPool.Instance;
 
-    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
-    private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{companyName}的{hrName}，关于职位和公司信息有任何问题请随时和我沟通。";
-
     private static final String MOBOT_MULTI_WELCOME_SEPARATOR_TEXT = "#多条对话分隔符#";
-
-    /**
-     * 聊天页面欢迎语
-     **/
-    private static String WELCOMES_CONTER = "亲爱的%s：\n" +
-            "\t仟寻终于等到你啦。你可以在这里直接联系企业的HR，也可以直接和仟寻互动哦。\n" +
-            "\t祝你早日找到心仪的公司，加入令人振奋的团队，再次在你的职业之旅上迈步前行！\n";
 
     /**
      * HR查找聊天室列表
@@ -872,7 +862,11 @@ public class ChatService {
 
         // 聚合号直接返回默认的欢迎语
         if (is_gamma) {
-            contentList.add(String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName()));
+            String GOMMA_WELCOME_CONTENT = "亲爱的%s：\n" +
+                    "\t仟寻终于等到你啦。你可以在这里直接联系企业的HR，也可以直接和仟寻互动哦。\n" +
+                    "\t祝你早日找到心仪的公司，加入令人振奋的团队，再次在你的职业之旅上迈步前行！\n";
+
+            contentList.add(String.format(GOMMA_WELCOME_CONTENT, resultOfSaveRoomVO.getUser().getUserName()));
             return contentList;
         }
 
@@ -895,13 +889,10 @@ public class ChatService {
             companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
         }
 
-        logger.debug("companyConf hrChat:{}", companyConf.getHrChat());
         // 公司是否开启了MoBot
         if (companyConf != null
                 && companyConf.getHrChat() != null
                 && companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)){
-
-            logger.debug("getChatRoomInitCreateContentList MoBot on");
 
             // 公司配置MoBot欢迎语，优先显示配置
             if (org.apache.commons.lang.StringUtils.isNotEmpty(companyConf.getMobotWelcome())) {
@@ -920,6 +911,10 @@ public class ChatService {
     }
 
     private String getDefaultChatWelcomeContent(String hrName, String companyName){
+
+        String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
+        String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{companyName}的{hrName}，关于职位和公司信息有任何问题请随时和我沟通。";
+
         if (StringUtils.isNotNullOrEmpty(hrName)) {
             return AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", hrName).replace("{companyName}", companyName);
         }
