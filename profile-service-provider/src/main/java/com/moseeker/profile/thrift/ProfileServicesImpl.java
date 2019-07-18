@@ -229,7 +229,25 @@ public class ProfileServicesImpl implements Iface {
             List<MobotReferralResult> mobotReferralResults = new ArrayList<>(10);
             referralResultVOS.stream().forEach(resultVO->{
                 MobotReferralResult result = new MobotReferralResult();
-                BeanUtils.copyProperties(resultVO,result);
+                if(resultVO.getId()!=null){
+                    result.setId(resultVO.getId());
+                }
+                result.setErrorCode(resultVO.getErrorCode());
+                if(resultVO.getPosition_id()!=null){
+                    result.setPosition_id(resultVO.getPosition_id());
+                }
+                if(resultVO.getReason()!=null){
+                    result.setReason(resultVO.getReason());
+                }
+                result.setReward(resultVO.getReward());
+                if(resultVO.getSuccess()!=null){
+                    result.setSuccess(resultVO.getSuccess());
+
+                }
+                if(resultVO.getTitle()!=null){
+                    result.setTitle(resultVO.getTitle());
+
+                }
                 mobotReferralResults.add(result);
             });
             return mobotReferralResults;
