@@ -2316,8 +2316,6 @@ public class PositionService {
      * @return 红包职位列表
      */
     public List<WechatRpPositionListData> getRpPositionList(int hbConfigId, int pageNum, int pageSize) {
-        logger.info("PositionService getRpPositionList hb_config_id:{}, pageNum:{}, pageSize:{}",
-                hbConfigId, pageNum, pageSize);
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             new ArrayList<>(0);
         }
@@ -2333,20 +2331,16 @@ public class PositionService {
             size = 15;
         }
         int start = (pageNum-1)*size;
-        logger.info("PositionService getRpPositionList start:{}, size:{}", start, size);
         List<RedpacketActivityPosition> bindings = positionJOOQDao.listByActivityId(hbConfigId, true, start, size);
         //activityPositionJOOQDao.list
 
-        logger.info("PositionService getRpPositionList bindings：{}", JSON.toJSONString(bindings));
         List<Integer> pids = bindings.stream().map(RedpacketActivityPosition::getPositionId).collect(Collectors.toList());
 
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).and("status",0).orderBy("priority")
-                .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+                .orderBy("id",Order.DESC).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        logger.info("PositionService getRpPositionList jobRecords.size：{}", jobRecords.size());
         if(StringUtils.isEmptyList(jobRecords)){
-            logger.info("PositionService getRpPositionList jobRecords is null");
             return result;
         }
         // filter 出已经发完红包的职位
@@ -2400,8 +2394,6 @@ public class PositionService {
                 }
             });
         }
-        logger.info("PositionService getRpPositionList result:{}",
-                result);
         return result;
     }
 
