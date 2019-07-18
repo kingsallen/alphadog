@@ -37,7 +37,7 @@ public abstract class BindOnAccountService {
 	
 	protected ExecutorService taskPool = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
-	protected WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
+	protected WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(WholeProfileServices.Iface.class);
 
 	@Autowired
 	protected UserUserDao userdao;
