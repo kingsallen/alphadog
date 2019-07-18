@@ -1785,7 +1785,7 @@ public class EmployeeEntity {
         }
 
         //若该公司没有积分配置，查询积分配置模板表
-        if(reward!=null){
+        if(reward==null){
             query.clear();
             query.where("id", templateId);
             ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
