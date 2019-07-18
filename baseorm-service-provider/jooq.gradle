@@ -42,7 +42,6 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             inputSchema("hrdb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
-            includes("*")
         }
 
         // Watch out for this caveat when using MarkupBuilder with "reserved names"
