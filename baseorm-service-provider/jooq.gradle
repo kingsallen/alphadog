@@ -33,16 +33,16 @@ def xml = new groovy.xml.MarkupBuilder(writer)
         .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.9.2.xsd') {
     jdbc() {
         driver('com.mysql.jdbc.Driver')
-        url('jdbc:mysql://db-d.dqprism.com:3306/referraldb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
+        url('jdbc:mysql://db1.dqprism.com:3306/referraldb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
         user('daqi')
         password('7f1a45eac5985519829c929e7bbf0557')
     }
     generator() {
         database() {
-            inputSchema("jobdb")
+            inputSchema("hrdb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
-            includes("job_application")
+            includes("*")
         }
 
         // Watch out for this caveat when using MarkupBuilder with "reserved names"
@@ -54,7 +54,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.jobdb')
+            packageName('com.moseeker.baseorm.db.hrdb')
             directory('src/main/java')
         }
     }
