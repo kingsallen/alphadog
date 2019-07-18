@@ -1794,6 +1794,9 @@ public class EmployeeEntity {
             }
         }
 
+        if(reward==null){
+            return new Double(0);
+        }
         return reward;
     }
 }
