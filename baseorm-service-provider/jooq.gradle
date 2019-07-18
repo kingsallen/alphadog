@@ -33,9 +33,9 @@ def xml = new groovy.xml.MarkupBuilder(writer)
         .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.9.2.xsd') {
     jdbc() {
         driver('com.mysql.jdbc.Driver')
-        url('jdbc:mysql://db1.dqprism.com:3306/referraldb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
-        user('daqi')
-        password('7f1a45eac5985519829c929e7bbf0557')
+        url('jdbc:mysql://localhost:3306/hrdb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
+        user('root')
+        password('wjf')
     }
     generator() {
         database() {
