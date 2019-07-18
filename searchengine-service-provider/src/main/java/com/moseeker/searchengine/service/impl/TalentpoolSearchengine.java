@@ -1357,8 +1357,6 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(phaseId)){
                 searchUtil.handleTerm(phaseId,query,"user.applications.new_ats_process.phase_id");
             }
-
-
         }
 
     }
