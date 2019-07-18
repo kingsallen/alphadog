@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewConcreteRecord extends UpdatableRecordImpl<HrInterviewConcreteRecord> implements Record22<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, Integer, Timestamp, Timestamp, Integer, Integer, Integer, Timestamp, Timestamp, String, String> {
 
-    private static final long serialVersionUID = -248891702;
+    private static final long serialVersionUID = 1459587328;
 
     /**
      * Setter for <code>hrdb.hr_interview_concrete.id</code>.
@@ -313,14 +313,14 @@ public class HrInterviewConcreteRecord extends UpdatableRecordImpl<HrInterviewCo
     }
 
     /**
-     * Setter for <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名 
+     * Setter for <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名
      */
     public void setContactName(String value) {
         set(20, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名 
+     * Getter for <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名
      */
     public String getContactName() {
         return (String) get(20);

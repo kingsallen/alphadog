@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewConcrete extends TableImpl<HrInterviewConcreteRecord> {
 
-    private static final long serialVersionUID = -201487584;
+    private static final long serialVersionUID = -410241078;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_concrete</code>
@@ -152,9 +152,9 @@ public class HrInterviewConcrete extends TableImpl<HrInterviewConcreteRecord> {
     public final TableField<HrInterviewConcreteRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名 
+     * The column <code>hrdb.hr_interview_concrete.contact_name</code>. 其它联系人姓名
      */
-    public final TableField<HrInterviewConcreteRecord, String> CONTACT_NAME = createField("contact_name", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "其它联系人姓名 ");
+    public final TableField<HrInterviewConcreteRecord, String> CONTACT_NAME = createField("contact_name", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "其它联系人姓名");
 
     /**
      * The column <code>hrdb.hr_interview_concrete.contact_phone</code>. 其它联系人电话

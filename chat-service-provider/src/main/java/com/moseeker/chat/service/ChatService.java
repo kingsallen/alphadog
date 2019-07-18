@@ -107,7 +107,9 @@ public class ChatService {
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
     private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{companyName}的{hrName}，关于职位和公司信息有任何问题请随时和我沟通。";
-    private static String AUTO_CONTENT_WITH_HR_EXIST_START = "您好，我是";
+    private static final String AUTO_CONTENT_WITH_HR_EXIST_START = "您好，我是";
+
+    private static final String MOBOT_MULTI_WELCOME_SEPARATOR_TEXT = "[#多条对话分隔符#]";
 
     /**
      * 聊天页面欢迎语
@@ -692,7 +694,13 @@ public class ChatService {
         if (chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if (chatRoom.getWelcomeStatus() == 1) {
-                createChat(resultOfSaveRoomVO, is_gamma);
+                // 支持多条Opening的欢迎语
+                List<String> contents = getChatRoomInitCreateContentList(resultOfSaveRoomVO, is_gamma);
+                if(contents != null && contents.size() > 0){
+                    for (String content:contents) {
+                        createChat(resultOfSaveRoomVO, content);
+                    }
+                }
                 chatRoom.setWelcomeStatus((byte) 0);
                 chaoDao.updateChatRoom(chatRoom);
             }
@@ -724,6 +732,8 @@ public class ChatService {
         logger.info("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
+
+
 
     /**
      * 查找返回值
@@ -837,57 +847,15 @@ public class ChatService {
      * @param resultOfSaveRoomVO 进入聊天室返回的结果
      * @return 聊天记录
      */
-    private ChatVO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) throws BIZException {
+    private void createChat(ResultOfSaveRoomVO resultOfSaveRoomVO, String content) throws BIZException {
+        logger.debug("createChat roomId:{}", resultOfSaveRoomVO.getRoomId());
 
-        logger.info("createChat ResultOfSaveRoomVO:{}, is_gamma:{}", resultOfSaveRoomVO, is_gamma);
-        //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
-        //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         ChatVO chatDO = new ChatVO();
         chatDO.setRoomId(resultOfSaveRoomVO.getRoomId());
         chatDO.setSpeaker((byte) 1);
         chatDO.setOrigin(ChatOrigin.System.getValue());
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
-        String content;
-        if (is_gamma) {
-            content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
-        } else {
-            String companyName;
-            if (resultOfSaveRoomVO.getPosition() != null) {
-                companyName = resultOfSaveRoomVO.getPosition().getCompanyName();
-            } else {
-                companyName = resultOfSaveRoomVO.getHr().getCompanyName();
-            }
-
-            if (resultOfSaveRoomVO.getHr() != null
-                    && StringUtils.isNotNullOrEmpty(resultOfSaveRoomVO.getHr().getHrName())
-                    && resultOfSaveRoomVO.getPosition() != null) {
-
-                HrCompanyDO companyDO = chaoDao.getCompany(resultOfSaveRoomVO.getHr().getHrId());
-                HrCompanyConf companyConf;
-                if (companyDO.getParentId() != 0) {
-                    companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getParentId());
-                } else {
-                    companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
-                }
-                if (companyConf.getHrChat() != null && companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)) {
-                    if (StringUtils.isNotNullOrEmpty(companyConf.getMobotName())) {
-                        content = AUTO_CONTENT_WITH_HR_EXIST
-                                .replace("{hrName}", companyConf.getMobotName())
-                                .replace("{companyName}", companyName);
-                    } else {
-                        content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                                .getHrName()).replace("{companyName}", companyName);
-                    }
-                } else {
-                    content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                            .getHrName()).replace("{companyName}", companyName);
-                }
-            } else {
-                content = AUTO_CONTENT_WITH_HR_NOTEXIST
-                        .replace("{companyName}", companyName);
-            }
-        }
         chatDO.setContent(content);
         if (resultOfSaveRoomVO.getPosition() != null) {
             chatDO.setPositionId(resultOfSaveRoomVO.getPosition().getPositionId());
@@ -895,7 +863,76 @@ public class ChatService {
         chatDO.setMsgType(ChatMsgType.HTML.value());
         saveChat(chatDO);
         logger.info("createChat result:{}", chatDO);
-        return chatDO;
+    }
+
+    /**
+     * 获取聊天室初始回复内容数据
+     *
+     * @param resultOfSaveRoomVO
+     * @param is_gamma 是否聚合号
+     * @return
+     */
+    private List<String> getChatRoomInitCreateContentList(ResultOfSaveRoomVO resultOfSaveRoomVO, boolean is_gamma) {
+        List<String> contentList = new ArrayList<>();
+        HrCompanyConf companyConf = null;
+        String companyName = null;
+
+        String hrName = resultOfSaveRoomVO.getHr().getHrName();
+
+        // 聚合号直接返回默认的欢迎语
+        if (is_gamma) {
+            contentList.add(String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName()));
+            return contentList;
+        }
+
+        HrCompanyDO companyDO = chaoDao.getCompany(resultOfSaveRoomVO.getHr().getHrId());
+        if (companyDO == null) {
+            return null;
+        }
+
+        // 获取职位所属公司名称
+        if (resultOfSaveRoomVO.getPosition() != null) {
+            companyName = resultOfSaveRoomVO.getPosition().getCompanyName();
+        } else {
+            companyName = resultOfSaveRoomVO.getHr().getCompanyName();
+        }
+
+        // 获取主公司配置信息
+        if (companyDO.getParentId() != 0) {
+            companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getParentId());
+        } else {
+            companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
+        }
+
+        logger.debug("companyConf hrChat:{}", companyConf.getHrChat());
+        // 公司是否开启了MoBot
+        if (companyConf != null
+                && companyConf.getHrChat() != null
+                && companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)){
+
+            logger.debug("getChatRoomInitCreateContentList MoBot on");
+
+            // 公司配置MoBot欢迎语，优先显示配置
+            if (org.apache.commons.lang.StringUtils.isNotEmpty(companyConf.getMobotWelcome())) {
+                String[] welcomeContents = companyConf.getMobotWelcome().split(MOBOT_MULTI_WELCOME_SEPARATOR_TEXT);
+                return Arrays.asList(welcomeContents);
+            }
+
+            // 获取默认的MoBot欢迎语
+            String mobotName = StringUtils.isNotNullOrEmpty(companyConf.getMobotName()) ? companyConf.getMobotName() : hrName;
+            contentList.add(getDefaultChatWelcomeContent(mobotName, companyName));
+            return contentList;
+        }
+
+        contentList.add(getDefaultChatWelcomeContent(hrName, companyName));
+        return contentList;
+    }
+
+    private String getDefaultChatWelcomeContent(String hrName, String companyName){
+        if (StringUtils.isNotNullOrEmpty(hrName)) {
+            return AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", hrName).replace("{companyName}", companyName);
+        }
+        return AUTO_CONTENT_WITH_HR_NOTEXIST.replace("{companyName}", companyName);
     }
 
     /**
