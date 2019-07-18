@@ -107,9 +107,8 @@ public class ChatService {
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
     private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{companyName}的{hrName}，关于职位和公司信息有任何问题请随时和我沟通。";
-    private static final String AUTO_CONTENT_WITH_HR_EXIST_START = "您好，我是";
 
-    private static final String MOBOT_MULTI_WELCOME_SEPARATOR_TEXT = "[#多条对话分隔符#]";
+    private static final String MOBOT_MULTI_WELCOME_SEPARATOR_TEXT = "#多条对话分隔符#";
 
     /**
      * 聊天页面欢迎语
