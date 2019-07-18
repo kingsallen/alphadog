@@ -94,6 +94,7 @@ public class UseraccountsService {
 
 
     MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
             .getService(WholeProfileServices.Iface.class);
 
