@@ -499,14 +499,6 @@ public class ChatService {
                         chatVO.setOrigin(ChatOrigin.Human.getValue());
                         chatVO.setOrigin_str(ChatOrigin.Human.getName());
                     }
-
-                    if (i == chatRecord.size() - 1 && chatVO.getContent().startsWith(AUTO_CONTENT_WITH_HR_EXIST_START)) {
-                        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(roomId);
-                        ResultOfSaveRoomVO room = searchResult(chatRoom, 0);
-                        String content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", room.getHr()
-                                .getHrName()).replace("{companyName}", room.getHr().getCompanyName());
-                        chatVO.setContent(content);
-                    }
                     String compoundContent = (record.get(HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT));
                     if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
                         chatVO.setCompoundContent(compoundContent);
