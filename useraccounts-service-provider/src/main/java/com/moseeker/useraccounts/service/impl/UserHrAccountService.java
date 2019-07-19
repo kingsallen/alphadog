@@ -1721,6 +1721,8 @@ public class UserHrAccountService {
 
             List<Map<String, String>> list = batchValidate.parseCustomFieldValues(userEmployeeDO.getCustomFieldValues(), fieldsList, optionIdStrList);
             userEmployeeDetailVO.setCustomFieldValues(list);
+        } else {
+            userEmployeeDetailVO.setCustomFieldValues(new ArrayList<>(0));
         }
         // 查询微信信息
         if (userEmployeeDO.getSysuserId() > 0) {
