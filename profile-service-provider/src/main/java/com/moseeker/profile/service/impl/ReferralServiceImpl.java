@@ -552,8 +552,11 @@ public class ReferralServiceImpl implements ReferralService {
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();
         List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
+        logger.info("employeeReferralProfile referralResultVOS-> {}",referralResultVOS);
         List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
-        if(!com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){//若存在推荐失败的情况，清空redis中相关简历数据
+        logger.info("employeeReferralProfile referralIds-> {}",referralIds);
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(referralIds)){//若存在推荐成功的情况，清空redis中相关简历数据
+            logger.info("employeeReferralProfile Some positions were referraled successful-> {}",referralIds);
             client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
         }
 
