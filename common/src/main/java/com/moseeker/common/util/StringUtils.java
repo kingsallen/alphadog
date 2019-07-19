@@ -65,6 +65,27 @@ public class StringUtils {
             return true;
         }
     }
+    /**
+     * TODO(判断list是否为空（包括list当中的值）)
+     *
+     * @param list
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public static boolean isRealEmptyList(List list) {
+
+        if(list==null){
+            return true;
+        }else{
+            for (Object obj:list) {
+                if(obj!=null){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+    }
     public static boolean isEmptyMap(Map map) {
         if (map != null && !map.isEmpty()) {
             return false;
