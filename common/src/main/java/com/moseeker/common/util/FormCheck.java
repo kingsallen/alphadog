@@ -12,6 +12,7 @@ public class FormCheck {
 	private static String GLOBAL_MOBILE_EXP = "^\\d{6,15}$";
 	private static String EMAIL_EXP = "^([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
 	private static String URL_EXP = "[a-zA-z]+://[^\\s]*";
+	private static String EMPLOYEE_NAME = "^[\u4e00-\u9fa5a-zA-Z.·•\\s\\d]{2,100}$";
 
 	public static String getMobileExp() {
 		return GLOBAL_MOBILE_EXP;
@@ -27,6 +28,21 @@ public class FormCheck {
 
 	public static String getUrlExp() {
 		return URL_EXP;
+	}
+
+	public static String getEmployeeName() {
+		return EMPLOYEE_NAME;
+	}
+
+	/**
+	 * 校验是否是只包含中文和英文字母、以及名字中用到的字符
+	 * @param str 被校验的字符串
+	 * @return true 符合要求，false不符合要求
+	 */
+	public static boolean isChineseAndCharacter(String str) {
+		Pattern p = Pattern.compile(getEmployeeName());
+		Matcher m = p.matcher(str);
+		return m.find();
 	}
 
 	/**

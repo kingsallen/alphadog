@@ -78,6 +78,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -226,7 +228,7 @@ public class EmployeeEntity {
     // 转发点击操作 前置
     @Transactional
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
-                               int applicationId) throws Exception {
+                               int applicationId) throws EmployeeException {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
@@ -264,6 +266,8 @@ public class EmployeeEntity {
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
+
+
 
 
     /**
@@ -357,32 +361,26 @@ public class EmployeeEntity {
     }
 
     @Transactional
-    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws EmployeeException {
         // 获取积分点数
         if (companyId == 0 || templateId == 0) {
             throw EmployeeException.PROGRAM_PARAM_NOTEXIST;
         } else {
-            int award;
+            int award = 0;
             int awardConfigId = 0;
             Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", templateId);
             HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
             if (hrPointsConfDO != null) {
-                if (hrPointsConfDO.getReward() == 0) {
-                    throw new Exception("添加积分点数不能为0");
-                } else {
-                    award = (int) hrPointsConfDO.getReward();
-                    reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
-                    awardConfigId = hrPointsConfDO.getId();
-                }
+                award = (int) hrPointsConfDO.getReward();
+                reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
+                awardConfigId = hrPointsConfDO.getId();
             } else {
                 query.clear();
                 query.where("id", templateId);
                 ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
-                if (confTplDO != null && confTplDO.getAward() != 0) {
+                if (confTplDO != null) {
                     award = confTplDO.getAward();
                     reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
-                } else {
-                    throw EmployeeException.EMPLOYEE_AWARD_ZERO;
                 }
             }
             UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
@@ -703,7 +701,7 @@ public class EmployeeEntity {
                         .map(UserEmployeeDO::getId).filter(id -> id > 0)
                         .collect(Collectors.toList());
                 logger.info("EmployeeEntity unbind employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
-                searchengineEntity.updateEmployeeAwards(employeeIdList);
+                searchengineEntity.updateEmployeeAwards(employeeIdList, false);
                 List<Integer> companyIdList = employees
                         .stream()
                         .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
@@ -1080,7 +1078,7 @@ public class EmployeeEntity {
                 employeeDOS.add(record);
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()), false);
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
         } else {
             return null;
@@ -1119,7 +1117,7 @@ public class EmployeeEntity {
         }
         UserEmployeeDO employeeDO = employeeDao.addData(userEmployee);
 
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(employeeDO.getId()), false);
 
         return employeeDO;
     }
@@ -1140,7 +1138,7 @@ public class EmployeeEntity {
 
     public int updateData(UserEmployeeDO userEmployeeDO) {
         int result = employeeDao.updateData(userEmployeeDO);
-        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()));
+        searchengineEntity.updateEmployeeAwards(Arrays.asList(userEmployeeDO.getId()), true);
         return result;
     }
 
@@ -1248,7 +1246,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addRegisterLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
 
     }
 
@@ -1271,7 +1269,7 @@ public class EmployeeEntity {
         referralEmployeeRegisterLogDao.addCancelLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
-        }});
+        }}, false);
     }
 
     /**
@@ -1717,26 +1715,83 @@ public class EmployeeEntity {
      */
     public int addEmployeeListIfNotExist(List<UserEmployeeDO> userEmployeeList) {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            List<UserEmployeeRecord> records = new ArrayList<>(userEmployeeList.size());
             int count = 0;
-            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
-            for(UserEmployeeDO employee : userEmployeeList){
-                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist employee:{}", employee);
-                logger.info("EmployeeEntity addEmployeeListIfNotExist record:{}", record);
-                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
-                UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
-
-                if (userEmployeeRecord != null) {
-                    employeeDOS.add(userEmployeeRecord);
-                    count += 1;
+            while (count < userEmployeeList.size()) {
+                int increase;
+                if (userEmployeeList.size() - count > 500) {
+                    increase = 500;
+                } else {
+                    increase = userEmployeeList.size() - count;
                 }
+                List<UserEmployeeDO> tempList = userEmployeeList.subList(count, count+increase);
+                List<UserEmployeeRecord> list = employeeDao.batchSave(tempList);
+                records.addAll(list);
+                count += increase;
             }
             // ES 索引更新
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            searchengineEntity.updateEmployeeAwards(records.stream().map(UserEmployeeRecord::getId).collect(Collectors.toList()),
+                    false);
             return count;
         } else {
             return 0;
         }
+    }
+
+    public HrPointsConfDO fetchByCompanyId(Integer companyId,Integer templateId){
+        Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id",templateId);
+        return hrPointsConfDao.getData(query.buildQuery());
+    }
+
+    public double calcReward(Integer employeeId,Integer templateId,Integer positionId){
+
+        //查询员工获取公司编号
+        UserEmployeeDO employeeDO = employeeDao.getEmployeeById(employeeId);
+
+        if(employeeDO==null){
+            return 0;
+        }
+
+        Integer companyId = employeeDO.getCompanyId();
+
+        Double reward = null;
+
+        //查询该公司是否只针对内推职位奖励积分
+        ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
+        if (companyConf != null && companyConf.getPositionPointsFlag() != null
+                && companyConf.getPositionPointsFlag() == 1) {
+            logger.info("addAwardHandler 有配置信息");
+            JobPositionPojo positionPojo = positionDao.getPosition(positionId);
+
+            if (positionPojo != null && positionPojo.is_referral == 0) {
+                logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
+                reward = new Double(0);
+                return reward;
+            }
+        }
+
+        //先从hr_company_conf查询积分
+        Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id",templateId);
+        HrPointsConfDO confDO = hrPointsConfDao.getData(query.buildQuery());
+
+        if(confDO!=null){
+            reward = confDO.getReward();
+        }
+
+        //若该公司没有积分配置，查询积分配置模板表
+        if(reward==null){
+            query.clear();
+            query.where("id", templateId);
+            ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
+            if (confTplDO != null && confTplDO.getAward() != 0) {
+                reward = (double)confTplDO.getAward();
+            }
+        }
+
+        if(reward==null){
+            return new Double(0);
+        }
+        return reward;
     }
 }
 

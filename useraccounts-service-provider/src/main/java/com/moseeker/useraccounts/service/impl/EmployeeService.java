@@ -75,7 +75,7 @@ public class EmployeeService {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    SearchengineServices.Iface searchService = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -233,7 +233,6 @@ public class EmployeeService {
                 HrCompanyConfDO hrCompanyConfig = hrCompanyConfDao.getData(query.buildQuery());
                 evc.setBindSuccessMessage(hrCompanyConfig == null ? "" : hrCompanyConfig.getEmployeeBinding());
                 response.setEmployeeVerificationConf(evc);
-                log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
                 response.setExists(true);
             } else {
                 response.setExists(false);
@@ -259,6 +258,15 @@ public class EmployeeService {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");
         } else {
+            if (bindingParams.getCustomFieldValues() != null && !bindingParams.getCustomFieldValues().equals("")) {
+                Map<Integer, String> customFieldValues = new HashMap<>(bindingParams.getCustomFieldValues().size());
+                bindingParams.getCustomFieldValues().forEach((key, value) -> {
+                    if (value != null && !value.trim().equals("")) {
+                        customFieldValues.put(key, value);
+                    }
+                });
+                bindingParams.setCustomFieldValues(customFieldValues);
+            }
             response = employeeBinder.get(authMethod).bind(bindingParams,bindSource);
         }
         return response;

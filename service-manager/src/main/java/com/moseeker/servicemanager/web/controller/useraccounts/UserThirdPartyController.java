@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 public class UserThirdPartyController {
     Logger logger= LoggerFactory.getLogger(UserThirdPartyController.class);
 
-    ThirdPartyUserService.Iface service = ServiceManager.SERVICEMANAGER.getService(ThirdPartyUserService.Iface.class);
+    ThirdPartyUserService.Iface service = ServiceManager.SERVICE_MANAGER.getService(ThirdPartyUserService.Iface.class);
 
     @RequestMapping(value = "/user/thirdparty", method = RequestMethod.POST)
     @ResponseBody

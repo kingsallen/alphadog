@@ -43,9 +43,9 @@ public class ReferralPositionController {
 
     private Logger logger = LoggerFactory.getLogger(PositionController.class);
 
-    private ReferralPositionServices.Iface referralPositionService = ServiceManager.SERVICEMANAGER.getService(ReferralPositionServices.Iface.class);
+    private ReferralPositionServices.Iface referralPositionService = ServiceManager.SERVICE_MANAGER.getService(ReferralPositionServices.Iface.class);
 
-    private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+    private PositionServices.Iface positonServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
 
     /**
      * 根据postionId 删除内推职位

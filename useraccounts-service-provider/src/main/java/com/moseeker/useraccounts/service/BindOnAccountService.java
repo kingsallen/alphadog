@@ -10,7 +10,9 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +36,9 @@ public abstract class BindOnAccountService {
 	private static final Logger logger = LoggerFactory.getLogger(BindOnAccountService.class);
 	
 	protected ExecutorService taskPool = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-	
+
+	protected WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(WholeProfileServices.Iface.class);
+
 	@Autowired
 	protected UserUserDao userdao;
 
@@ -104,11 +108,14 @@ public abstract class BindOnAccountService {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
 				combineAccount(appid, userMobile, userUnionid);
+				// 迁移简历信息
+				profileService.moveProfile(userUnionid.getId().intValue(), userMobile.getId().intValue());
 				// 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9:
 				// PC(我感兴趣)
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("dest_id", userUnionid.getId().intValue());
 				map.put("origin_id", userMobile.getId().intValue());
+
 				resultFull(userMobile, map);
 				return ResponseUtils.success(map);
 			} else {

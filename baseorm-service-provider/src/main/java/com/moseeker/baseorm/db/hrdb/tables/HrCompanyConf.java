@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1982178643;
+    private static final long serialVersionUID = 1818983938;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -141,9 +141,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, Timestamp> APPLICATION_TIME = createField("application_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "newjd_status即新的jd页的生效时间，");
 
     /**
-     * The column <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     * The column <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
-    public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
+    public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
 
     /**
      * The column <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启，2：开启+chatbot
@@ -166,9 +166,14 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, String> DISPLAY_LOCALE = createField("display_locale", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("zh_CN", org.jooq.impl.SQLDataType.VARCHAR)), this, "公司页面语言，格式:IETF language tag");
 
     /**
-     * The column <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启普通人才库，2开启高端人才库
+     * The column <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
      */
-    public final TableField<HrCompanyConfRecord, Byte> TALENTPOOL_STATUS = createField("talentpool_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "人才库状态表 0未开启，1开启普通人才库，2开启高端人才库");
+    public final TableField<HrCompanyConfRecord, Byte> TALENTPOOL_STATUS = createField("talentpool_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "'人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
+     */
+    public final TableField<HrCompanyConfRecord, Byte> JOB51_SALARY_DISCUSS = createField("job51_salary_discuss", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "51薪资面议开关 0：未开启，1：开启");
 
     /**
      * The column <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
@@ -191,14 +196,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, Byte> MALL_GOODS_METHOD_STATE = createField("mall_goods_method_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则");
 
     /**
-     * The column <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
+     * The column <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是开启
      */
-    public final TableField<HrCompanyConfRecord, Byte> JOB51_SALARY_DISCUSS = createField("job51_salary_discuss", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "51薪资面议开关 0：未开启，1：开启");
-
-    /**
-     * The column <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是已开启
-     */
-    public final TableField<HrCompanyConfRecord, Byte> IS_OPEN_GDPR = createField("is_open_gdpr", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0是未开启 1是已开启");
+    public final TableField<HrCompanyConfRecord, Byte> IS_OPEN_GDPR = createField("is_open_gdpr", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0是未开启 1是开启");
 
     /**
      * The column <code>hrdb.hr_company_conf.mobot_head_img</code>. Mobot头像，聊天使用
@@ -209,6 +209,11 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
      * The column <code>hrdb.hr_company_conf.mobot_name</code>. Mobot姓名，聊天使用
      */
     public final TableField<HrCompanyConfRecord, String> MOBOT_NAME = createField("mobot_name", org.jooq.impl.SQLDataType.VARCHAR.length(32), this, "Mobot姓名，聊天使用");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     */
+    public final TableField<HrCompanyConfRecord, String> MOBOT_WELCOME = createField("mobot_welcome", org.jooq.impl.SQLDataType.VARCHAR.length(2000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "初次进入Mobot自定义的欢迎语");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference

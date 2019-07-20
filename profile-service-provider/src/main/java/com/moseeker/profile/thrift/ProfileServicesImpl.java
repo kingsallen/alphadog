@@ -13,11 +13,13 @@ import com.moseeker.profile.service.UploadFilesService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
+import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.*;
 import org.apache.thrift.TException;
@@ -208,6 +210,47 @@ public class ProfileServicesImpl implements Iface {
         try {
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
                     relationship,  referralText, referralType);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public List<MobotReferralResult> employeeReferralProfiles(int employeeId, String name, String mobile,
+                                                              List<String> referralReasons, List<Integer> positions,
+                                                              byte relationship, String recomReasonText,
+                                                              byte referralType) throws BIZException, TException {
+        try {
+            logger.info("调用profile服务多职位推荐");
+            List<MobotReferralResultVO> referralResultVOS =
+                    referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, positions,
+                        relationship,  recomReasonText, referralType);
+
+            List<MobotReferralResult> mobotReferralResults = new ArrayList<>(10);
+            referralResultVOS.stream().forEach(resultVO->{
+                MobotReferralResult result = new MobotReferralResult();
+                if(resultVO.getId()!=null){
+                    result.setId(resultVO.getId());
+                }
+                result.setErrorCode(resultVO.getErrorCode());
+                if(resultVO.getPosition_id()!=null){
+                    result.setPosition_id(resultVO.getPosition_id());
+                }
+                if(resultVO.getReason()!=null){
+                    result.setReason(resultVO.getReason());
+                }
+                result.setReward(resultVO.getReward());
+                if(resultVO.getSuccess()!=null){
+                    result.setSuccess(resultVO.getSuccess());
+
+                }
+                if(resultVO.getTitle()!=null){
+                    result.setTitle(resultVO.getTitle());
+
+                }
+                mobotReferralResults.add(result);
+            });
+            return mobotReferralResults;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -433,6 +476,11 @@ public class ProfileServicesImpl implements Iface {
             logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public boolean healthCheck() throws TException {
+        return false;
     }
 
     @Override

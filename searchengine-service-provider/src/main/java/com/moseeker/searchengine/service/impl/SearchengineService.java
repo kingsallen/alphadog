@@ -70,6 +70,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
+import static com.moseeker.common.constants.Constant.ONE;
 import static com.moseeker.searchengine.service.impl.tools.EmployeeBizTool.buildSortScript;
 
 @Service
@@ -896,6 +898,9 @@ public class SearchengineService {
                 }
                 EmployeeBizTool.addEmployeeIds(query, employeeIdList, searchUtil);
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+                EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
+                EmployeeBizTool.addPagination(searchRequestBuilder, ONE, FIVE_THOUSAND);
+                logger.info("SearchengineService fetchEmployees 查询条件：{}", searchRequestBuilder.toString());
                 response = searchRequestBuilder.execute().actionGet();
 
             } else {
@@ -907,7 +912,6 @@ public class SearchengineService {
                         List<Integer> employees = JSON.parseArray(str, Integer.class);
                         EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                     }
-                    logger.info("SearchengineService fetchEmployees companyId：{}", companyId);
                     if (filter == 1) {
                         String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
                         logger.info("SearchengineService fetchEmployees str1：{}", str1);
@@ -924,6 +928,7 @@ public class SearchengineService {
                 SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
                 EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
                 EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
+                logger.info("SearchengineService fetchEmployees 查询条件：{}", searchRequestBuilder.toString());
                 response = searchRequestBuilder.execute().actionGet();
             }
             List<Map<String, Object>> data = new ArrayList<>();

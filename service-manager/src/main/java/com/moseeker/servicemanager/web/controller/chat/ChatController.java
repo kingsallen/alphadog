@@ -3,12 +3,9 @@ package com.moseeker.servicemanager.web.controller.chat;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
-import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.serializer.*;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChatMsgType;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -41,7 +38,7 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class ChatController {
 
-    ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
+    ChatService.Iface chatService = ServiceManager.SERVICE_MANAGER.getService(ChatService.Iface.class);
 
     private Logger logger = LoggerFactory.getLogger(ChatController.class);
 

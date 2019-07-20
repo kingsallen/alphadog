@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterCandidateRecord extends UpdatableRecordImpl<HrHeadhunterCandidateRecord> implements Record14<Integer, String, Integer, String, Integer, Byte, String, Timestamp, BigDecimal, Timestamp, Timestamp, String, String, Integer> {
 
-    private static final long serialVersionUID = -967063688;
+    private static final long serialVersionUID = -667984702;
 
     /**
      * Setter for <code>hrdb.hr_headhunter_candidate.id</code>. 主键
@@ -76,14 +76,20 @@ public class HrHeadhunterCandidateRecord extends UpdatableRecordImpl<HrHeadhunte
     }
 
     /**
-     * Setter for <code>hrdb.hr_headhunter_candidate.recommend_desc</code>. 推荐说明
+     * Setter for <code>hrdb.hr_headhunter_candidate.recommend_desc</code>. 推荐说明’;
+
+;
+
      */
     public void setRecommendDesc(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_headhunter_candidate.recommend_desc</code>. 推荐说明
+     * Getter for <code>hrdb.hr_headhunter_candidate.recommend_desc</code>. 推荐说明’;
+
+;
+
      */
     public String getRecommendDesc() {
         return (String) get(3);
@@ -104,14 +110,14 @@ public class HrHeadhunterCandidateRecord extends UpdatableRecordImpl<HrHeadhunte
     }
 
     /**
-     * Setter for <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 已推荐，7 被hr拒绝
+     * Setter for <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 筛选, 2 面试, 3 offer, 4 待入职, 5 入职, 6 淘汰，7 被hr拒绝
      */
     public void setStatus(Byte value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 已推荐，7 被hr拒绝
+     * Getter for <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 筛选, 2 面试, 3 offer, 4 待入职, 5 入职, 6 淘汰，7 被hr拒绝
      */
     public Byte getStatus() {
         return (Byte) get(5);

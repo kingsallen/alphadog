@@ -5,9 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ArrayListMultimap;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -25,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -38,12 +39,6 @@ import java.util.stream.Collectors;
 public class BatchValidate {
 
     @Autowired
-    private HrCompanyDao hrCompanyDao;
-
-    @Autowired
-    private UserEmployeeDao userEmployeeDao;
-
-    @Autowired
     protected HrEmployeeCustomFieldsDao customFieldsDao;
 
     @Autowired
@@ -51,37 +46,55 @@ public class BatchValidate {
 
     ThreadPool threadPool = ThreadPool.Instance;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 将员工自定义字段json字符串解析成List<Map<String,String>>
      * @param customFieldValueStr 自定义字段json字符串
+     * @param fieldsList
+     * @param employeeOptionValues
      * @return list
      */
-    public List<Map<String, String>> parseCustomFieldValues(String customFieldValueStr) {
-        logger.info("BatchValidate parseCustomFieldValues");
+    public List<Map<String, String>> parseCustomFieldValues(String customFieldValueStr,
+                                                            List<HrEmployeeCustomFields> fieldsList,
+                                                            List<String> employeeOptionValues) {
         if (org.apache.commons.lang.StringUtils.isNotBlank(customFieldValueStr) && !customFieldValueStr.equals("[]")) {
-            logger.info("BatchValidate parseCustomFieldValues customFieldValues not null");
 
             List customFieldValues = JSONObject.parseObject(customFieldValueStr, List.class);
-            logger.info("BatchValidate parseCustomFieldValues customFieldValues:{}", customFieldValues);
             if (customFieldValues != null && customFieldValues.size() > 0) {
+
                 List<Map<String, String>> jsonArray = new ArrayList<>(customFieldValues.size());
                 for (Object customFieldValue : customFieldValues) {
-                    logger.info("BatchValidate parseCustomFieldValues customFieldValue:{}", JSONObject.toJSONString(customFieldValue));
-                    Map<String, String> jsonObject = new HashMap<>();
-
                     JSONObject customFieldJSONObject = (JSONObject)customFieldValue;
+
+                    Map<String, String> jsonObject = new HashMap<>();
                     customFieldJSONObject.forEach((key, value) -> {
-                        logger.info("BatchValidate parseCustomFieldValues key:{}, vlaue:{}", key, value);
+
+                        Optional<Integer> optional = fieldsList
+                                .stream()
+                                .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getId().toString().equals(key))
+                                .map(HrEmployeeCustomFields::getOptionType)
+                                .findAny();
+                        if (!optional.isPresent()) {
+                            return;
+                        }
+
                         if (value instanceof JSONArray) {
                             String valueStr;
                             if (((JSONArray)value).get(0) instanceof String) {
                                 valueStr = (String) ((JSONArray)value).get(0);
-                                jsonObject.put(key, valueStr);
+                                if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                } else {
+                                    jsonObject.put(key, valueStr);
+                                }
                             } else if(((JSONArray)value).get(0) instanceof Integer) {
                                 valueStr = ((JSONArray)value).get(0).toString();
-                                jsonObject.put(key, valueStr);
+                                if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                } else {
+                                    jsonObject.put(key, valueStr);
+                                }
                             } else {
                                 //do nothing
                             }
@@ -90,10 +103,18 @@ public class BatchValidate {
                                 String valueStr;
                                 if (valueValue instanceof String) {
                                     valueStr = (String) valueValue;
-                                    jsonObject.put(keyKey, valueStr);
+                                    if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                        jsonObject.put(key, valueStr);
+                                    } else {
+                                        jsonObject.put(key, valueStr);
+                                    }
                                 } else if(valueValue instanceof Integer) {
                                     valueStr = valueValue.toString();
-                                    jsonObject.put(keyKey, valueStr);
+                                    if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                        jsonObject.put(key, valueStr);
+                                    } else {
+                                        jsonObject.put(key, valueStr);
+                                    }
                                 } else {
                                     //do nothing
                                 }
@@ -101,7 +122,11 @@ public class BatchValidate {
                         } else {
                             String valueStr = BeanUtils.converToString(value);
                             if (valueStr != null) {
-                                jsonObject.put(key, BeanUtils.converToString(value));
+                                if (optional.get().equals(OptionType.Select.getValue()) && employeeOptionValues.contains(valueStr)) {
+                                    jsonObject.put(key, valueStr);
+                                } else {
+                                    jsonObject.put(key, valueStr);
+                                }
                             }
                         }
                     });
@@ -128,87 +153,56 @@ public class BatchValidate {
      */
     public ImportUserEmployeeStatistic importCheck(Map<Integer, UserEmployeeDO> userEmployeeMap, Integer companyId,
                                                    List<UserEmployeeDO> dbEmployeeDOList) throws UserAccountException {
+
         ImportUserEmployeeStatistic importUserEmployeeStatistic = new ImportUserEmployeeStatistic();
 
         // 重复的对象
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
-        int repetitionCounts = 0;
-        int errorCounts = 0;
 
         /**
          * 为校验自定义下拉项数据做准备
          */
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
-        logger.info("BatchValidate importCheck employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues));
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
-        logger.info("BatchValidate importCheck dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
 
         // 提交上的数据
-        for (Map.Entry<Integer, UserEmployeeDO> entry : userEmployeeMap.entrySet()) {
-            UserEmployeeDO userEmployeeDO = entry.getValue();
-            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-            // 姓名不能为空
-            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("cname不能为空");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(entry.getKey());
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                continue;
-            }
-            if (userEmployeeDO.getCompanyId() == 0) {
-                userEmployeeDO.setCompanyId(companyId);
-            }
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
-                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
-                if (employeeCustomFiledValues.get(entry.getKey()) != null
-                        && employeeCustomFiledValues.get(entry.getKey()).size() > 0) {
-                    boolean flag = checkOptions(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
-                    if (!flag) {
-                        logger.info("BatchValidate importCheck failed employeeCustomFiledValues:{}", JSONObject.toJSONString(employeeCustomFiledValues.get(entry.getKey())));
-                        logger.info("BatchValidate importCheck failed dbCustomFieldValues:{}", JSONObject.toJSONString(dbCustomFieldValues));
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setMessage("自定义选项错误");
-                        errorCounts = errorCounts + 1;
-                        importErrorUserEmployee.setRowNum(entry.getKey());
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                        continue;
-                    } else {
-                        JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(entry.getKey()), dbCustomFieldValues);
-                        logger.info("BatchValidate importCheck success customFieldValues:{}", customFieldValues);
-                        userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
-                    }
+        AtomicInteger repeatCounts = new AtomicInteger(0);
+        AtomicInteger errorCount = new AtomicInteger(0);
+        List<Future<ImportErrorUserEmployee>> futures = new ArrayList<>(userEmployeeMap.size());
+        userEmployeeMap.forEach((row, userEmployeeDO) -> {
+            Future<ImportErrorUserEmployee> future = threadPool.startTast(() -> {
+                try {
+                    ImportErrorUserEmployee importErrorUserEmployee = checkImportEmployee(row, userEmployeeDO, companyId, repeatCounts, errorCount,
+                            employeeCustomFiledValues, dbCustomFieldValues, dbEmployeeDOList);
+                    return importErrorUserEmployee;
+                } catch (Exception e) {
+                    ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployee.setMessage("数据异常");
+                    errorCount.incrementAndGet();
+                    return importErrorUserEmployee;
                 }
-            }
-            if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
-                continue;
-            }
-            logger.info("BatchValidate importCheck cname: {}, customField:{}", userEmployeeDO.getCname(), userEmployeeDO.getCustomField());
-            if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
-                // 数据库的数据
-                for (UserEmployeeDO dbUserEmployeeDO : dbEmployeeDOList) {
-                    // 非自定义员工,忽略检查
-                    if (StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCustomField())
-                            || StringUtils.isNullOrEmpty(dbUserEmployeeDO.getCname())) {
-                        continue;
-                    }
-                    // 当提交的数据和数据库中的数据，cname和customField都相等时候，认为是重复数据
-                    if (userEmployeeDO.getCname().equals(dbUserEmployeeDO.getCname())
-                            && userEmployeeDO.getCustomField().equals(dbUserEmployeeDO.getCustomField())) {
-                        repetitionCounts = repetitionCounts + 1;
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setRowNum(entry.getKey());
-                        importErrorUserEmployee.setMessage("cname和customField和数据库的数据一致");
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                    }
+            });
+            futures.add(future);
+        });
+
+        for (Future<ImportErrorUserEmployee> future : futures) {
+            try {
+                ImportErrorUserEmployee importErrorUserEmployee = future.get();
+                if (importErrorUserEmployee != null) {
+                    importErrorUserEmployees.add(importErrorUserEmployee);
                 }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
+
         }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCounts);
-        importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
+        importUserEmployeeStatistic.setErrorCounts(errorCount.get());
+        importUserEmployeeStatistic.setRepetitionCounts(repeatCounts.get());
         importUserEmployeeStatistic.setUserEmployeeDO(importErrorUserEmployees);
-        if (repetitionCounts == 0 && errorCounts == 0) {
+        if (repeatCounts.get() == 0 && errorCount.get() == 0) {
             importUserEmployeeStatistic.setInsertAccept(true);
         } else {
             importUserEmployeeStatistic.setInsertAccept(false);
@@ -230,7 +224,7 @@ public class BatchValidate {
         // 重复的数据
         List<ImportErrorUserEmployee> importErrorUserEmployees = new ArrayList<>();
         int repetitionCounts = 0;
-        int errorCounts = 0;
+        AtomicInteger errorCounts = new AtomicInteger(0);
         // 提交上的数据
         List<Integer> employeeIdList;
         if (dbEmployeeDOList != null && dbEmployeeDOList.size() > 0) {
@@ -245,58 +239,30 @@ public class BatchValidate {
          * 为校验自定义下拉项数据做准备
          */
         ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues = employeeParam(userEmployeeMap);
-        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(employeeCustomFiledValues, companyId);
+        Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues
+                = fetchOptionsValues(employeeCustomFiledValues, companyId);
+
+        CountDownLatch countDownLatch = new CountDownLatch(userEmployeeMap.size());
 
         for (int i=0; i<userEmployeeMap.size(); i++) {
-            UserEmployeeDO userEmployeeDO = userEmployeeMap.get(i);
-            ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
-            if (userEmployeeDO.getId() <= 0) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("编号错误");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(i);
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                logger.info("BatchValidate updateEmployee updateCheck row:{} message:id <=0", i);
-                continue;
-            }
-            if (!employeeIdList.contains(userEmployeeDO.getId())) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("数据不允许修改");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(i);
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                logger.info("BatchValidate updateEmployee updateCheck row:{} message:数据不允许修改", i);
-                continue;
-            }
-            if (userEmployeeDO.getActivation() != EmployeeActiveState.Actived.getState()
-                    && userEmployeeDO.getActivation() != EmployeeActiveState.Cancel.getState()) {
-                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                importErrorUserEmployee.setMessage("只允许修改成取消认证的状态");
-                errorCounts = errorCounts + 1;
-                importErrorUserEmployee.setRowNum(i);
-                importErrorUserEmployees.add(importErrorUserEmployee);
-                logger.info("BatchValidate updateEmployee updateCheck row:{} message:只允许修改成取消认证的状态", i);
-                continue;
-            }
-            if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
-                    && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
-                if (employeeCustomFiledValues.get(i) != null
-                        && employeeCustomFiledValues.get(i).size() > 0) {
-                    boolean flag = checkOptions(employeeCustomFiledValues.get(i), dbCustomFieldValues);
-                    if (!flag) {
-                        importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
-                        importErrorUserEmployee.setMessage("自定义选项错误");
-                        errorCounts = errorCounts + 1;
-                        importErrorUserEmployee.setRowNum(i);
-                        importErrorUserEmployees.add(importErrorUserEmployee);
-                        logger.info("BatchValidate updateEmployee updateCheck row:{} message:自定义选项错误", i);
-                        continue;
-                    }
-                }
+            int row = i;
+            try {
+                threadPool.startTast(() -> {
+                    checkUpdateEmployee(row, userEmployeeMap.get(row), errorCounts, employeeCustomFiledValues, dbCustomFieldValues,
+                            importErrorUserEmployees, employeeIdList);
+                    return true;
+                });
+            } finally {
+                countDownLatch.countDown();
             }
         }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            throw UserAccountException.IMPORT_DATA_CUSTOM_ERROR;
+        }
         importUserEmployeeStatistic.setTotalCounts(userEmployeeMap.size());
-        importUserEmployeeStatistic.setErrorCounts(errorCounts);
+        importUserEmployeeStatistic.setErrorCounts(errorCounts.get());
         importUserEmployeeStatistic.setRepetitionCounts(repetitionCounts);
 
         return importUserEmployeeStatistic;
@@ -340,22 +306,15 @@ public class BatchValidate {
      */
     public boolean validateCustomFieldValues(Map<Integer, String> customFieldValues, int companyId) {
 
-        /**
-         * 校验必填项
-         */
         List<HrEmployeeCustomFields> customSupplyVOS = customFieldsDao.fetchRequiredByCompanyId(companyId);
-        logger.info("BatchValidate validateCustomFieldValues customSupplyVOS:{}", JSONObject.toJSONString(customSupplyVOS));
         List<HrEmployeeCustomFields> notSupportList = customSupplyVOS
                 .parallelStream()
                 .filter(hrEmployeeCustomFields -> customFieldValues == null || !customFieldValues.containsKey(hrEmployeeCustomFields.getId()))
                 .collect(Collectors.toList());
-        logger.info("BatchValidate validateCustomFieldValues notSupportList:{}", JSONObject.toJSONString(notSupportList));
         if (notSupportList != null && notSupportList.size() > 0) {
-            logger.info("BatchValidate validateCustomFieldValues 缺少必填项：{}", JSONObject.toJSONString(notSupportList));
             return false;
         }
 
-        logger.info("BatchValidate validateCustomFieldValues customFieldValues:{}", JSONObject.toJSONString(customFieldValues));
         if (customFieldValues == null || customFieldValues.size() == 0) {
             return true;
         }
@@ -364,15 +323,15 @@ public class BatchValidate {
          * 校验下拉项选择
          */
         List<CustomOptionRel> rels = packageMapRel(customFieldValues);
+
         logger.info("BatchValidate validateCustomFieldValues rels:{}", JSONObject.toJSONString(rels));
+
         if (rels != null) {
             Set<Integer> customFieldIdList = rels
                     .parallelStream()
                     .map(CustomOptionRel::getCustomId)
                     .collect(Collectors.toSet());
             List<HrEmployeeCustomFields> fields = customFieldsDao.listSelectOptionByIdList(companyId, customFieldIdList);
-
-            logger.info("BatchValidate validateCustomFieldValues fields:{}", JSONObject.toJSONString(fields));
 
             if (fields.size() > 0) {
                 Map<Integer, Integer> params = new HashMap<>(fields.size());
@@ -381,15 +340,14 @@ public class BatchValidate {
                         Integer optionId = Integer.valueOf(customFieldValues.get(field.getId()));
                         params.put(field.getId(), optionId);
                     } catch (NumberFormatException e) {
-                        logger.info("BatchValidate validateCustomFieldValues 下拉项是字符串! ：field{}", JSONObject.toJSONString(field));
                         return false;
                     }
 
                 }
-                logger.info("BatchValidate validateCustomFieldValues 数据库中的下拉项： params:{}", JSONObject.toJSONString(params));
                 int count = customOptionJooqDao.countByCustomIdAndId(params);
-                logger.info("BatchValidate validateCustomFieldValues 数据库中的下拉项： count:{}, 用户提交的下拉项：fields.size:{}", count, fields.size());
                 return count == fields.size();
+            } else {
+                return true;
             }
         }
         return false;
@@ -405,11 +363,137 @@ public class BatchValidate {
         Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues = fetchOptionsValues(map, companyId);
 
         for (int i =0; i<userEmployeeDOS.size(); i++) {
-            logger.info("BatchValidate convertToOptionId before convert:{}", userEmployeeDOS.get(i).customFieldValues);
             JSONArray jsonArray = convertNameToOptionId(map.get(i), dbCustomFieldValues);
-            logger.info("BatchValidate convertToOptionId after convert:{}", jsonArray.toJSONString());
             userEmployeeDOS.get(i).setCustomFieldValues(jsonArray.toJSONString());
         }
+    }
+
+    /**
+     * 检查批量修改的参数是否有问题
+     * @param row
+     * @param userEmployeeDO
+     * @param errorCounts
+     * @param employeeCustomFiledValues
+     * @param dbCustomFieldValues
+     * @param importErrorUserEmployees
+     * @param employeeIdList
+     */
+    private void checkUpdateEmployee(int row, UserEmployeeDO userEmployeeDO, AtomicInteger errorCounts,
+                                     ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
+                                     Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
+                                     List<ImportErrorUserEmployee> importErrorUserEmployees,
+                                     List<Integer> employeeIdList) {
+        ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+        if (userEmployeeDO.getId() <= 0) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("编号错误");
+            errorCounts.incrementAndGet();
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            return;
+        }
+        if (!employeeIdList.contains(userEmployeeDO.getId())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("数据不允许修改");
+            errorCounts.incrementAndGet();
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            return;
+        }
+        if (userEmployeeDO.getActivation() != EmployeeActiveState.Actived.getState()
+                && userEmployeeDO.getActivation() != EmployeeActiveState.Cancel.getState()) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("只允许修改成取消认证的状态");
+            errorCounts.incrementAndGet();
+            importErrorUserEmployee.setRowNum(row);
+            importErrorUserEmployees.add(importErrorUserEmployee);
+            return;
+        }
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+            if (employeeCustomFiledValues.get(row) != null
+                    && employeeCustomFiledValues.get(row).size() > 0) {
+                boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                if (!flag) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setMessage("自定义选项错误");
+                    errorCounts.incrementAndGet();
+                    importErrorUserEmployee.setRowNum(row);
+                    importErrorUserEmployees.add(importErrorUserEmployee);
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查导入数据是否正确
+     * @param row
+     * @param userEmployeeDO
+     * @param companyId
+     * @param repeatCounts
+     * @param errorCounts
+     * @param employeeCustomFiledValues
+     * @param dbCustomFieldValues
+     * @param dbEmployeeDOList
+     */
+    private ImportErrorUserEmployee checkImportEmployee(int row, UserEmployeeDO userEmployeeDO, int companyId,
+                                     AtomicInteger repeatCounts, AtomicInteger errorCounts,
+                                     ArrayListMultimap<Integer, CustomOptionRel> employeeCustomFiledValues,
+                                     Map<Integer, List<EmployeeOptionValue>> dbCustomFieldValues,
+                                     List<UserEmployeeDO> dbEmployeeDOList) {
+        ImportErrorUserEmployee importErrorUserEmployee = new ImportErrorUserEmployee();
+        // 姓名不能为空
+        if (StringUtils.isNullOrEmpty(userEmployeeDO.getCname())) {
+            importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+            importErrorUserEmployee.setMessage("员工姓名不能为空");
+            importErrorUserEmployee.setRowNum(row);
+            errorCounts.incrementAndGet();
+            return importErrorUserEmployee;
+        }
+
+        if (userEmployeeDO.getCompanyId() == 0) {
+            userEmployeeDO.setCompanyId(companyId);
+        }
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(userEmployeeDO.getCustomFieldValues())
+                && !userEmployeeDO.getCustomFieldValues().equals("[]")) {
+            if (employeeCustomFiledValues.get(row) != null
+                    && employeeCustomFiledValues.get(row).size() > 0) {
+                boolean flag = checkOptions(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                if (!flag) {
+                    importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                    importErrorUserEmployee.setMessage("自定义选项错误");
+                    importErrorUserEmployee.setRowNum(row);
+                    errorCounts.incrementAndGet();
+                    return importErrorUserEmployee;
+                } else {
+                    JSONArray customFieldValues = convertNameToOptionId(employeeCustomFiledValues.get(row), dbCustomFieldValues);
+                    userEmployeeDO.setCustomFieldValues(customFieldValues.toJSONString());
+                }
+            }
+        }
+        if (StringUtils.isNullOrEmpty(userEmployeeDO.getCustomField())) {
+            return null;
+        }
+        if (!StringUtils.isEmptyList(dbEmployeeDOList)) {
+
+            Optional<UserEmployeeDO> optional = dbEmployeeDOList
+                    .parallelStream()
+                    .filter(u -> u.getCname() != null
+                            && u.getCustomField() != null
+                            && userEmployeeDO.getCname().trim().equals(u.getCname())
+                            && userEmployeeDO.getCustomField().trim().equals(u.getCustomField()))
+                    .findAny();
+
+            if (optional.isPresent()) {
+                importErrorUserEmployee.setUserEmployeeDO(userEmployeeDO);
+                importErrorUserEmployee.setRowNum(row);
+                importErrorUserEmployee.setMessage("员工姓名和自定义信息和数据库的数据一致");
+                repeatCounts.incrementAndGet();
+                return importErrorUserEmployee;
+            }
+        }
+        return null;
     }
 
     /**
@@ -440,8 +524,6 @@ public class BatchValidate {
                     jsonArray.add(jsonObject);
                 }
             });
-            logger.info("BatchValidate checkOptions convertNameToOptionId:{}", jsonArray);
-
             return jsonArray;
         } else {
             return new JSONArray(0);
@@ -457,7 +539,6 @@ public class BatchValidate {
     private void packageRel(ArrayListMultimap<Integer, CustomOptionRel> map, JSONArray array, Integer row) {
         for (int i=0; i<array.size(); i++) {
             if (array.get(i) != null) {
-                logger.info("BatchValidate packageRel array[{}]:{}", i, array.get(i));
                 if (array.get(i) instanceof JSONArray) {
                     JSONArray jsonArray = (JSONArray)array.get(i);
                     if (jsonArray != null && jsonArray.size() > 0) {
@@ -478,6 +559,9 @@ public class BatchValidate {
         if (customFieldValues != null && customFieldValues.size() > 0) {
             List<CustomOptionRel> rels = new ArrayList<>(customFieldValues.size());
             customFieldValues.forEach((key, value) -> {
+                if (value == null || value.equals("")) {
+                    return;
+                }
                 CustomOptionRel customOptionRel = new CustomOptionRel();
                 customOptionRel.setCustomId(Integer.valueOf(key));
                 customOptionRel.setOption(value);
@@ -523,18 +607,15 @@ public class BatchValidate {
                                     .filter(employeeOptionValue -> employeeOptionValue.getName().equals(customOptionRel.getOption()))
                                     .findAny();
 
-                            logger.info("BatchValidate checkOptions customOptionRel:{}", JSONObject.toJSONString(customOptionRel));
-                            logger.info("BatchValidate checkOptions optionValue.siPresent:{}", optionValue.isPresent());
                             return optionValue.isPresent();
                         } else {
-                            return false;
+                            return true;
                         }
                     })
                     .findAny();
-            logger.info("BatchValidate checkOptions optional.siPresent:{}", optional.isPresent());
             return optional.isPresent();
         } else {
-            return false;
+            return true;
         }
     }
 
@@ -613,14 +694,12 @@ public class BatchValidate {
                                                          List<HrEmployeeCustomFields> fieldsList,
                                                          List<EmployeeOptionValue> employeeOptionValues,
                                                          int companyId) {
-        logger.info("BatchValidate convertToListDisplay");
         List<Map<String,String>> result = new ArrayList<>(0);
 
         Map<String, String> department = new HashMap<>(1);
         Map<String, String> position = new HashMap<>(1);
         Map<String, String> city = new HashMap<>(1);
         if (list == null || list.size() == 0) {
-            logger.info("BatchValidate convertToListDisplay list is empty");
             department.put("department", "");
             position.put("position", "");
             city.put("city", "");
@@ -632,23 +711,23 @@ public class BatchValidate {
                         .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.Department.getValue())
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
-                logger.info("BatchValidate convertToListDisplay departmentOptional.isPresent:{}", departmentOptional.isPresent());
                 if (departmentOptional.isPresent() && departmentOptional.get().getOptionType() == OptionType.Select.getValue()) {
                     Optional<Map<String, String>> departmentValueOptional =  parseFilter(list, departmentOptional);
-                    logger.info("BatchValidate convertToListDisplay departmentValueOptional.isPresent:{}", departmentValueOptional.isPresent());
                     if (departmentValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
-                            logger.info("BatchValidate convertToListDisplay department optionId:{}", optionId);
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            logger.info("BatchValidate convertToListDisplay department optionValueOptional:{}", optionValueOptional.isPresent());
-                            if (optionValueOptional.isPresent()) {
-                                department.put("department", optionValueOptional.get().getName());
-                            } else {
+                            if (departmentValueOptional.get().get(departmentOptional.get().getId().toString()).equals("")) {
                                 department.put("department", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(departmentValueOptional.get().get(departmentOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    department.put("department", optionValueOptional.get().getName());
+                                } else {
+                                    department.put("department", "");
+                                }
                             }
                         } else {
                             department.put("department", "");
@@ -663,24 +742,25 @@ public class BatchValidate {
                         .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.Position.getValue())
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
-                logger.info("BatchValidate convertToListDisplay positionOptional.isPresent:{}", positionOptional.isPresent());
                 if (positionOptional.isPresent()) {
                     Optional<Map<String, String>> positionValueOptional = parseFilter(list, positionOptional);
-                    logger.info("BatchValidate convertToListDisplay positionValueOptional.isPresent:{}", positionValueOptional.isPresent());
                     if (positionValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
-                            logger.info("BatchValidate convertToListDisplay position optionId:{}", optionId);
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            logger.info("BatchValidate convertToListDisplay position optionValueOptional.isPresent:{}", optionValueOptional.isPresent());
-                            if (optionValueOptional.isPresent()) {
-                                position.put("position", optionValueOptional.get().getName());
-                            } else {
+                            if (positionValueOptional.get().get(positionOptional.get().getId().toString()).equals("")) {
                                 position.put("position", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(positionValueOptional.get().get(positionOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    position.put("position", optionValueOptional.get().getName());
+                                } else {
+                                    position.put("position", "");
+                                }
                             }
+
                         } else {
                             position.put("position", "");
                         }
@@ -694,24 +774,25 @@ public class BatchValidate {
                         .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.City.getValue())
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
-                logger.info("BatchValidate convertToListDisplay cityOptional.isPresent:{}", cityOptional.isPresent());
                 if (cityOptional.isPresent()) {
                     Optional<Map<String, String>> cityValueOptional = parseFilter(list, cityOptional);
-                    logger.info("BatchValidate convertToListDisplay cityValueOptional.isPresent:{}", cityValueOptional.isPresent());
                     if (cityValueOptional.isPresent()) {
                         if (employeeOptionValues != null && employeeOptionValues.size() > 0) {
-                            Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
-                            logger.info("BatchValidate convertToListDisplay city optionId:{}", optionId);
-                            Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
-                                    .parallelStream()
-                                    .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
-                                    .findAny();
-                            logger.info("BatchValidate convertToListDisplay city optionValueOptional.isPresent:{}", optionValueOptional.isPresent());
-                            if (optionValueOptional.isPresent()) {
-                                city.put("city", optionValueOptional.get().getName());
-                            } else {
+                            if (cityValueOptional.get().get(cityOptional.get().getId().toString()).equals("")) {
                                 city.put("city", "");
+                            } else {
+                                Integer optionId = Integer.valueOf(cityValueOptional.get().get(cityOptional.get().getId().toString()));
+                                Optional<EmployeeOptionValue> optionValueOptional = employeeOptionValues
+                                        .parallelStream()
+                                        .filter(employeeOptionValue -> employeeOptionValue.getId().equals(optionId))
+                                        .findAny();
+                                if (optionValueOptional.isPresent()) {
+                                    city.put("city", optionValueOptional.get().getName());
+                                } else {
+                                    city.put("city", "");
+                                }
                             }
+                            
                         } else {
                             city.put("city", "");
                         }
@@ -734,7 +815,6 @@ public class BatchValidate {
                     .parallelStream()
                     .filter(map -> {
                         if (map.keySet().contains(optional.get().getId().toString())) {
-                            logger.info("BatchValidate convertToListDisplay contain key");
                             return true;
                         } else {
                             return false;

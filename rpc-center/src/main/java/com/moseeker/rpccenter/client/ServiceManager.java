@@ -19,15 +19,17 @@ import org.slf4j.LoggerFactory;
  * @version
  */
 public enum ServiceManager {
-	
-	SERVICEMANAGER;
+
+    /**
+     * 服务管理对象
+     */
+	SERVICE_MANAGER;
 
 	private Logger logger = LoggerFactory.getLogger(ServiceManager.class);
 	
 	private ThriftServerConfig config = new ThriftServerConfig();
 	@SuppressWarnings("rawtypes")
 	private HashMap<String, IfaceFactory> ifaceFactories = new HashMap<>();
-    //private List<IfaceFactory<Class>> ifaceFactories = new ArrayList<>();
 	private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
 	private ServiceManager() {
@@ -48,7 +50,7 @@ public enum ServiceManager {
         try{
         	IfaceFactory<clazz>  ifaceFactory = getIfaceFactory(clazz);
         	if(ifaceFactory == null) {
-                ifaceFactory = new IfaceFactory<clazz>(config, clazz.getName());
+                ifaceFactory = new IfaceFactory<>(config, clazz.getName());
                 ifaceFactories.put(clazz.getName(), ifaceFactory);
             }
             return ifaceFactory.createIface(clazz, getServerName(clazz));

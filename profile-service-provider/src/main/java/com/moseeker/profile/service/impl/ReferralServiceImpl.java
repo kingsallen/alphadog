@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -36,8 +37,10 @@ import com.moseeker.profile.service.impl.vo.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
@@ -45,6 +48,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -58,6 +62,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -535,6 +540,36 @@ public class ReferralServiceImpl implements ReferralService {
         return referralIds.get(0);
     }
 
+    @Override
+    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,
+                                                               List<String> referralReasons, List<Integer> positions,
+                                                               byte relationship, String referralText,
+                                                               byte referralType) throws ProfileException, BIZException {
+        logger.info("Multi positions recommendation start {}",positions);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildPosition(positions)
+                .buildRecomReason(relationship,referralText,referralType)
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
+        logger.info("employeeReferralProfile referralResultVOS-> {}",referralResultVOS);
+        List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
+        logger.info("employeeReferralProfile referralIds-> {}",referralIds);
+        if(!com.moseeker.common.util.StringUtils.isRealEmptyList(referralIds)){//若存在推荐成功的情况，清空redis中相关简历数据
+            logger.info("employeeReferralProfile Some positions were referraled successful-> {}",referralIds);
+            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        }
+
+        referralResultVOS = referralResultVOS.stream().map(resultVO -> {
+            //获取该职位应得的积分
+            Double reward = employeeEntity.calcReward(
+                    employeeId,Constant.RECRUIT_STATUS_UPLOAD_PROFILE,resultVO.getPosition_id());
+            resultVO.setReward(reward);
+            return resultVO;
+        }).collect(Collectors.toList());
+        return referralResultVOS;
+    }
+
     /**
      * 员工提交候选人关键信息
      * @param employeeId 员工编号
@@ -961,7 +996,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     private EmployeeEntity employeeEntity;
@@ -971,6 +1006,7 @@ public class ReferralServiceImpl implements ReferralService {
     private ProfileParseUtil profileParseUtil;
     private PositionEntity positionEntity;
     private ReferralEntity referralEntity;
+    private HrPointsConfDao hrPointsConfDao;
 
     private Environment env;
 

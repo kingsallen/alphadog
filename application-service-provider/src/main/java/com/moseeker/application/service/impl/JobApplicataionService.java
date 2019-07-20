@@ -51,7 +51,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ScheduledThread;
-import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -74,11 +73,13 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -159,11 +160,11 @@ public class JobApplicataionService {
     @Autowired
     private RabbitMQOperationRecord rabbitMQOperationRecord;
 
-    MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
-    ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
+    ChatService.Iface chatService = ServiceManager.SERVICE_MANAGER.getService(ChatService.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     @Autowired
     ApplicationRepository applicationRepository;
@@ -204,13 +205,18 @@ public class JobApplicataionService {
         if (responseJob.status > 0) {
             return responseJob;
         }
-        Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
-                jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
-        if (responseCheck != null && responseCheck.getStatus() != 0) {
-            updateOrigin(jobApplication);
-            return responseCheck;
+        if (jobApplication.getOrigin() != ApplicationOriginEnum.HR_RECOMMEND.getKey()) {
+            Response responseCheck = checkApplicationCountAtCompany(jobApplication.getApplier_id(),
+                    jobPositionRecord.getCompanyId(), jobPositionRecord.getCandidateSource());
+            if (responseCheck != null && responseCheck.getStatus() != 0) {
+                updateOrigin(jobApplication);
+                return responseCheck;
+            }
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
+        if(jobApplicationId==-1){
+            return ResponseUtils.fail(ApplicationException.APPLICATION_POSITION_DUPLICATE.getMessage());
+        }
         if (jobApplicationId > 0) {
             sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
                     jobApplication.getApply_type(), jobApplication.getEmail_status(),
@@ -317,8 +323,8 @@ public class JobApplicataionService {
             String result=redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             if(StringUtils.isNotNullOrEmpty(result)){
-                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
-
+//                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
+                return -1;
             }
             redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "","1");
@@ -336,7 +342,8 @@ public class JobApplicataionService {
             if (jobApplicationVO.isCreate()) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
-                if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
+                if ((jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0)
+                        && jobApplication.getOrigin()!=ApplicationOriginEnum.HR_RECOMMEND.getKey()) {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }

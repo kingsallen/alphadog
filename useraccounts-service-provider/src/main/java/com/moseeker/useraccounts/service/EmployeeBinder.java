@@ -63,7 +63,7 @@ public abstract class EmployeeBinder {
 
     protected static final Logger log = LoggerFactory.getLogger(EmployeeBinder.class);
 
-    protected MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    protected MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     @Resource(name = "cacheClient")
     protected RedisClient client;
@@ -287,7 +287,7 @@ public abstract class EmployeeBinder {
             userDao.updateData(userUserDO);
         }
 
-        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}}, true);
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
         kafkaSender.sendEmployeeCertification(useremployee);
         //将属于本公司的潜在候选人设置为无效
@@ -360,6 +360,7 @@ public abstract class EmployeeBinder {
         properties.put("companyName", companyDO.getName());
         properties.put("companyId", useremployee.getCompanyId());
         properties.put("isEmployee", 1);
+        properties.put("employee_origin",bindSource);
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
 
         return response;
@@ -384,6 +385,10 @@ public abstract class EmployeeBinder {
             if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
                     !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
                 unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+            }
+            //添加source字段
+            if(useremployee.isSetSource()){
+                unActiveEmployee.setSource((byte)useremployee.getSource());
             }
             unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
             log.info("doneBind unActiveEmployee update record");

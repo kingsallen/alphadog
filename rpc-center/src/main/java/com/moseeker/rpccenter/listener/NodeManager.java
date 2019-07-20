@@ -1,7 +1,9 @@
 package com.moseeker.rpccenter.listener;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.rpccenter.config.ServerData;
 import com.moseeker.rpccenter.config.ServerManagerZKConfig;
 import org.apache.curator.framework.CuratorFramework;
@@ -16,9 +18,9 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -31,24 +33,53 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * <p>date: Jul 26, 2016</p>  
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
- * @version
+ * @version 0.1.0
  */
 public enum NodeManager {
 
-	NODEMANAGER;
+	/**
+	 * 节点管理工具
+	 */
+	NODE_MANAGER;
 
 	private Logger logger = LoggerFactory.getLogger(NodeManager.class);
-	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);	//读写锁
-	
-	private ServerManagerZKConfig config;													//zookeeper配置信息
-	private ZKPath path = null;																//根节点
-	
-	private NodeManager() {
-		ServerManagerZKConfig config = ServerManagerZKConfig.config;
-		this.config = config;
+	/**
+	 * 读写锁
+	 */
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
+	/**
+	 * zookeeper配置信息
+	 */
+	private ServerManagerZKConfig config;
+	/**
+	 * 根节点
+	 */
+	private ZKPath path = null;
+
+	/**
+	 * 异常节点
+	 */
+	private Map<ZKPath, Long> errorStorage = new HashMap<>();
+
+	/**
+	 * 任务过期时间
+	 */
+	private int expiredTime = 10*60*1000;
+
+	/**
+	 * 定时任务工具
+	 */
+	private ScheduledThread scheduledThread = ScheduledThread.Instance;
+
+	NodeManager() {
+		this.config = ServerManagerZKConfig.config;
 		initRoot();
+		startTaskWithFixedRate();
 	}
 
+	/**
+	 * 初始化根节点
+	 */
 	private void initRoot() {
 		if(path == null) {
 			path = search();
@@ -69,14 +100,13 @@ public enum NodeManager {
 					Thread.sleep(1000 * i++);
 				} catch (InterruptedException e) {
 					logger.error(e.getMessage(), e);
-					e.printStackTrace();
 				}
 			}
 		}
 		return path;
 	}
 	
-	public String converToString() {
+	public String convertToString() {
 		if(path != null) {
 			return path.toString();
 		} else {
@@ -89,12 +119,28 @@ public enum NodeManager {
 	 * @param path 二级节点
 	 */
 	public void removePath(ZKPath path) {
-		if(path != null && this.path != null && this.path.getChirldren() != null) {
-			for(ZKPath parentPath : this.path.getChirldren()) {
-				if(path.equals(parentPath)) {
-					removeParentPath(path);
-				}
-			}
+		try {
+			lock.writeLock().lock();
+			if(path != null && path.getParentNode() != null && this.path != null && this.path.getChirldren() != null) {
+                for(ZKPath parentPath : this.path.getChirldren()) {
+                    if(path.getParentNode().equals(parentPath)) {
+                    	if (parentPath.getChirldren() != null) {
+							Iterator<ZKPath> zkPathIterator = parentPath.getChirldren().iterator();
+							while (zkPathIterator.hasNext()) {
+								ZKPath zkPath = zkPathIterator.next();
+								if (zkPath.equals(path)) {
+									zkPathIterator.remove();
+									errorStorage.put(zkPath, System.currentTimeMillis());
+									break;
+								}
+							}
+						}
+						break;
+                    }
+                }
+            }
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 	
@@ -120,7 +166,7 @@ public enum NodeManager {
 				path = null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -130,6 +176,7 @@ public enum NodeManager {
 	 * 刷新节点数据
 	 */
 	public void refresh() {
+		clearErrorStorage();
 		if(path == null) {
 			path = search();
 			addListener(path);
@@ -143,10 +190,11 @@ public enum NodeManager {
 	 * @return 根服务节点
 	 */
 	private ZKPath search() {
-		lock.readLock().lock();
-		ZKPath zkPath = null;
+		lock.writeLock().lock();
+		ZKPath zkPath;
 		CuratorFramework zookeeper = null;
 		try {
+			clearErrorStorage();
 			zkPath = new ZKPath(config.getRoot());
 			CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
 			zookeeper = builder.connectString(config.getIP()+":"+config.getPort()).sessionTimeoutMs(config.getSessionTimeOut())
@@ -203,11 +251,12 @@ public enum NodeManager {
 			zookeeper.close();
 		} catch (Exception e) {
 			zkPath = null;
-			zookeeper.close();
-			e.printStackTrace();
+			if (zookeeper != null) {
+				zookeeper.close();
+			}
 			logger.error(e.getMessage(), e);
 		} finally {
-			lock.readLock().unlock();
+			lock.writeLock().unlock();
 		}
 
 		return zkPath;
@@ -277,7 +326,6 @@ public enum NodeManager {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
@@ -301,8 +349,7 @@ public enum NodeManager {
 			}
 			root.getChirldren().clear();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(),e);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -312,9 +359,10 @@ public enum NodeManager {
 	 * 刷新根节点下的子节点
 	 * @param root 根节点
 	 */
-	private synchronized void refreshParentNode(ZKPath root) {
+	private void refreshParentNode(ZKPath root) {
 		lock.writeLock().lock();
 		try {
+			clearErrorStorage();
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
 			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
@@ -359,7 +407,7 @@ public enum NodeManager {
 
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -372,6 +420,7 @@ public enum NodeManager {
 	private void addNewNodesListener(ZKPath root) {
 		try {
 			lock.writeLock().lock();
+			clearErrorStorage();
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
 			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
@@ -466,7 +515,6 @@ public enum NodeManager {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
@@ -477,7 +525,7 @@ public enum NodeManager {
 	 * 删除二级节点
 	 * @param parentPath 二级子节点
 	 */
-	private synchronized void removeParentPath(ZKPath parentPath) {
+	private void removeParentPath(ZKPath parentPath) {
 		lock.writeLock().lock();
 		try {
 			if(parentPath != null) {
@@ -505,7 +553,6 @@ public enum NodeManager {
 				parentPath = null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
@@ -522,6 +569,7 @@ public enum NodeManager {
 		}
 		lock.writeLock().lock();
 		try {
+			clearErrorStorage();
 			if(parentPath.getZookeeper() == null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
 				CuratorFramework zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getSessionTimeOut())
@@ -556,7 +604,7 @@ public enum NodeManager {
 						grandChirldrenPath.setData(data);
 					} catch (Exception e) {
 						//报警
-						e.printStackTrace();
+						logger.error(e.getMessage(), e);
 					} finally {
 						//
 					}
@@ -570,9 +618,117 @@ public enum NodeManager {
 				parentPath.setChirldren(null);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
+			lock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * 提供NodeManager锁
+	 * @return NodeManager读写锁
+	 */
+	public ReentrantReadWriteLock getLock() {
+		return lock;
+	}
+
+	/**
+	 * 清空错误节点信息
+	 */
+	private void clearErrorStorage() {
+		lock.writeLock().lock();
+		if (errorStorage.size() != 0) {
+			errorStorage.clear();
+		}
+		lock.writeLock().unlock();
+	}
+
+	private void startTaskWithFixedRate() {
+		/**
+		 * 首次任务的延迟事件
+		 */
+		long initialDelay = 10*60*1000;
+		/**
+		 * 告警任务的时间间隔
+		 */
+		long warnPeriod = 5*60*1000;
+		/**
+		 * 归还任务的时间间隔
+		 */
+		long turnBackPeriod = 10*60*1000;
+		scheduledThread.scheduleWithFixedDelay(() -> warn(), initialDelay, warnPeriod, TimeUnit.MILLISECONDS);
+		scheduledThread.scheduleWithFixedDelay(() -> turnBack(expiredTime), initialDelay, turnBackPeriod, TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * 如果有错误节点，那么告警！
+	 */
+	private void warn() {
+		lock.readLock().lock();
+		try {
+			if (errorStorage.size() > 0) {
+				if (errorStorage.size() > 0) {
+					logger.error("NodeManager 有错误节点！！！");
+					for (Map.Entry<ZKPath, Long> entry : errorStorage.entrySet()) {
+						if (entry.getKey() == null) {
+							continue;
+						}
+						logger.error("NodeManager 错误节点名称：{}， 错误节点内容：{}",
+								entry.getKey().getName(),
+								JSONObject.toJSONString(entry.getKey().getData()));
+					}
+				}
+            }
+		} finally {
+			logger.info("NodeManager warn end!");
+			lock.readLock().unlock();
+		}
+	}
+
+	/**
+	 * 将时间超过指定时间之外的节点归还
+	 * @param millisecond 指定的时间 （单位毫秒）
+	 */
+	private void turnBack(int millisecond) {
+		lock.writeLock().lock();
+		try {
+			if (errorStorage.size() > 0) {
+                errorStorage.keySet().removeIf(Objects::nonNull);
+                if (errorStorage.size() > 0) {
+                	Iterator<Map.Entry<ZKPath, Long>> zkPathIterator = errorStorage.entrySet().iterator();
+                	long now = System.currentTimeMillis();
+                	while (zkPathIterator.hasNext()) {
+                		Map.Entry<ZKPath, Long> entry = zkPathIterator.next();
+                		if (now - entry.getValue() >= millisecond) {
+							ZKPath root = getRoot();
+							if (root != null && root.getChirldren() != null) {
+								Optional<ZKPath> parentOptional =
+										root.getChirldren()
+												.stream()
+												.filter(zkPath -> zkPath.equals(entry.getKey().getParentNode()))
+												.findAny();
+								if (parentOptional.isPresent()) {
+									ZKPath parent = parentOptional.get();
+									if (parent.getChirldren() != null) {
+										Optional<ZKPath> childOptional = parent.getChirldren()
+												.stream()
+												.filter(zkPath -> zkPath.equals(entry.getKey()))
+												.findAny();
+										if (!childOptional.isPresent()) {
+											parent.getChirldren().add(entry.getKey());
+										}
+									} else {
+										parent.setChirldren(new ArrayList<ZKPath>(1){{add(entry.getKey());}});
+									}
+									break;
+								}
+							}
+						}
+					}
+				}
+            }
+		} finally {
+			logger.info("NodeManager turnBack end!");
 			lock.writeLock().unlock();
 		}
 	}

@@ -179,8 +179,8 @@ public class PositionService {
 
     private ThreadPool pool = ThreadPool.Instance;
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-    PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
+    PositionServices.Iface positionServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
 
     private static List dictAlipaycampusJobcategorylist;
 
@@ -2316,8 +2316,6 @@ public class PositionService {
      * @return 红包职位列表
      */
     public List<WechatRpPositionListData> getRpPositionList(int hbConfigId, int pageNum, int pageSize) {
-        logger.info("PositionService getRpPositionList hb_config_id:{}, pageNum:{}, pageSize:{}",
-                hbConfigId, pageNum, pageSize);
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             new ArrayList<>(0);
         }
@@ -2333,20 +2331,16 @@ public class PositionService {
             size = 15;
         }
         int start = (pageNum-1)*size;
-        logger.info("PositionService getRpPositionList start:{}, size:{}", start, size);
         List<RedpacketActivityPosition> bindings = positionJOOQDao.listByActivityId(hbConfigId, true, start, size);
         //activityPositionJOOQDao.list
 
-        logger.info("PositionService getRpPositionList bindings：{}", JSON.toJSONString(bindings));
         List<Integer> pids = bindings.stream().map(RedpacketActivityPosition::getPositionId).collect(Collectors.toList());
 
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).and("status",0).orderBy("priority")
-                .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
+                .orderBy("id",Order.DESC).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        logger.info("PositionService getRpPositionList jobRecords.size：{}", jobRecords.size());
         if(StringUtils.isEmptyList(jobRecords)){
-            logger.info("PositionService getRpPositionList jobRecords is null");
             return result;
         }
         // filter 出已经发完红包的职位
@@ -2400,8 +2394,6 @@ public class PositionService {
                 }
             });
         }
-        logger.info("PositionService getRpPositionList result:{}",
-                result);
         return result;
     }
 
@@ -2833,7 +2825,7 @@ public class PositionService {
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
                 updateField.put("updateTime", dateStr);
-                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), positionDO.getCompanyId());
+                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), accountDO.getCompanyId());
 
                 // 猎聘api新增
                 if (updateField.get("status") != null) {

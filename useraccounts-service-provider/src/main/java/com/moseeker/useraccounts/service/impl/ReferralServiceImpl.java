@@ -29,6 +29,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -82,7 +83,7 @@ import java.util.stream.Collectors;
 @CounterIface
 public class ReferralServiceImpl implements ReferralService {
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     @Autowired
@@ -151,7 +152,6 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private SensorSend sensorSend;
-
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -249,11 +249,14 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId, int hrId) throws UserAccountException {
+        logger.info("ReferralServiceImpl getReferralProfileTabList userId:{}, companyId:{}, hrId:{}", userId, companyId, hrId);
         long startTime = System.currentTimeMillis();
         List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
         long logListTime = System.currentTimeMillis();
         logger.info("profile tab getReferralProfileTabList groupCompanyRelTime:{}", logListTime- startTime);
+        logger.info("ReferralServiceImpl getReferralProfileTabList logList:{}", JSONObject.toJSONString(logList));
         ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
+        logger.info("ReferralServiceImpl getReferralProfileTabList profileData:{}", JSONObject.toJSONString(profileData));
         long profileDataTime = System.currentTimeMillis();
         logger.info("profile tab getReferralProfileTabList profileDataTime:{}", profileDataTime- logListTime);
 
@@ -262,6 +265,8 @@ public class ReferralServiceImpl implements ReferralService {
             for(ReferralLog log : logList){
                 profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
             }
+            logger.info("ReferralServiceImpl getReferralProfileTabList profileTabs:{}", JSONObject.toJSONString(profileTabs));
+
             return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
                     .collect(Collectors.toList());
         }
@@ -561,6 +566,7 @@ public class ReferralServiceImpl implements ReferralService {
                     JobApplicationDO jobApplicationDO = new JobApplicationDO();
                     BeanUtils.copyProperties(application,jobApplicationDO);
                     applicationDao.updateData(jobApplicationDO);
+                    updateApplicationESIndex(presenteeId);
                     return;
                 }
                 throw UserAccountException.NODATA_EXCEPTION;
@@ -587,11 +593,15 @@ public class ReferralServiceImpl implements ReferralService {
         if (response.getStatus() == 0) {
             JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
             applicationId = jsonObject1.getInteger("jobApplicationId");
-            logger.info("==========更新data/profile==============");
-            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
-            logger.info("==========更新data/profile===userId=={}==============",userId);
+            updateApplicationESIndex(userId);
         }
 
         return applicationId;
+    }
+
+    private void updateApplicationESIndex(int userId) {
+        logger.info("==========更新data/profile==============");
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        logger.info("==========更新data/profile===userId=={}==============",userId);
     }
 }

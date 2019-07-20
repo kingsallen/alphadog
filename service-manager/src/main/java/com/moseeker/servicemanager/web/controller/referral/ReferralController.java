@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -38,7 +39,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,11 +52,11 @@ import java.util.stream.Collectors;
 @CounterIface
 public class ReferralController {
 
-    private ProfileServices.Iface profileService =  ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
-    private EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
-    private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
-    private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
-    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+    private ProfileServices.Iface profileService =  ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
+    private EmployeeService.Iface employeeService =  ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
+    private UseraccountsServices.Iface userService =  ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
+    private ReferralService.Iface referralService =  ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
+    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER.getService(UserHrAccountService.Iface.class);
     private Logger logger = LoggerFactory.getLogger(ReferralController.class);
 
     /**
@@ -128,6 +128,42 @@ public class ReferralController {
                     referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
                     (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
             return Result.success(referralId).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工推荐简历(多职位)
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/referrals", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfiles(@RequestBody ReferralsForm referralForm) throws Exception {
+
+        logger.info("ReferralController referralProfile");
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", referralForm.getRealname());
+        validateUtil.addRequiredValidate("推荐关系", referralForm.getRelation());
+        validateUtil.addIntTypeValidate("员工", referralForm.getEmployeeId(), 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getRecomTags()) &&
+                com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
+                    referralForm.getRealname(),referralForm.getMobile(), referralForm.getRecomTags(),
+                        referralForm.getPids(),(byte)referralForm.getRelation(),
+                            referralForm.getRecomText(),(byte) referralForm.getReferralType());
+            return Result.success(results).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }

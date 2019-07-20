@@ -79,7 +79,7 @@ public abstract class EmployeeReferralProfile {
     @Autowired
     private JobApplicationDao applicationDao;
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     ThreadPool tp = ThreadPool.Instance;
@@ -110,6 +110,7 @@ public abstract class EmployeeReferralProfile {
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
         storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
+        logger.info("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}",JSONObject.toJSONString(attementVO));
         int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
                 ApplicationSource.EMPLOYEE_CHATBOT.getValue();
         List<Integer> positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());

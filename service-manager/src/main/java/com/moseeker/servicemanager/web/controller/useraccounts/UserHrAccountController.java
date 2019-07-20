@@ -8,7 +8,6 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -63,10 +62,10 @@ public class UserHrAccountController {
 
     Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
+    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER
             .getService(UserHrAccountService.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
@@ -907,7 +906,6 @@ public class UserHrAccountController {
             String timespan = params.getString("timespan", "");
             String selectedIids = params.getString("selectedIds");
 
-            logger.info("UserHrAccountController employeeList params:{}", JSONObject.toJSONString(params));
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
                     order, asc, pageNumber, pageSize, email_isvalid,balanceType, timespan, selectedIids);
             return ResponseLogNotification.success(request,
@@ -1047,18 +1045,22 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/checkbatchinsert", method = RequestMethod.POST)
     @ResponseBody
     public String checkBatchInsert(HttpServletRequest request) {
+
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("checkBatchInsert UserHrAccountController initDateTime:{}", initDateTime.toString());
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
-            logger.info("employeeImport userEmployees:{}", JSONObject.toJSONString(params.get("userEmployees")));
             Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
-            logger.info("employeeImport userEmployees:{}", JSONObject.toJSONString(userEmployees));
             ImportUserEmployeeStatistic res = userHrAccountService.checkBatchInsert(userEmployees, companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(res)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("UserHrAccountController checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
         }
     }
 
@@ -1071,6 +1073,8 @@ public class UserHrAccountController {
     @RequestMapping(value = "/hraccount/employee/import", method = RequestMethod.POST)
     @ResponseBody
     public String employeeImport(HttpServletRequest request) {
+        LocalDateTime initDateTime = LocalDateTime.now();
+        logger.info("checkBatchInsert UserHrAccountController initDateTime:{}", initDateTime.toString());
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("companyId", 0);
@@ -1078,7 +1082,6 @@ public class UserHrAccountController {
             int hraccountId = params.getInt("hraccountId", 0);
             String fileName = params.getString("fileName", "");
             String filePath = params.getString("filePath", "");
-            logger.info("employeeImport userEmployees:{}", params.get("userEmployees"));
             Map<Integer, UserEmployeeDO> userEmployees = UserHrAccountParamUtils.parseUserEmployeeDO((List<HashMap<String, Object>>) params.get("userEmployees"));
             Response res = userHrAccountService.employeeImport(userEmployees, companyId, filePath, fileName, type, hraccountId);
             return ResponseLogNotification.success(request, res);
@@ -1087,6 +1090,10 @@ public class UserHrAccountController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            LocalDateTime lastDateTime = LocalDateTime.now();
+            logger.info("UserHrAccountController checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
+
         }
     }
 

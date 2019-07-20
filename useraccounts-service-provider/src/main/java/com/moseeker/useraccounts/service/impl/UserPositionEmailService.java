@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,7 +33,6 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserPositionEmailDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import com.moseeker.thrift.gen.mq.struct.EmailStruct;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 
 @Service
@@ -47,8 +45,8 @@ public class UserPositionEmailService {
 	private DictCityDao dictCityDao;
 	@Autowired
 	private DictIndustryDao dictIndustryDao;
-	private SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-	private MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+	private SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
+	private MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 	static Logger logger = LoggerFactory.getLogger(UserPositionEmailService.class);
 	//处理职位推荐邮件的的插入或者更新
 	@CounterIface

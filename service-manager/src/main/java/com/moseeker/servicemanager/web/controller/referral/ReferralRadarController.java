@@ -22,7 +22,7 @@ public class ReferralRadarController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
+    private ReferralService.Iface referralService = ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
 
     @RequestMapping(value = "v1/referral/progress", method = RequestMethod.POST)
     public String progress(@RequestBody ProgressForm progressForm) throws TException {
@@ -197,12 +197,7 @@ public class ReferralRadarController {
      */
     @RequestMapping(value = "/v1/referral/radar/saveTemp", method = RequestMethod.POST)
     @ResponseBody
-    public String saveTenMinuteCandidateShareChain(Integer appid,Integer userId,Integer companyId) throws Exception {
-        logger.info("开始调用发送十分钟模版接口 {}",System.currentTimeMillis());
-        CandidateTempForm tempForm = new CandidateTempForm();
-        tempForm.setAppid(appid);
-        tempForm.setCompanyId(companyId);
-        tempForm.setUserId(userId);
+    public String saveTenMinuteCandidateShareChain(@RequestBody CandidateTempForm tempForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("appid", tempForm.getAppid(), 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("companyId", tempForm.getCompanyId(), 1, Integer.MAX_VALUE);
@@ -210,14 +205,20 @@ public class ReferralRadarController {
         validateUtil.addRequiredValidate("员工userId", tempForm.getUserId());
         validateUtil.addRequiredValidate("appid", tempForm.getAppid());
         validateUtil.addRequiredValidate("companyId", tempForm.getCompanyId());
+        validateUtil.addRequiredValidate("转发时间戳",tempForm.getShareTime());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
+            if(System.currentTimeMillis()-tempForm.getShareTime()>10*60*1000){//判断是否超过十分钟
+                return com.moseeker.servicemanager.web.controller.Result.fail("转发已经超过十分钟").toJson();
+            }
             ReferralCardInfo cardInfo = new ReferralCardInfo();
-            BeanUtils.copyProperties(tempForm, cardInfo);
+            cardInfo.setTimestamp(tempForm.getShareTime());
+            cardInfo.setUserId(tempForm.getUserId());
+            cardInfo.setCompanyId(tempForm.getCompanyId());
+//            BeanUtils.copyProperties(tempForm, cardInfo);
             referralService.saveTenMinuteCandidateShareChain(cardInfo);
             return Result.success().toJson();
         } else {
-            logger.debug("tempForm>>>>>>>>>>>>>>>>> {}",tempForm);
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }

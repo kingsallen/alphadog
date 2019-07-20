@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileSaveResult;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -30,7 +31,7 @@ import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.thread.ProfileThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
@@ -61,15 +62,19 @@ import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import static com.moseeker.common.constants.Constant.ONE_HUNDRED;
 
 
 @Service
@@ -79,7 +84,7 @@ public class WholeProfileService {
     Logger logger = LoggerFactory.getLogger(WholeProfileService.class);
     ProfileExtUtils profileUtils = new ProfileExtUtils();
 
-    ThreadPool pool = ThreadPool.Instance;
+    ProfileThreadPool pool = ProfileThreadPool.Instance;
     @Autowired
     ProfileEntity profileEntity;
 
@@ -191,9 +196,9 @@ public class WholeProfileService {
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
 
-    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
+    UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
 
-    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
+    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICE_MANAGER.getService(TalentpoolServices.Iface.class);
 
     private Query getProfileQuery(int profileId){
         return new Query.QueryBuilder().where("profile_id",profileId).setPageSize(Integer.MAX_VALUE).buildQuery();
@@ -244,7 +249,7 @@ public class WholeProfileService {
             Future<List<ProfileImportRecord>> importRecordsFuture = pool.startTast(() -> profileImportDao.getRecords(getProfileQuery(profileRecord.getId())));
             Future<List<ProfileOtherRecord>> otherRecordsFuture = pool.startTast(() -> customizeResumeDao.getRecords(getProfileQuery(profileRecord.getId())));
 
-            Map<String, Object> basic = basicFuture.get();
+            Map<String, Object> basic = basicFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             String countryCode = "";
             if (profileRecord.getUserId().intValue() != 0) {
                 countryCode = org.apache.commons.lang.StringUtils.defaultIfBlank(userDao.getUser(profileRecord.getUserId().intValue()).getCountryCode(), "");
@@ -256,64 +261,64 @@ public class WholeProfileService {
 
             //logger.debug("WholeProfileService getResource basicFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> workexps = workexpsFuture.get();
+            List<Map<String, Object>> workexps = workexpsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("workexps", workexps);
 
             //logger.debug("WholeProfileService getResource workexpsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> educations = educationsFuture.get();
+            List<Map<String, Object>> educations = educationsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("educations", educations);
 
             //logger.debug("WholeProfileService getResource educationsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> projectexps = projectexpsFuture.get();
+            List<Map<String, Object>> projectexps = projectexpsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("projectexps", projectexps);
 
             //logger.debug("WholeProfileService getResource projectexpsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> languages = buildLanguageFuture.get();
+            List<Map<String, Object>> languages = buildLanguageFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("languages", languages);
 
             //logger.debug("WholeProfileService getResource buildLanguageFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> skills = buildskillsFuture.get();
+            List<Map<String, Object>> skills = buildskillsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("skills", skills);
 
             //logger.debug("WholeProfileService getResource buildskillsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> credentials = buildsCredentialsFuture.get();
+            List<Map<String, Object>> credentials = buildsCredentialsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("credentials", credentials);
 
             //logger.debug("WholeProfileService getResource buildsCredentialsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> awards = buildsAwardsFuture.get();
+            List<Map<String, Object>> awards = buildsAwardsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("awards", awards);
 
             //logger.debug("WholeProfileService getResource buildsAwardsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> works = buildsWorksFuture.get();
+            List<Map<String, Object>> works = buildsWorksFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("works", works);
 
             //logger.debug("WholeProfileService getResource buildsWorksFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<Map<String, Object>> intentions = intentionsFuture.get();
+            List<Map<String, Object>> intentions = intentionsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profile.put("intentions", intentions);
 
             //logger.debug("WholeProfileService getResource intentionsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<ProfileAttachmentRecord> attachmentRecords = attachmentRecordsFuture.get();
+            List<ProfileAttachmentRecord> attachmentRecords = attachmentRecordsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             List<Map<String, Object>> attachments = profileUtils.buildAttachments(profileRecord, attachmentRecords);
             profile.put("attachments", attachments);
 
             //logger.debug("WholeProfileService getResource attachmentRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<ProfileImportRecord> importRecords = importRecordsFuture.get();
+            List<ProfileImportRecord> importRecords = importRecordsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             List<Map<String, Object>> imports = profileUtils.buildImports(profileRecord, importRecords);
             profile.put("imports", imports);
 
             //logger.debug("WholeProfileService getResource importRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
-            List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
+            List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
             profileParseUtil.handerSortOtherList(otherRecords);
             List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
@@ -526,15 +531,18 @@ public class WholeProfileService {
         logger.info("开始 importCV");
         int id=0;
         try {
-            id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+            ProfileSaveResult result = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                     profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                     profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                     profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                     profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                     userRecord, oldProfile);
+            if (result.getProfileRecord() != null && result.getProfileRecord().getId() != null && result.getProfileRecord().getId() > 0) {
+                id = result.getProfileRecord().getId();
+            }
         }catch (Exception e){
           logger.error(e.getMessage(),e);
-        };
+        }
         if (id > 0) {
             logger.info("importCV 添加成功");
             try {
@@ -591,16 +599,16 @@ public class WholeProfileService {
         }
         ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
-        int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+        ProfileSaveResult result = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userRecord, null);
-        if (id > 0) {
+        if (result.getProfileRecord() != null && result.getProfileRecord().getId() != null && result.getProfileRecord().getId() > 0) {
 
             try {
-                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id,
+                StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(result.getProfileRecord().getId(),
                         userRecord.getId().intValue(), (byte) 0, profilePojo.getImportRecords());
                 profileUtils.logForStatistics("importCV", new JSONObject() {{
                     this.put("profile", profile);
@@ -612,7 +620,7 @@ public class WholeProfileService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-            return id;
+            return result.getProfileRecord().getId();
         } else {
             return 0;
         }
@@ -1061,22 +1069,22 @@ public class WholeProfileService {
 
     private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, Query query,
                                            List<DictConstantRecord> constantRecords) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
-            /*ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
-            UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getId().intValue());
-			UserSettingsRecord userSettingsRecord = userSettingsDao
-					.getUserSettingsById(profileRecord.getUserId().intValue());*/
+        LocalDateTime startBuildBasic = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic start task! time:{}", startBuildBasic.toString());
+        Map<String, Object> map = new HashMap<>(64);
 
         Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getRecord(query));
         Future<UserUserRecord> userRecordFuture = pool.startTast(() -> userDao.getUserById(profileRecord.getUserId().intValue()));
         Future<ProfileWorkexpRecord> lastWorkExpFuture = pool.startTast(() -> workExpDao.getLastWorkExp(profileRecord.getId().intValue()));
         Future<UserSettingsRecord> userSettingsRecordFuture = pool.startTast(() -> userSettingsDao.getUserSettingsById(profileRecord.getUserId().intValue()));
 
-        ProfileBasicRecord basicRecord = basicRecordFuture.get();
-        UserUserRecord userRecord = userRecordFuture.get();
-        ProfileWorkexpRecord lastWorkExp = lastWorkExpFuture.get();
-        UserSettingsRecord userSettingsRecord = userSettingsRecordFuture.get();
+        ProfileBasicRecord basicRecord = basicRecordFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
+        UserUserRecord userRecord = userRecordFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
+        ProfileWorkexpRecord lastWorkExp = lastWorkExpFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
+        UserSettingsRecord userSettingsRecord = userSettingsRecordFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
+
+        LocalDateTime afterFetchDBData = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic afterFetchDBData:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, afterFetchDBData));
 
         HrCompanyRecord company = null;
         if (lastWorkExp != null) {
@@ -1103,6 +1111,8 @@ public class WholeProfileService {
             map.put("name", userRecord.getName());
             map.put("nickname",userRecord.getNickname());
         }
+        LocalDateTime afterFetchUserAndCompany = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic afterFetchUserAndCompany:{}, duration:{}", afterFetchUserAndCompany.toString(), Duration.between(afterFetchDBData, afterFetchUserAndCompany));
         if (lastWorkExp != null) {
             if (company != null) {
                 map.put("company_id", company.getId().intValue());
@@ -1149,6 +1159,12 @@ public class WholeProfileService {
             map.put("weixin", basicRecord.getWeixin());
             map.put("profile_id", basicRecord.getProfileId().intValue());
         }
+
+        LocalDateTime afterPackageData = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic afterPackageData:{}, duration:{}", afterPackageData.toString(), Duration.between(afterFetchUserAndCompany, afterPackageData));
+
+        LocalDateTime endBuildBasic = LocalDateTime.now();
+        logger.info("WholeProfileService buildBasic end task! time:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, endBuildBasic));
         return map;
     }
 

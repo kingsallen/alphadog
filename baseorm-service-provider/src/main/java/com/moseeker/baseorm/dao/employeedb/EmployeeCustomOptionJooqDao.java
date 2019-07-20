@@ -26,13 +26,8 @@ import static com.moseeker.baseorm.db.employeedb.tables.EmployeeOptionValue.EMPL
 @Repository
 public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValue, EmployeeOptionValueRecord> {
 
-    @Autowired
     public EmployeeCustomOptionJooqDao() {
         super(EMPLOYEE_OPTION_VALUE, EmployeeOptionValue.class);
-    }
-
-    public EmployeeCustomOptionJooqDao(TableImpl<EmployeeOptionValueRecord> table, Class<EmployeeOptionValue> employeeOptionValueClass) {
-        super(table, employeeOptionValueClass);
     }
 
     public int count(Integer fieldId, List<Integer> optionIdList) {
