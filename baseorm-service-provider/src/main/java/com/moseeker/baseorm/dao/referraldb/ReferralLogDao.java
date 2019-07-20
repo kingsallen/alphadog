@@ -100,6 +100,24 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                         )
                 )
                 .execute();
+        String weiredSql = using(configuration())
+                .update(ReferralLog.REFERRAL_LOG)
+                .set(ReferralLog.REFERRAL_LOG.REFERENCE_ID, userId)
+                .set(ReferralLog.REFERRAL_LOG.CLAIM, ClaimType.Claimed.getValue())
+                .set(ReferralLog.REFERRAL_LOG.CLAIM_TIME, new Timestamp(System.currentTimeMillis()))
+                .set(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID, referralLog.getReferenceId())
+                .where(ReferralLog.REFERRAL_LOG.ID.eq(referralLog.getId()))
+                .and(ReferralLog.REFERRAL_LOG.CLAIM.eq(ClaimType.UnClaim.getValue()))
+                .andNotExists(
+                        selectOne()
+                                .from(
+                                        selectFrom(ReferralLog.REFERRAL_LOG)
+                                                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(referralLog.getEmployeeId()))
+                                                .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(referralLog.getPositionId()))
+                                                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(userId))
+                                )
+                ).getSQL();
+        logger.info("ReferralLogDao claim weiredSql:{}",weiredSql);
         return execute == 1;
     }
 
