@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.*;
 
+import org.apache.commons.lang.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +80,17 @@ public class ConfigPropertiesUtil {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * 添加配置
+     * @param key 关键词
+     * @param obj 值
+     */
+    public void appendConfig(String key, Object obj) {
+        if (org.apache.commons.lang.StringUtils.isNotBlank(key) && obj != null) {
+            properties.put(key, obj);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.config;
 
 import com.jolbox.bonecp.BoneCPDataSource;
+import com.moseeker.baseorm.exception.CommonServiceException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.baseorm.exception.ExceptionTranslator;
 
@@ -37,7 +38,22 @@ public class AppConfig {
 
     @Bean(destroyMethod = "close")
     public DataSource getDataSource() {
+
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+
+        String domain = propertiesReader.get("mycat.configServerDomain", String.class);
+        String application = propertiesReader.get("mycat.application", String.class);
+        String profile = propertiesReader.get("mycat.profile", String.class);
+        String branch = propertiesReader.get("mycat.branch", String.class);
+
+        try {
+            ConfigurationClient configurationClient = new ConfigurationClient(domain, application, profile, branch);
+            configurationClient.fetchProperties();
+            configurationClient.appendDBProperty();
+        } catch (CommonServiceException e) {
+            logger.error(e.getMessage(), e);
+        }
+
         String driverClass = propertiesReader.get("mycat.classname", String.class);
         String url = propertiesReader.get("mycat.url", String.class);
         String userName = propertiesReader.get("mycat.userName", String.class);
