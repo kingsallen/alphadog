@@ -8,6 +8,7 @@ import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -390,7 +392,37 @@ public class EmployeeServiceImpl implements Iface {
 		}
 	}
 
-	@Override
+    @Override
+    public ReferralsCard getReferralsCard(List<Integer> referralLogIds) throws BIZException, TException {
+	    logger.info("EmployeeServiceImpl 开始多职位认领 {}",referralLogIds);
+	    if(StringUtils.isRealEmptyList(referralLogIds)){
+	        return null;
+        }
+        try {
+            ReferralsCard referralsCard = null;
+            List<String> jobTitles = new ArrayList<>(10);
+            for(Integer e : referralLogIds){
+                com.moseeker.useraccounts.service.impl.pojos.ReferralCard card = service.getReferralCard(e);
+                if(referralsCard==null){
+                    referralsCard = new ReferralsCard();
+                    if(card!=null){
+                        referralsCard.setCompanyName(card.getCompanyName());
+                        referralsCard.setIsClaimed(card.isClaim()?1:0);
+                        referralsCard.setPresenteeFirstName(card.getUserName());
+                        referralsCard.setPresenteeId(card.getApplyId());
+                        referralsCard.setRecomName(card.getEmployeeName());
+                        jobTitles.add(card.getPosition());
+                    }
+                    return null;
+                }
+            }
+            return referralsCard;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
 	public ReferralCard getReferralCard(int referralLogId) throws BIZException, TException {
 		try {
 			com.moseeker.useraccounts.service.impl.pojos.ReferralCard card = service.getReferralCard(referralLogId);
