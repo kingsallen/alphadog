@@ -381,7 +381,7 @@ public class ReferralController {
             com.moseeker.thrift.gen.employee.struct.ReferralsCard referralsCard = employeeService.getReferralsCard(idList);
             ReferralsCardVO vo = new ReferralsCardVO();
             BeanUtils.copyProperties(referralsCard,vo);
-            return Result.success(vo).toJson();
+            return Result.success(vo).toJsonStr();
         }
         return Result.validateFailed(validateResult).toJson();
     }
