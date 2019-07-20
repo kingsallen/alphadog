@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BonusTools;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -347,6 +349,75 @@ public class ReferralController {
         com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard card = new com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard();
         BeanUtils.copyProperties(referralCard, card);
         return Result.success(card).toJson();
+    }
+
+    /*
+    * @param rkey:推荐id字符串
+    * @return 认领信息
+    * @throws Exception
+    * */
+    @RequestMapping(value = "/v1.3/referral/confirm",method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralsCard(@RequestParam String rkey,HttpServletRequest request) throws Exception{
+        String appid = request.getParameter("appid");
+        if (StringUtils.isBlank(appid)) {
+            return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
+        }
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("rkey", rkey);
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            List<Integer> idList = null;
+            try{
+                String[] ids = rkey.split("@");
+                idList =  Arrays.stream(ids).filter(e->com.moseeker.common.util.StringUtils.isNotNullOrEmpty(e))
+                        .map(e->Integer.valueOf(e.trim()))
+                        .collect(Collectors.toList());
+            }catch(NumberFormatException e){
+                logger.error(e.getMessage(),e);
+                return Result.excetionToResult(e).toJson();
+            }
+            com.moseeker.thrift.gen.employee.struct.ReferralsCard referralsCard = employeeService.getReferralsCard(idList);
+            ReferralsCardVO vo = new ReferralsCardVO();
+            BeanUtils.copyProperties(referralsCard,vo);
+            return Result.success(vo).toJson();
+        }
+        return Result.validateFailed(validateResult).toJson();
+    }
+
+    /*
+    * 多职位认领接口
+    * */
+    @RequestMapping(value = "/v1.3/referral/confirm", method = RequestMethod.POST)
+    @ResponseBody
+    public String claimReferralsCard(@RequestBody ClaimsForm claimForm) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("用户", claimForm.getUserId(), 1, null);
+        validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
+        validateUtil.addRequiredStringValidate("rkey", claimForm.getRkey());
+        validateUtil.addRequiredStringValidate("用户手机", claimForm.getRkey());
+        String validateResult = validateUtil.validate();
+
+        if (StringUtils.isBlank(validateResult)) {
+            List<Integer> idList = null;
+            try{
+                String[] ids = claimForm.getRkey().split("@");
+                idList =  Arrays.stream(ids).filter(e->com.moseeker.common.util.StringUtils.isNotNullOrEmpty(e))
+                        .map(e->Integer.valueOf(e.trim()))
+                        .collect(Collectors.toList());
+            }catch(NumberFormatException e){
+                logger.error(e.getMessage(),e);
+                return Result.excetionToResult(e).toJson();
+            }
+            String claimResults = userService.batchClaimReferralCard(
+                    claimForm.getUserId(), claimForm.getName(), claimForm.getMobile(), Constant.NO_VSCODE_CHECK, idList);
+
+            return Result.success(claimResults).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
     }
 
     @RequestMapping(value = "/v1/referral/claim", method = RequestMethod.POST)
