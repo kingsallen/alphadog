@@ -415,7 +415,7 @@ public class ReferralController {
             String claimResults = userService.batchClaimReferralCard(
                     claimForm.getUserId(), claimForm.getName(), claimForm.getMobile(), Constant.NO_VSCODE_CHECK, idList);
 
-            return Result.success(claimResults).toJson();
+            return Result.success(claimResults).toJsonStr();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }

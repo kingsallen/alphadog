@@ -409,13 +409,14 @@ public class EmployeeServiceImpl implements Iface {
                         referralsCard.setCompanyName(card.getCompanyName());
                         referralsCard.setIsClaimed(card.isClaim()?1:0);
                         referralsCard.setPresenteeFirstName(card.getUserName());
-                        referralsCard.setPresenteeId(card.getApplyId());
+                        referralsCard.setPresenteeId(card.getUserId());
                         referralsCard.setRecomName(card.getEmployeeName());
                     }
                 }
                 jobTitles.add(card.getPosition());
             }
             logger.info("EmployeeServiceImpl getReferralsCard referralsCard:{}",referralsCard);
+            referralsCard.setJobTitle(jobTitles);
             return referralsCard;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
