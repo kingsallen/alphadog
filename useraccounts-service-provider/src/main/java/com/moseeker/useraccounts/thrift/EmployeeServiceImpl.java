@@ -394,7 +394,7 @@ public class EmployeeServiceImpl implements Iface {
 
     @Override
     public ReferralsCard getReferralsCard(List<Integer> referralLogIds) throws BIZException, TException {
-	    logger.info("EmployeeServiceImpl 开始多职位认领 {}",referralLogIds);
+	    logger.info("EmployeeServiceImpl getReferralsCard referralLogIds:{}",referralLogIds);
 	    if(StringUtils.isRealEmptyList(referralLogIds)){
 	        return null;
         }
@@ -411,11 +411,11 @@ public class EmployeeServiceImpl implements Iface {
                         referralsCard.setPresenteeFirstName(card.getUserName());
                         referralsCard.setPresenteeId(card.getApplyId());
                         referralsCard.setRecomName(card.getEmployeeName());
-                        jobTitles.add(card.getPosition());
                     }
-                    return null;
                 }
+                jobTitles.add(card.getPosition());
             }
+            logger.info("EmployeeServiceImpl getReferralsCard referralsCard:{}",referralsCard);
             return referralsCard;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
