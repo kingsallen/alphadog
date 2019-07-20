@@ -843,7 +843,7 @@ public class EmployeeService {
         if (positionInfo == null) {
             throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
         }
-
+        log.info("EmployeeService getReferralCard positionInfo:{}",positionInfo);
         UserUserDO userUserDO = userDao.getUser(referralLog.getReferenceId());
         if (userUserDO == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;

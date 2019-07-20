@@ -46,6 +46,10 @@ public class Result {
         return JSONObject.toJSONString(this, config, WriteNullListAsEmpty, WriteNullStringAsEmpty, WriteNullNumberAsZero, WriteNullBooleanAsFalse, WriteMapNullValue, WriteNullNumberAsZero);
     }
 
+    public String toJsonStr(){
+        return JSONObject.toJSONString(this);
+    }
+
     public int getStatus() {
         return status;
     }
