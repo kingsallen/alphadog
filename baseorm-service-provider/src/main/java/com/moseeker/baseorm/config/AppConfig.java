@@ -37,21 +37,19 @@ public class AppConfig {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean(destroyMethod = "close")
-    public DataSource getDataSource() {
+    public DataSource getDataSource() throws CommonServiceException {
 
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
 
-        String domain = propertiesReader.get("mycat.configServerDomain", String.class);
-        String application = propertiesReader.get("mycat.application", String.class);
-        String profile = propertiesReader.get("mycat.profile", String.class);
-        String branch = propertiesReader.get("mycat.branch", String.class);
-
-        try {
+        Boolean configServer = propertiesReader.get("mycat.configServer", Boolean.class);
+        if (configServer != null && configServer) {
+            String domain = propertiesReader.get("mycat.configServerDomain", String.class);
+            String application = propertiesReader.get("mycat.application", String.class);
+            String profile = propertiesReader.get("mycat.profile", String.class);
+            String branch = propertiesReader.get("mycat.branch", String.class);
             ConfigurationClient configurationClient = new ConfigurationClient(domain, application, profile, branch);
             configurationClient.fetchProperties();
             configurationClient.appendDBProperty();
-        } catch (CommonServiceException e) {
-            logger.error(e.getMessage(), e);
         }
 
         String driverClass = propertiesReader.get("mycat.classname", String.class);
