@@ -226,18 +226,19 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
         return fetch(HrCompanyConf.HR_COMPANY_CONF.TALENTPOOL_STATUS, values);
     }
 
-    /**
-     * Fetch records that have <code>job51_salary_discuss IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByJob51SalaryDiscuss(Byte... values) {
-        return fetch(HrCompanyConf.HR_COMPANY_CONF.JOB51_SALARY_DISCUSS, values);
-    }
 
     /**
      * Fetch records that have <code>veryeast_switch IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByVeryeastSwitch(Byte... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.VERYEAST_SWITCH, values);
+    }
+
+    /**
+     * Fetch records that have <code>job51_salary_discuss IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByJob51SalaryDiscuss(Byte... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.JOB51_SALARY_DISCUSS, values);
     }
 
     /**
@@ -287,5 +288,12 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMobotWelcome(String... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.MOBOT_WELCOME, values);
+    }
+
+    /**
+     * Fetch records that have <code>new_ats_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByNewAtsStatus(Integer... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.NEW_ATS_STATUS, values);
     }
 }
