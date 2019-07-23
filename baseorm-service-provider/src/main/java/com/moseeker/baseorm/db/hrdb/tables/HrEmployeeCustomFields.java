@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsRecord> {
 
-    private static final long serialVersionUID = -654031967;
+    private static final long serialVersionUID = 1597373008;
 
     /**
      * The reference instance of <code>hrdb.hr_employee_custom_fields</code>
@@ -98,7 +98,7 @@ public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsReco
     /**
      * The column <code>hrdb.hr_employee_custom_fields.field_type</code>. 0:部门，1:职位，2:城市，3:自定义字段
      */
-    public final TableField<HrEmployeeCustomFieldsRecord, Integer> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "0:部门，1:职位，2:城市，3:自定义字段");
+    public final TableField<HrEmployeeCustomFieldsRecord, Byte> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0:部门，1:职位，2:城市，3:自定义字段");
 
     /**
      * The column <code>hrdb.hr_employee_custom_fields.ename</code>. 自定义字段英文名

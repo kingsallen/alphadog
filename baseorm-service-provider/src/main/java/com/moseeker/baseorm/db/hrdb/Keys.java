@@ -4,7 +4,6 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -18,7 +17,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
@@ -28,9 +26,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcessItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomDisplay;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -94,7 +90,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.records.EmployeeOptionValueRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAccountApplicationNotifyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
@@ -106,7 +101,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountCopyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyCsRecord;
@@ -118,9 +112,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecruitProcessRecord
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyReferralConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrDashboardConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomDisplayRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeOptionValueRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeePositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeSectionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrFeedbackRecord;
@@ -210,7 +202,6 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<EmployeeOptionValueRecord, Integer> IDENTITY_EMPLOYEE_OPTION_VALUE = Identities0.IDENTITY_EMPLOYEE_OPTION_VALUE;
     public static final Identity<HrAccountApplicationNotifyRecord, Integer> IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY = Identities0.IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY;
     public static final Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = Identities0.IDENTITY_HR_AI_CONF;
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
@@ -230,9 +221,7 @@ public class Keys {
     public static final Identity<HrCompanyReferralConfRecord, Integer> IDENTITY_HR_COMPANY_REFERRAL_CONF = Identities0.IDENTITY_HR_COMPANY_REFERRAL_CONF;
     public static final Identity<HrDashboardConfigRecord, Integer> IDENTITY_HR_DASHBOARD_CONFIG = Identities0.IDENTITY_HR_DASHBOARD_CONFIG;
     public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
-    public static final Identity<HrEmployeeCustomDisplayRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_DISPLAY = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_DISPLAY;
     public static final Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS;
-    public static final Identity<HrEmployeeOptionValueRecord, Integer> IDENTITY_HR_EMPLOYEE_OPTION_VALUE = Identities0.IDENTITY_HR_EMPLOYEE_OPTION_VALUE;
     public static final Identity<HrEmployeePositionRecord, Integer> IDENTITY_HR_EMPLOYEE_POSITION = Identities0.IDENTITY_HR_EMPLOYEE_POSITION;
     public static final Identity<HrEmployeeSectionRecord, Integer> IDENTITY_HR_EMPLOYEE_SECTION = Identities0.IDENTITY_HR_EMPLOYEE_SECTION;
     public static final Identity<HrFeedbackRecord, Integer> IDENTITY_HR_FEEDBACK = Identities0.IDENTITY_HR_FEEDBACK;
@@ -300,8 +289,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<EmployeeOptionValueRecord> KEY_EMPLOYEE_OPTION_VALUE_PRIMARY = UniqueKeys0.KEY_EMPLOYEE_OPTION_VALUE_PRIMARY;
-    public static final UniqueKey<EmployeeOptionValueRecord> KEY_EMPLOYEE_OPTION_VALUE_NAME = UniqueKeys0.KEY_EMPLOYEE_OPTION_VALUE_NAME;
     public static final UniqueKey<HrAccountApplicationNotifyRecord> KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY = UniqueKeys0.KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY;
     public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = UniqueKeys0.KEY_HR_AI_CONF_PRIMARY;
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
@@ -315,7 +302,6 @@ public class Keys {
     public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = UniqueKeys0.KEY_HR_CMS_PAGES_PRIMARY;
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
-    public static final UniqueKey<HrCompanyAccountCopyRecord> KEY_HR_COMPANY_ACCOUNT_COPY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_COPY_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
     public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CS_PRIMARY;
     public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_COMPANY_CS_ID = UniqueKeys0.KEY_HR_COMPANY_CS_COMPANY_CS_ID;
@@ -328,9 +314,7 @@ public class Keys {
     public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK = UniqueKeys0.KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK;
     public static final UniqueKey<HrDashboardConfigRecord> KEY_HR_DASHBOARD_CONFIG_PRIMARY = UniqueKeys0.KEY_HR_DASHBOARD_CONFIG_PRIMARY;
     public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
-    public static final UniqueKey<HrEmployeeCustomDisplayRecord> KEY_HR_EMPLOYEE_CUSTOM_DISPLAY_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_DISPLAY_PRIMARY;
     public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
-    public static final UniqueKey<HrEmployeeOptionValueRecord> KEY_HR_EMPLOYEE_OPTION_VALUE_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_OPTION_VALUE_PRIMARY;
     public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_POSITION_PRIMARY;
     public static final UniqueKey<HrEmployeeSectionRecord> KEY_HR_EMPLOYEE_SECTION_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_SECTION_PRIMARY;
     public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = UniqueKeys0.KEY_HR_FEEDBACK_PRIMARY;
@@ -412,7 +396,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<EmployeeOptionValueRecord, Integer> IDENTITY_EMPLOYEE_OPTION_VALUE = createIdentity(EmployeeOptionValue.EMPLOYEE_OPTION_VALUE, EmployeeOptionValue.EMPLOYEE_OPTION_VALUE.ID);
         public static Identity<HrAccountApplicationNotifyRecord, Integer> IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY = createIdentity(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY, HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.ID);
         public static Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = createIdentity(HrAiConf.HR_AI_CONF, HrAiConf.HR_AI_CONF.ID);
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
@@ -432,9 +415,7 @@ public class Keys {
         public static Identity<HrCompanyReferralConfRecord, Integer> IDENTITY_HR_COMPANY_REFERRAL_CONF = createIdentity(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.ID);
         public static Identity<HrDashboardConfigRecord, Integer> IDENTITY_HR_DASHBOARD_CONFIG = createIdentity(HrDashboardConfig.HR_DASHBOARD_CONFIG, HrDashboardConfig.HR_DASHBOARD_CONFIG.ID);
         public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
-        public static Identity<HrEmployeeCustomDisplayRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_DISPLAY = createIdentity(HrEmployeeCustomDisplay.HR_EMPLOYEE_CUSTOM_DISPLAY, HrEmployeeCustomDisplay.HR_EMPLOYEE_CUSTOM_DISPLAY.ID);
         public static Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = createIdentity(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
-        public static Identity<HrEmployeeOptionValueRecord, Integer> IDENTITY_HR_EMPLOYEE_OPTION_VALUE = createIdentity(HrEmployeeOptionValue.HR_EMPLOYEE_OPTION_VALUE, HrEmployeeOptionValue.HR_EMPLOYEE_OPTION_VALUE.ID);
         public static Identity<HrEmployeePositionRecord, Integer> IDENTITY_HR_EMPLOYEE_POSITION = createIdentity(HrEmployeePosition.HR_EMPLOYEE_POSITION, HrEmployeePosition.HR_EMPLOYEE_POSITION.ID);
         public static Identity<HrEmployeeSectionRecord, Integer> IDENTITY_HR_EMPLOYEE_SECTION = createIdentity(HrEmployeeSection.HR_EMPLOYEE_SECTION, HrEmployeeSection.HR_EMPLOYEE_SECTION.ID);
         public static Identity<HrFeedbackRecord, Integer> IDENTITY_HR_FEEDBACK = createIdentity(HrFeedback.HR_FEEDBACK, HrFeedback.HR_FEEDBACK.ID);
@@ -500,8 +481,6 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<EmployeeOptionValueRecord> KEY_EMPLOYEE_OPTION_VALUE_PRIMARY = createUniqueKey(EmployeeOptionValue.EMPLOYEE_OPTION_VALUE, "KEY_employee_option_value_PRIMARY", EmployeeOptionValue.EMPLOYEE_OPTION_VALUE.ID);
-        public static final UniqueKey<EmployeeOptionValueRecord> KEY_EMPLOYEE_OPTION_VALUE_NAME = createUniqueKey(EmployeeOptionValue.EMPLOYEE_OPTION_VALUE, "KEY_employee_option_value_name", EmployeeOptionValue.EMPLOYEE_OPTION_VALUE.NAME, EmployeeOptionValue.EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID);
         public static final UniqueKey<HrAccountApplicationNotifyRecord> KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY = createUniqueKey(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY, "KEY_hr_account_application_notify_PRIMARY", HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.ID);
         public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = createUniqueKey(HrAiConf.HR_AI_CONF, "KEY_hr_ai_conf_PRIMARY", HrAiConf.HR_AI_CONF.ID);
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
@@ -515,7 +494,6 @@ public class Keys {
         public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = createUniqueKey(HrCmsPages.HR_CMS_PAGES, "KEY_hr_cms_pages_PRIMARY", HrCmsPages.HR_CMS_PAGES.ID);
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
-        public static final UniqueKey<HrCompanyAccountCopyRecord> KEY_HR_COMPANY_ACCOUNT_COPY_PRIMARY = createUniqueKey(HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY, "KEY_hr_company_account_copy_PRIMARY", HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
         public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_PRIMARY = createUniqueKey(HrCompanyCs.HR_COMPANY_CS, "KEY_hr_company_cs_PRIMARY", HrCompanyCs.HR_COMPANY_CS.ID);
         public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_COMPANY_CS_ID = createUniqueKey(HrCompanyCs.HR_COMPANY_CS, "KEY_hr_company_cs_company_cs_id", HrCompanyCs.HR_COMPANY_CS.COMPANY_ID, HrCompanyCs.HR_COMPANY_CS.CS_ID);
@@ -528,9 +506,7 @@ public class Keys {
         public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK = createUniqueKey(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, "KEY_hr_company_referral_conf_hr_company_referral_conf_company_id_pk", HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID);
         public static final UniqueKey<HrDashboardConfigRecord> KEY_HR_DASHBOARD_CONFIG_PRIMARY = createUniqueKey(HrDashboardConfig.HR_DASHBOARD_CONFIG, "KEY_hr_dashboard_config_PRIMARY", HrDashboardConfig.HR_DASHBOARD_CONFIG.ID);
         public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, "KEY_hr_employee_cert_conf_PRIMARY", HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
-        public static final UniqueKey<HrEmployeeCustomDisplayRecord> KEY_HR_EMPLOYEE_CUSTOM_DISPLAY_PRIMARY = createUniqueKey(HrEmployeeCustomDisplay.HR_EMPLOYEE_CUSTOM_DISPLAY, "KEY_hr_employee_custom_display_PRIMARY", HrEmployeeCustomDisplay.HR_EMPLOYEE_CUSTOM_DISPLAY.ID);
         public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, "KEY_hr_employee_custom_fields_PRIMARY", HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
-        public static final UniqueKey<HrEmployeeOptionValueRecord> KEY_HR_EMPLOYEE_OPTION_VALUE_PRIMARY = createUniqueKey(HrEmployeeOptionValue.HR_EMPLOYEE_OPTION_VALUE, "KEY_hr_employee_option_value_PRIMARY", HrEmployeeOptionValue.HR_EMPLOYEE_OPTION_VALUE.ID);
         public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = createUniqueKey(HrEmployeePosition.HR_EMPLOYEE_POSITION, "KEY_hr_employee_position_PRIMARY", HrEmployeePosition.HR_EMPLOYEE_POSITION.ID);
         public static final UniqueKey<HrEmployeeSectionRecord> KEY_HR_EMPLOYEE_SECTION_PRIMARY = createUniqueKey(HrEmployeeSection.HR_EMPLOYEE_SECTION, "KEY_hr_employee_section_PRIMARY", HrEmployeeSection.HR_EMPLOYEE_SECTION.ID);
         public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = createUniqueKey(HrFeedback.HR_FEEDBACK, "KEY_hr_feedback_PRIMARY", HrFeedback.HR_FEEDBACK.ID);
