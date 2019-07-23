@@ -561,9 +561,15 @@ public class ReferralServiceImpl implements ReferralService {
         }
 
         referralResultVOS = referralResultVOS.stream().map(resultVO -> {
+            //如果该职位推荐失败，不做积分计算
+            if(!resultVO.getSuccess()){
+                resultVO.setReward(0);
+                return resultVO;
+            }
             //获取该职位应得的积分
             Double reward = employeeEntity.calcReward(
                     employeeId,Constant.RECRUIT_STATUS_UPLOAD_PROFILE,resultVO.getPosition_id());
+
             resultVO.setReward(reward);
             return resultVO;
         }).collect(Collectors.toList());

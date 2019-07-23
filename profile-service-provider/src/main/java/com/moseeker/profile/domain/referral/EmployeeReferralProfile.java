@@ -180,7 +180,7 @@ public abstract class EmployeeReferralProfile {
             logger.error(e.getMessage(), e);
             referralResultVO.setReason(e.getMessage());
             referralResultVO.setSuccess(false);
-            throw e;
+//            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             referralResultVO.setReason(e.getMessage());
@@ -211,6 +211,8 @@ public abstract class EmployeeReferralProfile {
             applicationId = jsonObject1.getInteger("jobApplicationId");
         }else {
             referralResultVO.setSuccess(false);
+            referralResultVO.setErrorCode(response.getStatus());
+            referralResultVO.setReason(response.getMessage());
         }
         return applicationId;
     }
