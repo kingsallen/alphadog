@@ -116,18 +116,22 @@ public abstract class EmployeeReferralProfile {
         List<MobotReferralResultVO> resultVOS = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(positionIds.size());
         for(JobPositionDO jobPositionDO : positions){
-            tp.startTast(() -> {
-                handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), jobPositionDO,  origin,
-                        resultVOS, countDownLatch, attementVO.getAttachmentId());
-                return 0;
-            });
+//            tp.startTast(() -> {
+                try{
+                    handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), jobPositionDO,  origin,
+                            resultVOS, countDownLatch, attementVO.getAttachmentId());
+                }catch(Exception e){
+                    logger.error(e.getMessage(),e);
+                }
+//                return 0;
+//            });
         }
         try {
-            countDownLatch.await(60, TimeUnit.SECONDS);
-            tp1.startTast(()->{
-                logger.info("============三秒后执行=============================");
+//            countDownLatch.await(60, TimeUnit.SECONDS);
+//            tp1.startTast(()->{
+//                logger.info("============三秒后执行=============================");
                 updateApplicationEsIndex(attementVO.getUserId());
-            },3000);
+//            },3000);
             return resultVOS;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
