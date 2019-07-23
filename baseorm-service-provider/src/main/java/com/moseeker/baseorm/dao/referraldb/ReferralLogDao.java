@@ -44,7 +44,31 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         Param<Integer> referralTypeParam = param(ReferralLog.REFERRAL_LOG.TYPE.getName(), referralType);
         Param<Integer> attachmentParam = param(ReferralLog.REFERRAL_LOG.ATTEMENT_ID.getName(), attachmentId);
 
-        ReferralLogRecord referralLogRecord = using(configuration()).insertInto(
+        ReferralLogRecord referralLogRecord = null;
+
+        try{
+            referralLogRecord = using(configuration()).insertInto(
+                    ReferralLog.REFERRAL_LOG,
+                    ReferralLog.REFERRAL_LOG.EMPLOYEE_ID,
+                    ReferralLog.REFERRAL_LOG.REFERENCE_ID,
+                    ReferralLog.REFERRAL_LOG.POSITION_ID,
+                    ReferralLog.REFERRAL_LOG.REFERRAL_TIME,
+                    ReferralLog.REFERRAL_LOG.TYPE,
+                    ReferralLog.REFERRAL_LOG.ATTEMENT_ID
+            ).values(
+                    employeeIdParam,
+                    referenceIdParam,
+                    positionIdParam,
+                    referralTime,
+                    referralTypeParam,
+                    attachmentParam
+            ).returning().fetchOne();
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            return 0;
+        }
+
+        /*ReferralLogRecord referralLogRecord = using(configuration()).insertInto(
                 ReferralLog.REFERRAL_LOG,
                 ReferralLog.REFERRAL_LOG.EMPLOYEE_ID,
                 ReferralLog.REFERRAL_LOG.REFERENCE_ID,
@@ -67,7 +91,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                         .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
                         .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(position)).forUpdate()
                 ).forUpdate()
-        ).returning().fetchOne();
+        ).returning().fetchOne();*/
         if (referralLogRecord != null) {
             return referralLogRecord.getId();
         } else {
