@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -63,7 +64,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                     referralTypeParam,
                     attachmentParam
             ).returning().fetchOne();
-        }catch (Exception e){
+        }catch (DuplicateKeyException e){
             logger.error(e.getMessage(),e);
             return 0;
         }
