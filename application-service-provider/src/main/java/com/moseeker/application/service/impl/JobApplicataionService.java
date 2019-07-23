@@ -27,6 +27,8 @@ import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRec
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
@@ -43,10 +45,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -214,16 +213,23 @@ public class JobApplicataionService {
             }
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
+
         if(jobApplicationId==-1){
             return ResponseUtils.fail(ApplicationException.APPLICATION_POSITION_DUPLICATE.getMessage());
         }
         if (jobApplicationId > 0) {
-            sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
-                    jobApplication.getApply_type(), jobApplication.getEmail_status(),
-                    (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
-                    jobApplication.getOrigin());
-            // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
-            handleReferralState(jobApplicationId);
+            boolean isNewAtsStatus=!validateNewAtsProcess((int)jobApplication.getCompany_id());
+            if(!isNewAtsStatus){
+                sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
+                        jobApplication.getApply_type(), jobApplication.getEmail_status(),
+                        (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
+                        jobApplication.getOrigin());
+                // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
+                handleReferralState(jobApplicationId);
+            }else{
+                sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
+            }
+
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
             this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
@@ -251,6 +257,31 @@ public class JobApplicataionService {
             logger.info("====================redis==============application更新=============");
             logger.info("================userid={}=================",userId);
         },6000);
+    }
+
+    private boolean  validateNewAtsProcess(int companyId){
+        HrCompanyConf conf=hrCompanyConfDao.getConfbyCompanyId(companyId);
+        if(conf==null){
+            return false;
+        }
+        if(conf.getNewAtsStatus()==0){
+            return false;
+        }
+        return true;
+    }
+
+    private void sendNewAtsProcess(int positionId,int hrId,int appId,int companyId){
+        Map<String,Object> params=new HashMap<>();
+        params.put("positionId",positionId);
+        params.put("appId",appId);
+        params.put("hrId",hrId);
+        params.put("companyId",companyId);
+        String message=JSON.toJSONString(params);
+        scheduledThread.startTast(()->{
+            amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
+                    MessageBuilder.withBody(message.getBytes()).build());
+        },1000);
+
     }
     /*
      * @Author zztaiwll
