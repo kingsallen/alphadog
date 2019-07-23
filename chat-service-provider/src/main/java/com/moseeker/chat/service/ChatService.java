@@ -677,7 +677,6 @@ public class ChatService {
             if (chatRoom.getWelcomeStatus() == 1) {
                 // 支持多条Opening的欢迎语
                 List<String> contents = getChatRoomInitCreateContentList(resultOfSaveRoomVO, is_gamma);
-                // TODO MoBot配置欢迎语产品上限制最多5条，可循环插入，太多需要变为批处理
                 if(contents != null && contents.size() > 0){
                     for (String content:contents) {
                         createChat(resultOfSaveRoomVO, content);

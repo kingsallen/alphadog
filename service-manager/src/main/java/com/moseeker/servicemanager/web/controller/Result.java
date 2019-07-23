@@ -19,7 +19,7 @@ public class Result {
     // 序列化配置对象
     private SerializeConfig config = new SerializeConfig();
 
-    public static final String SUCCESS = Result.success().toJson();
+    public static final String SUCCESS = new Result(0,"success").toString();
 
     private int status;
     private String message;
