@@ -213,6 +213,7 @@ public abstract class EmployeeReferralProfile {
             referralResultVO.setSuccess(false);
             referralResultVO.setErrorCode(response.getStatus());
             referralResultVO.setReason(response.getMessage());
+            throw new EmployeeException(response.getStatus(),response.getMessage());
         }
         return applicationId;
     }
