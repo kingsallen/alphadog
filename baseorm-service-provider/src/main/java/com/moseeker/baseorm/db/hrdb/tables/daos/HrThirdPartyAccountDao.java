@@ -150,13 +150,6 @@ public class HrThirdPartyAccountDao extends DAOImpl<HrThirdPartyAccountRecord, c
     }
 
     /**
-     * Fetch records that have <code>ext2 IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByExt2(String... values) {
-        return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, values);
-    }
-
-    /**
      * Fetch records that have <code>sync_require_company IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchBySyncRequireCompany(Byte... values) {
@@ -168,6 +161,13 @@ public class HrThirdPartyAccountDao extends DAOImpl<HrThirdPartyAccountRecord, c
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchBySyncRequireDepartment(Byte... values) {
         return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_REQUIRE_DEPARTMENT, values);
+    }
+
+    /**
+     * Fetch records that have <code>ext2 IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyAccount> fetchByExt2(String... values) {
+        return fetch(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, values);
     }
 
     /**

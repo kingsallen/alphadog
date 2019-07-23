@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrResource implements Serializable {
 
-    private static final long serialVersionUID = 516060431;
+    private static final long serialVersionUID = -1292219759;
 
     private Integer   id;
     private String    resUrl;
@@ -32,9 +32,9 @@ public class HrResource implements Serializable {
     private Integer   companyId;
     private String    title;
     private Integer   disable;
+    private String    cover;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private String    cover;
 
     public HrResource() {}
 
@@ -46,9 +46,9 @@ public class HrResource implements Serializable {
         this.companyId = value.companyId;
         this.title = value.title;
         this.disable = value.disable;
+        this.cover = value.cover;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.cover = value.cover;
     }
 
     public HrResource(
@@ -59,9 +59,9 @@ public class HrResource implements Serializable {
         Integer   companyId,
         String    title,
         Integer   disable,
+        String    cover,
         Timestamp createTime,
-        Timestamp updateTime,
-        String    cover
+        Timestamp updateTime
     ) {
         this.id = id;
         this.resUrl = resUrl;
@@ -70,9 +70,9 @@ public class HrResource implements Serializable {
         this.companyId = companyId;
         this.title = title;
         this.disable = disable;
+        this.cover = cover;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.cover = cover;
     }
 
     public Integer getId() {
@@ -131,6 +131,14 @@ public class HrResource implements Serializable {
         this.disable = disable;
     }
 
+    public String getCover() {
+        return this.cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -147,14 +155,6 @@ public class HrResource implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getCover() {
-        return this.cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrResource (");
@@ -166,9 +166,9 @@ public class HrResource implements Serializable {
         sb.append(", ").append(companyId);
         sb.append(", ").append(title);
         sb.append(", ").append(disable);
+        sb.append(", ").append(cover);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(cover);
 
         sb.append(")");
         return sb.toString();

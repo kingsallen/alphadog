@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 2117578731;
+    private static final long serialVersionUID = 1079393125;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -282,14 +282,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public void setNewjdStatus(Integer value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public Integer getNewjdStatus() {
         return (Integer) get(18);
@@ -352,98 +352,98 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启普通人才库，2开启高端人才库
+     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
      */
     public void setTalentpoolStatus(Byte value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启普通人才库，2开启高端人才库
+     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
      */
     public Byte getTalentpoolStatus() {
         return (Byte) get(23);
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
-     */
-    public void setVeryeastSwitch(Byte value) {
-        set(24, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
-     */
-    public Byte getVeryeastSwitch() {
-        return (Byte) get(24);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
-     */
-    public void setMallSwitch(Byte value) {
-        set(25, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
-     */
-    public Byte getMallSwitch() {
-        return (Byte) get(25);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
-     */
-    public void setMallGoodsMethod(String value) {
-        set(26, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
-     */
-    public String getMallGoodsMethod() {
-        return (String) get(26);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
-     */
-    public void setMallGoodsMethodState(Byte value) {
-        set(27, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
-     */
-    public Byte getMallGoodsMethodState() {
-        return (Byte) get(27);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
      */
     public void setJob51SalaryDiscuss(Byte value) {
-        set(28, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
      */
     public Byte getJob51SalaryDiscuss() {
+        return (Byte) get(24);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
+     */
+    public void setVeryeastSwitch(Byte value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
+     */
+    public Byte getVeryeastSwitch() {
+        return (Byte) get(25);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
+     */
+    public void setMallSwitch(Byte value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
+     */
+    public Byte getMallSwitch() {
+        return (Byte) get(26);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
+     */
+    public void setMallGoodsMethod(String value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
+     */
+    public String getMallGoodsMethod() {
+        return (String) get(27);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+     */
+    public void setMallGoodsMethodState(Byte value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+     */
+    public Byte getMallGoodsMethodState() {
         return (Byte) get(28);
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是已开启
+     * Setter for <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是开启
      */
     public void setIsOpenGdpr(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是已开启
+     * Getter for <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是开启
      */
     public Byte getIsOpenGdpr() {
         return (Byte) get(29);
@@ -477,6 +477,20 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         return (String) get(31);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     */
+    public void setMobotWelcome(String value) {
+        set(32, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     */
+    public String getMobotWelcome() {
+        return (String) get(32);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -503,7 +517,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte job51SalaryDiscuss, Byte isOpenGdpr, String mobotHeadImg, String mobotName) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte job51SalaryDiscuss, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName, String mobotWelcome) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -530,13 +544,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(21, employeeSlug);
         set(22, displayLocale);
         set(23, talentpoolStatus);
-        set(24, veryeastSwitch);
-        set(25, mallSwitch);
-        set(26, mallGoodsMethod);
-        set(27, mallGoodsMethodState);
-        set(28, job51SalaryDiscuss);
+        set(24, job51SalaryDiscuss);
+        set(25, veryeastSwitch);
+        set(26, mallSwitch);
+        set(27, mallGoodsMethod);
+        set(28, mallGoodsMethodState);
         set(29, isOpenGdpr);
         set(30, mobotHeadImg);
         set(31, mobotName);
+        set(32, mobotWelcome);
     }
 }

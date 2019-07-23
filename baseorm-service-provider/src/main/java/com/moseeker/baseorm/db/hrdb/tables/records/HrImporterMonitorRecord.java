@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrImporterMonitorRecord extends UpdatableRecordImpl<HrImporterMonitorRecord> implements Record11<Integer, Integer, Integer, Byte, String, Short, String, Timestamp, Timestamp, String, Byte> {
 
-    private static final long serialVersionUID = -1916159837;
+    private static final long serialVersionUID = -1699479121;
 
     /**
      * Setter for <code>hrdb.hr_importer_monitor.id</code>.
@@ -75,14 +75,14 @@ public class HrImporterMonitorRecord extends UpdatableRecordImpl<HrImporterMonit
     }
 
     /**
-     * Setter for <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company 3:? 4:批量修改 已认证的user_employee
+     * Setter for <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company 3:不确定 4:批量修改 已认证的user_employee
      */
     public void setType(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company 3:? 4:批量修改 已认证的user_employee
+     * Getter for <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company 3:不确定 4:批量修改 已认证的user_employee
      */
     public Byte getType() {
         return (Byte) get(3);

@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbScratchCard extends TableImpl<HrHbScratchCardRecord> {
 
-    private static final long serialVersionUID = 674898800;
+    private static final long serialVersionUID = 2026276248;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_scratch_card</code>
@@ -75,7 +75,7 @@ public class HrHbScratchCard extends TableImpl<HrHbScratchCardRecord> {
     /**
      * The column <code>hrdb.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
      */
-    public final TableField<HrHbScratchCardRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL.precision(4, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "红包金额： 0.00 表示不发红包");
+    public final TableField<HrHbScratchCardRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL.precision(11, 2).nullable(false).defaultValue(org.jooq.impl.DSL.inline("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "红包金额： 0.00 表示不发红包");
 
     /**
      * The column <code>hrdb.hr_hb_scratch_card.hb_config_id</code>.
