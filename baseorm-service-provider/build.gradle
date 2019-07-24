@@ -8,7 +8,7 @@ repositories {
 // 设置依赖
 dependencies { 
 	compile project (":common")
-	//compile project (":thrift-jooq")
+	compile project (":thrift-jooq")
     compile deps["mysql-connector-java"]
     compile deps["commons-http"]
     compile deps["commons-lang"]
@@ -22,7 +22,7 @@ dependencies {
     compile deps["jooq"]
     compile deps["SensorsAnalyticsSDK"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
-    compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
+    //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
 	testCompile 'junit:junit:4.12'
 }
 tasks.withType(JavaCompile) {
