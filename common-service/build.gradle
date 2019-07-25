@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 // 设置依赖
 dependencies {
     compile project (":common")
-    //compile project (":thrift-jooq")
+    compile project (":thrift-jooq")
     compile project (":baseorm-service-provider")
 
     compile deps["spring-core"]
@@ -15,7 +15,6 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-rabbit"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
-    compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
     compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
     compile 'org.springframework.kafka:spring-kafka:2.1.12.RELEASE'
