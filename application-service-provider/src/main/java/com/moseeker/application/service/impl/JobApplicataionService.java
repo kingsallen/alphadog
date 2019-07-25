@@ -278,6 +278,7 @@ public class JobApplicataionService {
         params.put("companyId",companyId);
         String message=JSON.toJSONString(params);
         scheduledThread.startTast(()->{
+            logger.info("发送rabbitmq ，走简历的新流程");
             amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
                     MessageBuilder.withBody(message.getBytes()).build());
         },1000);
