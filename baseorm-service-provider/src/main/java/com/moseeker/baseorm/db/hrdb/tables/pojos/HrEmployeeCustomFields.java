@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields implements Serializable {
 
-    private static final long serialVersionUID = 267967234;
+    private static final long serialVersionUID = 1331863356;
 
     private Integer id;
     private Integer companyId;
@@ -33,7 +33,7 @@ public class HrEmployeeCustomFields implements Serializable {
     private Integer mandatory;
     private Integer status;
     private Integer optionType;
-    private Integer fieldType;
+    private Byte    fieldType;
     private String  ename;
 
     public HrEmployeeCustomFields() {}
@@ -62,7 +62,7 @@ public class HrEmployeeCustomFields implements Serializable {
         Integer mandatory,
         Integer status,
         Integer optionType,
-        Integer fieldType,
+        Byte    fieldType,
         String  ename
     ) {
         this.id = id;
@@ -150,11 +150,11 @@ public class HrEmployeeCustomFields implements Serializable {
         this.optionType = optionType;
     }
 
-    public Integer getFieldType() {
+    public Byte getFieldType() {
         return this.fieldType;
     }
 
-    public void setFieldType(Integer fieldType) {
+    public void setFieldType(Byte fieldType) {
         this.fieldType = fieldType;
     }
 

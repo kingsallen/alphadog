@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = -1536467791;
+    private static final long serialVersionUID = 168875345;
 
     private Integer   id;
     private String    name;
@@ -55,15 +55,15 @@ public class HrSearchCondition implements Serializable {
     private String    favoriteHrs;
     private String    cityCode;
     private String    intentionCityCode;
-    private Integer   positionStatus;
     private String    positionKeyWord;
     private String    pastPositionKeyWord;
     private String    pastCompanyKeyWord;
+    private Integer   positionStatus;
     private Timestamp startSubmitTime;
     private Timestamp endSubmitTime;
     private String    hasAttachment;
-    private String    departmentIds;
     private String    departmentNames;
+    private String    departmentIds;
     private String    remark;
 
     public HrSearchCondition() {}
@@ -99,15 +99,15 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = value.favoriteHrs;
         this.cityCode = value.cityCode;
         this.intentionCityCode = value.intentionCityCode;
-        this.positionStatus = value.positionStatus;
         this.positionKeyWord = value.positionKeyWord;
         this.pastPositionKeyWord = value.pastPositionKeyWord;
         this.pastCompanyKeyWord = value.pastCompanyKeyWord;
+        this.positionStatus = value.positionStatus;
         this.startSubmitTime = value.startSubmitTime;
         this.endSubmitTime = value.endSubmitTime;
         this.hasAttachment = value.hasAttachment;
-        this.departmentIds = value.departmentIds;
         this.departmentNames = value.departmentNames;
+        this.departmentIds = value.departmentIds;
         this.remark = value.remark;
     }
 
@@ -142,15 +142,15 @@ public class HrSearchCondition implements Serializable {
         String    favoriteHrs,
         String    cityCode,
         String    intentionCityCode,
-        Integer   positionStatus,
         String    positionKeyWord,
         String    pastPositionKeyWord,
         String    pastCompanyKeyWord,
+        Integer   positionStatus,
         Timestamp startSubmitTime,
         Timestamp endSubmitTime,
         String    hasAttachment,
-        String    departmentIds,
         String    departmentNames,
+        String    departmentIds,
         String    remark
     ) {
         this.id = id;
@@ -183,15 +183,15 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = favoriteHrs;
         this.cityCode = cityCode;
         this.intentionCityCode = intentionCityCode;
-        this.positionStatus = positionStatus;
         this.positionKeyWord = positionKeyWord;
         this.pastPositionKeyWord = pastPositionKeyWord;
         this.pastCompanyKeyWord = pastCompanyKeyWord;
+        this.positionStatus = positionStatus;
         this.startSubmitTime = startSubmitTime;
         this.endSubmitTime = endSubmitTime;
         this.hasAttachment = hasAttachment;
-        this.departmentIds = departmentIds;
         this.departmentNames = departmentNames;
+        this.departmentIds = departmentIds;
         this.remark = remark;
     }
 
@@ -435,14 +435,6 @@ public class HrSearchCondition implements Serializable {
         this.intentionCityCode = intentionCityCode;
     }
 
-    public Integer getPositionStatus() {
-        return this.positionStatus;
-    }
-
-    public void setPositionStatus(Integer positionStatus) {
-        this.positionStatus = positionStatus;
-    }
-
     public String getPositionKeyWord() {
         return this.positionKeyWord;
     }
@@ -465,6 +457,14 @@ public class HrSearchCondition implements Serializable {
 
     public void setPastCompanyKeyWord(String pastCompanyKeyWord) {
         this.pastCompanyKeyWord = pastCompanyKeyWord;
+    }
+
+    public Integer getPositionStatus() {
+        return this.positionStatus;
+    }
+
+    public void setPositionStatus(Integer positionStatus) {
+        this.positionStatus = positionStatus;
     }
 
     public Timestamp getStartSubmitTime() {
@@ -491,20 +491,20 @@ public class HrSearchCondition implements Serializable {
         this.hasAttachment = hasAttachment;
     }
 
-    public String getDepartmentIds() {
-        return this.departmentIds;
-    }
-
-    public void setDepartmentIds(String departmentIds) {
-        this.departmentIds = departmentIds;
-    }
-
     public String getDepartmentNames() {
         return this.departmentNames;
     }
 
     public void setDepartmentNames(String departmentNames) {
         this.departmentNames = departmentNames;
+    }
+
+    public String getDepartmentIds() {
+        return this.departmentIds;
+    }
+
+    public void setDepartmentIds(String departmentIds) {
+        this.departmentIds = departmentIds;
     }
 
     public String getRemark() {
@@ -549,15 +549,15 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(favoriteHrs);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(intentionCityCode);
-        sb.append(", ").append(positionStatus);
         sb.append(", ").append(positionKeyWord);
         sb.append(", ").append(pastPositionKeyWord);
         sb.append(", ").append(pastCompanyKeyWord);
+        sb.append(", ").append(positionStatus);
         sb.append(", ").append(startSubmitTime);
         sb.append(", ").append(endSubmitTime);
         sb.append(", ").append(hasAttachment);
-        sb.append(", ").append(departmentIds);
         sb.append(", ").append(departmentNames);
+        sb.append(", ").append(departmentIds);
         sb.append(", ").append(remark);
 
         sb.append(")");
