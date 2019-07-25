@@ -12,8 +12,6 @@ dependencies {
     //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
     //compile deps["libthrift"]
     compile deps["mysql-connector-java"]
-    compile deps["commons-http"]
-    compile deps["commons-lang"]
 	compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["spring-test"]
