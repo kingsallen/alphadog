@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord> {
 
-    private static final long serialVersionUID = 1502261722;
+    private static final long serialVersionUID = -1672838257;
 
     /**
      * The reference instance of <code>hrdb.hr_headhunter_candidate</code>
@@ -68,9 +68,12 @@ public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord
     public final TableField<HrHeadhunterCandidateRecord, Integer> HEADHUNTER_ID = createField("headhunter_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "猎头顾问ID");
 
     /**
-     * The column <code>hrdb.hr_headhunter_candidate.recommend_desc</code>. 推荐说明
+     * The column <code>hrdb.hr_headhunter_candidate.recommend_desc</code>. 推荐说明’;
+
+;
+
      */
-    public final TableField<HrHeadhunterCandidateRecord, String> RECOMMEND_DESC = createField("recommend_desc", org.jooq.impl.SQLDataType.VARCHAR.length(500), this, "推荐说明");
+    public final TableField<HrHeadhunterCandidateRecord, String> RECOMMEND_DESC = createField("recommend_desc", org.jooq.impl.SQLDataType.VARCHAR.length(2000), this, "推荐说明’;\n\n;\n");
 
     /**
      * The column <code>hrdb.hr_headhunter_candidate.job_id</code>. 申请职位 hrdb.hr_headhunter_job.id
@@ -78,9 +81,9 @@ public class HrHeadhunterCandidate extends TableImpl<HrHeadhunterCandidateRecord
     public final TableField<HrHeadhunterCandidateRecord, Integer> JOB_ID = createField("job_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "申请职位 hrdb.hr_headhunter_job.id");
 
     /**
-     * The column <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 已推荐，7 被hr拒绝
+     * The column <code>hrdb.hr_headhunter_candidate.status</code>. 状态: 0 待接收，1 筛选, 2 面试, 3 offer, 4 待入职, 5 入职, 6 淘汰，7 被hr拒绝
      */
-    public final TableField<HrHeadhunterCandidateRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态: 0 待接收，1 已推荐，7 被hr拒绝");
+    public final TableField<HrHeadhunterCandidateRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态: 0 待接收，1 筛选, 2 面试, 3 offer, 4 待入职, 5 入职, 6 淘汰，7 被hr拒绝");
 
     /**
      * The column <code>hrdb.hr_headhunter_candidate.operation_info</code>. 操作信息

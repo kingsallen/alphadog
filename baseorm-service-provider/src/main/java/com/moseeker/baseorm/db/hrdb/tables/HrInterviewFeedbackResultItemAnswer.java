@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewFeedbackResultItemAnswer extends TableImpl<HrInterviewFeedbackResultItemAnswerRecord> {
 
-    private static final long serialVersionUID = 1307988841;
+    private static final long serialVersionUID = -2110778036;
 
     /**
      * The reference instance of <code>hrdb.hr_interview_feedback_result_item_answer</code>
@@ -70,7 +70,7 @@ public class HrInterviewFeedbackResultItemAnswer extends TableImpl<HrInterviewFe
      * The column <code>hrdb.hr_interview_feedback_result_item_answer.item_answer_values</code>. 文本/打分类型答案填文字或一个数字
   单选、多选答案填hr_interview_feedback_template_item_option.id，多个id逗号分隔
      */
-    public final TableField<HrInterviewFeedbackResultItemAnswerRecord, String> ITEM_ANSWER_VALUES = createField("item_answer_values", org.jooq.impl.SQLDataType.VARCHAR.length(4000), this, "文本/打分类型答案填文字或一个数字\n  单选、多选答案填hr_interview_feedback_template_item_option.id，多个id逗号分隔");
+    public final TableField<HrInterviewFeedbackResultItemAnswerRecord, String> ITEM_ANSWER_VALUES = createField("item_answer_values", org.jooq.impl.SQLDataType.VARCHAR.length(4000), this, "文本/打分类型答案填文字或一个数字\r\n  单选、多选答案填hr_interview_feedback_template_item_option.id，多个id逗号分隔");
 
     /**
      * The column <code>hrdb.hr_interview_feedback_result_item_answer.disable</code>. 状态：0 有效  1 无效 2 逻辑删除

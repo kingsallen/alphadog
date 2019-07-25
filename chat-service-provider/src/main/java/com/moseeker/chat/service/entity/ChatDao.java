@@ -585,7 +585,9 @@ public class ChatDao {
         try {
             HrChatUnreadCountDO hrChatUnreadCountDO =  hrChatUnreadCountDao.getData(queryUtil);
 
-            if(hrChatUnreadCountDO.getRoomId() > 0) {
+            // 初次聊天npe问题，由于初次设置未读消息是在savaChat之后处理的
+            if(hrChatUnreadCountDO != null
+                    && hrChatUnreadCountDO.getRoomId() > 0) {
                 switch (speaker) {
                     case 1:
                         hrChatUnreadCountDO.setHrChatTime(date);
@@ -597,7 +599,7 @@ public class ChatDao {
                         break;
                     default:
                 }
-                logger.info("ChatDao addUnreadCount hrChatUnreadCountDO:",hrChatUnreadCountDO);
+                logger.info("ChatDao addUnreadCount hrChatUnreadCountDO:{}", hrChatUnreadCountDO);
                 hrChatUnreadCountDao.updateData(hrChatUnreadCountDO);
             }
             return hrChatUnreadCountDO;
@@ -616,7 +618,7 @@ public class ChatDao {
     }
 
     public void addChatTOChatRoom(HrWxHrChatDO chatDO) {
-        logger.info("ChatDao addChatTOChatRoom chatDO:",chatDO);
+        logger.info("ChatDao addChatTOChatRoom chatDO:{}" ,chatDO);
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("id", chatDO.getChatlistId());
         try {
@@ -630,7 +632,7 @@ public class ChatDao {
                     chatRoomDO.setUserUnreadCount(chatRoomDO.getUserUnreadCount()+1);
                 }
 
-                logger.info("ChatDao addChatTOChatRoom chatRoomDO:",chatRoomDO);
+                logger.info("ChatDao addChatTOChatRoom chatRoomDO:{}", chatRoomDO);
                 hrWxHrChatListDao.updateData(chatRoomDO);
             }
         } catch (Exception e) {

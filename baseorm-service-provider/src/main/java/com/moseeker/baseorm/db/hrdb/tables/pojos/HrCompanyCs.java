@@ -10,7 +10,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 邮件额度每天使用日志
+ * 公司和CS匹配表
  */
 @Generated(
     value = {
@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyCs implements Serializable {
 
-    private static final long serialVersionUID = -213505072;
+    private static final long serialVersionUID = 1109033550;
 
     private Integer id;
     private Integer companyId;

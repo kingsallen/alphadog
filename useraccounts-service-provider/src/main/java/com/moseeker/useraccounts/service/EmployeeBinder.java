@@ -360,6 +360,7 @@ public abstract class EmployeeBinder {
         properties.put("companyName", companyDO.getName());
         properties.put("companyId", useremployee.getCompanyId());
         properties.put("isEmployee", 1);
+        properties.put("employee_origin",bindSource);
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
 
         return response;

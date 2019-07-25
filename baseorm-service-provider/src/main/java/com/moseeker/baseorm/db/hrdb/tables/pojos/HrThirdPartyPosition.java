@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition implements Serializable {
 
-    private static final long serialVersionUID = -668818703;
+    private static final long serialVersionUID = -1663416672;
 
     private Integer   id;
     private Integer   positionId;
@@ -46,8 +46,8 @@ public class HrThirdPartyPosition implements Serializable {
     private Integer   salaryBottom;
     private Integer   salaryTop;
     private Integer   practiceSalary;
-    private Byte      practicePerWeek;
     private Byte      practiceSalaryUnit;
+    private Byte      practicePerWeek;
     private Integer   companyId;
     private Integer   addressId;
     private Integer   departmentId;
@@ -57,6 +57,7 @@ public class HrThirdPartyPosition implements Serializable {
     private Integer   count;
     private String    feature;
     private Byte      internship;
+    private String    param;
 
     public HrThirdPartyPosition() {}
 
@@ -82,8 +83,8 @@ public class HrThirdPartyPosition implements Serializable {
         this.salaryBottom = value.salaryBottom;
         this.salaryTop = value.salaryTop;
         this.practiceSalary = value.practiceSalary;
-        this.practicePerWeek = value.practicePerWeek;
         this.practiceSalaryUnit = value.practiceSalaryUnit;
+        this.practicePerWeek = value.practicePerWeek;
         this.companyId = value.companyId;
         this.addressId = value.addressId;
         this.departmentId = value.departmentId;
@@ -93,6 +94,7 @@ public class HrThirdPartyPosition implements Serializable {
         this.count = value.count;
         this.feature = value.feature;
         this.internship = value.internship;
+        this.param = value.param;
     }
 
     public HrThirdPartyPosition(
@@ -117,8 +119,8 @@ public class HrThirdPartyPosition implements Serializable {
         Integer   salaryBottom,
         Integer   salaryTop,
         Integer   practiceSalary,
-        Byte      practicePerWeek,
         Byte      practiceSalaryUnit,
+        Byte      practicePerWeek,
         Integer   companyId,
         Integer   addressId,
         Integer   departmentId,
@@ -127,7 +129,8 @@ public class HrThirdPartyPosition implements Serializable {
         String    departmentName,
         Integer   count,
         String    feature,
-        Byte      internship
+        Byte      internship,
+        String    param
     ) {
         this.id = id;
         this.positionId = positionId;
@@ -150,8 +153,8 @@ public class HrThirdPartyPosition implements Serializable {
         this.salaryBottom = salaryBottom;
         this.salaryTop = salaryTop;
         this.practiceSalary = practiceSalary;
-        this.practicePerWeek = practicePerWeek;
         this.practiceSalaryUnit = practiceSalaryUnit;
+        this.practicePerWeek = practicePerWeek;
         this.companyId = companyId;
         this.addressId = addressId;
         this.departmentId = departmentId;
@@ -161,6 +164,7 @@ public class HrThirdPartyPosition implements Serializable {
         this.count = count;
         this.feature = feature;
         this.internship = internship;
+        this.param = param;
     }
 
     public Integer getId() {
@@ -331,20 +335,20 @@ public class HrThirdPartyPosition implements Serializable {
         this.practiceSalary = practiceSalary;
     }
 
-    public Byte getPracticePerWeek() {
-        return this.practicePerWeek;
-    }
-
-    public void setPracticePerWeek(Byte practicePerWeek) {
-        this.practicePerWeek = practicePerWeek;
-    }
-
     public Byte getPracticeSalaryUnit() {
         return this.practiceSalaryUnit;
     }
 
     public void setPracticeSalaryUnit(Byte practiceSalaryUnit) {
         this.practiceSalaryUnit = practiceSalaryUnit;
+    }
+
+    public Byte getPracticePerWeek() {
+        return this.practicePerWeek;
+    }
+
+    public void setPracticePerWeek(Byte practicePerWeek) {
+        this.practicePerWeek = practicePerWeek;
     }
 
     public Integer getCompanyId() {
@@ -419,6 +423,14 @@ public class HrThirdPartyPosition implements Serializable {
         this.internship = internship;
     }
 
+    public String getParam() {
+        return this.param;
+    }
+
+    public void setParam(String param) {
+        this.param = param;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrThirdPartyPosition (");
@@ -444,8 +456,8 @@ public class HrThirdPartyPosition implements Serializable {
         sb.append(", ").append(salaryBottom);
         sb.append(", ").append(salaryTop);
         sb.append(", ").append(practiceSalary);
-        sb.append(", ").append(practicePerWeek);
         sb.append(", ").append(practiceSalaryUnit);
+        sb.append(", ").append(practicePerWeek);
         sb.append(", ").append(companyId);
         sb.append(", ").append(addressId);
         sb.append(", ").append(departmentId);
@@ -455,6 +467,7 @@ public class HrThirdPartyPosition implements Serializable {
         sb.append(", ").append(count);
         sb.append(", ").append(feature);
         sb.append(", ").append(internship);
+        sb.append(", ").append(param);
 
         sb.append(")");
         return sb.toString();

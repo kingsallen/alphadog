@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 1700311483;
+    private static final long serialVersionUID = 1344791194;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -62,14 +62,14 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(24).nullable(false), this, "常用搜索条件名称，长度不超过12个字符");
 
     /**
-     * The column <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id)，多个发布人用,隔开
+     * The column <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id),多个发布人之间用,隔开
      */
-    public final TableField<HrSearchConditionRecord, String> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发布人id(user_hr_account.id)，多个发布人用,隔开");
+    public final TableField<HrSearchConditionRecord, String> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发布人id(user_hr_account.id),多个发布人之间用,隔开");
 
     /**
-     * The column <code>hrdb.hr_search_condition.position_id</code>. 职位id,多个职位用,隔开
+     * The column <code>hrdb.hr_search_condition.position_id</code>. 职位id 多个职位之间用,隔开
      */
-    public final TableField<HrSearchConditionRecord, String> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位id,多个职位用,隔开");
+    public final TableField<HrSearchConditionRecord, String> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位id 多个职位之间用,隔开");
 
     /**
      * The column <code>hrdb.hr_search_condition.keyword</code>. 关键字
@@ -87,9 +87,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> WORK_YEARS = createField("work_years", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "工作年限、工龄");
 
     /**
-     * The column <code>hrdb.hr_search_condition.city_name</code>. 现居住地
+     * The column <code>hrdb.hr_search_condition.city_name</code>. 现居住地, 允许多个，使用逗号分隔，要和city_code保持一致
      */
-    public final TableField<HrSearchConditionRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "现居住地");
+    public final TableField<HrSearchConditionRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "现居住地, 允许多个，使用逗号分隔，要和city_code保持一致");
 
     /**
      * The column <code>hrdb.hr_search_condition.degree</code>. 学历
@@ -117,9 +117,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Integer> MAX_AGE = createField("max_age", org.jooq.impl.SQLDataType.INTEGER, this, "最大年龄");
 
     /**
-     * The column <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+     * The column <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致
      */
-    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地");
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致");
 
     /**
      * The column <code>hrdb.hr_search_condition.sex</code>. 性别
@@ -172,9 +172,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Byte> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.TINYINT, this, "是否公开 1是");
 
     /**
-     * The column <code>hrdb.hr_search_condition.origins</code>. 简历来源，申请来源，是否上传，多个之间用,隔开
+     * The column <code>hrdb.hr_search_condition.origins</code>. 来源，简历来源，是否上传，申请来源 多个来源之间用,隔开
      */
-    public final TableField<HrSearchConditionRecord, String> ORIGINS = createField("origins", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "简历来源，申请来源，是否上传，多个之间用,隔开");
+    public final TableField<HrSearchConditionRecord, String> ORIGINS = createField("origins", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "来源，简历来源，是否上传，申请来源 多个来源之间用,隔开");
 
     /**
      * The column <code>hrdb.hr_search_condition.is_recommend</code>. 是否内推 1是
@@ -182,44 +182,44 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT, this, "是否内推 1是");
 
     /**
-     * The column <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开
+     * The column <code>hrdb.hr_search_condition.tag_ids</code>. 标签id -1 全部公开0我的收藏 其他则为tag_id
      */
-    public final TableField<HrSearchConditionRecord, String> TAG_IDS = createField("tag_ids", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开");
+    public final TableField<HrSearchConditionRecord, String> TAG_IDS = createField("tag_ids", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "标签id -1 全部公开0我的收藏 其他则为tag_id");
 
     /**
-     * The column <code>hrdb.hr_search_condition.favorite_hrs</code>.
+     * The column <code>hrdb.hr_search_condition.favorite_hrs</code>. 收藏人
      */
-    public final TableField<HrSearchConditionRecord, String> FAVORITE_HRS = createField("favorite_hrs", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<HrSearchConditionRecord, String> FAVORITE_HRS = createField("favorite_hrs", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "收藏人");
 
     /**
-     * The column <code>hrdb.hr_search_condition.city_code</code>.
+     * The column <code>hrdb.hr_search_condition.city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地
      */
-    public final TableField<HrSearchConditionRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<HrSearchConditionRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地");
 
     /**
-     * The column <code>hrdb.hr_search_condition.intention_city_code</code>.
+     * The column <code>hrdb.hr_search_condition.intention_city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地
      */
-    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     */
+    public final TableField<HrSearchConditionRecord, String> POSITION_KEY_WORD = createField("position_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位搜索关键字");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     */
+    public final TableField<HrSearchConditionRecord, String> PAST_POSITION_KEY_WORD = createField("past_position_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "曾任职位的关键字");
+
+    /**
+     * The column <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     */
+    public final TableField<HrSearchConditionRecord, String> PAST_COMPANY_KEY_WORD = createField("past_company_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "曾任公司的关键字");
 
     /**
      * The column <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
     public final TableField<HrSearchConditionRecord, Integer> POSITION_STATUS = createField("position_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("-1", org.jooq.impl.SQLDataType.INTEGER)), this, "职位状态 0;有效，1下架 2删除");
-
-    /**
-     * The column <code>hrdb.hr_search_condition.position_key_word</code>.
-     */
-    public final TableField<HrSearchConditionRecord, String> POSITION_KEY_WORD = createField("position_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>hrdb.hr_search_condition.past_position_key_word</code>.
-     */
-    public final TableField<HrSearchConditionRecord, String> PAST_POSITION_KEY_WORD = createField("past_position_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
-
-    /**
-     * The column <code>hrdb.hr_search_condition.past_company_key_word</code>.
-     */
-    public final TableField<HrSearchConditionRecord, String> PAST_COMPANY_KEY_WORD = createField("past_company_key_word", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>hrdb.hr_search_condition.start_submit_time</code>. 提交申请的开始时间
@@ -232,24 +232,24 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Timestamp> END_SUBMIT_TIME = createField("end_submit_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "提交申请的结束时间");
 
     /**
-     * The column <code>hrdb.hr_search_condition.has_attachment</code>. 1 有附件，0 无附件，不传代表不限
+     * The column <code>hrdb.hr_search_condition.has_attachment</code>. 是否有附件简历 1是有 0是无 不写为不限
      */
-    public final TableField<HrSearchConditionRecord, String> HAS_ATTACHMENT = createField("has_attachment", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "1 有附件，0 无附件，不传代表不限");
+    public final TableField<HrSearchConditionRecord, String> HAS_ATTACHMENT = createField("has_attachment", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "是否有附件简历 1是有 0是无 不写为不限");
 
     /**
-     * The column <code>hrdb.hr_search_condition.department_ids</code>. 部门id，英文逗号连接的字符串
+     * The column <code>hrdb.hr_search_condition.department_names</code>. 部门名称 逗号隔开
      */
-    public final TableField<HrSearchConditionRecord, String> DEPARTMENT_IDS = createField("department_ids", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "部门id，英文逗号连接的字符串");
+    public final TableField<HrSearchConditionRecord, String> DEPARTMENT_NAMES = createField("department_names", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "部门名称 逗号隔开");
 
     /**
-     * The column <code>hrdb.hr_search_condition.department_names</code>. 部门名称，英文逗号连接的字符串
+     * The column <code>hrdb.hr_search_condition.department_ids</code>. 部门编号 逗号隔开
      */
-    public final TableField<HrSearchConditionRecord, String> DEPARTMENT_NAMES = createField("department_names", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "部门名称，英文逗号连接的字符串");
+    public final TableField<HrSearchConditionRecord, String> DEPARTMENT_IDS = createField("department_ids", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "部门编号 逗号隔开");
 
     /**
      * The column <code>hrdb.hr_search_condition.remark</code>. 是否有备注 0无1有空为不限
      */
-    public final TableField<HrSearchConditionRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(16).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "是否有备注 0无1有空为不限");
+    public final TableField<HrSearchConditionRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "是否有备注 0无1有空为不限");
 
     /**
      * Create a <code>hrdb.hr_search_condition</code> table reference

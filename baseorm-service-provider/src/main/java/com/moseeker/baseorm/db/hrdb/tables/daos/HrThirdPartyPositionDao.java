@@ -206,17 +206,17 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
     }
 
     /**
-     * Fetch records that have <code>practice_per_week IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByPracticePerWeek(Byte... values) {
-        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.PRACTICE_PER_WEEK, values);
-    }
-
-    /**
      * Fetch records that have <code>practice_salary_unit IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByPracticeSalaryUnit(Byte... values) {
         return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.PRACTICE_SALARY_UNIT, values);
+    }
+
+    /**
+     * Fetch records that have <code>practice_per_week IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByPracticePerWeek(Byte... values) {
+        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.PRACTICE_PER_WEEK, values);
     }
 
     /**
@@ -280,5 +280,12 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByInternship(Byte... values) {
         return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.INTERNSHIP, values);
+    }
+
+    /**
+     * Fetch records that have <code>param IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByParam(String... values) {
+        return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.PARAM, values);
     }
 }
