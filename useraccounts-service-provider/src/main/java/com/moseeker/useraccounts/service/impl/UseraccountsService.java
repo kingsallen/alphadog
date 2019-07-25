@@ -1542,9 +1542,10 @@ public class UseraccountsService {
             UserUserRecord userUserRecord = new UserUserRecord();
             if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getName())) {
                 userUserRecord.setName(name);
+                userUserRecord.setId(userUserDO.getId());
+                logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
+                userdao.updateRecord(userUserRecord);
             }
-            logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
-            userdao.updateRecord(userUserRecord);
         }
         int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
