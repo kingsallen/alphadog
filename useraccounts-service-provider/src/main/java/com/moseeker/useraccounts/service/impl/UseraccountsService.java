@@ -1536,12 +1536,14 @@ public class UseraccountsService {
             }
             userUserRecord.setUsername(mobile.trim());
             userUserRecord.setMobile(Long.valueOf(mobile.trim()));
+            logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
             userdao.updateRecord(userUserRecord);
         }else{//不需要修改手机号的情况下，判断用户名是否为空，若为空，取此次name参数作为用户名，更新数据
             UserUserRecord userUserRecord = new UserUserRecord();
             if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getName())) {
                 userUserRecord.setName(name);
             }
+            logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
             userdao.updateRecord(userUserRecord);
         }
         int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
