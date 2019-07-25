@@ -225,6 +225,17 @@ struct ReferralCard {
     9: optional i32 employeeId,
 }
 
+//多职位推荐卡片
+struct ReferralsCard{
+    1: optional i32 isClaimed,
+    2: optional string companyName,
+    3: optional list<string> jobTitle,
+    4: optional string failedTitle,
+    5: optional string presenteeFirstName,
+    6: optional string recomName,
+    7: optional i32 presenteeId
+}
+
 //员工与所在公司的基本信息
 struct EmployeeInfo {
     1 : optional i32 id,

@@ -1741,5 +1741,61 @@ public class EmployeeEntity {
             return 0;
         }
     }
+
+    public HrPointsConfDO fetchByCompanyId(Integer companyId,Integer templateId){
+        Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id",templateId);
+        return hrPointsConfDao.getData(query.buildQuery());
+    }
+
+    public double calcReward(Integer employeeId,Integer templateId,Integer positionId){
+
+        //查询员工获取公司编号
+        UserEmployeeDO employeeDO = employeeDao.getEmployeeById(employeeId);
+
+        if(employeeDO==null){
+            return 0;
+        }
+
+        Integer companyId = employeeDO.getCompanyId();
+
+        Double reward = null;
+
+        //查询该公司是否只针对内推职位奖励积分
+        ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
+        if (companyConf != null && companyConf.getPositionPointsFlag() != null
+                && companyConf.getPositionPointsFlag() == 1) {
+            logger.info("addAwardHandler 有配置信息");
+            JobPositionPojo positionPojo = positionDao.getPosition(positionId);
+
+            if (positionPojo != null && positionPojo.is_referral == 0) {
+                logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
+                reward = new Double(0);
+                return reward;
+            }
+        }
+
+        //先从hr_company_conf查询积分
+        Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id",templateId);
+        HrPointsConfDO confDO = hrPointsConfDao.getData(query.buildQuery());
+
+        if(confDO!=null){
+            reward = confDO.getReward();
+        }
+
+        //若该公司没有积分配置，查询积分配置模板表
+        if(reward==null){
+            query.clear();
+            query.where("id", templateId);
+            ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
+            if (confTplDO != null && confTplDO.getAward() != 0) {
+                reward = (double)confTplDO.getAward();
+            }
+        }
+
+        if(reward==null){
+            return new Double(0);
+        }
+        return reward;
+    }
 }
 

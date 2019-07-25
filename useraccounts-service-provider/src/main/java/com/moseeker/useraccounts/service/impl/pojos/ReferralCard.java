@@ -16,6 +16,15 @@ public class ReferralCard {
     private String mobile;
     private int applyId;
     private boolean claim;
+    private int userId;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public String getUserName() {
         return userName;
