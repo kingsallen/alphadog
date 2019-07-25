@@ -6,7 +6,6 @@ import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 
 import java.nio.ByteBuffer;
 import java.util.List;
