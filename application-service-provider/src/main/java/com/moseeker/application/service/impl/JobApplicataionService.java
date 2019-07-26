@@ -15,6 +15,7 @@ import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionATsProcessDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
@@ -32,6 +33,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionAtsProcess;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
@@ -175,6 +177,8 @@ public class JobApplicataionService {
 
     @Autowired
     private SensorSend sensorSend;
+    @Autowired
+    private JobPositionATsProcessDao jobPositionATsProcessDao;
 
 
 
@@ -212,7 +216,7 @@ public class JobApplicataionService {
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
 
         if (jobApplicationId > 0) {
-            boolean isNewAtsStatus=!validateNewAtsProcess((int)jobApplication.getCompany_id());
+            boolean isNewAtsStatus=validateNewAtsProcess((int)jobApplication.getCompany_id(),(int)jobApplication.getPosition_id());
             if(!isNewAtsStatus){
                 sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
                         jobApplication.getApply_type(), jobApplication.getEmail_status(),
@@ -221,7 +225,7 @@ public class JobApplicataionService {
                 // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
                 handleReferralState(jobApplicationId);
             }else{
-                sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
+                this.sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
             }
 
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
@@ -253,12 +257,16 @@ public class JobApplicataionService {
         },6000);
     }
 
-    private boolean  validateNewAtsProcess(int companyId){
+    private boolean  validateNewAtsProcess(int companyId,int positionId){
         HrCompanyConf conf=hrCompanyConfDao.getConfbyCompanyId(companyId);
         if(conf==null){
             return false;
         }
         if(conf.getNewAtsStatus()==0){
+            return false;
+        }
+        JobPositionAtsProcess data=jobPositionATsProcessDao.getJobPositionAtsProcessSingle(positionId);
+        if(data==null){
             return false;
         }
         return true;
@@ -1218,6 +1226,14 @@ public class JobApplicataionService {
         if (positionList.size() != positionIdList.size()) {
             throw ApplicationException.APPLICATION_POSITIONS_NOT_LEGAL;
         }
+        Map<Integer,Integer> positionPublisher=new HashMap<>();
+        for(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position:positionList){
+            int pid=position.getId();
+            int publisher=position.getPublisher();
+            if(!positionPublisher.containsKey(pid)){
+                positionPublisher.put(pid,publisher);
+            }
+        }
 
         //校验投递限制
         UserApplyCount userApplyCount = applicationEntity.getApplyCount(applierId, employeeDO.getCompanyId());
@@ -1278,9 +1294,15 @@ public class JobApplicataionService {
                     }
 
                     if (resultVO.isCreate()) {
-                        sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
-                                0, referenceId, resultVO.getApplierId(),
-                                ApplicationSource.EMPLOYEE_CHATBOT.getValue());
+                        boolean isNewAtsStatus=validateNewAtsProcess(employeeDO.getCompanyId(),resultVO.getPositionId());
+                        if(!isNewAtsStatus) {
+                            sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
+                                    0, referenceId, resultVO.getApplierId(),
+                                    ApplicationSource.EMPLOYEE_CHATBOT.getValue());
+                        }else{
+                            //todo 这一段要注意
+                            this.sendNewAtsProcess(resultVO.getPositionId(),positionPublisher.get(resultVO.getPositionId()),resultVO.getApplicationId(),employeeDO.getCompanyId());
+                        }
                     }
                     return 0;
                 });
