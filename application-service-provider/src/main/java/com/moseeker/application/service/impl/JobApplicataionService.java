@@ -218,7 +218,7 @@ public class JobApplicataionService {
             return ResponseUtils.fail(ApplicationException.APPLICATION_POSITION_DUPLICATE.getMessage());
         }
         if (jobApplicationId > 0) {
-            boolean isNewAtsStatus=!validateNewAtsProcess((int)jobApplication.getCompany_id());
+            boolean isNewAtsStatus=validateNewAtsProcess((int)jobApplication.getCompany_id());
             if(!isNewAtsStatus){
                 sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
                         jobApplication.getApply_type(), jobApplication.getEmail_status(),
