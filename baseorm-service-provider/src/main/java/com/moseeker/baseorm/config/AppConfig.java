@@ -62,6 +62,9 @@ public class AppConfig {
         Integer acquireRetryDelayInMs = propertiesReader.get("mycat.acquireRetryDelayInMs", Integer.class);
         Integer acquireRetryAttempts = propertiesReader.get("mycat.acquireRetryAttempts", Integer.class);
 
+        logger.info("getDataSource() driverClass:{} url:{} " , driverClass,url);
+        logger.debug("getDataSource() username:{} password{}" , userName,password);
+
         BoneCPDataSource boneCPDataSource = new BoneCPDataSource();
 
         boneCPDataSource.setJdbcUrl(url);
