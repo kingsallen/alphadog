@@ -4,29 +4,7 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
-import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
-import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113;
-import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.*;
 
 import javax.annotation.Generated;
 
@@ -158,4 +136,13 @@ public class Tables {
      * 自定义简历副本记录表
      */
     public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
+    /**
+     * 招聘进度和具体申请对应表
+     */
+    public static final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
+
+    /**
+     * 职位招聘流程绑定表
+     */
+    public static final JobPositionAtsProcess JOB_POSITION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS;
 }

@@ -20,8 +20,14 @@ import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBase;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBaseItem;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsProcessCompanyItem;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplicationAtsProcess;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionAtsProcess;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
@@ -54,19 +60,18 @@ import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.infrastructure.*;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
-import com.moseeker.useraccounts.service.constant.RadarStateEnum;
-import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
-import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
-import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
+import com.moseeker.useraccounts.service.constant.*;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
+import org.jooq.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -148,6 +153,24 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private SensorSend sensorSend;
 
     private static final long TEN_MINUTE = 10*60*1000;
+
+    private final Configuration configuration;
+    private HrCompanyConfJOOQDaoImpl hrCompanyConfJOOQDao;
+    private JobPositionAtsProcessJOOQDaoImpl jobPositionAtsProcessJOOQDao;
+    private JobApplicationAtsProcessJOOQDaoImpl jobApplicationAtsProcessJOOQDao;
+    private HrAtsProcessCompanyItemJOOQDaoImpl hrAtsProcessCompanyItemJOOQDao;
+    private HrAtsPhaseBaseJOOQDaoImpl hrAtsPhaseBaseJOOQDao;
+    private HrAtsPhaseBaseItemJOOQDaoImpl hrAtsPhaseBaseItemJOOQDao;
+    @Autowired
+    public ReferralRadarServiceImpl(Configuration configuration) {
+        this.configuration = configuration;
+        hrCompanyConfJOOQDao = new HrCompanyConfJOOQDaoImpl(configuration);
+        jobPositionAtsProcessJOOQDao = new JobPositionAtsProcessJOOQDaoImpl(configuration);
+        jobApplicationAtsProcessJOOQDao = new JobApplicationAtsProcessJOOQDaoImpl(configuration);
+        hrAtsProcessCompanyItemJOOQDao = new HrAtsProcessCompanyItemJOOQDaoImpl(configuration);
+        hrAtsPhaseBaseJOOQDao = new HrAtsPhaseBaseJOOQDaoImpl(configuration);
+        hrAtsPhaseBaseItemJOOQDao = new HrAtsPhaseBaseItemJOOQDaoImpl(configuration);
+    }
 
     @Override
     @RadarSwitchLimit
@@ -547,10 +570,68 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             handler.postProcessAfterCreateCard(card, jobApplicationDO, applierDegrees);
 
+            // 如果是新流程，返回新新流程信息
+            if(isNewProcess(jobApplicationDO.getPositionId(),jobApplicationDO.getCompanyId())){
+                handleNewAtsProcess(card,jobApplicationDO);
+            }
+
             result.add(card);
         }
         logger.info("getProgressBatch:{}", result);
         return JSON.toJSONString(result);
+    }
+
+    /**
+     * 判断是否加入新流程
+     * @param positionId
+     * @param companyId
+     * @return
+     */
+    public boolean isNewProcess(Integer positionId,Integer companyId){
+        logger.info("isNewProcess positionId:{},companyId:{}",positionId,companyId);
+        boolean isNew = false;
+        HrCompanyConf companyConf = hrCompanyConfJOOQDao.fetchOneByCompanyId(companyId);
+        // 1表示开启新流程
+        if(companyConf != null && companyConf.getNewAtsStatus() != null && companyConf.getNewAtsStatus().equals(1)) {
+            JobPositionAtsProcess atsProcess = jobPositionAtsProcessJOOQDao.fetchByPid(positionId);
+            if (atsProcess.getProcessId() != null) {
+                isNew = true;
+            }
+        }
+        logger.info("isNewProcess result isNew:{}",isNew);
+        return isNew;
+    }
+
+    /**
+     * 返回新流程当前阶段信息
+     * @param card
+     * @param jobApplicationDO
+     */
+    public void handleNewAtsProcess(JSONObject card,JobApplicationDO jobApplicationDO){
+        logger.info("handleNewAtsProcess param card:{},jobApplicationDO:{}",card,JSON.toJSONString(jobApplicationDO));
+        // 查询新流程的当前流程
+        JobApplicationAtsProcess applicationAtsProcess = jobApplicationAtsProcessJOOQDao.fetchOneByAppId(jobApplicationDO.getId());
+        logger.info("handleNewAtsProcess applicationAtsProcess:{}",JSON.toJSONString(applicationAtsProcess));
+        if(applicationAtsProcess == null){
+            logger.info("handleNewAtsProcess jobApplicationAtsProcess is null appId:{}",jobApplicationDO.getId());
+            return;
+        }
+        Integer currentPhaseId = applicationAtsProcess.getProcessId();
+        // 当前阶段状态
+        if(currentPhaseId < 0){
+            // 当currentPhaseId为-1时,表示当前阶段未通过,直接返回淘汰
+            card.put("progress", ReferralProgressEnum.FAILED.getProgress());
+            return;
+        }
+        HrAtsProcessCompanyItem atsProcessCompanyItem = hrAtsProcessCompanyItemJOOQDao.fetchOneById(currentPhaseId);
+        logger.info("handleNewAtsProcess atsProcessCompanyItem:{}",JSON.toJSONString(atsProcessCompanyItem));
+        HrAtsPhaseBaseItem baseItemVO = hrAtsPhaseBaseItemJOOQDao.fetchOneById(atsProcessCompanyItem.getItemId());
+        logger.info("handleNewAtsProcess baseItemVO:{}",JSON.toJSONString(baseItemVO));
+        // 查询出阶段类型
+        Integer parentId = baseItemVO.getParentId();
+        HrAtsPhaseBase phaseBase = hrAtsPhaseBaseJOOQDao.fetchOneById(parentId);
+        NewAtsMapReferralEnum typeEnum = NewAtsMapReferralEnum.getEnumByNewPhaseType(phaseBase.getType());
+        card.put("progress", typeEnum.getOldStep());
     }
 
     @Override
