@@ -1268,7 +1268,6 @@ public class TalentpoolSearchengine {
                 ages.add(age);
                 this.queryByAge(ages,query);
             }
-
         }
         if(StringUtils.isNotNullOrEmpty(extsis)){
             this.exitsisQuery(extsis,query);
