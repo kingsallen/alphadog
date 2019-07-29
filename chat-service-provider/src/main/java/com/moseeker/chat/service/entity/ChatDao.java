@@ -801,4 +801,23 @@ public class ChatDao {
         int startIndex = (pageNo - 1) * pageSize;
         return hrWxHrChatDao.listChat(roomId, startIndex, pageSize);
     }
+
+    /**
+     * 获取求职者上一条记录的ID
+     *
+     * @param roomId 房间ID
+     * @param chatId 主键ID
+     * @return
+     */
+    public Integer getUserLastQuestionChatRecordId(int roomId, int chatId) {
+        return hrWxHrChatDao.getUserLastQuestionChatRecordId(roomId, chatId);
+    }
+
+    /**
+     * 更新聊天记录的status
+     */
+    public void updateChatStatus(int chatId, byte status) {
+        hrWxHrChatDao.updateChatStatus(chatId, status);
+    }
+
 }
