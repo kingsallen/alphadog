@@ -851,7 +851,8 @@ public class UseraccountsController {
 			long sceneId = param.getLong("scene_id", 0l);
 			int expireSeconds = param.getInt("expire_seconds", 0);
 			int actionName = param.getInt("action_name", 0);
-			
+			String sceneStr = param.getString("scene_str",null);
+
 			Response result = useraccountsServices.cerateQrcode(wechatId, sceneId, expireSeconds, actionName);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {

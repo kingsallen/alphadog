@@ -1107,6 +1107,11 @@ public class UseraccountsService {
      */
     public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
 
+        //先判断需要生成的二维码是否为永久性的
+        if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
+
+        }
+
         try {
             Query.QueryBuilder qu = new Query.QueryBuilder();
             qu.where("id", String.valueOf(wechatId));
