@@ -129,10 +129,10 @@ public abstract class EmployeeReferralProfile {
         }
         try {
 //            countDownLatch.await(60, TimeUnit.SECONDS);
-//            tp1.startTast(()->{
-//                logger.info("============三秒后执行=============================");
+            tp1.startTast(()->{
+                logger.info("============三秒后执行=============================");
                 updateApplicationEsIndex(attementVO.getUserId());
-//            },3000);
+            },3000);
             return resultVOS;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

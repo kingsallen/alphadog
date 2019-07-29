@@ -53,10 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
@@ -183,6 +180,7 @@ public class ProfileEntity {
             return profileDB.getId();
         } else {
             profileRecord.getProfileRecord().setId(null);
+            profileRecord.getProfileRecord().setUuid(UUID.randomUUID().toString());
             if (profileRecord.getWorkexpRecords() != null) {
                 profileRecord.getWorkexpRecords().forEach(wrkexp -> wrkexp.setId(null));
             }
