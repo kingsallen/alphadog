@@ -2,6 +2,7 @@ package com.moseeker.useraccounts;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.weixin.QrcodeType;
+import com.moseeker.common.weixin.SceneType;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import org.apache.thrift.TBase;
 import org.junit.Test;
@@ -476,6 +477,8 @@ public class GenerateDoc {
 
     @Test
     public void testQrcodeType(){
-        assertEquals(true, QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(1)));
+//        assertEquals(true, QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(1)));
+        assertEquals("APPLY_FROM_PC", SceneType.APPLY_FROM_PC.toString());
     }
+
 }
