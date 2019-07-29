@@ -35,13 +35,12 @@ public class ChatServer {
                     }
                 }
 			} catch (IncompleteException | RpcException | RegisterException | BeansException e) {
-				e.printStackTrace();
+				LOGGER.error(e.getMessage(), e);
 				server.stopServer();
 			} finally {
 			}
 		} catch (Exception e) {
 			LOGGER.error("error", e);
-			e.printStackTrace();
 		}
 	}
 

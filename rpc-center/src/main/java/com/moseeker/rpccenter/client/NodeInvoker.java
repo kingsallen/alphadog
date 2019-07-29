@@ -81,7 +81,7 @@ public class NodeInvoker<T> implements Invoker {
 		}
         Throwable exception = null;
         ZKPath node = null;
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 2; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName, NodeManager.NODE_MANAGER.getLock());
                 if (node == null || node.getData() == null) {
@@ -98,11 +98,11 @@ public class NodeInvoker<T> implements Invoker {
                 return result;
             } catch (CURDException | BIZException ce) {
                 throw ce;
-            } catch (ConnectException ce) {
-            	LOGGER.error(ce.getMessage(), ce);
+            } catch (ConnectException | TTransportException ce) {
+                LOGGER.error("ConnectException:"+ce.getMessage(), ce);
             	pool.clear(node);
-            	LOGGER.error("ConnectException:"+ce.getMessage(), ce);
                 NodeManager.NODE_MANAGER.removePath(node);
+                client = null;
             } catch (InvocationTargetException ite) {
                 Throwable cause = ite.getCause();
                 if (cause != null) {

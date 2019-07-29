@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -122,22 +121,15 @@ public enum NodeManager {
 		try {
 			lock.writeLock().lock();
 			if(path != null && path.getParentNode() != null && this.path != null && this.path.getChirldren() != null) {
-                for(ZKPath parentPath : this.path.getChirldren()) {
-                    if(path.getParentNode().equals(parentPath)) {
-                    	if (parentPath.getChirldren() != null) {
-							Iterator<ZKPath> zkPathIterator = parentPath.getChirldren().iterator();
-							while (zkPathIterator.hasNext()) {
-								ZKPath zkPath = zkPathIterator.next();
-								if (zkPath.equals(path)) {
-									zkPathIterator.remove();
-									errorStorage.put(zkPath, System.currentTimeMillis());
-									break;
-								}
-							}
-						}
+				Iterator<ZKPath> zkPathIterator = path.getParentNode().getChirldren().iterator();
+				while (zkPathIterator.hasNext()) {
+					ZKPath zkPath = zkPathIterator.next();
+					if (zkPath.equals(path)) {
+						zkPathIterator.remove();
+						errorStorage.put(path, System.currentTimeMillis());
 						break;
-                    }
-                }
+					}
+				}
             }
 		} finally {
 			lock.writeLock().unlock();
@@ -176,7 +168,7 @@ public enum NodeManager {
 	 * 刷新节点数据
 	 */
 	public void refresh() {
-		clearErrorStorage();
+		//clearErrorStorage();
 		if(path == null) {
 			path = search();
 			addListener(path);
@@ -194,7 +186,7 @@ public enum NodeManager {
 		ZKPath zkPath;
 		CuratorFramework zookeeper = null;
 		try {
-			clearErrorStorage();
+			//clearErrorStorage();
 			zkPath = new ZKPath(config.getRoot());
 			CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
 			zookeeper = builder.connectString(config.getIP()+":"+config.getPort()).sessionTimeoutMs(config.getSessionTimeOut())
@@ -208,7 +200,7 @@ public enum NodeManager {
 			GetChildrenBuilder getChildrenBuilder = zookeeper.getChildren();
 			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
-				List<ZKPath> childrenPaths = new CopyOnWriteArrayList<>();
+				List<ZKPath> childrenPaths = new ArrayList<>(services.size());
 				for (String service : services) {
 					ZKPath chirldrenPath = new ZKPath(service);
 					chirldrenPath.setParentNode(zkPath);
@@ -220,9 +212,12 @@ public enum NodeManager {
 									.forPath(config.getZkSeparator() + service + config.getZkSeparator()
 											+ childrenService);
 							if (grandChirldrenServices != null && grandChirldrenServices.size() > 0) {
-								List<ZKPath> grandChirldrenPaths = new CopyOnWriteArrayList<>();
+								List<ZKPath> grandChirldrenPaths = new ArrayList<>(grandChirldrenServices.size());
 								for (String grandChirldrenService : grandChirldrenServices) {
 									ZKPath grandChirldrenPath = new ZKPath(grandChirldrenService);
+									if (errorStorage.containsKey(grandChirldrenPath)) {
+										continue;
+									}
 									CuratorFrameworkFactory.Builder builder1 = CuratorFrameworkFactory.builder();
 									CuratorFramework grandChirld = builder1.connectString(config.getConnectstr())
 											.sessionTimeoutMs(config.getSessionTimeOut())
@@ -318,7 +313,7 @@ public enum NodeManager {
 				root.setChirldrenCache(pathChildrenCache);
 				
 				if(root.getChirldren() == null) {
-					root.setChirldren(new CopyOnWriteArrayList<>());
+					root.setChirldren(new ArrayList<>(0));
 				} else if(root.getChirldren() != null && root.getChirldren().size() > 0) {
 					for(ZKPath parentPath : root.getChirldren()) {
 						addListenerToParentPath(parentPath);
@@ -362,7 +357,7 @@ public enum NodeManager {
 	private void refreshParentNode(ZKPath root) {
 		lock.writeLock().lock();
 		try {
-			clearErrorStorage();
+			//clearErrorStorage();
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
 			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
@@ -420,7 +415,7 @@ public enum NodeManager {
 	private void addNewNodesListener(ZKPath root) {
 		try {
 			lock.writeLock().lock();
-			clearErrorStorage();
+			//clearErrorStorage();
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
 			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
@@ -569,7 +564,7 @@ public enum NodeManager {
 		}
 		lock.writeLock().lock();
 		try {
-			clearErrorStorage();
+			//clearErrorStorage();
 			if(parentPath.getZookeeper() == null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
 				CuratorFramework zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getSessionTimeOut())
@@ -584,9 +579,12 @@ public enum NodeManager {
 			List<String> grandChirldrenServices = getChildrenBuilder
 					.forPath(config.getZkSeparator());
 			if(grandChirldrenServices != null && grandChirldrenServices.size() > 0) {
-				List<ZKPath> nodes = new CopyOnWriteArrayList<>();
+				List<ZKPath> nodes = new ArrayList<>(grandChirldrenServices.size());
 				for(String nodeName : grandChirldrenServices) {
 					ZKPath grandChirldrenPath = new ZKPath(nodeName);
+					if (errorStorage.containsKey(grandChirldrenPath)) {
+						continue;
+					}
 					CuratorFrameworkFactory.Builder builder1 = CuratorFrameworkFactory.builder();
 					CuratorFramework grandChild = builder1.connectString(config.getConnectstr())
 							.sessionTimeoutMs(config.getSessionTimeOut())
