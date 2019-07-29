@@ -158,7 +158,8 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
     public void updateChatStatus(int chatId, byte status) {
         create.update(HrWxHrChat.HR_WX_HR_CHAT)
                 .set(HrWxHrChat.HR_WX_HR_CHAT.STATUS, status)
-                .where(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(chatId));
+                .where(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(chatId))
+                .execute();
     }
 
 }
