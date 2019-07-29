@@ -11,9 +11,9 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 dependencies {
-    //compile project(":thrift-jooq")
-    compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
-    compile deps["libthrift"]
+    compile project(":thrift-jooq")
+    //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
+    //compile deps["libthrift"]
     compile deps["junit"]
     compile deps["slf4j-log4j12"]
     compile deps["httpcore"]
