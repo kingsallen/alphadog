@@ -13,7 +13,6 @@ tasks.withType(JavaCompile) {
 }
 // 设置依赖
 dependencies {
-    //compile project(":thrift-jooq")rofileintention
     compile project(":common")
     compile project (":common-service")
     compile project(":rpc-center")
