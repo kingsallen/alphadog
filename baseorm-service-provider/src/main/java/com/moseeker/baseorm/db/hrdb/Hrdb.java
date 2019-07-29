@@ -92,6 +92,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1007625344;
+    private static final long serialVersionUID = 150370258;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -571,6 +572,11 @@ public class Hrdb extends SchemaImpl {
     public final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 
     /**
+     * 微信公众号的场景二维码表(永久)
+     */
+    public final HrWxWechatQrcode HR_WX_WECHAT_QRCODE = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode.HR_WX_WECHAT_QRCODE;
+
+    /**
      * No further instances allowed
      */
     private Hrdb() {
@@ -683,6 +689,7 @@ public class Hrdb extends SchemaImpl {
             HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
             HrWxWechat.HR_WX_WECHAT,
             HrWxWechat_20180127chendi.HR_WX_WECHAT_20180127CHENDI,
-            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
+            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
+            HrWxWechatQrcode.HR_WX_WECHAT_QRCODE);
     }
 }

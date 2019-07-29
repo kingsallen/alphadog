@@ -90,6 +90,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAccountApplicationNotifyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
@@ -175,6 +176,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatQrcodeRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 
 import javax.annotation.Generated;
@@ -284,6 +286,7 @@ public class Keys {
     public static final Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = Identities0.IDENTITY_HR_WX_TEMPLATE_MESSAGE;
     public static final Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = Identities0.IDENTITY_HR_WX_WECHAT;
     public static final Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = Identities0.IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+    public static final Identity<HrWxWechatQrcodeRecord, Integer> IDENTITY_HR_WX_WECHAT_QRCODE = Identities0.IDENTITY_HR_WX_WECHAT_QRCODE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -385,6 +388,8 @@ public class Keys {
     public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = UniqueKeys0.KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY;
     public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_PRIMARY;
     public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY;
+    public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_QRCODE_PRIMARY;
+    public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL = UniqueKeys0.KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -478,6 +483,7 @@ public class Keys {
         public static Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = createIdentity(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = createIdentity(HrWxWechat.HR_WX_WECHAT, HrWxWechat.HR_WX_WECHAT.ID);
         public static Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = createIdentity(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
+        public static Identity<HrWxWechatQrcodeRecord, Integer> IDENTITY_HR_WX_WECHAT_QRCODE = createIdentity(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -577,5 +583,7 @@ public class Keys {
         public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = createUniqueKey(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, "KEY_hr_wx_template_message_PRIMARY", HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = createUniqueKey(HrWxWechat.HR_WX_WECHAT, "KEY_hr_wx_wechat_PRIMARY", HrWxWechat.HR_WX_WECHAT.ID);
         public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = createUniqueKey(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, "KEY_hr_wx_wechat_notice_sync_status_PRIMARY", HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
+        public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_PRIMARY = createUniqueKey(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, "KEY_hr_wx_wechat_qrcode_PRIMARY", HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.ID);
+        public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL = createUniqueKey(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, "KEY_hr_wx_wechat_qrcode_unique_qrcode_url", HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.WECHAT_ID, HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.SCENE);
     }
 }

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1079393125;
+    private static final long serialVersionUID = -1797418485;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -478,14 +478,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     * Setter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语, #多条对话分隔符#
      */
     public void setMobotWelcome(String value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     * Getter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语, #多条对话分隔符#
      */
     public String getMobotWelcome() {
         return (String) get(32);

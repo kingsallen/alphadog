@@ -4,10 +4,10 @@
 	<!-- 配置jdbc驱动连接 -->
 	<jdbc>
 		<driver>com.mysql.jdbc.Driver</driver>
-		<url>jdbc:mysql://db1.dqprism.com/hrdb?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
+		<url>jdbc:mysql://localhost:3306/hrdb?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
 		</url>
-		<user>daqi</user>
-		<password>7f1a45eac5985519829c929e7bbf0557</password>
+		<user>root</user>
+		<password>root</password>
 	</jdbc>
 	<generator>
 		<!-- 代码生成器 -->
@@ -18,7 +18,7 @@
 			<!-- 数据库名 -->
 			<inputSchema>hrdb</inputSchema>
 			<!-- 生成包含，*表示包含所有内容 -->
-			<includes>.hr_wx_wechat_qrcode</includes>
+			<includes>.*</includes>
 			<!--剔除，此处未剔除 -->
 			<!--<excludes>job_position</excludes>-->
 			<outputSchema>hrdb</outputSchema>
