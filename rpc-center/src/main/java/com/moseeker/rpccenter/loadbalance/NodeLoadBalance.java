@@ -91,6 +91,8 @@ public enum NodeLoadBalance {
 		if(position >= size) {
 			position = 0;
 			index.put(name, 0);
+		} else {
+			index.put(name, position+1);
 		}
 		return position;
 	}

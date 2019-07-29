@@ -11,7 +11,8 @@ dependencies {
     compile project(":common")
 
     //compile deps["libthrift"]
-    compile  fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
+    compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
+    compile deps["libthrift"]
     compile deps["fastjson"]
     compile deps["commons-lang"]
     compile deps["commons-pool"]
