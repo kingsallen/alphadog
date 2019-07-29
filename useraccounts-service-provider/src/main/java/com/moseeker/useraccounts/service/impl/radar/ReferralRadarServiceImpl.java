@@ -23,11 +23,9 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBase;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBaseItem;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsProcessCompanyItem;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplicationAtsProcess;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionAtsProcess;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
@@ -155,8 +153,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private static final long TEN_MINUTE = 10*60*1000;
 
     private final Configuration configuration;
-    private HrCompanyConfJOOQDaoImpl hrCompanyConfJOOQDao;
-    private JobPositionAtsProcessJOOQDaoImpl jobPositionAtsProcessJOOQDao;
     private JobApplicationAtsProcessJOOQDaoImpl jobApplicationAtsProcessJOOQDao;
     private HrAtsProcessCompanyItemJOOQDaoImpl hrAtsProcessCompanyItemJOOQDao;
     private HrAtsPhaseBaseJOOQDaoImpl hrAtsPhaseBaseJOOQDao;
@@ -164,8 +160,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     public ReferralRadarServiceImpl(Configuration configuration) {
         this.configuration = configuration;
-        hrCompanyConfJOOQDao = new HrCompanyConfJOOQDaoImpl(configuration);
-        jobPositionAtsProcessJOOQDao = new JobPositionAtsProcessJOOQDaoImpl(configuration);
         jobApplicationAtsProcessJOOQDao = new JobApplicationAtsProcessJOOQDaoImpl(configuration);
         hrAtsProcessCompanyItemJOOQDao = new HrAtsProcessCompanyItemJOOQDaoImpl(configuration);
         hrAtsPhaseBaseJOOQDao = new HrAtsPhaseBaseJOOQDaoImpl(configuration);
@@ -570,68 +564,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             handler.postProcessAfterCreateCard(card, jobApplicationDO, applierDegrees);
 
-            // 如果是新流程，返回新新流程信息
-            if(isNewProcess(jobApplicationDO.getPositionId(),jobApplicationDO.getCompanyId())){
-                handleNewAtsProcess(card,jobApplicationDO);
-            }
-
             result.add(card);
         }
         logger.info("getProgressBatch:{}", result);
         return JSON.toJSONString(result);
-    }
-
-    /**
-     * 判断是否加入新流程
-     * @param positionId
-     * @param companyId
-     * @return
-     */
-    public boolean isNewProcess(Integer positionId,Integer companyId){
-        logger.info("isNewProcess positionId:{},companyId:{}",positionId,companyId);
-        boolean isNew = false;
-        HrCompanyConf companyConf = hrCompanyConfJOOQDao.fetchOneByCompanyId(companyId);
-        // 1表示开启新流程
-        if(companyConf != null && companyConf.getNewAtsStatus() != null && companyConf.getNewAtsStatus().equals(1)) {
-            JobPositionAtsProcess atsProcess = jobPositionAtsProcessJOOQDao.fetchByPid(positionId);
-            if (atsProcess.getProcessId() != null) {
-                isNew = true;
-            }
-        }
-        logger.info("isNewProcess result isNew:{}",isNew);
-        return isNew;
-    }
-
-    /**
-     * 返回新流程当前阶段信息
-     * @param card
-     * @param jobApplicationDO
-     */
-    public void handleNewAtsProcess(JSONObject card,JobApplicationDO jobApplicationDO){
-        logger.info("handleNewAtsProcess param card:{},jobApplicationDO:{}",card,JSON.toJSONString(jobApplicationDO));
-        // 查询新流程的当前流程
-        JobApplicationAtsProcess applicationAtsProcess = jobApplicationAtsProcessJOOQDao.fetchOneByAppId(jobApplicationDO.getId());
-        logger.info("handleNewAtsProcess applicationAtsProcess:{}",JSON.toJSONString(applicationAtsProcess));
-        if(applicationAtsProcess == null){
-            logger.info("handleNewAtsProcess jobApplicationAtsProcess is null appId:{}",jobApplicationDO.getId());
-            return;
-        }
-        Integer currentPhaseId = applicationAtsProcess.getProcessId();
-        // 当前阶段状态
-        if(currentPhaseId < 0){
-            // 当currentPhaseId为-1时,表示当前阶段未通过,直接返回淘汰
-            card.put("progress", ReferralProgressEnum.FAILED.getProgress());
-            return;
-        }
-        HrAtsProcessCompanyItem atsProcessCompanyItem = hrAtsProcessCompanyItemJOOQDao.fetchOneById(currentPhaseId);
-        logger.info("handleNewAtsProcess atsProcessCompanyItem:{}",JSON.toJSONString(atsProcessCompanyItem));
-        HrAtsPhaseBaseItem baseItemVO = hrAtsPhaseBaseItemJOOQDao.fetchOneById(atsProcessCompanyItem.getItemId());
-        logger.info("handleNewAtsProcess baseItemVO:{}",JSON.toJSONString(baseItemVO));
-        // 查询出阶段类型
-        Integer parentId = baseItemVO.getParentId();
-        HrAtsPhaseBase phaseBase = hrAtsPhaseBaseJOOQDao.fetchOneById(parentId);
-        NewAtsMapReferralEnum typeEnum = NewAtsMapReferralEnum.getEnumByNewPhaseType(phaseBase.getType());
-        card.put("progress", typeEnum.getOldStep());
     }
 
     @Override
@@ -761,21 +697,83 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         if(StringUtils.isEmpty(queryName)){
             if(progress == 0){
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
+                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
+                jobApplicationDOS = handleJobApplicationDOS(list);
             }else {
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
+                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
+                // 查询新流程记录
+                List<JobApplicationDO> newAtsApps = jobApplicationDao.getNewAtsApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
+                list.addAll(newAtsApps);
+                // 去重
+                Map<Integer, JobApplicationDO> map = list.stream().collect(Collectors.toMap(JobApplicationDO::getId, jobApplicationDO -> jobApplicationDO, (k1, k2) -> k1));
+                List<JobApplicationDO> values = new ArrayList<>(map.values());
+                // submitTime倒序排序
+                List<JobApplicationDO> appDOS = values.stream().sorted(Comparator.comparing(JobApplicationDO::getSubmitTime).reversed()).collect(Collectors.toList());
+                jobApplicationDOS = handleJobApplicationDOS(appDOS);
             }
         }else {
             List<UserUserRecord> queryNameRecords = userUserDao.fetchByName(queryName);
             List<Integer> queryNameIds = queryNameRecords.stream().map(UserUserRecord::getId).collect(Collectors.toList());
             if(progress == 0){
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyIdAndAppliers(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
+                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyIdAndAppliers(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
+                jobApplicationDOS = handleJobApplicationDOS(list);
             }else {
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
+                List<JobApplicationDO> list  = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
+                // 查询新流程记录
+                List<JobApplicationDO> newAtsApps = jobApplicationDao.getNewAtsApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
+                list.addAll(newAtsApps);
+                // 去重
+                Map<Integer, JobApplicationDO> map = list.stream().collect(Collectors.toMap(JobApplicationDO::getId, jobApplicationDO -> jobApplicationDO, (k1, k2) -> k1));
+                List<JobApplicationDO> values = new ArrayList<>(map.values());
+                // submitTime倒序排序
+                List<JobApplicationDO> appDOS = values.stream().sorted(Comparator.comparing(JobApplicationDO::getSubmitTime).reversed()).collect(Collectors.toList());
+                jobApplicationDOS = handleJobApplicationDOS(appDOS);
             }
         }
         // 分页
         jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, pagination);
+        return jobApplicationDOS;
+    }
+
+    /**
+     * JobApplicationDO.appTplId匹配
+     * @param list
+     * @return
+     */
+    public List<JobApplicationDO> handleJobApplicationDOS(List<JobApplicationDO> list){
+        List<JobApplicationDO> jobApplicationDOS = new ArrayList<>();
+        for(JobApplicationDO item : list){
+            // 查询新流程的当前流程
+            JobApplicationAtsProcess applicationAtsProcess = jobApplicationAtsProcessJOOQDao.fetchOneByAppId(item.getId());
+            logger.info("handleJobApplicationDOS applicationAtsProcess:{}",JSON.toJSONString(applicationAtsProcess));
+            if(applicationAtsProcess == null){
+                jobApplicationDOS.add(item);
+            } else {
+                try {
+                    Integer currentPhaseId = applicationAtsProcess.getProcessId();
+                    // 当前阶段状态
+                    if(currentPhaseId < 0){
+                        // 当currentPhaseId为-1时,表示当前阶段未通过,直接返回淘汰
+                        item.setAppTplId(4);
+                        jobApplicationDOS.add(item);
+                        break;
+                    }
+                    HrAtsProcessCompanyItem atsProcessCompanyItem = hrAtsProcessCompanyItemJOOQDao.fetchOneById(currentPhaseId);
+                    logger.info("handleJobApplicationDOS atsProcessCompanyItem:{}",JSON.toJSONString(atsProcessCompanyItem));
+                    HrAtsPhaseBaseItem baseItemVO = hrAtsPhaseBaseItemJOOQDao.fetchOneById(atsProcessCompanyItem.getItemId());
+                    logger.info("handleJobApplicationDOS baseItemVO:{}",JSON.toJSONString(baseItemVO));
+                    // 查询出阶段类型
+                    Integer parentId = baseItemVO.getParentId();
+                    HrAtsPhaseBase phaseBase = hrAtsPhaseBaseJOOQDao.fetchOneById(parentId);
+                    NewAtsMapReferralEnum typeEnum = NewAtsMapReferralEnum.getEnumByNewPhaseType(phaseBase.getType());
+                    item.setAppTplId(typeEnum.getOldStep());
+                    jobApplicationDOS.add(item);
+                } catch (Exception e) {
+                    logger.error("handleJobApplicationDOS Exception:{}",e);
+                }
+
+            }
+        }
         return jobApplicationDOS;
     }
 
