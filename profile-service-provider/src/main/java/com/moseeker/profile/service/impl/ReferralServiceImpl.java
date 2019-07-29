@@ -535,6 +535,42 @@ public class ReferralServiceImpl implements ReferralService {
         return referralIds.get(0);
     }
 
+    @Override
+    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,
+                                                               List<String> referralReasons, List<Integer> positions,
+                                                               byte relationship, String referralText,
+                                                               byte referralType) throws ProfileException, BIZException {
+        logger.info("Multi positions recommendation start {}",positions);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildPosition(positions)
+                .buildRecomReason(relationship,referralText,referralType)
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
+        logger.info("employeeReferralProfile referralResultVOS-> {}",referralResultVOS);
+        List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
+        logger.info("employeeReferralProfile referralIds-> {}",referralIds);
+        if(!com.moseeker.common.util.StringUtils.isRealEmptyList(referralIds)){//若存在推荐成功的情况，清空redis中相关简历数据
+            logger.info("employeeReferralProfile Some positions were referraled successful-> {}",referralIds);
+            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        }
+
+        referralResultVOS = referralResultVOS.stream().map(resultVO -> {
+            //如果该职位推荐失败，不做积分计算
+            if(!resultVO.getSuccess()){
+                resultVO.setReward(0);
+                return resultVO;
+            }
+            //获取该职位应得的积分
+            Double reward = employeeEntity.calcReward(
+                    employeeId,Constant.RECRUIT_STATUS_UPLOAD_PROFILE,resultVO.getPosition_id());
+
+            resultVO.setReward(reward);
+            return resultVO;
+        }).collect(Collectors.toList());
+        return referralResultVOS;
+    }
+
     /**
      * 员工提交候选人关键信息
      * @param employeeId 员工编号

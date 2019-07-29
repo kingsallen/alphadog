@@ -116,14 +116,18 @@ public abstract class EmployeeReferralProfile {
         List<MobotReferralResultVO> resultVOS = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(positionIds.size());
         for(JobPositionDO jobPositionDO : positions){
-            tp.startTast(() -> {
-                handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), jobPositionDO,  origin,
-                        resultVOS, countDownLatch, attementVO.getAttachmentId());
-                return 0;
-            });
+//            tp.startTast(() -> {
+                try{
+                    handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), jobPositionDO,  origin,
+                            resultVOS, countDownLatch, attementVO.getAttachmentId());
+                }catch(Exception e){
+                    logger.error(e.getMessage(),e);
+                }
+//                return 0;
+//            });
         }
         try {
-            countDownLatch.await(60, TimeUnit.SECONDS);
+//            countDownLatch.await(60, TimeUnit.SECONDS);
             tp1.startTast(()->{
                 logger.info("============三秒后执行=============================");
                 updateApplicationEsIndex(attementVO.getUserId());
@@ -210,6 +214,9 @@ public abstract class EmployeeReferralProfile {
             applicationId = jsonObject1.getInteger("jobApplicationId");
         }else {
             referralResultVO.setSuccess(false);
+            referralResultVO.setErrorCode(response.getStatus());
+            referralResultVO.setReason(response.getMessage());
+            throw new EmployeeException(response.getStatus(),response.getMessage());
         }
         return applicationId;
     }
