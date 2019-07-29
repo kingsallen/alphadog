@@ -450,7 +450,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
+	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name,String sceneStr) throws TException {
 		try {
 			return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
 		} catch (CommonException e) {

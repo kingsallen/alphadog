@@ -848,12 +848,12 @@ public class UseraccountsController {
 		try {
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
 			int wechatId = param.getInt("wechatid", 0);
-			long sceneId = param.getLong("scene_id", 0l);
+			Long sceneId = param.getLong("scene_id", null);
 			int expireSeconds = param.getInt("expire_seconds", 0);
 			int actionName = param.getInt("action_name", 0);
-			String sceneStr = param.getString("scene_str",null);
+			Integer sceneStr = param.getInt("scene",null);
 
-			Response result = useraccountsServices.cerateQrcode(wechatId, sceneId, expireSeconds, actionName);
+			Response result = useraccountsServices.cerateQrcode(wechatId, sceneId, expireSeconds, actionName,sceneStr);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
