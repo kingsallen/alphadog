@@ -303,7 +303,7 @@ public class MessageTemplateEntity {
     private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId, int companyId, int type, int weChatId,
                                                                       String companyName, String companyAbbreviation,
                                                                       int aiTemplateType, String recomPositionIds){
-        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        Map<String,MessageTplDataCol> colMap = new HashMap<>();
 
         int recomMatchPositionId = 0;
         String jobName = "";
@@ -326,7 +326,7 @@ public class MessageTemplateEntity {
             first.setValue(first.getValue().replace("（公司简称）", companyAbbreviation));
         }
         if(type==3){
-            jobName = this.getJobName(userId,companyId,1, recomMatchPositionId);
+            jobName = this.getJobName(userId, companyId,1, recomMatchPositionId);
 
             // 设置趣味简笔画提升消息模板打开率
             StringBuffer firstName = new StringBuffer();
@@ -336,7 +336,7 @@ public class MessageTemplateEntity {
             firstName.append("                          █┳ 《 内~推~有~你~❤️》\n");
             firstName.append("                          ┛┗\n\n");
 
-            String remarkName = "详情";
+            String remarkName = "";
             colMap = this.handlerTemplateData(weChatId, firstName.toString(), remarkName, Constant.EMPLOYEE_RECOM_POSITION);
 
             //智能推荐职位列表的特殊处理,如果没有推荐的职位列表,文案变一下
