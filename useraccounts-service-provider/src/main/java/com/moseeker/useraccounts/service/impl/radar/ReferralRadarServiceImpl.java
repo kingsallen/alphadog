@@ -559,7 +559,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             Collections.sort(result, new Comparator<JSONObject>() {
                 @Override
                 public int compare(JSONObject o1, JSONObject o2) {
-                    return String.valueOf(o2.get("updateTime")).compareTo(String.valueOf(o1.get("updateTime")));
+                    return String.valueOf(o2.get("datetime")).compareTo(String.valueOf(o1.get("datetime")));
                 }
             });
             return JSON.toJSONString(result);
