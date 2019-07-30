@@ -4,6 +4,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -847,15 +848,28 @@ public class UseraccountsController {
 	public String cerateQrcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
-			int wechatId = param.getInt("wechatid", 0);
+			Integer wechatId = param.getInt("wechatid", 0);
 			Long sceneId = param.getLong("scene_id", null);
-			int expireSeconds = param.getInt("expire_seconds", 0);
-			int actionName = param.getInt("action_name", 0);
+			Integer expireSeconds = param.getInt("expire_seconds", null);
+			Integer actionName = param.getInt("action_name", 0);
 			String sceneStr = param.getString("scene",null);
 
-			Response result = useraccountsServices.cerateQrcode(wechatId, sceneId, expireSeconds, actionName,sceneStr);
+			//只需要一个场景值
+			if(sceneId!=null&&sceneStr!=null){
+				return ResponseLogNotification.fail(request, "Only one scene ");
+			}
+
+			WeixinQrcode qrcode = new WeixinQrcode();
+			qrcode.setWechatId(wechatId);
+			qrcode.setSceneId(sceneId);
+			qrcode.setExpireSeconds(expireSeconds);
+			qrcode.setActionName(actionName);
+			qrcode.setScene(sceneStr);
+
+			Response result = useraccountsServices.cerateQrcode(qrcode);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
+			logger.info(e.getMessage(),e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}

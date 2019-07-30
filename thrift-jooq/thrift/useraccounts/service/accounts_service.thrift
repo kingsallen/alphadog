@@ -58,7 +58,7 @@ service UseraccountsServices {
     common_struct.Response postUserFavoritePosition(1: useraccounts_struct.UserFavoritePosition userFavoritePosition);
 
     //创建微信二维码
-    common_struct.Response cerateQrcode(1: i32 wechatId, 2: i64 sceneId, 3: i32 expireSeconds, 4:i32 action_name, 5:string scene);
+    common_struct.Response cerateQrcode(useraccounts_struct.WeixinQrcode weixinQrcode)throws (1: common_struct.BIZException e);
     //获取qrcode
     common_struct.Response getQrcode(1: string ticket);
     //查询二维码是否被用户扫描
