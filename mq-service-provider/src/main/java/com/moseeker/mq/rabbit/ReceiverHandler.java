@@ -352,13 +352,10 @@ public class ReceiverHandler {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
                         logVo.setStatus_code(0);
-                        if(type==2){
-                            String distinctId = String.valueOf(params.getUserId());
-                            String templateId=String.valueOf(params.getTemplateId());
-                            Map<String, Object> properties = new HashMap<String, Object>();
-                            properties.put("templateId", templateId);
-                            sensorSend.send(distinctId,"sendTemplateMessage",properties);
-                        }
+
+                        // 添加神策的发送模板的埋点记录
+                        this.addSensorTrack(String.valueOf(params.getUserId()), params.getTemplateId(), params.getCompanyId());
+
                     } else {
                         log.info("元夕飞花令 handlerMessageTemplate messageTemplate == null");
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
@@ -379,6 +376,20 @@ public class ReceiverHandler {
             ELKLog.ELK_LOG.log(logVo);
         }
     }
+
+    private void addSensorTrack(String distinctId, Integer templateId, Integer companyId){
+        String eventName = "sendTemplateMessage";
+
+        Map<String, Object> properties = new HashMap();
+        properties.put("templateId", templateId);
+        properties.put("companyId", companyId);
+
+        // TODO 发送消息的埋点最好都在mtp[python]的队列脚本中统一处理，临时添加sendSource为RabbitListener标识为渠道特征识别
+        properties.put("sendSource", "RabbitListener");
+
+        sensorSend.send(distinctId, eventName, properties);
+    }
+
     private void handlerPosition(AIRecomParams params){
         if(params.getType()==2){
             personaRecomEntity.updateIsSendPersonaRecom(params.getUserId(),params.getCompanyId(),0,1,20);
