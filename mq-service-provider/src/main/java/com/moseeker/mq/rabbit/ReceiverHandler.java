@@ -353,8 +353,9 @@ public class ReceiverHandler {
                         this.handlerPosition(params);
                         logVo.setStatus_code(0);
 
-                        // 添加神策的发送模板的埋点记录
-                        this.addSensorTrack(String.valueOf(params.getUserId()), params.getTemplateId(), params.getCompanyId());
+                        // 添加发送模板的神策埋点记录
+                        this.addSendMessageTemplageSensorTrack(String.valueOf(params.getUserId()),
+                                params.getTemplateId(), params.getCompanyId());
 
                     } else {
                         log.info("元夕飞花令 handlerMessageTemplate messageTemplate == null");
@@ -377,7 +378,7 @@ public class ReceiverHandler {
         }
     }
 
-    private void addSensorTrack(String distinctId, Integer templateId, Integer companyId){
+    private void addSendMessageTemplageSensorTrack(String distinctId, Integer templateId, Integer companyId){
         String eventName = "sendTemplateMessage";
 
         Map<String, Object> properties = new HashMap();
