@@ -478,7 +478,8 @@ public class GenerateDoc {
     @Test
     public void testQrcodeType(){
 //        assertEquals(true, QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(1)));
-        assertEquals("APPLY_FROM_PC", SceneType.APPLY_FROM_PC.toString());
+//        assertEquals("APPLY_FROM_PC", SceneType.APPLY_FROM_PC.toString());
+        assertEquals("APPLY_FROM_PC", SceneType.valueOf("APPLY_FROM_PC").toString());
     }
 
 }

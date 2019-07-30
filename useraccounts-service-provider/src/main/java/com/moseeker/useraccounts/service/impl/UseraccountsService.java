@@ -1112,7 +1112,8 @@ public class UseraccountsService {
 
         //先判断需要生成的二维码是否为永久性的
         if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
-            String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
+            String sceneDB = StringUtils.isNotNullOrEmpty(scene)?
+                    SceneType.valueOf(scene.trim()).toString():null;
             List<String> scenes = Arrays.asList(String.valueOf(sceneId),sceneDB);
             HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(scenes,wechatId);
             if(qrcode!=null){
