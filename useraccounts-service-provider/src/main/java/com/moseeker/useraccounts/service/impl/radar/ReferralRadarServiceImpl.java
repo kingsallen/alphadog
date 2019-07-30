@@ -35,6 +35,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
@@ -81,6 +82,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -148,6 +150,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private SensorSend sensorSend;
 
     private static final long TEN_MINUTE = 10*60*1000;
+
+    private ThreadPool pool = ThreadPool.Instance;
 
     @Override
     @RadarSwitchLimit
@@ -524,12 +528,44 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 组装每种申请类型需要的数据
         long start = System.currentTimeMillis();
         Map<Integer, JSONObject> referralTypeMap = getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
+
+
         long end = System.currentTimeMillis();
         logger.info("=======referralTypeMap:{}", end - start);
 
         List<JSONObject> result = new ArrayList<>();
+        final List<UserDepthVO> applierDegrees1 = applierDegrees;
+        CountDownLatch count = new CountDownLatch(jobApplicationDOS.size());
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
 
+            pool.startTast(()->{
+                createApplyCard(jobApplicationDO,positionMap,hrOperationMap,referralTypeMap,allUserMap,radarSwitchOpen,
+                        applierDegrees1,result,count);
+                return 0;
+            });
+
+        }
+
+        try{
+            count.await();
+            logger.info("getProgressBatch:{}", result);
+            return JSON.toJSONString(result);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            throw UserAccountException.PROGRAM_EXCEPTION;
+        }
+
+    }
+
+    public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,
+                                Map<Integer, List<HrOperationRecordRecord>> hrOperationMap,
+                                Map<Integer, JSONObject> referralTypeMap,
+                                Map<Integer, UserUserRecord> allUserMap,
+                                boolean radarSwitchOpen,List<UserDepthVO> applierDegrees,
+                                List<JSONObject> result,CountDownLatch count
+                                )throws BIZException{
+
+        try{
             int referralType = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin()).getType();
 
             AbstractReferralTypeHandler handler = referralTypeFactory.getHandlerByType(referralType);
@@ -548,9 +584,15 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             handler.postProcessAfterCreateCard(card, jobApplicationDO, applierDegrees);
 
             result.add(card);
+        }catch(BIZException e){
+            logger.error(e.getMessage(),e);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }finally{
+            count.countDown();
         }
-        logger.info("getProgressBatch:{}", result);
-        return JSON.toJSONString(result);
+
+
     }
 
     @Override
