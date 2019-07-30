@@ -68,6 +68,7 @@ import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -500,7 +501,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+        long t1 = System.currentTimeMillis();
         List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+        long t2 = System.currentTimeMillis();
+        logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getQueryJobApplications : {}",t2-t1);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
             return "";
         }
@@ -519,7 +523,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             long start = System.currentTimeMillis();
             applierDegrees = neo4jService.fetchDepthUserList(progressInfo.getUserId(), progressInfo.getCompanyId(), applierUserIds);
             long end = System.currentTimeMillis();
-            logger.info("=======referralTypeMap:{}", end - start);
+            logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for neo4jService.fetchDepthUserList :{}", end - start);
         }
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         logger.info("ReferralRadarServiceImpl getProgressBatch applyPids:{}", JSONObject.toJSONString(applyPids));
@@ -531,11 +535,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
 
         long end = System.currentTimeMillis();
-        logger.info("=======referralTypeMap:{}", end - start);
+        logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getReferralTypeMap:{}", end - start);
 
         List<JSONObject> result = new ArrayList<>();
         final List<UserDepthVO> applierDegrees1 = applierDegrees;
         CountDownLatch count = new CountDownLatch(jobApplicationDOS.size());
+        long t3 = System.currentTimeMillis();
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
 
             pool.startTast(()->{
@@ -549,6 +554,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         try{
             count.await();
             logger.info("getProgressBatch:{}", result);
+            long t4 = System.currentTimeMillis();
+            logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for createApplyCards : {}",t4-t3);
             return JSON.toJSONString(result);
         }catch (Exception e){
             logger.error(e.getMessage(),e);
