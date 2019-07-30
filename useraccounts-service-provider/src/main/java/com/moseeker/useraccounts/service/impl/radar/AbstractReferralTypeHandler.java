@@ -69,6 +69,7 @@ public abstract class AbstractReferralTypeHandler {
         card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap, radarSwitchOpen));
         card.put("user", doInitUser(jobApplicationDO.getApplierId(), username));
         card.put("position", doInitPosition(jobPosition));
+        card.put("updateTime",jobApplicationDO.getUpdateTime());
         return card;
     }
 

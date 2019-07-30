@@ -556,6 +556,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             logger.info("getProgressBatch:{}", result);
             long t4 = System.currentTimeMillis();
             logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for createApplyCards : {}",t4-t3);
+            Collections.sort(result, new Comparator<JSONObject>() {
+                @Override
+                public int compare(JSONObject o1, JSONObject o2) {
+                    return String.valueOf(o2.get("updateTime")).compareTo(String.valueOf(o1.get("updateTime")));
+                }
+            });
             return JSON.toJSONString(result);
         }catch (Exception e){
             logger.error(e.getMessage(),e);
