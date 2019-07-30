@@ -1108,16 +1108,20 @@ public class UseraccountsService {
     /**
      * 创建微信二维码
      */
-    public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name,String scene) throws TException {
+    public Response cerateQrcode(int wechatId, Long sceneId, int expireSeconds, int action_name,String scene) throws TException {
 
         try {
 
             //先判断需要生成的二维码是否为永久性的
             if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
-                String sceneDB = StringUtils.isNotNullOrEmpty(scene)?
-                        SceneType.valueOf(scene.trim()).toString():null;
-                List<String> scenes = Arrays.asList(String.valueOf(sceneId),sceneDB);
-                HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(scenes,wechatId);
+                String sceneDB = null;
+                if(sceneId!=null){
+                    sceneDB = String.valueOf(sceneId);
+                }else{
+                    sceneDB = scene;
+                }
+
+                HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(sceneDB,wechatId);
                 if(qrcode!=null){
                     WeixinTicketBean bean = new WeixinTicketBean();
                     bean.setUrl(qrcode.getQrcodeUrl());

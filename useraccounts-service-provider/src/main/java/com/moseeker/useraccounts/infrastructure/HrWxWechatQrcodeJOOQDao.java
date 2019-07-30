@@ -23,10 +23,10 @@ public class HrWxWechatQrcodeJOOQDao extends HrWxWechatQrcodeDao {
         super(configuration);
     }
 
-    public HrWxWechatQrcode fetchByWechatIdAndScenes(List<String> scenes, Integer wechatId){
+    public HrWxWechatQrcode fetchByWechatIdAndScenes(String scenes, Integer wechatId){
 
         List<HrWxWechatQrcodeRecord> records = using(configuration()).selectFrom(HR_WX_WECHAT_QRCODE)
-                .where(HR_WX_WECHAT_QRCODE.SCENE.in(scenes))
+                .where(HR_WX_WECHAT_QRCODE.SCENE.eq(scenes))
                 .and(HR_WX_WECHAT_QRCODE.WECHAT_ID.eq(wechatId))
                 .fetch();
         if(records!=null&&records.size()>1){
