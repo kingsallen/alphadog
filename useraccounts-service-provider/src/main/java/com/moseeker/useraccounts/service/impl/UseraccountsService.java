@@ -1112,8 +1112,8 @@ public class UseraccountsService {
 
         //先判断需要生成的二维码是否为永久性的
         if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
-            scene = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
-            List<String> scenes = Arrays.asList(String.valueOf(sceneId),scene);
+            String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
+            List<String> scenes = Arrays.asList(String.valueOf(sceneId),sceneDB);
             HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(scenes,wechatId);
             if(qrcode!=null){
                 WeixinTicketBean bean = new WeixinTicketBean();
@@ -1136,7 +1136,8 @@ public class UseraccountsService {
                         HrWxWechatQrcode qrcode = new HrWxWechatQrcode();
                         qrcode.setQrcodeUrl(bean.getUrl());
                         qrcode.setWechatId(wechatId);
-                        qrcode.setScene(StringUtils.isNotNullOrEmpty(scene)?scene:String.valueOf(sceneId));
+                        String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
+                        qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
                         hrWxWechatQrcodeJOOQDao.insert(qrcode);
                         return RespnoseUtil.SUCCESS.toResponse(bean);
                     } else {
