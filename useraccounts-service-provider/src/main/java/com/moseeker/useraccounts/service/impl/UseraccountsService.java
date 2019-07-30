@@ -1414,6 +1414,11 @@ public class UseraccountsService {
                 try{
                     int appid = claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
                     claimResult.setApply_id(appid);
+                }catch(UserAccountException e){
+                    claimResult.setSuccess(false);
+                    claimResult.setErrmsg(e.getMessage());
+                    logger.error("员工认领异常信息:{}", e.getMessage());
+                    throw e;
                 }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
