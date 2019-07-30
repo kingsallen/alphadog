@@ -317,20 +317,20 @@ public class MessageTemplateEntity {
 
         if(type==2) {
             jobName = this.getJobName(userId, companyId, 0, recomMatchPositionId);
-            /*String firstName = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
-            String remarkName = "点击查看推荐职位";*/
+
             String firstName = "#靠谱的工作机会来了~# 根据您的偏好，（公司简称）为您精选了些好机会！㊗️您发现新天地~\n\n";
-            String remarkName = "详情";
+            String remarkName = "";
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
             MessageTplDataCol first = colMap.get("first");
             first.setValue(first.getValue().replace("（公司简称）", companyAbbreviation));
         }
+
         if(type==3){
             jobName = this.getJobName(userId, companyId,1, recomMatchPositionId);
 
-            // 设置趣味简笔画提升消息模板打开率
+            // 设置趣味简笔画提升消息模板打开率,（微信消息模板中有表情字符出现，可能会导致表情字符之后的字体颜色显示不正确）
             StringBuffer firstName = new StringBuffer();
-            firstName.append("#肥水不流外人田~#靠谱职位转起来！相信优秀的你身边也一定有很多优秀的人~👍\n");
+            firstName.append("#肥水不流外人田~# 靠谱职位转起来！相信优秀的你身边也一定有很多优秀的人~👍\n");
             firstName.append("\n");
             firstName.append("                          ● \n");
             firstName.append("                          █┳ 《 内~推~有~你~❤️》\n");
