@@ -327,9 +327,18 @@ public class MessageTemplateEntity {
         }
         if(type==3){
             jobName = this.getJobName(userId,companyId,1, recomMatchPositionId);
-            String firstName="以下职位虚位以待，赶快转发起来吧~ ";
-            String remarkName="点击查看推荐职位。";
-            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.EMPLOYEE_RECOM_POSITION);
+
+            // 设置趣味简笔画提升消息模板打开率
+            StringBuffer firstName = new StringBuffer();
+            firstName.append("#肥水不流外人田~#靠谱职位转起来！相信优秀的你身边也一定有很多优秀的人~👍\n");
+            firstName.append("\n");
+            firstName.append("                          ● \n");
+            firstName.append("                          █┳ 《 内~推~有~你~❤️》\n");
+            firstName.append("                          ┛┗\n\n");
+
+            String remarkName = "详情";
+            colMap = this.handlerTemplateData(weChatId, firstName.toString(), remarkName, Constant.EMPLOYEE_RECOM_POSITION);
+
             //智能推荐职位列表的特殊处理,如果没有推荐的职位列表,文案变一下
             if(aiTemplateType == 2) {
                 MessageTplDataCol firstCol=  (MessageTplDataCol)colMap.get("first");
@@ -346,18 +355,18 @@ public class MessageTemplateEntity {
         }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
-        keyword1.setColor("#173177");
+        keyword1.setColor("#2A95FC");
         keyword1.setValue(jobName);
-        colMap.put("keyword1",keyword1);
+        colMap.put("keyword1", keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
-        keyword2.setColor("#173177");
+        keyword2.setColor("#555555");
         keyword2.setValue(companyName);
-        colMap.put("keyword2",keyword2);
+        colMap.put("keyword2", keyword2);
         String data=sf.format(new Date());
         MessageTplDataCol keyword3=new MessageTplDataCol();
-        keyword3.setColor("#173177");
+        keyword3.setColor("#555555");
         keyword3.setValue(data);
-        colMap.put("keyword3",keyword3);
+        colMap.put("keyword3", keyword3);
 
         return colMap;
     }
@@ -368,7 +377,7 @@ public class MessageTemplateEntity {
         log.info("MessageTemplateEntity handlerTemplateData");
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         MessageTplDataCol first=new MessageTplDataCol();
-        first.setColor("#E75E48");
+        first.setColor("#67D7D6");
         HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,tempId);
         log.info("MessageTemplateEntity handlerTemplateData:{}", record);
         if(record != null && record.getStatus().byteValue()!=1){
@@ -379,9 +388,9 @@ public class MessageTemplateEntity {
         }else {
             first.setValue(firstName);
         }
-        colMap.put("first",first);
+        colMap.put("first", first);
         MessageTplDataCol remark=new MessageTplDataCol();
-        remark.setColor("#173177");
+        remark.setColor("#555555");
         if(record!=null&&StringUtils.isNotNullOrEmpty(record.getRemark())){
             remark.setValue(record.getRemark());
         }else {
