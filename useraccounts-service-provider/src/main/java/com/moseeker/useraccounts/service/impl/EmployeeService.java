@@ -279,18 +279,25 @@ public class EmployeeService {
         response.setMessage("解绑成功");
 
         // 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
+        long t1 = System.currentTimeMillis();
         String employeeJson = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
         if (StringUtils.isNotNullOrEmpty(employeeJson)) {
             client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, JSONObject.parseObject(employeeJson).getString("activationCode"));
             client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
             return response;
         }
+        long t2 = System.currentTimeMillis();
+        log.info("EmployeeService unbind time consuming for remove auth-message from redis:{}",t2-t1);
 
+        long t3 = System.currentTimeMillis();
         // 解绑
         if (!employeeEntity.unbind(Arrays.asList(employeeId))) {
             response.setSuccess(false);
             response.setMessage("fail");
         }
+        long t4 = System.currentTimeMillis();
+        log.info("EmployeeService unbind time consuming for unbinding:{}",t2-t1);
+
         log.info("unbind response: {}", response);
         return response;
     }
