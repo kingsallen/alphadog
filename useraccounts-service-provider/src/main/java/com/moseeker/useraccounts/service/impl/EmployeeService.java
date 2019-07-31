@@ -296,7 +296,7 @@ public class EmployeeService {
             response.setMessage("fail");
         }
         long t4 = System.currentTimeMillis();
-        log.info("EmployeeService unbind time consuming for unbinding:{}",t2-t1);
+        log.info("EmployeeService unbind time consuming for unbinding:{}",t4-t3);
 
         log.info("unbind response: {}", response);
         return response;

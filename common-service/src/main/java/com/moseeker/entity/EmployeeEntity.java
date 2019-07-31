@@ -720,10 +720,14 @@ public class EmployeeEntity {
                         .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
                         .collect(Collectors.toList());
 
+                long t7 = System.currentTimeMillis();
                 companyIdList.forEach(companyId -> {
                     client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(),
                             String.valueOf(companyId),  JSON.toJSONString(employeeIdList));
                 });
+                long t8 = System.currentTimeMillis();
+                logger.info("EmployeeEntity unbind inner time consuming for set user_employee_unbind in redis:{}",t8-t7);
+
 
                 long t5 = System.currentTimeMillis();
                 networkResourcesDao.updateNetworkResourcesRecordByPosyUserIds(idList, (byte)Constant.DISABLE_OLD);
@@ -735,9 +739,13 @@ public class EmployeeEntity {
                 jsonObject.put("companyId", 0);
                 jsonObject.put("userIds", idList);
                 logger.info("employeeActivationChange :jsonObject{}", jsonObject);
+                long t9 = System.currentTimeMillis();
                 amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
+                long t10 = System.currentTimeMillis();
+                logger.info("EmployeeEntity unbind inner time consuming for add message in rabbitmq:{}",t10-t9);
+
                 long t2 = System.currentTimeMillis();
                 logger.info("EmployeeEntity unbind inner time consuming for update useremployee in es:{}",t2-t1);
                 return true;
