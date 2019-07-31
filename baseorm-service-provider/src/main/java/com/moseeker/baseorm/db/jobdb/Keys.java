@@ -9,6 +9,8 @@ import com.moseeker.baseorm.db.jobdb.tables.records.*;
 
 import javax.annotation.Generated;
 
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsProcess;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionAtsProcess;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
@@ -46,8 +48,8 @@ public class Keys {
     public static final Identity<JobPositionJob58MappingRecord, Integer> IDENTITY_JOB_POSITION_JOB58_MAPPING = Identities0.IDENTITY_JOB_POSITION_JOB58_MAPPING;
     public static final Identity<JobPositionLiepinMappingRecord, Integer> IDENTITY_JOB_POSITION_LIEPIN_MAPPING = Identities0.IDENTITY_JOB_POSITION_LIEPIN_MAPPING;
     public static final Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = Identities0.IDENTITY_JOB_POSITION_SHARE_TPL_CONF;
-    public static final Identity<JobApplicationAtsProcessPO, Integer> IDENTITY_JOB_APPLICATION_ATS_PROCESS = Identities0.IDENTITY_JOB_APPLICATION_ATS_PROCESS;
-    public static final Identity<JobPositionAtsProcessPO, Integer> IDENTITY_JOB_POSITION_ATS_PROCESS = Identities0.IDENTITY_JOB_POSITION_ATS_PROCESS;
+    public static final Identity<JobApplicationAtsProcess, Integer> IDENTITY_JOB_APPLICATION_ATS_PROCESS = Identities0.IDENTITY_JOB_APPLICATION_ATS_PROCESS;
+    public static final Identity<JobPositionAtsProcess, Integer> IDENTITY_JOB_POSITION_ATS_PROCESS = Identities0.IDENTITY_JOB_POSITION_ATS_PROCESS;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -74,10 +76,10 @@ public class Keys {
     public static final UniqueKey<JobPositionProfileFilterRecord> KEY_JOB_POSITION_PROFILE_FILTER_PID_FID = UniqueKeys0.KEY_JOB_POSITION_PROFILE_FILTER_PID_FID;
     public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
     public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
-    public static final UniqueKey<JobApplicationAtsProcessPO> KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY;
-    public static final UniqueKey<JobApplicationAtsProcessPO> KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX;
-    public static final UniqueKey<JobPositionAtsProcessPO> KEY_JOB_POSITION_ATS_PROCESS_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_PRIMARY;
-    public static final UniqueKey<JobPositionAtsProcessPO> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX;
+    public static final UniqueKey<JobApplicationAtsProcess> KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY;
+    public static final UniqueKey<JobApplicationAtsProcess> KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX;
+    public static final UniqueKey<JobPositionAtsProcess> KEY_JOB_POSITION_ATS_PROCESS_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_PRIMARY;
+    public static final UniqueKey<JobPositionAtsProcess> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -103,8 +105,8 @@ public class Keys {
         public static Identity<JobPositionJob58MappingRecord, Integer> IDENTITY_JOB_POSITION_JOB58_MAPPING = createIdentity(JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING, JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING.ID);
         public static Identity<JobPositionLiepinMappingRecord, Integer> IDENTITY_JOB_POSITION_LIEPIN_MAPPING = createIdentity(JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING, JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING.ID);
         public static Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = createIdentity(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
-        public static Identity<JobApplicationAtsProcessPO, Integer> IDENTITY_JOB_APPLICATION_ATS_PROCESS = createIdentity(JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.ID);
-        public static Identity<JobPositionAtsProcessPO, Integer> IDENTITY_JOB_POSITION_ATS_PROCESS = createIdentity(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.ID);
+        public static Identity<JobApplicationAtsProcess, Integer> IDENTITY_JOB_APPLICATION_ATS_PROCESS = createIdentity(com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.ID);
+        public static Identity<JobPositionAtsProcess, Integer> IDENTITY_JOB_POSITION_ATS_PROCESS = createIdentity(com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -129,9 +131,9 @@ public class Keys {
         public static final UniqueKey<JobPositionProfileFilterRecord> KEY_JOB_POSITION_PROFILE_FILTER_PID_FID = createUniqueKey(JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER, "KEY_job_position_profile_filter_pid_fid", JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PID, JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER.PFID);
         public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, "KEY_job_position_share_tpl_conf_PRIMARY", JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
         public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, "KEY_job_resume_other_PRIMARY", JobResumeOther.JOB_RESUME_OTHER.APP_ID);
-        public static final UniqueKey<JobApplicationAtsProcessPO> KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY = createUniqueKey(JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, "KEY_job_application_ats_process_PRIMARY", JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.ID);
-        public static final UniqueKey<JobApplicationAtsProcessPO> KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX = createUniqueKey(JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, "KEY_job_application_ats_process_job_application_ats_process_app_id_uindex", JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.APP_ID);
-        public static final UniqueKey<JobPositionAtsProcessPO> KEY_JOB_POSITION_ATS_PROCESS_PRIMARY = createUniqueKey(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_PRIMARY", JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.ID);
-        public static final UniqueKey<JobPositionAtsProcessPO> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX = createUniqueKey(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_job_position_ats_process_pid_process_id_uindex", JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PID, JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PROCESS_ID);
+        public static final UniqueKey<JobApplicationAtsProcess> KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY = createUniqueKey(com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, "KEY_job_application_ats_process_PRIMARY", com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.ID);
+        public static final UniqueKey<JobApplicationAtsProcess> KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX = createUniqueKey(com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, "KEY_job_application_ats_process_job_application_ats_process_app_id_uindex", com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.APP_ID);
+        public static final UniqueKey<JobPositionAtsProcess> KEY_JOB_POSITION_ATS_PROCESS_PRIMARY = createUniqueKey(com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_PRIMARY", com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.ID);
+        public static final UniqueKey<JobPositionAtsProcess> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX = createUniqueKey(com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_job_position_ats_process_pid_process_id_uindex", com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PID, com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PROCESS_ID);
     }
 }
