@@ -3,6 +3,8 @@ package com.moseeker.searchengine.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.talentpooldb.tables.daos.TalentpoolProfilePoolDao;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfilePool;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -36,10 +38,12 @@ import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by zztaiwll on 17/12/8.
@@ -57,6 +61,8 @@ public class TalentpoolSearchengine {
     private DictCityDao dictCityDao;
     @Resource(name="cacheClient")
     private RedisClient redis;
+    @Autowired
+    private TalentpoolProfilePoolDao talentpoolProfilePoolDao;
 
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params){
@@ -122,12 +128,30 @@ public class TalentpoolSearchengine {
             if(totalNum>0){
                 List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("users");
                 if(!StringUtils.isEmptyList(list)){
+                    String companyId=params.get("company_id");
+                    List<TalentpoolProfilePool> talentpoolProfilePools = talentpoolProfilePoolDao.fetchByCompanyId(new Integer[]{Integer.valueOf(companyId)});
+                    Map<Integer,String> profilePoolMap=this.processTreeProfilePool(talentpoolProfilePools);
                     for(Map<String,Object> map:list){
                         Map<String,Object> user= (Map<String, Object>) map.get("user");
                         if(!StringUtils.isEmptyMap(user)){
+                            //处理简历池
+                            List<Map<String,Object>> talentPoolList=(List<Map<String,Object>>)user.get("talent_pool");
+                            if(!CollectionUtils.isEmpty(talentPoolList)){
+                                for (Map<String, Object> talentpool : talentPoolList) {
+                                    if(companyId.equals(talentpool.get("company_id").toString())){
+                                        Object profilePoolId = talentpool.get("profile_pool_id");
+                                        if(profilePoolId!=null){
+                                            Integer poolId=Integer.parseInt(profilePoolId.toString());
+                                            if(poolId>0){
+                                                user.put("profile_pool_id",poolId);
+                                                user.put("profile_pool_name",profilePoolMap.get(poolId));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             List<Map<String,Object>> commentList= (List<Map<String, Object>>) user.get("talentpool_comment");
                             if(!StringUtils.isEmptyList(commentList)){
-                                String companyId=params.get("company_id");
                                 if(StringUtils.isNotNullOrEmpty(companyId)){
                                     for(Map<String,Object> comment:commentList){
                                         int id= (int) comment.get("company_id");
@@ -174,6 +198,68 @@ public class TalentpoolSearchengine {
             }
         }
     }
+
+    /**
+     * 将简历池处理成树状结构
+     * @param talentpoolProfilePools
+     * @return
+     */
+    private static Map<Integer, String> processTreeProfilePool(List<TalentpoolProfilePool> talentpoolProfilePools) {
+        Map<Integer,String> result=new HashMap<>();
+        if(CollectionUtils.isEmpty(talentpoolProfilePools)){
+            return result;
+        }
+        //得到一级简历池
+        List<TalentpoolProfilePool> oneLevel=talentpoolProfilePools.stream().filter(t->t.getParentId()==0).collect(Collectors.toList());
+        oneLevel.stream().forEach(t->result.put(t.getId(),t.getProfilePoolName()));
+        List<Integer> oneLevelIdList=oneLevel.stream().map(TalentpoolProfilePool::getId).collect(Collectors.toList());
+        //得到二级简历池
+        List<TalentpoolProfilePool> twoLevel=talentpoolProfilePools.stream().filter(t->oneLevelIdList.contains(t.getParentId())).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(twoLevel)){
+            return result;
+        }
+        for (TalentpoolProfilePool talentpoolProfilePool : twoLevel) {
+            for (TalentpoolProfilePool profilePool : oneLevel) {
+                if(profilePool.getId().equals(talentpoolProfilePool.getParentId())){
+                    result.put(talentpoolProfilePool.getId(),profilePool.getProfilePoolName()+"-"+talentpoolProfilePool.getProfilePoolName());
+                    continue;
+                }
+            }
+        }
+        //得到三级简历池
+        talentpoolProfilePools.removeAll(oneLevel);
+        talentpoolProfilePools.removeAll(twoLevel);
+        if(CollectionUtils.isEmpty(talentpoolProfilePools)){
+            return result;
+        }
+        for (TalentpoolProfilePool talentpoolProfilePool : talentpoolProfilePools) {
+            for (TalentpoolProfilePool profilePool : twoLevel) {
+                if(profilePool.getId().equals(talentpoolProfilePool.getParentId())){
+                    result.put(talentpoolProfilePool.getId(),result.get(profilePool.getId())+"-"+talentpoolProfilePool.getProfilePoolName());
+                    continue;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        List<TalentpoolProfilePool> talentpoolProfilePools=new ArrayList<>();
+        TalentpoolProfilePool talentpoolProfilePool1=new TalentpoolProfilePool();
+        talentpoolProfilePool1.setId(1);
+        talentpoolProfilePool1.setParentId(0);
+        talentpoolProfilePool1.setProfilePoolName("一级简历池1");
+        talentpoolProfilePools.add(talentpoolProfilePool1);
+        System.out.println(processTreeProfilePool(talentpoolProfilePools));
+
+        TalentpoolProfilePool talentpoolProfilePool2=new TalentpoolProfilePool();
+        talentpoolProfilePool2.setId(2);
+        talentpoolProfilePool2.setParentId(1);
+        talentpoolProfilePool2.setProfilePoolName("二级简历池1");
+        talentpoolProfilePools.add(talentpoolProfilePool2);
+        System.out.println(processTreeProfilePool(talentpoolProfilePools));
+    }
+
     @CounterIface
     public List<Integer> getTalentUserList(Map<String, String> params){
         List<Integer> userIdList=new ArrayList<>();

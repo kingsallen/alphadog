@@ -81,7 +81,7 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 	}
 
     public HrCompanyMobotConfDO getMobotConf(int companyId) {
-		return create.select(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID,HrCompanyConf.HR_COMPANY_CONF.MOBOT_HEAD_IMG,HrCompanyConf.HR_COMPANY_CONF.MOBOT_NAME)
+		return create.select(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID,HrCompanyConf.HR_COMPANY_CONF.MOBOT_HEAD_IMG,HrCompanyConf.HR_COMPANY_CONF.MOBOT_NAME,HrCompanyConf.HR_COMPANY_CONF.MOBOT_WELCOME)
 				.from(HrCompanyConf.HR_COMPANY_CONF)
 				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
 				.fetchOneInto(HrCompanyMobotConfDO.class);
@@ -98,6 +98,10 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 
 		if(mobotConf.getMobotName() != null) {
 			record.setMobotName(mobotConf.getMobotName());
+		}
+
+		if(mobotConf.getMobotWelcome() != null) {
+			record.setMobotWelcome(mobotConf.getMobotWelcome());
 		}
 
 		create.attach(record);
