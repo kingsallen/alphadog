@@ -204,7 +204,7 @@ public class TalentpoolSearchengine {
      * @param talentpoolProfilePools
      * @return
      */
-    private static Map<Integer, String> processTreeProfilePool(List<TalentpoolProfilePool> talentpoolProfilePools) {
+    private Map<Integer, String> processTreeProfilePool(List<TalentpoolProfilePool> talentpoolProfilePools) {
         Map<Integer,String> result=new HashMap<>();
         if(CollectionUtils.isEmpty(talentpoolProfilePools)){
             return result;
@@ -241,23 +241,6 @@ public class TalentpoolSearchengine {
             }
         }
         return result;
-    }
-
-    public static void main(String[] args) {
-        List<TalentpoolProfilePool> talentpoolProfilePools=new ArrayList<>();
-        TalentpoolProfilePool talentpoolProfilePool1=new TalentpoolProfilePool();
-        talentpoolProfilePool1.setId(1);
-        talentpoolProfilePool1.setParentId(0);
-        talentpoolProfilePool1.setProfilePoolName("一级简历池1");
-        talentpoolProfilePools.add(talentpoolProfilePool1);
-        System.out.println(processTreeProfilePool(talentpoolProfilePools));
-
-        TalentpoolProfilePool talentpoolProfilePool2=new TalentpoolProfilePool();
-        talentpoolProfilePool2.setId(2);
-        talentpoolProfilePool2.setParentId(1);
-        talentpoolProfilePool2.setProfilePoolName("二级简历池1");
-        talentpoolProfilePools.add(talentpoolProfilePool2);
-        System.out.println(processTreeProfilePool(talentpoolProfilePools));
     }
 
     @CounterIface
