@@ -4,27 +4,7 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
-import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
-import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionInterviewProcessRel;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +30,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 355663128;
+    private static final long serialVersionUID = -1933403527;
 
     /**
      * The reference instance of <code>jobdb</code>
@@ -101,11 +81,6 @@ public class Jobdb extends SchemaImpl {
      * The table <code>jobdb.job_position</code>.
      */
     public final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
-
-    /**
-     * 职位招聘流程绑定表
-     */
-    public final JobPositionAtsProcess JOB_POSITION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS;
 
     /**
      * The table <code>jobdb.job_position_ccmail</code>.
@@ -163,6 +138,16 @@ public class Jobdb extends SchemaImpl {
     public final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
 
     /**
+     * 招聘进度和具体申请对应表
+     */
+    public final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
+
+    /**
+     * 职位招聘流程绑定表
+     */
+    public final JobPositionAtsProcess JOB_POSITION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS;
+
+    /**
      * No further instances allowed
      */
     private Jobdb() {
@@ -196,7 +181,6 @@ public class Jobdb extends SchemaImpl {
             JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
             JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
-            JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS,
             JobPositionCcmail.JOB_POSITION_CCMAIL,
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
@@ -207,6 +191,8 @@ public class Jobdb extends SchemaImpl {
             JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
-            JobResumeOther.JOB_RESUME_OTHER);
+            JobResumeOther.JOB_RESUME_OTHER,
+            JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS,
+            JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS);
     }
 }
