@@ -285,7 +285,7 @@ public class JobApplicataionService {
 
     }
     /*
-     * @Author zztaiwll
+     * @Author zztaiwl6
      * @Description  组装流水记录
      * @Date 上午10:32 19/3/8
      * @Param [jobApplication, jobPositionRecord]
