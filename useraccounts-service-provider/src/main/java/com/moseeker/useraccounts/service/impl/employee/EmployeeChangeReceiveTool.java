@@ -30,7 +30,7 @@ public class EmployeeChangeReceiveTool {
 
     @RabbitListener(queues = "#{employeeChangeQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void  employeeActivationChange(Message message){
+    public Message  employeeActivationChange(Message message){
         logger.info("employeeChangeQueue start consume message from mq:{}", Calendar.getInstance().getTime());
         String msgBody = "{}";
         try {
@@ -56,6 +56,7 @@ public class EmployeeChangeReceiveTool {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        return message;
     }
 
 
