@@ -5,7 +5,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.useraccounts.service.Neo4jService;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,6 @@ public class EmployeeChangeReceiveTool {
     @RabbitListener(queues = "#{employeeChangeQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public Message  employeeActivationChange(Message message){
-        logger.info("employeeChangeQueue start consume message from mq:{}", Calendar.getInstance().getTime());
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
@@ -41,10 +39,7 @@ public class EmployeeChangeReceiveTool {
                 Integer companyId = jsonObject.getIntValue("companyId");
                 List<Integer> userIds = (List<Integer>) jsonObject.getOrDefault("userIds", new ArrayList<>());
                 logger.info("employeeActivationChange userIds:{}",userIds);
-                long t1 = System.currentTimeMillis();
                 neo4jService.updateUserEmployeeCompany(userIds, companyId);
-                long t2 = System.currentTimeMillis();
-                logger.info("EmployeeChangeReceiveTool employeeActivationChange time consuming for employeeActivationChange",t2-t1);
             }else if(message.getMessageProperties().getReceivedRoutingKey().equals("user_neo4j.friend_update")){
                 Integer startUserid = jsonObject.getIntValue("start_user_id");
                 Integer endUserId = jsonObject.getIntValue("end_user_id");

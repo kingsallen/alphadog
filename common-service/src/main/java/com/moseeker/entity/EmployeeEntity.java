@@ -653,10 +653,7 @@ public class EmployeeEntity {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(USER_EMPLOYEE.ACTIVATION.getName(), 0);
-        long t1 = System.currentTimeMillis();
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
-        long t2 = System.currentTimeMillis();
-        logger.info("EmployeeEntity unbind time consuming for getEmployee:{}",t2-t1);
         employeeDOList.forEach(userEmployeeDO -> userEmployeeDO.setUnbindTime(LocalDateTime.now().format(sdf)));
         boolean result = unbind(employeeDOList);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -701,7 +698,6 @@ public class EmployeeEntity {
             }
             int[] rows = employeeDao.updateDatas(employees);
             logger.info("EmployeeEntity unbind rows:{}", rows.length);
-            long t1 = System.currentTimeMillis();
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
                 List<Integer> employeeIdList = employees
@@ -709,54 +705,29 @@ public class EmployeeEntity {
                         .map(UserEmployeeDO::getId).filter(id -> id > 0)
                         .collect(Collectors.toList());
                 logger.info("EmployeeEntity unbind employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
-
-                long t3 = System.currentTimeMillis();
                 searchengineEntity.updateEmployeeAwards(employeeIdList, false);
-                long t4 = System.currentTimeMillis();
-                logger.info("EmployeeEntity unbind inner time consuming for update useremployee in searchengineEntity:{}",t4-t3);
-
                 List<Integer> companyIdList = employees
                         .stream()
                         .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
                         .collect(Collectors.toList());
 
-                long t7 = System.currentTimeMillis();
                 companyIdList.forEach(companyId -> {
                     client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(),
                             String.valueOf(companyId),  JSON.toJSONString(employeeIdList));
                 });
-                long t8 = System.currentTimeMillis();
-                logger.info("EmployeeEntity unbind inner time consuming for set user_employee_unbind in redis:{}",t8-t7);
-
-
-                long t5 = System.currentTimeMillis();
                 networkResourcesDao.updateNetworkResourcesRecordByPosyUserIds(idList, (byte)Constant.DISABLE_OLD);
-                long t6 = System.currentTimeMillis();
-                logger.info("EmployeeEntity unbind inner time consuming for update useremployee in networkResourcesDao:{}",t6-t5);
-
-
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("companyId", 0);
                 jsonObject.put("userIds", idList);
                 logger.info("employeeActivationChange :jsonObject{}", jsonObject);
-                long t9 = System.currentTimeMillis();
-                logger.info("employeeChangeQueue start produce message to mq:{}",Calendar.getInstance().getTime());
                 amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
-                /*amqpTemplate.convertAndSend(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
-                        EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
-                                .build());*/
-                long t10 = System.currentTimeMillis();
-                logger.info("EmployeeEntity unbind inner time consuming for add message in rabbitmq:{}",t10-t9);
 
-                long t2 = System.currentTimeMillis();
-                logger.info("EmployeeEntity unbind inner time consuming for update useremployee in es:{}",t2-t1);
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
             }
-
         }
         return false;
     }
