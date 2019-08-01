@@ -740,7 +740,10 @@ public class EmployeeEntity {
                 jsonObject.put("userIds", idList);
                 logger.info("employeeActivationChange :jsonObject{}", jsonObject);
                 long t9 = System.currentTimeMillis();
-                amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                /*amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                        EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                .build());*/
+                amqpTemplate.convertAndSend(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
                 long t10 = System.currentTimeMillis();
