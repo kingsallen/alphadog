@@ -740,12 +740,13 @@ public class EmployeeEntity {
                 jsonObject.put("userIds", idList);
                 logger.info("employeeActivationChange :jsonObject{}", jsonObject);
                 long t9 = System.currentTimeMillis();
-                /*amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
-                        EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
-                                .build());*/
-                amqpTemplate.convertAndSend(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                logger.info("employeeChangeQueue start produce message to mq:{}",Calendar.getInstance().getTime());
+                amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
+                /*amqpTemplate.convertAndSend(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                        EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                .build());*/
                 long t10 = System.currentTimeMillis();
                 logger.info("EmployeeEntity unbind inner time consuming for add message in rabbitmq:{}",t10-t9);
 
