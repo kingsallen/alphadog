@@ -1114,6 +1114,7 @@ public class UseraccountsService {
 
             //先判断需要生成的二维码是否为永久性的
             if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
+                logger.info("UseraccountsService cerateQrcode check qrcode is permanent",true);
                 String sceneDB = null;
                 if(sceneId!=null){
                     sceneDB = String.valueOf(sceneId);

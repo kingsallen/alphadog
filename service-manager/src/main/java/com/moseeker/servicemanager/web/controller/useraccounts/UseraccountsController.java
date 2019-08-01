@@ -846,6 +846,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String cerateQrcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			logger.info("UseraccountsController cerateQrcode start");
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
 			Integer wechatId = param.getInt("wechatid", 0);
 			Long sceneId = param.getLong("scene_id", null);
@@ -869,6 +870,7 @@ public class UseraccountsController {
 				qrcode.setScene(sceneStr);
 			}
 
+			logger.info("Start creating qrcode : {}",qrcode);
 			Response result = useraccountsServices.cerateQrcode(qrcode);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
