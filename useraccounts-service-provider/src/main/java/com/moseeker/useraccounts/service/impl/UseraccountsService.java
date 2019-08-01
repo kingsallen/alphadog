@@ -1122,6 +1122,7 @@ public class UseraccountsService {
                     sceneDB = scene;
                 }
 
+                logger.info("Useraccounts cerateQrcode fetchByWechatIdAndScenes query params:{} {}",sceneDB,wechatId);
                 HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(sceneDB,wechatId);
                 if(qrcode!=null){
                     WeixinTicketBean bean = new WeixinTicketBean();
