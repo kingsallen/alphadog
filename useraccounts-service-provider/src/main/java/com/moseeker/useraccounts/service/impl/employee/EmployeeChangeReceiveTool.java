@@ -29,7 +29,7 @@ public class EmployeeChangeReceiveTool {
 
     @RabbitListener(queues = "#{employeeChangeQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void  employeeActivationChange(Message message){
+    public Message  employeeActivationChange(Message message){
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
@@ -51,6 +51,7 @@ public class EmployeeChangeReceiveTool {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+        return message;
     }
 
 
