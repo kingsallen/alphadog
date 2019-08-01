@@ -29,7 +29,7 @@ public class HrWxWechatQrcodeJOOQDao extends HrWxWechatQrcodeDao {
                 .where(HR_WX_WECHAT_QRCODE.SCENE.eq(scenes))
                 .and(HR_WX_WECHAT_QRCODE.WECHAT_ID.eq(wechatId))
                 .fetch();
-        if(records!=null&&records.size()>1){
+        if(records!=null&&records.size()>0){
             return records.get(0).into(HrWxWechatQrcode.class);
         }
         return null;
