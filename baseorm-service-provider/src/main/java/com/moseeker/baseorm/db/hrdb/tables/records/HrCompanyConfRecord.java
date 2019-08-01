@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1079393125;
+    private static final long serialVersionUID = -1579610884;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -531,7 +531,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte job51SalaryDiscuss, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName, String mobotWelcome, Integer newAtsStatus) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte job51SalaryDiscuss, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName, String mobotWelcome, Integer newAtsStatus) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -558,8 +558,8 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(21, employeeSlug);
         set(22, displayLocale);
         set(23, talentpoolStatus);
-        set(24, job51SalaryDiscuss);
-        set(25, veryeastSwitch);
+        set(24, veryeastSwitch);
+        set(25, job51SalaryDiscuss);
         set(26, mallSwitch);
         set(27, mallGoodsMethod);
         set(28, mallGoodsMethodState);

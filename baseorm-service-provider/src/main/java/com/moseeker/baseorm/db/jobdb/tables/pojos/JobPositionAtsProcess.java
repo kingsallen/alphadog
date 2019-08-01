@@ -4,9 +4,10 @@
 package com.moseeker.baseorm.db.jobdb.tables.pojos;
 
 
-import javax.annotation.Generated;
 import java.io.Serializable;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -22,7 +23,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionAtsProcess implements Serializable {
 
-    private static final long serialVersionUID = -1684252991;
+    private static final long serialVersionUID = 2105367452;
 
     private Integer   id;
     private Integer   pid;

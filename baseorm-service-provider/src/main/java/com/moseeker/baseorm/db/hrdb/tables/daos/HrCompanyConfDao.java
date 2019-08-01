@@ -288,4 +288,11 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMobotWelcome(String... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.MOBOT_WELCOME, values);
     }
+
+    /**
+     * Fetch records that have <code>new_ats_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByNewAtsStatus(Integer... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.NEW_ATS_STATUS, values);
+    }
 }

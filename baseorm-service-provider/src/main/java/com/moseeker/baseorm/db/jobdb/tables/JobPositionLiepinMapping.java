@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMappingRecord> {
 
-    private static final long serialVersionUID = 629302719;
+    private static final long serialVersionUID = -1158009977;
 
     /**
      * The reference instance of <code>jobdb.job_position_liepin_mapping</code>
@@ -82,9 +82,9 @@ public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMapping
     public final TableField<JobPositionLiepinMappingRecord, String> ERR_MSG = createField("err_msg", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "如果同步失败，记录失败信息");
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 2审核中
+     * The column <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 
      */
-    public final TableField<JobPositionLiepinMappingRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "猎聘职位状态 0 下架 1 正常 2审核中");
+    public final TableField<JobPositionLiepinMappingRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "猎聘职位状态 0 下架 1 正常 ");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.liepin_user_id</code>. hr在猎聘的userid
