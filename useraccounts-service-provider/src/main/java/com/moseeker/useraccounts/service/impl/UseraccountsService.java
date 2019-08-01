@@ -1144,7 +1144,9 @@ public class UseraccountsService {
                         qrcode.setWechatId(wechatId);
                         String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
                         qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
-                        hrWxWechatQrcodeJOOQDao.insert(qrcode);
+                        if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
+                            hrWxWechatQrcodeJOOQDao.insert(qrcode);
+                        }
                         return RespnoseUtil.SUCCESS.toResponse(bean);
                     } else {
                         return RespnoseUtil.USERACCOUNT_WECHAT_GETQRCODE_FAILED.toResponse();
