@@ -222,12 +222,11 @@ public class JobApplicataionService {
                         jobApplication.getApply_type(), jobApplication.getEmail_status(),
                         (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
                         jobApplication.getOrigin());
-                // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
-                handleReferralState(jobApplicationId);
             }else{
                 this.sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
             }
-
+            // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
+            handleReferralState(jobApplicationId);
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
             this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
@@ -282,7 +281,7 @@ public class JobApplicataionService {
         scheduledThread.startTast(()->{
             amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
                     MessageBuilder.withBody(message.getBytes()).build());
-        },1000);
+        },500);
 
     }
     /*
