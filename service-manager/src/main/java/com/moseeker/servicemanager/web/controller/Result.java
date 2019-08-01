@@ -19,7 +19,7 @@ public class Result {
     // 序列化配置对象
     private SerializeConfig config = new SerializeConfig();
 
-    public static final String SUCCESS = new Result(0,"success").toString();
+    public static final String SUCCESS = Result.success().toJson();
 
     private int status;
     private String message;
@@ -44,6 +44,10 @@ public class Result {
 
     public String toJson() {
         return JSONObject.toJSONString(this, config, WriteNullListAsEmpty, WriteNullStringAsEmpty, WriteNullNumberAsZero, WriteNullBooleanAsFalse, WriteMapNullValue, WriteNullNumberAsZero);
+    }
+
+    public String toJsonStr(){
+        return JSONObject.toJSONString(this);
     }
 
     public int getStatus() {

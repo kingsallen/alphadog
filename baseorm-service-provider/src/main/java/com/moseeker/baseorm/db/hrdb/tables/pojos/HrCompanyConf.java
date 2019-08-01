@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -1708996220;
+    private static final long serialVersionUID = -2093670292;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -49,8 +49,8 @@ public class HrCompanyConf implements Serializable {
     private String    employeeSlug;
     private String    displayLocale;
     private Byte      talentpoolStatus;
-    private Byte      veryeastSwitch;
     private Byte      job51SalaryDiscuss;
+    private Byte      veryeastSwitch;
     private Byte      mallSwitch;
     private String    mallGoodsMethod;
     private Byte      mallGoodsMethodState;
@@ -124,8 +124,8 @@ public class HrCompanyConf implements Serializable {
         String    employeeSlug,
         String    displayLocale,
         Byte      talentpoolStatus,
-        Byte      veryeastSwitch,
         Byte      job51SalaryDiscuss,
+        Byte      veryeastSwitch,
         Byte      mallSwitch,
         String    mallGoodsMethod,
         Byte      mallGoodsMethodState,
@@ -363,20 +363,20 @@ public class HrCompanyConf implements Serializable {
         this.talentpoolStatus = talentpoolStatus;
     }
 
-    public Byte getVeryeastSwitch() {
-        return this.veryeastSwitch;
-    }
-
-    public void setVeryeastSwitch(Byte veryeastSwitch) {
-        this.veryeastSwitch = veryeastSwitch;
-    }
-
     public Byte getJob51SalaryDiscuss() {
         return this.job51SalaryDiscuss;
     }
 
     public void setJob51SalaryDiscuss(Byte job51SalaryDiscuss) {
         this.job51SalaryDiscuss = job51SalaryDiscuss;
+    }
+
+    public Byte getVeryeastSwitch() {
+        return this.veryeastSwitch;
+    }
+
+    public void setVeryeastSwitch(Byte veryeastSwitch) {
+        this.veryeastSwitch = veryeastSwitch;
     }
 
     public Byte getMallSwitch() {

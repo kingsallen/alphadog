@@ -1,28 +1,23 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.dao.logdb.LogResumeDao;
 import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileSaveResult;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
-import static com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.EmployeeOperationEntrance;
-import com.moseeker.common.constants.EmployeeOperationIsSuccess;
-import com.moseeker.common.constants.EmployeeOperationType;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -34,6 +29,7 @@ import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ProfileException;
+import com.moseeker.entity.pojo.profile.ProfileRecord;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -58,7 +54,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
 
 /**
@@ -114,6 +112,23 @@ public class ProfileEntity {
 
     /**
      * 如果存在简历则合并，不存在则添加
+     * @param profileRecord 简历数据
+     * @param userId 用户编号
+     */
+    public int mergeProfile(ProfileRecord profileRecord, int userId) {
+
+        ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
+        int profileId= mergeProfileCommon(profileRecord, profileDB);
+        if (profileDB != null) {
+            improveAttachment(profileRecord.getAttachmentRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+            profileId = profileDB.getId();
+        }
+        return profileId;
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
      * @param profilePojo 简历数据
      * @param userId 用户编号
      */
@@ -139,6 +154,89 @@ public class ProfileEntity {
             attachmentId = id;
         }
         return attachmentId;
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
+     * @param profileRecord 简历数据
+     * @param profileDB 用户编号
+     */
+    public int mergeProfileCommon(ProfileRecord profileRecord, ProfileProfileRecord profileDB) {
+
+        if (profileDB != null) {
+            improveProfile(profileRecord.getProfileRecord(), profileDB);
+            improveBasic(profileRecord.getBasicRecord(), profileDB.getId());
+            improveAwards(profileRecord.getAwardsRecords(), profileDB.getId());
+            improveCredentials(profileRecord.getCredentialsRecords(), profileDB.getId());
+            improveEducation(profileRecord.getEducationRecords(), profileDB.getId());
+            improveIntention(profileRecord.getIntentionRecords(), profileDB.getId());
+            improveLanguage(profileRecord.getLanguageRecords(), profileDB.getId());
+            improveOther(profileRecord.getOtherRecord(), profileDB.getId());
+            improveProjectexp(profileRecord.getProjectExps(), profileDB.getId());
+            improveSkill(profileRecord.getSkillRecords(), profileDB.getId());
+            improveWorkexpRecrds(profileRecord.getWorkexpRecords(), profileDB.getId());
+            improveWorks(profileRecord.getWorksRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+            return profileDB.getId();
+        } else {
+            profileRecord.getProfileRecord().setId(null);
+            profileRecord.getProfileRecord().setUuid(UUID.randomUUID().toString());
+            if (profileRecord.getWorkexpRecords() != null) {
+                profileRecord.getWorkexpRecords().forEach(wrkexp -> wrkexp.setId(null));
+            }
+            if (profileRecord.getAttachmentRecords() != null) {
+                profileRecord.getAttachmentRecords()
+                        .forEach(profileAttachmentRecord -> profileAttachmentRecord.setId(null));
+            }
+            if (profileRecord.getAwardsRecords() != null) {
+                profileRecord.getAwardsRecords()
+                        .forEach(awardsRecord -> awardsRecord.setId(null));
+            }
+            if (profileRecord.getCredentialsRecords() != null) {
+                profileRecord.getCredentialsRecords()
+                        .forEach(profileCredentialsRecord -> profileCredentialsRecord.setId(null));
+            }
+            if (profileRecord.getEducationRecords() != null) {
+                profileRecord.getEducationRecords()
+                        .forEach(profileEducationRecord -> profileEducationRecord.setId(null));
+            }
+            if (profileRecord.getIntentionRecords() != null) {
+                profileRecord.getIntentionRecords()
+                        .forEach(intentionRecord -> {
+                            intentionRecord.setId(null);
+                            if (intentionRecord.getIndustries() != null) {
+                                intentionRecord.getIndustries()
+                                        .forEach(industry -> industry.setId(null));
+                            }
+                            if (intentionRecord.getPositions() != null) {
+                                intentionRecord.getPositions()
+                                        .forEach(position -> position.setId(null));
+                            }
+                            if (intentionRecord.getCities() != null) {
+                                intentionRecord.getCities()
+                                        .forEach(city -> city.setId(null));
+                            }
+                        });
+            }
+            if (profileRecord.getLanguageRecords() != null) {
+                profileRecord.getLanguageRecords()
+                        .forEach(language -> language.setId(null));
+            }
+            if (profileRecord.getProjectExps() != null) {
+                profileRecord.getProjectExps()
+                        .forEach(profileProjectexpRecord -> profileProjectexpRecord.setId(null));
+            }
+            if (profileRecord.getSkillRecords() != null) {
+                profileRecord.getSkillRecords()
+                        .forEach(skill -> skill.setId(null));
+            }
+            if (profileRecord.getWorksRecords() != null) {
+                profileRecord.getWorksRecords()
+                        .forEach(works -> works.setId(null));
+            }
+
+            return storeProfile(profileRecord);
+        }
     }
 
     /**
@@ -371,6 +469,20 @@ public class ProfileEntity {
                 skill.setProfileId((int) (profileId));
             });
             worksDao.addAllRecord(worksRecords);
+        }
+    }
+
+    @Transactional
+    public void improveWorkexpRecrds(List<ProfileWorkexpRecord> workexpRecords, int profileId) {
+        if (workexpRecords != null && workexpRecords.size() > 0) {
+            workExpDao.delWorkExpsByProfileId(profileId);
+            List<ProfileWorkexpRecord> records = new ArrayList<>();
+            workexpRecords.forEach(skill -> {
+                skill.setId(null);
+                skill.setProfileId((int) (profileId));
+                records.add(skill);
+            });
+            workExpDao.addAllRecord(records);
         }
     }
 
@@ -650,7 +762,7 @@ public class ProfileEntity {
 
     public int createProfile(ProfilePojo profilePojo, UserUserDO userUserDO) {
         UserUserRecord userUserRecord = BeanUtils.structToDB(userUserDO, UserUserRecord.class);
-        int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+        ProfileSaveResult result = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
@@ -660,7 +772,7 @@ public class ProfileEntity {
         String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
         logger.info("ProfileEntity.createProfile661  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
         sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
-        return id;
+        return result.getProfileRecord().getId();
     }
 
     /**
@@ -673,7 +785,7 @@ public class ProfileEntity {
         logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
                 profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
         logger.info("ProfileEntity storeProfile userId:{}", profilePojo.getUserRecord().getId());
-        int id= profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+        ProfileSaveResult result= profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
@@ -683,7 +795,43 @@ public class ProfileEntity {
         String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
         logger.info("ProfileEntity.storeProfile684  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
         sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
-        return id;
+        return result.getProfileRecord().getId();
+    }
+
+    /**
+     * 持久化简历数据
+     * @param profileRecord 简历数据
+     * @return 简历编号
+     */
+    public int storeProfile(ProfileRecord profileRecord) {
+
+        List<ProfileWorkexpEntity> workexpEntities = new ArrayList<>();
+        if (profileRecord.getWorkexpRecords() != null && profileRecord.getWorkexpRecords().size() > 0) {
+            workexpEntities = profileRecord.getWorkexpRecords()
+                    .stream()
+                    .map(profileWorkexpRecord -> {
+                        ProfileWorkexpEntity entity = new ProfileWorkexpEntity();
+                        org.springframework.beans.BeanUtils.copyProperties(profileWorkexpRecord, entity);
+                        entity.setCompany(null);
+                        return entity;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profileRecord.getProfileRecord().getSource(),
+                profileRecord.getProfileRecord().getOrigin(), profileRecord.getProfileRecord().getUuid());
+        logger.info("ProfileEntity storeProfile userId:{}", profileRecord.getUserRecord().getId());
+        ProfileSaveResult result = profileDao.saveProfile(profileRecord.getProfileRecord(), profileRecord.getBasicRecord(),
+                profileRecord.getAttachmentRecords(), profileRecord.getAwardsRecords(), profileRecord.getCredentialsRecords(),
+                profileRecord.getEducationRecords(), profileRecord.getImportRecords(), profileRecord.getIntentionRecords(),
+                profileRecord.getLanguageRecords(), profileRecord.getOtherRecord(), profileRecord.getProjectExps(),
+                profileRecord.getSkillRecords(), workexpEntities, profileRecord.getWorksRecords(),
+                profileRecord.getUserRecord(), null);
+        String distinctId = profileRecord.getUserRecord().getId().toString();
+        String property=String.valueOf(profileRecord.getProfileRecord().getCompleteness());
+        logger.info("ProfileEntity.storeProfile684  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+        return result.getProfileRecord().getId();
     }
 
     /**
@@ -753,38 +901,75 @@ public class ProfileEntity {
         }
     }
 
-    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId, ReferralScene referralScene) throws ProfileException {
+    public ProfileSaveResult storeReferralUser(ProfilePojo profilePojo, int reference, int companyId, ReferralScene referralScene) throws ProfileException {
 
         UserSource userSource = referralScene.getScene() == ReferralScene.Referral.getScene() ? UserSource.EMPLOYEE_REFERRAL : UserSource.EMPLOYEE_REFERRAL_CHATBOT;
         UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
                 companyId, profilePojo.getUserRecord().getMobile(),
                 referralScene, userSource);
         if (referralRecordRecord != null) {
-            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, userSource,null,null,null);
-            if (referralRecordRecord != null && userUserRecord1 != null) {
-                referralRecordRecord.setUserId(userUserRecord1.getId());
+            ProfileSaveResult profileSaveResult = storeUserRecordForReferral(profilePojo, userSource,null,null,null);
+            if (profileSaveResult != null && profileSaveResult.getProfileRecord() != null) {
+                referralRecordRecord.setUserId(profileSaveResult.getProfileRecord().getUserId());
                 userReferralRecordDao.updateRecord(referralRecordRecord);
             }
-            return userUserRecord1;
+            return profileSaveResult;
         } else {
             throw ProfileException.PROGRAM_DOUBLE_CLICK;
         }
     }
-    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
 
-        UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
-                companyId, profilePojo.getUserRecord().getMobile(),
-                ReferralScene.Referral);
-        if (referralRecordRecord != null) {
-            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL,null,null,null);
-            if (referralRecordRecord != null && userUserRecord1 != null) {
-                referralRecordRecord.setUserId(userUserRecord1.getId());
-                userReferralRecordDao.updateRecord(referralRecordRecord);
+    public ProfileRecord fetchByUserId(int userId) {
+        UserUserRecord userUserRecord = userDao.getUserById(userId);
+        if (userUserRecord != null ) {
+            ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserRecord.getId());
+            if (profileProfileRecord != null) {
+                ProfileRecord profileRecord = new ProfileRecord();
+                profileRecord.setUserRecord(userUserRecord);
+                profileRecord.setProfileRecord(profileProfileRecord);
+
+                QueryUtil qu = new QueryUtil();
+                qu.addEqualFilter("profile_id", String.valueOf(profileProfileRecord.getId()));
+                ProfileBasicRecord basic = profileBasicDao.getRecord(qu);
+                profileRecord.setBasicRecord(basic);
+
+                List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setAttachmentRecords(attachmentRecords);
+
+                List<ProfileAwardsRecord> awardsRecords = awardsDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setAwardsRecords(awardsRecords);
+
+                List<ProfileCredentialsRecord> credentialsRecords = credentialsDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setCredentialsRecords(credentialsRecords);
+
+                List<ProfileEducationRecord> educationRecords = educationDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setEducationRecords(educationRecords);
+
+                List<IntentionRecord> intentionRecords = intentionDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setIntentionRecords(intentionRecords);
+
+                List<ProfileLanguageRecord> languageRecords = languageDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setLanguageRecords(languageRecords);
+
+                ProfileOtherRecord otherRecord = otherDao.fetchProfileOther(profileProfileRecord.getId());
+                profileRecord.setOtherRecord(otherRecord);
+
+                List<ProfileProjectexpRecord> projectExps = projectExpDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setProjectExps(projectExps);
+
+                List<ProfileSkillRecord> skillRecords = skillDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setSkillRecords(skillRecords);
+
+                List<ProfileWorkexpRecord> workexpRecords = workExpDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setWorkexpRecords(workexpRecords);
+
+                List<ProfileWorksRecord> worksRecords = worksDao.fetchByProfileId(profileProfileRecord.getId());
+                profileRecord.setWorksRecords(worksRecords);
+
+                return profileRecord;
             }
-            return userUserRecord1;
-        } else {
-            throw ProfileException.PROGRAM_DOUBLE_CLICK;
         }
+        return null;
     }
 
     private UserUserRecord storeUserRecord(ProfilePojo profilePojo, UserSource source,Integer appid,Integer referenceId,Integer companyId) {
@@ -808,6 +993,43 @@ public class ProfileEntity {
         }
 
         return userUserRecord;
+    }
+
+
+
+    private ProfileSaveResult storeUserRecordForReferral(ProfilePojo profilePojo, UserSource source,Integer appid,Integer referenceId,Integer companyId) {
+        if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
+            profilePojo.getUserRecord().setPassword("");
+        }
+        short shortSource = 0;
+        if (source != null) {
+            shortSource = (short) source.getValue();
+        }
+        profilePojo.getUserRecord().setSource(shortSource);
+        profilePojo.getUserRecord().setEmailVerified((byte)0);
+        UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+
+        logger.info("mergeProfile userId:{}", userUserRecord.getId());
+        profilePojo.setUserRecord(userUserRecord);
+        profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
+        ProfileSaveResult result= profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+                profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
+                profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
+                profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
+                profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
+                profilePojo.getUserRecord(), null);
+        String distinctId = profilePojo.getUserRecord().getId().toString();
+        String property=String.valueOf(result.getProfileRecord() != null ? result.getProfileRecord().getCompleteness().intValue():0);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+        if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+            logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId, appid,
+                    EmployeeOperationType.RESUMERECOMMEND.getKey(),
+                    EmployeeOperationIsSuccess.SUCCESS.getKey(),
+                    companyId,
+                    result.getProfileRecord().getId());
+        }
+
+        return result;
     }
 
     @Autowired

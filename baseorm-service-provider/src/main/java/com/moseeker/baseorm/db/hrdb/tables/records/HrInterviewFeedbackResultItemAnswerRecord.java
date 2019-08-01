@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewFeedbackResultItemAnswerRecord extends UpdatableRecordImpl<HrInterviewFeedbackResultItemAnswerRecord> implements Record7<Integer, Integer, Integer, String, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1632869036;
+    private static final long serialVersionUID = 1694201870;
 
     /**
      * Setter for <code>hrdb.hr_interview_feedback_result_item_answer.id</code>. 序列ID

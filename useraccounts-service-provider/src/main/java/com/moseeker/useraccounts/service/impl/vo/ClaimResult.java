@@ -10,6 +10,7 @@ public class ClaimResult {
 
     private Integer referral_id;
     private Integer position_id;
+    private Integer apply_id;
     private String title;
     private Boolean success;
     private String errmsg;
@@ -52,6 +53,14 @@ public class ClaimResult {
 
     public void setSuccess(Boolean success) {
         this.success = success;
+    }
+
+    public Integer getApply_id() {
+        return apply_id;
+    }
+
+    public void setApply_id(Integer apply_id) {
+        this.apply_id = apply_id;
     }
 }
 

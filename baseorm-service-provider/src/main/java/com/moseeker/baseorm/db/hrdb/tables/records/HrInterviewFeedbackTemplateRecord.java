@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrInterviewFeedbackTemplateRecord extends UpdatableRecordImpl<HrInterviewFeedbackTemplateRecord> implements Record9<Integer, String, Integer, Integer, Integer, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = 969769975;
+    private static final long serialVersionUID = -183273609;
 
     /**
      * Setter for <code>hrdb.hr_interview_feedback_template.id</code>. 序列ID
@@ -145,14 +145,14 @@ public class HrInterviewFeedbackTemplateRecord extends UpdatableRecordImpl<HrInt
     }
 
     /**
-     * Setter for <code>hrdb.hr_interview_feedback_template.snapshot</code>. 是否是快照 0不是 1是
+     * Setter for <code>hrdb.hr_interview_feedback_template.snapshot</code>. 是否是快照 0 不是 1是
      */
     public void setSnapshot(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_interview_feedback_template.snapshot</code>. 是否是快照 0不是 1是
+     * Getter for <code>hrdb.hr_interview_feedback_template.snapshot</code>. 是否是快照 0 不是 1是
      */
     public Integer getSnapshot() {
         return (Integer) get(8);

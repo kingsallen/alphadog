@@ -89,4 +89,15 @@ public class ProfileAwardsDao extends JooqCrudImpl<ProfileAwardsDO, ProfileAward
                 .where(ProfileAwards.PROFILE_AWARDS.ID.eq(id))
                 .fetchOne();
     }
+
+    public List<ProfileAwardsRecord> fetchByProfileId(Integer profileId) {
+        if (profileId != null && profileId > 0) {
+            return create
+                    .selectFrom(ProfileAwards.PROFILE_AWARDS)
+                    .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.eq(profileId))
+                    .fetch();
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
 }

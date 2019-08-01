@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTopicRecord extends UpdatableRecordImpl<HrTopicRecord> implements Record10<Integer, Integer, String, String, String, Integer, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -110171191;
+    private static final long serialVersionUID = -1388521035;
 
     /**
      * Setter for <code>hrdb.hr_topic.id</code>.
@@ -103,14 +103,14 @@ public class HrTopicRecord extends UpdatableRecordImpl<HrTopicRecord> implements
     }
 
     /**
-     * Setter for <code>hrdb.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
+     * Setter for <code>hrdb.hr_topic.style_id</code>. config_sys_h5_style_tpl.id， 样式Id
      */
     public void setStyleId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
+     * Getter for <code>hrdb.hr_topic.style_id</code>. config_sys_h5_style_tpl.id， 样式Id
      */
     public Integer getStyleId() {
         return (Integer) get(5);

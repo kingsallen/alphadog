@@ -1315,7 +1315,8 @@ public class UseraccountsService {
                 claimResult.setPosition_id(referralLog.getPositionId());
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
-                    claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
+                    int appid = claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
+                    claimResult.setApply_id(appid);
                 }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
@@ -1392,7 +1393,7 @@ public class UseraccountsService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    protected void claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
+    protected int claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
 
         logger.info("UseraccountsService claimReferral");
 
@@ -1438,14 +1439,24 @@ public class UseraccountsService {
             }
             userUserRecord.setUsername(mobile.trim());
             userUserRecord.setMobile(Long.valueOf(mobile.trim()));
+            logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
             userdao.updateRecord(userUserRecord);
+        }else{//不需要修改手机号的情况下，判断用户名是否为空，若为空，取此次name参数作为用户名，更新数据
+            UserUserRecord userUserRecord = new UserUserRecord();
+            if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getName())) {
+                userUserRecord.setName(name);
+                userUserRecord.setId(userUserDO.getId());
+                logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
+                userdao.updateRecord(userUserRecord);
+            }
         }
-        referralEntity.claimReferralCard(userUserDO, referralLog);
+        int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
         logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
 
         kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
         logger.info("UseraccountsService claimReferral after sendUserClaimToKafka!");
+        return appid;
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {

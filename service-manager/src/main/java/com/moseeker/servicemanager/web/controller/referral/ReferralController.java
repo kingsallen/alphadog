@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BonusTools;
@@ -23,6 +24,7 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.struct.MobotReferralResult;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -40,6 +42,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -128,6 +131,42 @@ public class ReferralController {
                     referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
                     (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
             return Result.success(referralId).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工推荐简历(多职位)
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/referrals", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfiles(@RequestBody ReferralsForm referralForm) throws Exception {
+
+        logger.info("ReferralController referralProfile");
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", referralForm.getRealname());
+        validateUtil.addRequiredValidate("推荐关系", referralForm.getRelation());
+        validateUtil.addIntTypeValidate("员工", referralForm.getEmployeeId(), 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getRecomTags()) &&
+                com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
+                    referralForm.getRealname(),referralForm.getMobile(), referralForm.getRecomTags(),
+                        referralForm.getPids(),(byte)referralForm.getRelation(),
+                            referralForm.getRecomText(),(byte) referralForm.getReferralType());
+            return Result.success(results).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
@@ -311,6 +350,75 @@ public class ReferralController {
         com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard card = new com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard();
         BeanUtils.copyProperties(referralCard, card);
         return Result.success(card).toJson();
+    }
+
+    /*
+    * @param rkey:推荐id字符串
+    * @return 认领信息
+    * @throws Exception
+    * */
+    @RequestMapping(value = "/v1.3/referral/confirm",method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralsCard(@RequestParam String rkey,HttpServletRequest request) throws Exception{
+        String appid = request.getParameter("appid");
+        if (StringUtils.isBlank(appid)) {
+            return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
+        }
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("rkey", rkey);
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            List<Integer> idList = null;
+            try{
+                String[] ids = rkey.split("@");
+                idList =  Arrays.stream(ids).filter(e->com.moseeker.common.util.StringUtils.isNotNullOrEmpty(e))
+                        .map(e->Integer.valueOf(e.trim()))
+                        .collect(Collectors.toList());
+            }catch(NumberFormatException e){
+                logger.error(e.getMessage(),e);
+                return Result.excetionToResult(e).toJson();
+            }
+            com.moseeker.thrift.gen.employee.struct.ReferralsCard referralsCard = employeeService.getReferralsCard(idList);
+            ReferralsCardVO vo = new ReferralsCardVO();
+            BeanUtils.copyProperties(referralsCard,vo);
+            return Result.success(vo).toJsonStr();
+        }
+        return Result.validateFailed(validateResult).toJson();
+    }
+
+    /*
+    * 多职位认领接口
+    * */
+    @RequestMapping(value = "/v1.3/referral/confirm", method = RequestMethod.POST)
+    @ResponseBody
+    public String claimReferralsCard(@RequestBody ClaimsForm claimForm) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("用户", claimForm.getUserId(), 1, null);
+        validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
+        validateUtil.addRequiredStringValidate("rkey", claimForm.getRkey());
+        validateUtil.addRequiredStringValidate("用户手机", claimForm.getRkey());
+        String validateResult = validateUtil.validate();
+
+        if (StringUtils.isBlank(validateResult)) {
+            List<Integer> idList = null;
+            try{
+                String[] ids = claimForm.getRkey().split("@");
+                idList =  Arrays.stream(ids).filter(e->com.moseeker.common.util.StringUtils.isNotNullOrEmpty(e))
+                        .map(e->Integer.valueOf(e.trim()))
+                        .collect(Collectors.toList());
+            }catch(NumberFormatException e){
+                logger.error(e.getMessage(),e);
+                return Result.excetionToResult(e).toJson();
+            }
+            String claimResults = userService.batchClaimReferralCard(
+                    claimForm.getUserId(), claimForm.getName(), claimForm.getMobile(), Constant.NO_VSCODE_CHECK, idList);
+
+            return Result.success(claimResults).toJsonStr();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
     }
 
     @RequestMapping(value = "/v1/referral/claim", method = RequestMethod.POST)

@@ -123,7 +123,7 @@ public class HrEmployeeCustomFieldsDao extends DAOImpl<HrEmployeeCustomFieldsRec
     /**
      * Fetch records that have <code>field_type IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByFieldType(Integer... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByFieldType(Byte... values) {
         return fetch(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE, values);
     }
 

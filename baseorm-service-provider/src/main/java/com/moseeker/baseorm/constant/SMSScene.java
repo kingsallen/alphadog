@@ -2,6 +2,7 @@ package com.moseeker.baseorm.constant;
 
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -65,6 +66,10 @@ public enum SMSScene {
     public boolean validateVerifyCode(String countryCode, String mobile, String verifyCode, RedisClient redisClient) {
         if (StringUtils.isBlank(verifyCode)) {
             return false;
+        }
+        //简历上传小程序推荐来源的认领不需要校验手机号
+        if(Constant.NO_VSCODE_CHECK.equals(verifyCode)){
+            return true;
         }
         String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
         logger.info("SMSScene validateVerifyCode keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);

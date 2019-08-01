@@ -1011,6 +1011,18 @@ public class SearchUtil {
         }
     }
 
+    public void matchPhrasePrefixQueryV3(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for(String field:fieldList){
+                QueryBuilder fullf = QueryBuilders.wildcardQuery(field, "*"+condition+"*");
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
     public void shouldTermsQueryString(List<String> fieldsList,List<String>dataIdList, QueryBuilder query) {
         if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
