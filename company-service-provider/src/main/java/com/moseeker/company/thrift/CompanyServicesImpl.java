@@ -11,8 +11,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.company.service.impl.CompanyService;

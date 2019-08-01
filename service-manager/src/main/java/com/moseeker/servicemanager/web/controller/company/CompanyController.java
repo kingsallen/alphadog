@@ -7,6 +7,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.OmsSwitchEnum;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -962,6 +963,27 @@ public class CompanyController {
             return Result.validateFailed(result).toJson();
         } else {
             return Result.success(companyServices.companySwitch(companyId,moduleName)).toJson();
+        }
+    }
+
+    /*
+     *
+     *获取当前公司的企业微信开关权限
+     *@Param appid
+     *@Param companyId 公司id
+     *
+     * */
+    @RequestMapping(value = "/api/company/switch/workwx/{companyId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String worxwxSwitch(@RequestParam Integer appid,@PathVariable(name = "companyId" ) Integer companyId) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            boolean valid = companyServices.companySwitch(companyId, OmsSwitchEnum.WORK_WEICHAT.getName()).getValid() == 1;
+            return Result.success(valid).toJson();
         }
     }
 
