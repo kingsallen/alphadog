@@ -24,6 +24,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcess;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcessItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyWorkwxConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
@@ -211,7 +212,12 @@ public class Tables {
     public static final HrCompanyReferralConf HR_COMPANY_REFERRAL_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF;
 
     /**
-     * dashboard展示项配置表
+     * 企业微信配置
+     */
+    public static final HrCompanyWorkwxConf HR_COMPANY_WORKWX_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF;
+
+    /**
+     * The table <code>hrdb.hr_dashboard_config</code>.
      */
     public static final HrDashboardConfig HR_DASHBOARD_CONFIG = com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig.HR_DASHBOARD_CONFIG;
 

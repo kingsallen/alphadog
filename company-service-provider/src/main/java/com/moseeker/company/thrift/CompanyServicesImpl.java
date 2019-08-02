@@ -153,6 +153,30 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public boolean setWorkWechatEmployeeBindConf(int companyId, int hraccountId, String corpId, String secret) throws BIZException, TException {
+        try {
+            return service.setWorkWechatEmployeeBindConf(companyId, hraccountId, corpId, secret);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
+        try {
+            return service.getWorkWechatEmployeeBindConf(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
     /**
      * 获取公司员工认证配置
      *

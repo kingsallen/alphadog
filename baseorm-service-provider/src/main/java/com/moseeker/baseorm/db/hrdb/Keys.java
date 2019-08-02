@@ -24,6 +24,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcess;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcessItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyWorkwxConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
@@ -110,6 +111,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecruitProcessItemsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecruitProcessRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyReferralConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyWorkwxConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrDashboardConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
@@ -219,6 +221,7 @@ public class Keys {
     public static final Identity<HrCompanyRecruitProcessRecord, Integer> IDENTITY_HR_COMPANY_RECRUIT_PROCESS = Identities0.IDENTITY_HR_COMPANY_RECRUIT_PROCESS;
     public static final Identity<HrCompanyRecruitProcessItemsRecord, Integer> IDENTITY_HR_COMPANY_RECRUIT_PROCESS_ITEMS = Identities0.IDENTITY_HR_COMPANY_RECRUIT_PROCESS_ITEMS;
     public static final Identity<HrCompanyReferralConfRecord, Integer> IDENTITY_HR_COMPANY_REFERRAL_CONF = Identities0.IDENTITY_HR_COMPANY_REFERRAL_CONF;
+    public static final Identity<HrCompanyWorkwxConfRecord, Integer> IDENTITY_HR_COMPANY_WORKWX_CONF = Identities0.IDENTITY_HR_COMPANY_WORKWX_CONF;
     public static final Identity<HrDashboardConfigRecord, Integer> IDENTITY_HR_DASHBOARD_CONFIG = Identities0.IDENTITY_HR_DASHBOARD_CONFIG;
     public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
     public static final Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS;
@@ -312,6 +315,7 @@ public class Keys {
     public static final UniqueKey<HrCompanyRecruitProcessItemsRecord> KEY_HR_COMPANY_RECRUIT_PROCESS_ITEMS_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_RECRUIT_PROCESS_ITEMS_PRIMARY;
     public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_REFERRAL_CONF_PRIMARY;
     public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK = UniqueKeys0.KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK;
+    public static final UniqueKey<HrCompanyWorkwxConfRecord> KEY_HR_COMPANY_WORKWX_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_WORKWX_CONF_PRIMARY;
     public static final UniqueKey<HrDashboardConfigRecord> KEY_HR_DASHBOARD_CONFIG_PRIMARY = UniqueKeys0.KEY_HR_DASHBOARD_CONFIG_PRIMARY;
     public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
     public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
@@ -413,6 +417,7 @@ public class Keys {
         public static Identity<HrCompanyRecruitProcessRecord, Integer> IDENTITY_HR_COMPANY_RECRUIT_PROCESS = createIdentity(HrCompanyRecruitProcess.HR_COMPANY_RECRUIT_PROCESS, HrCompanyRecruitProcess.HR_COMPANY_RECRUIT_PROCESS.ID);
         public static Identity<HrCompanyRecruitProcessItemsRecord, Integer> IDENTITY_HR_COMPANY_RECRUIT_PROCESS_ITEMS = createIdentity(HrCompanyRecruitProcessItems.HR_COMPANY_RECRUIT_PROCESS_ITEMS, HrCompanyRecruitProcessItems.HR_COMPANY_RECRUIT_PROCESS_ITEMS.ID);
         public static Identity<HrCompanyReferralConfRecord, Integer> IDENTITY_HR_COMPANY_REFERRAL_CONF = createIdentity(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.ID);
+        public static Identity<HrCompanyWorkwxConfRecord, Integer> IDENTITY_HR_COMPANY_WORKWX_CONF = createIdentity(HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF, HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF.ID);
         public static Identity<HrDashboardConfigRecord, Integer> IDENTITY_HR_DASHBOARD_CONFIG = createIdentity(HrDashboardConfig.HR_DASHBOARD_CONFIG, HrDashboardConfig.HR_DASHBOARD_CONFIG.ID);
         public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = createIdentity(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
@@ -504,6 +509,7 @@ public class Keys {
         public static final UniqueKey<HrCompanyRecruitProcessItemsRecord> KEY_HR_COMPANY_RECRUIT_PROCESS_ITEMS_PRIMARY = createUniqueKey(HrCompanyRecruitProcessItems.HR_COMPANY_RECRUIT_PROCESS_ITEMS, "KEY_hr_company_recruit_process_items_PRIMARY", HrCompanyRecruitProcessItems.HR_COMPANY_RECRUIT_PROCESS_ITEMS.ID);
         public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_PRIMARY = createUniqueKey(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, "KEY_hr_company_referral_conf_PRIMARY", HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.ID);
         public static final UniqueKey<HrCompanyReferralConfRecord> KEY_HR_COMPANY_REFERRAL_CONF_HR_COMPANY_REFERRAL_CONF_COMPANY_ID_PK = createUniqueKey(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF, "KEY_hr_company_referral_conf_hr_company_referral_conf_company_id_pk", HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.COMPANY_ID);
+        public static final UniqueKey<HrCompanyWorkwxConfRecord> KEY_HR_COMPANY_WORKWX_CONF_PRIMARY = createUniqueKey(HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF, "KEY_hr_company_workwx_conf_PRIMARY", HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF.ID);
         public static final UniqueKey<HrDashboardConfigRecord> KEY_HR_DASHBOARD_CONFIG_PRIMARY = createUniqueKey(HrDashboardConfig.HR_DASHBOARD_CONFIG, "KEY_hr_dashboard_config_PRIMARY", HrDashboardConfig.HR_DASHBOARD_CONFIG.ID);
         public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, "KEY_hr_employee_cert_conf_PRIMARY", HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, "KEY_hr_employee_custom_fields_PRIMARY", HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);

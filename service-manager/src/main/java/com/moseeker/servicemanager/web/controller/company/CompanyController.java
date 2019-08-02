@@ -382,6 +382,66 @@ public class CompanyController {
     }
 
     /**
+     * 修改公司企业微信员工认证配置
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/employeebindconf/workwx", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateWorkWxConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            int hraccountId = params.getInt("hraccountId", 0);
+            String corpid = params.getString("corpid");
+            String secret = params.getString("secret");
+            if (companyId == 0 ) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (StringUtils.isNullOrEmpty(corpid ) || StringUtils.isNullOrEmpty(secret ) )  {
+                return ResponseLogNotification.fail(request, "secret及secret不能为空");
+            } else {
+                boolean result = companyServices.setWorkWechatEmployeeBindConf(companyId, hraccountId,corpid,secret);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
+                    put("result", result);
+                }}));
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 修改公司企业微信员工认证配置
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/employeebindconf/workwx", method = RequestMethod.GET)
+    @ResponseBody
+    public String getWorkWxConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            //int hraccountId = params.getInt("hraccountId", 0);
+            if (companyId == 0 ) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else {
+                WorkWxCertConf result = companyServices.getWorkWechatEmployeeBindConf(companyId);
+                return Result.success(result).toJson();
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
      * 查找公司账号的集团账号信息
      *
      * @param request

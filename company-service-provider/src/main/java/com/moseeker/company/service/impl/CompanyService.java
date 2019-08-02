@@ -40,6 +40,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.company.constant.EmployeeCertAuthMode;
 import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.CompanySwitchException;
@@ -66,8 +67,10 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -79,8 +82,8 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyService {
 
-    private static Logger logger = LoggerFactory.getLogger(CompanyService.class);
-
+    private final static Logger logger = LoggerFactory.getLogger(CompanyService.class);
+    private final static String WORKWX_GET_TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s" ;
 
     // private ChaosServices.Iface chaosService = ServiceManager.SERVICE_MANAGER.getService(ChaosServices.Iface.class);
 
@@ -108,6 +111,8 @@ public class CompanyService {
     @Autowired
     private HrEmployeeCertConfDao hrEmployeeCertConfDao;
 
+    @Autowired
+    private HrCompanyWorkWxConfDao hrCompanyWorkwxConfDao;
 
     @Autowired
     private HrSuperaccountApplyDao superaccountApplyDao;
@@ -657,7 +662,8 @@ public class CompanyService {
      * @return 受影响行数
      */
     @Transactional
-    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws Exception {
+    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint,
+                                        String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws Exception {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
@@ -673,12 +679,8 @@ public class CompanyService {
             falg = 1;
         } else {
             Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
-            if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
-                query.clear();
-                query.select("id");
-                query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
-                List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
-                employeeEntity.removeEmployee(employeeIds);
+            if (EmployeeCertAuthMode.includeUserDefinedMode(oldAuthMode) || !EmployeeCertAuthMode.includeUserDefinedMode(authMode)) {
+                removeNonActivationEmployee( companyId);
             }
         }
         hrEmployeeCertConfDO.setAuthMode(authMode);
@@ -734,6 +736,122 @@ public class CompanyService {
         }
         return 1;
     }
+
+
+    private void removeNonActivationEmployee(int companyId){
+        // 清除非认证状态且自定义字段为空的员工信息
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.clear();
+        query.select("id");
+        query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ))
+                .and(new Condition("custom_field", "", ValueOp.EQ));
+        List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
+        employeeEntity.removeEmployee(employeeIds);
+    }
+
+    /**
+     * 设置企业微信认证方式
+     * @param companyId
+     * @param hraccountId
+     * @param corpId
+     * @param secret
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public boolean setWorkWechatEmployeeBindConf(int companyId, int hraccountId, String corpId, String secret) throws Exception {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+
+        /** 设置认证方式 **/
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId)
+                .and(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.DISABLE.getName(), 0);
+        HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
+        // 员工认证信息为空需要新建
+        boolean exist = false;
+        if (hrEmployeeCertConfDO == null) {
+            hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
+        } else {
+            exist = true ;
+            Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
+            if (EmployeeCertAuthMode.includeUserDefinedMode(oldAuthMode)) { // 新认证方式不包含自定义字段认证
+                removeNonActivationEmployee( companyId);
+            }
+        }
+        hrEmployeeCertConfDO.setAuthMode(EmployeeCertAuthMode.WORK_WECHAT.value());
+        hrEmployeeCertConfDO.setCompanyId(companyId);
+
+        /** 保存企业微信corpId和secret **/
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        boolean workWxConfExisted = true ;
+        if(workWxConfDO == null){
+            workWxConfDO = new HrCompanyWorkWxConfDO();
+            workWxConfDO.setCompanyId(companyId);
+            workWxConfExisted = false ;
+        }
+        workWxConfDO.setCorpid(corpId);
+        workWxConfDO.setSecret(secret);
+        if(!checkSecretKey(workWxConfDO)){
+            throw ExceptionFactory.buildException(ExceptionCategory.WORKWX_SERCRET_EKY_ERROR);
+        }
+
+        try {
+            if (workWxConfExisted) {
+                hrCompanyWorkwxConfDao.updateData(workWxConfDO);
+            } else{
+                hrCompanyWorkwxConfDao.addData(workWxConfDO);
+            }
+            if (exist) {
+                hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
+            } else {
+                hrEmployeeCertConfDao.addData(hrEmployeeCertConfDO);
+            }
+            // 启用部门职位城市配置
+            hrEmployeeCustomFieldsDao.enableOnlySystemCustomFields(companyId);
+            return true ;
+        } catch (Exception e) {
+            logger.info(e.getMessage(),e);
+            return false;
+        }
+    }
+
+
+    private static boolean checkSecretKey(HrCompanyWorkWxConfDO workWxConfDO){
+        long start = System.currentTimeMillis() ;
+        String url = String.format(WORKWX_GET_TOKEN_URL,workWxConfDO.getCorpid(),workWxConfDO.getSecret()) ;
+        RestTemplate restTemplate = new RestTemplate();
+        Map result =  restTemplate.getForEntity(url,Map.class).getBody();
+        if(result != null && (int)result.get("errcode") == 0 ){
+            String accessToken = result.get("access_token").toString();
+            long expiresTime = start + (int)result.get("expires_in") * 1000 ;
+            workWxConfDO.setAccessToken(accessToken);
+            workWxConfDO.setTokenUpdateTime(System.currentTimeMillis());
+            workWxConfDO.setTokenExpireTime(expiresTime);
+            workWxConfDO.setErrorCode(0);
+            workWxConfDO.setErrorMsg(null);
+            return true ;
+        }else{
+            return false ;
+        }
+    }
+    public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        if(workWxConfDO != null){
+            WorkWxCertConf certConf = new WorkWxCertConf();
+            certConf.setCompanyId(companyId);
+            certConf.setCorpid(workWxConfDO.getCorpid());
+            certConf.setSecret(workWxConfDO.getSecret());
+            if(workWxConfDO.getErrorCode() > 0){
+                certConf.setErrCode(workWxConfDO.getErrorCode());
+                certConf.setErrMsg(workWxConfDO.getErrorMsg());
+            }
+            return certConf;
+        }
+        return null;
+    }
+
     /*
      * 获取pc端获取banner图
      */
