@@ -794,7 +794,7 @@ public class CompanyService {
         workWxConfDO.setCorpid(corpId);
         workWxConfDO.setSecret(secret);
         if(!checkSecretKey(workWxConfDO)){
-            throw ExceptionFactory.buildException(ExceptionCategory.WORKWX_SERCRET_EKY_ERROR);
+            throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
         }
 
         try {
@@ -818,6 +818,23 @@ public class CompanyService {
     }
 
 
+    /**
+     * 更新企业微信配置access_token
+     * @param companyId
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public boolean updateWorkWeChatConfToken(int companyId) throws Exception {
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        if(workWxConfDO == null){
+            throw CompanyException.WORKWX_COMPANY_ID_NOT_EXIST;
+        }
+        if(!checkSecretKey(workWxConfDO)){
+            throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
+        }
+        return true;
+    }
     private static boolean checkSecretKey(HrCompanyWorkWxConfDO workWxConfDO){
         long start = System.currentTimeMillis() ;
         String url = String.format(WORKWX_GET_TOKEN_URL,workWxConfDO.getCorpid(),workWxConfDO.getSecret()) ;

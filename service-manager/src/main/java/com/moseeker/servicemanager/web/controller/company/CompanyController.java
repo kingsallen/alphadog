@@ -414,6 +414,29 @@ public class CompanyController {
         }
     }
 
+
+    /**
+     * 重新获取企业微信员工认证配置的access token
+     *
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/refreshWorkWxToken/{companyId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String requireWorkWxAccessToken(HttpServletRequest request,@PathVariable Integer companyId) {
+        try {
+            if (companyId == 0 ) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else {
+                boolean result = companyServices.updateWorkWeChatConfToken(companyId);
+                return ResponseLogNotification.successJson(request, result);
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     /**
      * 修改公司企业微信员工认证配置
      *

@@ -165,6 +165,25 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+    /**
+     * 重新获取企业微信员工认证配置的access token
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public boolean updateWorkWeChatConfToken(int companyId) throws BIZException, TException {
+        try {
+            return service.updateWorkWeChatConfToken(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
     @Override
     public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
         try {

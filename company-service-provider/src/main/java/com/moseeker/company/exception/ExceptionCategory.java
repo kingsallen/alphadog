@@ -16,8 +16,7 @@ public enum ExceptionCategory {
     ADD_IMPORTERMONITOR_FAILED(33005, "添加公司认证配置文件失败"),
     IMPORTERMONITOR_EMPTY(33006, "公司认证模板配置文件为空"),
     COMPANY_ID_EMPTY(33007, "公司ID不能为空"),
-    HREMPLOYEECERTCONF_EMPTY(33008, "员工认证配置为空"),
-    WORKWX_SERCRET_EKY_ERROR(33009, "企业微信corpid或secret无效");
+    HREMPLOYEECERTCONF_EMPTY(33008, "员工认证配置为空");
 
     private ExceptionCategory(int code, String msg) {
         this.code = code;
