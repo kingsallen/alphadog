@@ -2,8 +2,8 @@ package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolProfilePoolJooqDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.talentpooldb.tables.daos.TalentpoolProfilePoolDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfilePool;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -62,7 +62,7 @@ public class TalentpoolSearchengine {
     @Resource(name="cacheClient")
     private RedisClient redis;
     @Autowired
-    private TalentpoolProfilePoolDao talentpoolProfilePoolDao;
+    private TalentpoolProfilePoolJooqDao talentpoolProfilePoolJooqDao;
 
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params){
@@ -129,7 +129,7 @@ public class TalentpoolSearchengine {
                 List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("users");
                 if(!StringUtils.isEmptyList(list)){
                     String companyId=params.get("company_id");
-                    List<TalentpoolProfilePool> talentpoolProfilePools = talentpoolProfilePoolDao.fetchByCompanyId(new Integer[]{Integer.valueOf(companyId)});
+                    List<TalentpoolProfilePool> talentpoolProfilePools = talentpoolProfilePoolJooqDao.fetchByCompanyId(new Integer[]{Integer.valueOf(companyId)});
                     Map<Integer,String> profilePoolMap=this.processTreeProfilePool(talentpoolProfilePools);
                     for(Map<String,Object> map:list){
                         Map<String,Object> user= (Map<String, Object>) map.get("user");
