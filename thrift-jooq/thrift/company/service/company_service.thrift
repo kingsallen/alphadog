@@ -21,6 +21,8 @@ service CompanyServices {
     bool updateEmployeeBindConf(1:i32 companyId,2:i32 authMode,3:string emailSuffix,4:string custom, 5:string customHint, 6:string questions,7:string filePath,8:string fileName,9:i32 type,10:i32 hraccountId) throws (1: common_struct.BIZException e);
     // 设置企业微信员工认证配置
     bool setWorkWechatEmployeeBindConf(1:i32 companyId,2:i32 hraccountId,3:string corpId, 4:string secret) throws (1: common_struct.BIZException e);
+    // 重新获取企业微信员工认证配置的access token
+    bool updateWorkWeChatConfToken(1:i32 companyId) throws (1: common_struct.BIZException e);
     company_struct.WorkWxCertConf getWorkWechatEmployeeBindConf(1:i32 companyId) throws (1: common_struct.BIZException e);
 
     // 获取公司员工认证配置
