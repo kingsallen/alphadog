@@ -1113,7 +1113,8 @@ public class UseraccountsService {
         try {
 
             //先判断需要生成的二维码是否为永久性的
-            if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
+            if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
+                QrcodeType.QR_LIMIT_STR_SCENE.equals(QrcodeType.fromInt(action_name))){
                 logger.info("UseraccountsService cerateQrcode check qrcode is permanent",true);
                 String sceneDB = null;
                 if(sceneId!=null){
@@ -1149,7 +1150,8 @@ public class UseraccountsService {
                         String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
                         qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
                         qrcode.setTicket(bean.getTicket());
-                        if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
+                        if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
+                                QrcodeType.QR_LIMIT_STR_SCENE.equals(QrcodeType.fromInt(action_name))){
                             hrWxWechatQrcodeJOOQDao.insert(qrcode);
                         }
                         return RespnoseUtil.SUCCESS.toResponse(bean);
