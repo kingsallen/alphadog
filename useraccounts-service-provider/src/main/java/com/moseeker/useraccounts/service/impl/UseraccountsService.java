@@ -1127,6 +1127,7 @@ public class UseraccountsService {
                 if(qrcode!=null){
                     WeixinTicketBean bean = new WeixinTicketBean();
                     bean.setUrl(qrcode.getQrcodeUrl());
+                    bean.setTicket(qrcode.getTicket());
                     return ResponseUtils.success(bean);
                 }
             }
@@ -1147,6 +1148,7 @@ public class UseraccountsService {
                         qrcode.setWechatId(wechatId);
                         String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
                         qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
+                        qrcode.setTicket(bean.getTicket());
                         if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))){
                             hrWxWechatQrcodeJOOQDao.insert(qrcode);
                         }
