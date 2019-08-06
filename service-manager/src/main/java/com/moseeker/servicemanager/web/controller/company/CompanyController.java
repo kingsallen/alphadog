@@ -1065,8 +1065,8 @@ public class CompanyController {
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return Result.validateFailed(result).toJson();
         } else {
-            boolean valid = companyServices.companySwitch(companyId, OmsSwitchEnum.WORK_WEICHAT.getName()).getValid() == 1;
-            return Result.success(valid).toJson();
+            CompanySwitchVO vo = companyServices.companySwitch(companyId, OmsSwitchEnum.WORK_WEICHAT.getName());
+            return Result.success(vo != null && vo.getValid() == 1).toJson();
         }
     }
 
