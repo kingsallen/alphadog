@@ -58,6 +58,7 @@ public class HrCompanyConf implements Serializable {
     private String    mobotHeadImg;
     private String    mobotName;
     private String    mobotWelcome;
+    private Integer   newAtsStatus;
 
     public HrCompanyConf() {}
 
@@ -86,8 +87,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
-        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.veryeastSwitch = value.veryeastSwitch;
+        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.mallSwitch = value.mallSwitch;
         this.mallGoodsMethod = value.mallGoodsMethod;
         this.mallGoodsMethodState = value.mallGoodsMethodState;
@@ -95,6 +96,7 @@ public class HrCompanyConf implements Serializable {
         this.mobotHeadImg = value.mobotHeadImg;
         this.mobotName = value.mobotName;
         this.mobotWelcome = value.mobotWelcome;
+        this.newAtsStatus = value.newAtsStatus;
     }
 
     public HrCompanyConf(
@@ -130,7 +132,8 @@ public class HrCompanyConf implements Serializable {
         Byte      isOpenGdpr,
         String    mobotHeadImg,
         String    mobotName,
-        String    mobotWelcome
+        String    mobotWelcome,
+        Integer   newAtsStatus
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -156,8 +159,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.veryeastSwitch = veryeastSwitch;
+        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.mallSwitch = mallSwitch;
         this.mallGoodsMethod = mallGoodsMethod;
         this.mallGoodsMethodState = mallGoodsMethodState;
@@ -165,6 +168,7 @@ public class HrCompanyConf implements Serializable {
         this.mobotHeadImg = mobotHeadImg;
         this.mobotName = mobotName;
         this.mobotWelcome = mobotWelcome;
+        this.newAtsStatus = newAtsStatus;
     }
 
     public Integer getCompanyId() {
@@ -431,6 +435,14 @@ public class HrCompanyConf implements Serializable {
         this.mobotWelcome = mobotWelcome;
     }
 
+    public Integer getNewAtsStatus() {
+        return this.newAtsStatus;
+    }
+
+    public void setNewAtsStatus(Integer newAtsStatus) {
+        this.newAtsStatus = newAtsStatus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompanyConf (");
@@ -459,8 +471,8 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
-        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(veryeastSwitch);
+        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(mallSwitch);
         sb.append(", ").append(mallGoodsMethod);
         sb.append(", ").append(mallGoodsMethodState);
@@ -468,6 +480,7 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(mobotHeadImg);
         sb.append(", ").append(mobotName);
         sb.append(", ").append(mobotWelcome);
+        sb.append(", ").append(newAtsStatus);
 
         sb.append(")");
         return sb.toString();

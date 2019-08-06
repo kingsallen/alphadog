@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPositionLiepinMappingRecord> implements Record10<Integer, Integer, Integer, Integer, String, String, Byte, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1862936680;
+    private static final long serialVersionUID = 1527921256;
 
     /**
      * Setter for <code>jobdb.job_position_liepin_mapping.id</code>. 仟寻向猎聘发请求用的主键id
@@ -117,14 +117,14 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
     }
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 2审核中
+     * Setter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 
      */
     public void setState(Byte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 2审核中
+     * Getter for <code>jobdb.job_position_liepin_mapping.state</code>. 猎聘职位状态 0 下架 1 正常 
      */
     public Byte getState() {
         return (Byte) get(6);

@@ -1268,7 +1268,6 @@ public class TalentpoolSearchengine {
                 ages.add(age);
                 this.queryByAge(ages,query);
             }
-
         }
         if(StringUtils.isNotNullOrEmpty(extsis)){
             this.exitsisQuery(extsis,query);
@@ -1297,6 +1296,8 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         String profilePoolId=params.get("profile_pool_id");
         String departmentIds=params.get("department_ids");
+        String processId=params.get("process_id");
+        String phaseId=params.get("phase_id");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
@@ -1349,8 +1350,12 @@ public class TalentpoolSearchengine {
                 }
                 searchUtil.hanleLtRange(endSubmitTime,query,"user.applications.submit_time");
             }
-
-
+            if(StringUtils.isNotNullOrEmpty(processId)){
+                searchUtil.handleTerm(processId,query,"user.applications.new_ats_process.process_id");
+            }
+            if(StringUtils.isNotNullOrEmpty(phaseId)){
+                searchUtil.handleTerm(phaseId,query,"user.applications.new_ats_process.phase_id");
+            }
         }
 
     }
