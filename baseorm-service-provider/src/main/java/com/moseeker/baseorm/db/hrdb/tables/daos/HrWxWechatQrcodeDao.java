@@ -99,4 +99,11 @@ public class HrWxWechatQrcodeDao extends DAOImpl<HrWxWechatQrcodeRecord, com.mos
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechatQrcode> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>ticket IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechatQrcode> fetchByTicket(String... values) {
+        return fetch(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.TICKET, values);
+    }
 }

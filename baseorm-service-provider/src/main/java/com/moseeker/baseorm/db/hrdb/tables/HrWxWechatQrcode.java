@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatQrcode extends TableImpl<HrWxWechatQrcodeRecord> {
 
-    private static final long serialVersionUID = 86076537;
+    private static final long serialVersionUID = 481104270;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat_qrcode</code>
@@ -80,6 +80,11 @@ public class HrWxWechatQrcode extends TableImpl<HrWxWechatQrcodeRecord> {
      * The column <code>hrdb.hr_wx_wechat_qrcode.update_time</code>. 更新时间
      */
     public final TableField<HrWxWechatQrcodeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "更新时间");
+
+    /**
+     * The column <code>hrdb.hr_wx_wechat_qrcode.ticket</code>. 获取的二维码ticket，凭借此ticket可以在有效时间内换取二维码。
+     */
+    public final TableField<HrWxWechatQrcodeRecord, String> TICKET = createField("ticket", org.jooq.impl.SQLDataType.VARCHAR.length(300), this, "获取的二维码ticket，凭借此ticket可以在有效时间内换取二维码。");
 
     /**
      * Create a <code>hrdb.hr_wx_wechat_qrcode</code> table reference

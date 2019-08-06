@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatQrcode implements Serializable {
 
-    private static final long serialVersionUID = 1560298480;
+    private static final long serialVersionUID = -1175837932;
 
     private Integer   id;
     private Integer   wechatId;
@@ -31,6 +31,7 @@ public class HrWxWechatQrcode implements Serializable {
     private String    scene;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private String    ticket;
 
     public HrWxWechatQrcode() {}
 
@@ -41,6 +42,7 @@ public class HrWxWechatQrcode implements Serializable {
         this.scene = value.scene;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.ticket = value.ticket;
     }
 
     public HrWxWechatQrcode(
@@ -49,7 +51,8 @@ public class HrWxWechatQrcode implements Serializable {
         String    qrcodeUrl,
         String    scene,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        String    ticket
     ) {
         this.id = id;
         this.wechatId = wechatId;
@@ -57,6 +60,7 @@ public class HrWxWechatQrcode implements Serializable {
         this.scene = scene;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.ticket = ticket;
     }
 
     public Integer getId() {
@@ -107,6 +111,14 @@ public class HrWxWechatQrcode implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getTicket() {
+        return this.ticket;
+    }
+
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxWechatQrcode (");
@@ -117,6 +129,7 @@ public class HrWxWechatQrcode implements Serializable {
         sb.append(", ").append(scene);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(ticket);
 
         sb.append(")");
         return sb.toString();
