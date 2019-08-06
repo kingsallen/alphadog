@@ -17,11 +17,11 @@ public enum OmsSwitchEnum {
     SOCIAL_RADAR(7,"人脉雷达"),
     REHIRE(8,"老员工回聘"),
     FORTUNE500(9,"五百强"),
-    MULTI_IP_VISIT(10,"多IP访问"),
+    MULTI_IP_VISIT(10,"多IP访问"), //
     REDPACKAGE_ACTIVITY(11,"红包活动"),
     ATS_RECRUIT_PROCESS_UPGRADE(12,"ATS招聘流程升级"),
     HUNTER_MANAGE(13,"猎头管理"),
-    WORK_WEICHAT(14,"66");// 允许使用企业微信进行员工认证
+    WORK_WEICHAT(14,"企业微信版");// 允许使用企业微信进行员工认证
 
     private int value;
     private String name;
