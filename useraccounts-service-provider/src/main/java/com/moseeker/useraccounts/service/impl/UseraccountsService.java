@@ -65,6 +65,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -1450,7 +1451,13 @@ public class UseraccountsService {
                 userdao.updateRecord(userUserRecord);
             }
         }
-        int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
+        int appid = 0;
+        try{
+            appid = referralEntity.claimReferralCard(userUserDO, referralLog);
+        }catch (DuplicateKeyException e){
+            logger.error(e.getMessage(),e);
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
+        }
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
         logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
 
