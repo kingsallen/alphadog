@@ -1309,7 +1309,7 @@ public class UseraccountsService {
         // 更新申请记录的申请人
 
         for(ReferralLog referralLog : referralLogs){
-            pool.startTast(()->{
+//            pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferral_id(referralLog.getId());
                 claimResult.setSuccess(true);
@@ -1322,26 +1322,26 @@ public class UseraccountsService {
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
                     logger.error("员工认领异常信息:{}", e.getMessage());
-                    throw e;
+                    //throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg("后台异常");
                     logger.error("员工认领异常信息:{}", e.getMessage());
-                    throw e;
+                    //throw e;
                 }finally {
                     claimResults.add(claimResult);
                     this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId,referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
-                    countDownLatch.countDown();
+//                    countDownLatch.countDown();
                 }
-                return 0;
-            });
+//                return 0;
+//            });
         }
-        try {
-            countDownLatch.await(20, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw CommonException.PROGRAM_EXCEPTION;
-        }
+//        try {
+//            countDownLatch.await(20, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            throw CommonException.PROGRAM_EXCEPTION;
+//        }
         return claimResults;
     }
 
