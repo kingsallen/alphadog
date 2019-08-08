@@ -132,16 +132,22 @@ public abstract class EmployeeBinder {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
         try {
+            // 请求参数有效值校验
             validate(bindingParams);
+            // 检查是否有有效员工认证配置
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
             HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
             if(certConf == null || certConf.getCompanyId() == 0) {
                 throw UserAccountException.EMPLOYEE_VERIFICATION_NOT_SUPPORT;
             }
+            // 查询
             paramCheck(bindingParams, certConf);
+            // 自定义字段值检验
             validateCustomFieldValues(bindingParams);
+            //
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
+            //
             response = doneBind(userEmployee,bingSource);
         } catch (CommonException e) {
             response.setSuccess(false);
@@ -174,6 +180,7 @@ public abstract class EmployeeBinder {
      * @param bindingParams 认证参数
      */
     protected void validate(BindingParams bindingParams) {
+        // 如果已认证，报错
         UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0
                 && userEmployeeDO.getActivation() == EmployeeActiveState.Actived.getState()) {

@@ -34,6 +34,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
+import com.moseeker.baseorm.db.userdb.tables.UserWorkwx;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
 
@@ -202,6 +203,11 @@ public class Tables {
      * 用户查看过的职位
      */
     public static final UserViewedPosition USER_VIEWED_POSITION = com.moseeker.baseorm.db.userdb.tables.UserViewedPosition.USER_VIEWED_POSITION;
+
+    /**
+     * ä¼ä¸šå¾®ä¿¡ç”¨æˆ·ä¿¡æ¯
+     */
+    public static final UserWorkwx USER_WORKWX = com.moseeker.baseorm.db.userdb.tables.UserWorkwx.USER_WORKWX;
 
     /**
      * 微信用户表

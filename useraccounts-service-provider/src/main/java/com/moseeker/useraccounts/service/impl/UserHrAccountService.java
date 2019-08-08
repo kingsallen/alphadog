@@ -13,10 +13,7 @@ import com.moseeker.baseorm.dao.employeedb.EmployeeCustomOptionJooqDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
@@ -31,6 +28,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWorkwxRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.util.SmsSender;
@@ -64,10 +62,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import com.moseeker.thrift.gen.employee.struct.BonusVO;
-import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
-import com.moseeker.thrift.gen.employee.struct.RewardVO;
-import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
+import com.moseeker.thrift.gen.employee.struct.*;
+import com.moseeker.thrift.gen.employee.struct.BindType;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
@@ -205,6 +201,9 @@ public class UserHrAccountService {
 
     @Autowired
     protected EmployeeCustomOptionJooqDao customOptionJooqDao;
+
+    @Autowired
+    private UserWorkwxDao userWorkwxDao ;
 
     @Autowired
     BatchValidate batchValidate;
@@ -1663,6 +1662,8 @@ public class UserHrAccountService {
     }
 
 
+
+
     /**
      * 员工信息
      *
@@ -1724,14 +1725,24 @@ public class UserHrAccountService {
         } else {
             userEmployeeDetailVO.setCustomFieldValues(new ArrayList<>(0));
         }
-        // 查询微信信息
+
         if (userEmployeeDO.getSysuserId() > 0) {
+            // 查询微信信息
             queryBuilder.clear();
             queryBuilder.where(UserUser.USER_USER.ID.getName(), userEmployeeDO.getSysuserId());
             UserUserDO userUserDO = userUserDao.getData(queryBuilder.buildQuery());
             if (userUserDO != null) {
                 userEmployeeDetailVO.setNickName(userUserDO.getNickname());
                 userEmployeeDetailVO.setHeadImg(userUserDO.getHeadimg());
+            }
+
+            String headImg = null ;
+            // 如果是企业微信认证员工，使用企业微信头像
+            if(userEmployeeDetailVO.getActivation() == 0 && userEmployeeDetailVO.getAuthMethod() == BindType.WORKWX.getValue()){
+                UserWorkwxRecord record = userWorkwxDao.getWorkwxByCompanyIdAndUserId(userEmployeeDO.getSysuserId(),companyId);
+                if(record != null && org.apache.commons.lang3.StringUtils.isNotBlank(record.getHeadimg())){
+                    userEmployeeDetailVO.setHeadImg(record.getHeadimg());
+                }
             }
         }
         // 查询公司信息
@@ -1742,7 +1753,6 @@ public class UserHrAccountService {
             if (hrCompanyDO != null) {
                 userEmployeeDetailVO.setCompanyName(hrCompanyDO.getName() != null ? hrCompanyDO.getName() : "");
                 userEmployeeDetailVO.setCompanyAbbreviation(hrCompanyDO.getAbbreviation() != null ? hrCompanyDO.getAbbreviation() : "");
-
             }
         }
 

@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import org.jooq.Field;
 import org.jooq.Result;
@@ -27,6 +28,10 @@ import java.util.stream.Collectors;
 
 @Repository
 public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFieldsDO, HrEmployeeCustomFieldsRecord> {
+
+    // 0:部门，1:职位，2:城市，3:自定义字段
+    public static final byte FIELD_TYPE_POSITION = 1 ;
+    public static final byte FIELD_TYPE_CITY = 2 ;
 
     public HrEmployeeCustomFieldsDao() {
         super(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFieldsDO.class);
@@ -109,6 +114,7 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
         // 启用系统字段
         return create.update(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
                 .set(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE, (byte)0)
+                .set(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.MANDATORY,0) // 设置为非必填，以免企业微信认证因系统字段为空检验失败
                 .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE.in(new ArrayList<Integer>(){{add(0); add(1); add(2);}}))
                 .execute();
@@ -136,4 +142,5 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
             return new ArrayList<>(0);
         }
     }
+
 }
