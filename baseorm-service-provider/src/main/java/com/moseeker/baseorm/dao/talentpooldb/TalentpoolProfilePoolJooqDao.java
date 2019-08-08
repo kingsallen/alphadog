@@ -1,7 +1,10 @@
 package com.moseeker.baseorm.dao.talentpooldb;
 
+
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfilePool;
 import com.moseeker.baseorm.db.talentpooldb.tables.daos.TalentpoolProfilePoolDao;
 import org.jooq.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,8 +13,9 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class TalentpoolProfilePoolJooqDao extends TalentpoolProfilePoolDao {
-
+    @Autowired
     public TalentpoolProfilePoolJooqDao(Configuration configuration){
         super(configuration);
     }
+
 }
