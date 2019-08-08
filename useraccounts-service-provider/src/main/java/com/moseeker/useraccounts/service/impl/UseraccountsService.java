@@ -1142,8 +1142,9 @@ public class UseraccountsService {
             } else {
                 String accessToken = record.getAccessToken();
                 if (StringUtils.isNotNullOrEmpty(accessToken)) {
+                    String scene2 = StringUtils.isNotNullOrEmpty(scene)?SceneType.valueOf(scene).getScene():null;
                     WeixinTicketBean bean = AccountMng.createTicket(
-                            accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, SceneType.valueOf(scene).getScene());
+                            accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, scene2);
                     if (bean != null) {
                         HrWxWechatQrcode qrcode = new HrWxWechatQrcode();
                         qrcode.setQrcodeUrl(bean.getUrl());
