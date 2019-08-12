@@ -43,6 +43,8 @@ public class EmployeeBindByWorkwx extends EmployeeBinder{
     @Autowired
     private EmployeeCustomOptionJooqDao customOptionJooqDao ;
 
+    @Autowired
+    private UserWorkwxService workwxService;
     /**
      * 创建员工记录
      * @param bindingParams
@@ -57,37 +59,8 @@ public class EmployeeBindByWorkwx extends EmployeeBinder{
         // 头像（如已有，用企业微信获取信息覆盖）
         bindingParams.setMobile(record.getMobile());
         bindingParams.setEmail(record.getEmail());
-        String position = org.apache.commons.lang3.StringUtils.trim(record.getPosition());
-        String address = org.apache.commons.lang3.StringUtils.trim(record.getAddress());
 
-        Map<Byte,HrEmployeeCustomFields> fieldsMap = customFieldsDao.listSystemCustomFieldByCompanyIdList(Arrays.asList(
-                bindingParams.getCompanyId())).stream().collect(Collectors.toMap(HrEmployeeCustomFields::getFieldType,f->f));
-        Map<Integer,String> customFieldValues = new HashMap<>(2);
-
-        HrEmployeeCustomFields positionField = fieldsMap.get(HrEmployeeCustomFieldsDao.FIELD_TYPE_POSITION);
-        HrEmployeeCustomFields cityField = fieldsMap.get(HrEmployeeCustomFieldsDao.FIELD_TYPE_CITY);
-        if(!StringUtils.isNullOrEmpty(position) && positionField != null){
-            List<String> options = StringUtils.isNullOrEmpty(record.getPosition())?new ArrayList<>(1)
-                    : customOptionJooqDao.listFieldOptions(positionField.getId());
-            // 如果职位下拉框没有企业微信设置的职位，添加下拉选项
-            if(options == null) {  // 如果positionField.getFvalues()为空，
-                options = new ArrayList<>(1);
-            }
-            if(!options.contains(position)){
-                options.add(position);
-                customOptionJooqDao.addCustomOption(Arrays.asList(position),positionField.getId());
-            }
-            customFieldValues.put(positionField.getId(),position);
-        }
-
-        // 城市下拉框智能匹配
-        List<String> cityOptions = customOptionJooqDao.listFieldOptions(cityField.getId());
-        if(!StringUtils.isNullOrEmpty(address) && cityOptions != null && !cityOptions.isEmpty()){
-            String select = matchCity(address,cityOptions);
-            if(!StringUtils.isNullOrEmpty(select)){
-                customFieldValues.put(cityField.getId(),select);
-            }
-        }
+        Map<Integer,String> customFieldValues = workwxService.getCustomFields(record);
 
         bindingParams.setCustomFieldValues(customFieldValues);
 
@@ -100,23 +73,6 @@ public class EmployeeBindByWorkwx extends EmployeeBinder{
         return userEmployee;
     }
 
-    /**
-     * 智能匹配城市（例如选项中有"上海市"，而输入"上海"，则匹配成功输出"上海市"）
-     * @param address 具体地址
-     * @param cityOptions 城市下拉选项
-     * @return
-     */
-    protected static String matchCity(String address,List<String> cityOptions){
-        if(StringUtils.isNullOrEmpty(address) || StringUtils.isEmptyList(cityOptions)) return null ;
-
-        for(String option : cityOptions){
-            if(!StringUtils.isNullOrEmpty(option) && address.contains(option.replaceAll("[省,市,县,区]","")) ){
-                return option;
-            }
-        }
-        return null;
-
-    }
     /**
      * 校验自定义信息
      * @param bindingParams 认证参数

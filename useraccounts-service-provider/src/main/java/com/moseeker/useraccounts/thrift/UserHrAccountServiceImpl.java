@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
+import static com.moseeker.entity.EmployeeEntity.EMPLOYEE_ACTIVATION_UNBIND;
 
 /**
  * HR账号服务
@@ -422,7 +423,7 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
         try {
-            return employeeEntity.unbind(ids);
+            return employeeEntity.unbind(ids,EMPLOYEE_ACTIVATION_UNBIND);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

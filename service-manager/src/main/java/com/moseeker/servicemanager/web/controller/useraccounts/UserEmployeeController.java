@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
@@ -226,6 +227,7 @@ public class UserEmployeeController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("user_id", 0);
             int companyId = params.getInt("company_id", 0);
+            byte activationChange = params.getByte("activationChange",(byte)1);
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
             } else if (userId == 0) {
@@ -237,7 +239,7 @@ public class UserEmployeeController {
                     return ResponseLogNotification.fail(request, "员工不存在");
                 }
 
-                Result result = employeeService.unbind(employee.employee.id,userId, companyId);
+                Result result = employeeService.unbind(employee.employee.id,userId, companyId,activationChange);
                 if(!result.success){
                     return ResponseLogNotification.fail(request, result.getMessage());
                 }
@@ -251,6 +253,7 @@ public class UserEmployeeController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 
     /**
      * 员工认证
@@ -616,6 +619,21 @@ public class UserEmployeeController {
         }
     }
 
+    @RequestMapping(value="/employee/user/updateFromWorkwx", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateEmployeeFromWorkwx(HttpServletRequest request,  HttpServletResponse response)throws Exception{
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> userIds= JSONArray.parseArray(params.getString("userIds"),int.class);
+            int companyId =  Integer.parseInt(params.getString("companyId"));
+
+            service.batchUpdateEmployeeFromWorkwx(userIds,companyId);
+            return com.moseeker.servicemanager.web.controller.Result.SUCCESS;
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
 
 
     @RequestMapping(value="/v1/contact/referral/info", method = RequestMethod.GET)

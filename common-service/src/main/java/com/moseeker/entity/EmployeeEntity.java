@@ -101,6 +101,7 @@ import org.springframework.transaction.annotation.Transactional;
 @CounterIface
 public class EmployeeEntity {
 
+    public static final byte EMPLOYEE_ACTIVATION_UNBIND = 1;
     @Autowired
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 
@@ -635,21 +636,26 @@ public class EmployeeEntity {
     }
 
 
+
+    public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
+        return unbind(employeeIds,EMPLOYEE_ACTIVATION_UNBIND);
+    }
     /**
      * 员工取消认证（支持批量）
      *
      * @param employeeIds
+     * @param activationChange
      * @return
      */
     @Transactional
-    public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
+    public boolean unbind(Collection<Integer> employeeIds,byte activationChange) throws CommonException {
         logger.info("EmployeeEntity unbind employeeIds:{}", JSONObject.toJSONString(employeeIds));
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
         employeeDOList.forEach(userEmployeeDO -> userEmployeeDO.setUnbindTime(LocalDateTime.now().format(sdf)));
-        boolean result = unbind(employeeDOList);
+        boolean result = unbind(employeeDOList,activationChange);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         List<ReferralEmployeeRegisterLog> logs = employeeIds
                 .stream()
@@ -673,7 +679,7 @@ public class EmployeeEntity {
      * @return
      */
 
-    public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
+    public boolean unbind(List<UserEmployeeDO> employees,byte activationChange) throws CommonException {
         logger.info("EmployeeEntity unbind employees:{}", JSONObject.toJSONString(employees));
         if (employees != null && employees.size() > 0) {
             String now = DateUtils.dateToShortTime(new Date());
@@ -681,7 +687,7 @@ public class EmployeeEntity {
                     .filter(f -> f.getActivation() == EmployeeType.AUTH_SUCCESS.getValue())
                     .map(employee ->employee.getSysuserId()).collect(Collectors.toList());
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
-                e.setActivation((byte) 1);
+                e.setActivation(activationChange);
                 e.setUnbindTime(now);
             });
             logger.info("EmployeeEntity unbind after change employees:{}", JSONObject.toJSONString(employees));

@@ -95,6 +95,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
+import static com.moseeker.entity.EmployeeEntity.EMPLOYEE_ACTIVATION_UNBIND;
 import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
 import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
 
@@ -1592,7 +1593,7 @@ public class UserHrAccountService {
         logger.info("UserHrAccountService after searchengineEntity.updateEmployeeAwards");
         if (updateActivationList.size() > 0) {
             logger.info("UserHrAccountService updateEmployees updateActivationList.size:{}", updateActivationList.size());
-            employeeEntity.unbind(updateActivationList);
+            employeeEntity.unbind(updateActivationList,EMPLOYEE_ACTIVATION_UNBIND);
         }
         logger.info("UserHrAccountService after employeeEntity.unbind");
 

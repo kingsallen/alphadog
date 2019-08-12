@@ -117,10 +117,10 @@ public class EmployeeServiceImpl implements Iface {
 	 * 员工解绑
 	 */
 	@Override
-	public Result unbind(int employeeId, int companyId, int userId)
+	public Result unbind(int employeeId, int companyId, int userId,byte activationChange)
 			throws TException {
 		try {
-			return service.unbind(employeeId, companyId, userId);
+			return service.unbind(employeeId, companyId, userId, activationChange);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

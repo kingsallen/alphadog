@@ -782,27 +782,7 @@ public class CompanyService {
         }
         hrEmployeeCertConfDO.setAuthMode(EmployeeCertAuthMode.WORK_WECHAT.value());
         hrEmployeeCertConfDO.setCompanyId(companyId);
-
-        /** 保存企业微信corpId和secret **/
-        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
-        boolean workWxConfExisted = true ;
-        if(workWxConfDO == null){
-            workWxConfDO = new HrCompanyWorkWxConfDO();
-            workWxConfDO.setCompanyId(companyId);
-            workWxConfExisted = false ;
-        }
-        workWxConfDO.setCorpid(corpId);
-        workWxConfDO.setSecret(secret);
-        if(!checkSecretKey(workWxConfDO)){
-            throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
-        }
-
         try {
-            if (workWxConfExisted) {
-                hrCompanyWorkwxConfDao.updateData(workWxConfDO);
-            } else{
-                hrCompanyWorkwxConfDao.addData(workWxConfDO);
-            }
             if (exist) {
                 hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
             } else {
@@ -810,11 +790,45 @@ public class CompanyService {
             }
             // 启用部门职位城市配置
             hrEmployeeCustomFieldsDao.enableOnlySystemCustomFields(companyId);
-            return true ;
         } catch (Exception e) {
             logger.info(e.getMessage(),e);
-            return false;
+            throw e;
         }
+
+        // 如果secret不变，前端不传入secret
+        if(StringUtils.isNotNullOrEmpty(secret)){
+            /** 保存企业微信corpId和secret **/
+            HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+            boolean workWxConfExisted = true ;
+            if(workWxConfDO == null){
+                workWxConfDO = new HrCompanyWorkWxConfDO();
+                workWxConfDO.setCompanyId(companyId);
+                workWxConfExisted = false ;
+            }
+            workWxConfDO.setCorpid(corpId);
+            workWxConfDO.setSecret(secret);
+            if(!checkSecretKey(workWxConfDO)){
+                throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
+            }
+
+            try {
+                if (workWxConfExisted) {
+                    hrCompanyWorkwxConfDao.updateData(workWxConfDO);
+                } else{
+                    hrCompanyWorkwxConfDao.addData(workWxConfDO);
+                }
+            } catch (Exception e) {
+                logger.info(e.getMessage(),e);
+                throw e;
+            }
+        }else{
+            // 如果数据库已有配置有误
+            HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+            if(workWxConfDO == null || !checkSecretKey(workWxConfDO)){
+                throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
+            }
+        }
+        return true ;
     }
 
 
