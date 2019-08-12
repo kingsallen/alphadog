@@ -140,9 +140,6 @@ public class EmployeeService {
     @Autowired
     private HrCompanyDao companyDao;
 
-    @Autowired
-    private UserWorkwxService workwxService;
-
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -980,7 +977,4 @@ public class EmployeeService {
         bindByEmail.retrySendVerificationMail(userId, companyId, source);
     }
 
-    public void batchUpdateEmployeeFromWorkwx(List<Integer> userIds, int companyId) {
-        workwxService.updateWorkWxAuthedEmployee(userIds,companyId);
-    }
 }

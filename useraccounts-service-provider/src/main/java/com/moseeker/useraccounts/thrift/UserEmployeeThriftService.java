@@ -21,6 +21,7 @@ import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
+import com.moseeker.useraccounts.service.impl.UserWorkwxService;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
@@ -49,6 +50,9 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private UserWorkwxService workwxService;
 
 
     @Override
@@ -274,6 +278,14 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }
     }
 
+    @Override
+    public void batchUpdateEmployeeFromWorkwx(List<Integer> userIds, int companyId) throws BIZException, TException {
+        try {
+            workwxService.updateWorkWxAuthedEmployee(userIds,companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
     private RadarInfo copyRadarInfoVO(RadarInfoVO infoVO){
         RadarInfo radarInfo = new RadarInfo();
         if(!com.moseeker.common.util.StringUtils.isEmptyList(infoVO.getUserList())){
