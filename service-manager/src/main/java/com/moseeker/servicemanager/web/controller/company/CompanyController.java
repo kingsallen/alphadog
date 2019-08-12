@@ -399,8 +399,8 @@ public class CompanyController {
             String secret = params.getString("secret");
             if (companyId == 0 ) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
-            } else if (StringUtils.isNullOrEmpty(corpid ) || StringUtils.isNullOrEmpty(secret ) )  {
-                return ResponseLogNotification.fail(request, "secret及secret不能为空");
+            } else if (StringUtils.isNullOrEmpty(corpid ) )  {
+                return ResponseLogNotification.fail(request, "secret不能为空");
             } else {
                 boolean result = companyServices.setWorkWechatEmployeeBindConf(companyId, hraccountId,corpid,secret);
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
