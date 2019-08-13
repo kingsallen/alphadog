@@ -166,11 +166,11 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
      * @param customId
      * @return
      */
-    public List<String> listFieldOptions(int customId){
-        List<String> options = create.select(EMPLOYEE_OPTION_VALUE.NAME)
+    public  Map<Integer,String> listFieldOptions(int customId){
+        Map<Integer,String> options = create.select(EMPLOYEE_OPTION_VALUE.ID,EMPLOYEE_OPTION_VALUE.NAME)
                 .from(EMPLOYEE_OPTION_VALUE)
                 .where(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customId))
-                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetch().into(String.class);
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetch().intoMap(EMPLOYEE_OPTION_VALUE.ID,EMPLOYEE_OPTION_VALUE.NAME);
         return options;
     }
 
@@ -189,6 +189,19 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
         create.execute("set names utf8mb4");
         create.attach(hrEmployeeOptionValuePOS);
         create.batchInsert(hrEmployeeOptionValuePOS).execute();
+    }
+
+    public int addCustomOption(String option,int customFieldId){
+        EmployeeOptionValueRecord hrEmployeeOptionValuePO = new EmployeeOptionValueRecord();
+        hrEmployeeOptionValuePO.setCustomFieldId(customFieldId);
+        hrEmployeeOptionValuePO.setName(option);
+        hrEmployeeOptionValuePO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        create.execute("set names utf8mb4");
+        create.executeInsert(hrEmployeeOptionValuePO);
+        return create.select(EMPLOYEE_OPTION_VALUE.ID).from(EMPLOYEE_OPTION_VALUE)
+                .where(EMPLOYEE_OPTION_VALUE.NAME.eq(option))
+                .and(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customFieldId))
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetchOneInto(Integer.class);
     }
 
    /*
