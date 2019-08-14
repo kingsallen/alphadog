@@ -21,6 +21,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -356,10 +357,9 @@ public abstract class EmployeeBinder {
 
         //神策埋点加入 pro
         HrCompanyDO companyDO = companyDao.getCompanyById(useremployee.getCompanyId());
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("companyName", companyDO.getName());
-        properties.put("companyId", useremployee.getCompanyId());
-        properties.put("isEmployee", 1);
+
+        SensorProperties properties = new SensorProperties(
+                true,companyDO.getId(),companyDO.getName());
         properties.put("employee_origin",bindSource);
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
 

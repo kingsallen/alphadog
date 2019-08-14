@@ -43,6 +43,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
@@ -1294,9 +1295,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             if("0".equals(String.valueOf(response.get("errcode")))) {
             String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
             String distinctId = String.valueOf(inviteInfo.getEndUserId());
-            Map<String, Object> properties = new HashMap<String, Object>();
+
+            SensorProperties properties = new SensorProperties(true,hrCompanyDO.getId(),hrCompanyDO.getName());
             properties.put("templateId", templateId);
             properties.put("sendTime", sendTime);
+
             logger.info("神策邀请投递发送消息模板-----> sendTime{} templateId{}" +sendTime +templateId);
                 sensorSend.send(distinctId,"sendTemplateMessage",properties);
                 return "0".equals(String.valueOf(response.get("errcode")));

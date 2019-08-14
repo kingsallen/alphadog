@@ -63,6 +63,7 @@ import com.moseeker.entity.*;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.pojo.company.HrOperationAllRecord;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -386,10 +387,9 @@ public class JobApplicataionService {
                     String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
 
                     //神策埋点 加入 properties
-                    Map<String, Object> properties = new HashMap<String, Object>();
-                    properties.put("companyId",jobApplicationRecord.getCompanyId());
-                    properties.put("companyName",jobApplicationRecord.getCompanyId());
-                    properties.put("isEmployee",jobApplication.getRecommender_user_id());
+                    Integer companyId = jobApplicationRecord.getCompanyId();
+                    String companyName = hrCompanyDao.getHrCompanyById(companyId).getName();
+                    SensorProperties properties = new SensorProperties(true,companyId,companyName);
                     sensorSend.send(distinctId,"postApplication",properties);
 
                 }
