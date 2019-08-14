@@ -6,6 +6,8 @@ package com.moseeker.baseorm.db.talentpooldb;
 
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyManualTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyManualTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
@@ -18,12 +20,15 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMove;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveDetail;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfilePool;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolApplicationRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCommentRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyManualTagRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyManualTagUserRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolEmailRecord;
@@ -37,6 +42,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileFilt
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveDetailRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecordRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfilePoolRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTagRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolUploadRecord;
@@ -68,6 +74,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<TalentpoolCommentRecord, Integer> IDENTITY_TALENTPOOL_COMMENT = Identities0.IDENTITY_TALENTPOOL_COMMENT;
+    public static final Identity<TalentpoolCompanyManualTagRecord, Integer> IDENTITY_TALENTPOOL_COMPANY_MANUAL_TAG = Identities0.IDENTITY_TALENTPOOL_COMPANY_MANUAL_TAG;
     public static final Identity<TalentpoolCompanyTagRecord, Integer> IDENTITY_TALENTPOOL_COMPANY_TAG = Identities0.IDENTITY_TALENTPOOL_COMPANY_TAG;
     public static final Identity<TalentpoolEmailRecord, Integer> IDENTITY_TALENTPOOL_EMAIL = Identities0.IDENTITY_TALENTPOOL_EMAIL;
     public static final Identity<TalentpoolExecuteRecord, Integer> IDENTITY_TALENTPOOL_EXECUTE = Identities0.IDENTITY_TALENTPOOL_EXECUTE;
@@ -77,6 +84,7 @@ public class Keys {
     public static final Identity<TalentpoolProfileMoveRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_MOVE = Identities0.IDENTITY_TALENTPOOL_PROFILE_MOVE;
     public static final Identity<TalentpoolProfileMoveDetailRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_MOVE_DETAIL = Identities0.IDENTITY_TALENTPOOL_PROFILE_MOVE_DETAIL;
     public static final Identity<TalentpoolProfileMoveRecordRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_MOVE_RECORD = Identities0.IDENTITY_TALENTPOOL_PROFILE_MOVE_RECORD;
+    public static final Identity<TalentpoolProfilePoolRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_POOL = Identities0.IDENTITY_TALENTPOOL_PROFILE_POOL;
     public static final Identity<TalentpoolTagRecord, Integer> IDENTITY_TALENTPOOL_TAG = Identities0.IDENTITY_TALENTPOOL_TAG;
     public static final Identity<TalentpoolUploadRecord, Integer> IDENTITY_TALENTPOOL_UPLOAD = Identities0.IDENTITY_TALENTPOOL_UPLOAD;
 
@@ -86,6 +94,8 @@ public class Keys {
 
     public static final UniqueKey<TalentpoolApplicationRecord> KEY_TALENTPOOL_APPLICATION_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_APPLICATION_PRIMARY;
     public static final UniqueKey<TalentpoolCommentRecord> KEY_TALENTPOOL_COMMENT_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_COMMENT_PRIMARY;
+    public static final UniqueKey<TalentpoolCompanyManualTagRecord> KEY_TALENTPOOL_COMPANY_MANUAL_TAG_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_COMPANY_MANUAL_TAG_PRIMARY;
+    public static final UniqueKey<TalentpoolCompanyManualTagUserRecord> KEY_TALENTPOOL_COMPANY_MANUAL_TAG_USER_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_COMPANY_MANUAL_TAG_USER_PRIMARY;
     public static final UniqueKey<TalentpoolCompanyTagRecord> KEY_TALENTPOOL_COMPANY_TAG_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_COMPANY_TAG_PRIMARY;
     public static final UniqueKey<TalentpoolCompanyTagUserRecord> KEY_TALENTPOOL_COMPANY_TAG_USER_PID_FID = UniqueKeys0.KEY_TALENTPOOL_COMPANY_TAG_USER_PID_FID;
     public static final UniqueKey<TalentpoolEmailRecord> KEY_TALENTPOOL_EMAIL_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_EMAIL_PRIMARY;
@@ -99,6 +109,7 @@ public class Keys {
     public static final UniqueKey<TalentpoolProfileMoveRecord> KEY_TALENTPOOL_PROFILE_MOVE_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PROFILE_MOVE_PRIMARY;
     public static final UniqueKey<TalentpoolProfileMoveDetailRecord> KEY_TALENTPOOL_PROFILE_MOVE_DETAIL_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PROFILE_MOVE_DETAIL_PRIMARY;
     public static final UniqueKey<TalentpoolProfileMoveRecordRecord> KEY_TALENTPOOL_PROFILE_MOVE_RECORD_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PROFILE_MOVE_RECORD_PRIMARY;
+    public static final UniqueKey<TalentpoolProfilePoolRecord> KEY_TALENTPOOL_PROFILE_POOL_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_PROFILE_POOL_PRIMARY;
     public static final UniqueKey<TalentpoolTagRecord> KEY_TALENTPOOL_TAG_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_TAG_PRIMARY;
     public static final UniqueKey<TalentpoolTalentRecord> KEY_TALENTPOOL_TALENT_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_TALENT_PRIMARY;
     public static final UniqueKey<TalentpoolUploadRecord> KEY_TALENTPOOL_UPLOAD_PRIMARY = UniqueKeys0.KEY_TALENTPOOL_UPLOAD_PRIMARY;
@@ -115,6 +126,7 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<TalentpoolCommentRecord, Integer> IDENTITY_TALENTPOOL_COMMENT = createIdentity(TalentpoolComment.TALENTPOOL_COMMENT, TalentpoolComment.TALENTPOOL_COMMENT.ID);
+        public static Identity<TalentpoolCompanyManualTagRecord, Integer> IDENTITY_TALENTPOOL_COMPANY_MANUAL_TAG = createIdentity(TalentpoolCompanyManualTag.TALENTPOOL_COMPANY_MANUAL_TAG, TalentpoolCompanyManualTag.TALENTPOOL_COMPANY_MANUAL_TAG.ID);
         public static Identity<TalentpoolCompanyTagRecord, Integer> IDENTITY_TALENTPOOL_COMPANY_TAG = createIdentity(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG, TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID);
         public static Identity<TalentpoolEmailRecord, Integer> IDENTITY_TALENTPOOL_EMAIL = createIdentity(TalentpoolEmail.TALENTPOOL_EMAIL, TalentpoolEmail.TALENTPOOL_EMAIL.ID);
         public static Identity<TalentpoolExecuteRecord, Integer> IDENTITY_TALENTPOOL_EXECUTE = createIdentity(TalentpoolExecute.TALENTPOOL_EXECUTE, TalentpoolExecute.TALENTPOOL_EXECUTE.ID);
@@ -124,6 +136,7 @@ public class Keys {
         public static Identity<TalentpoolProfileMoveRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_MOVE = createIdentity(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE, TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.ID);
         public static Identity<TalentpoolProfileMoveDetailRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_MOVE_DETAIL = createIdentity(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL, TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.ID);
         public static Identity<TalentpoolProfileMoveRecordRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_MOVE_RECORD = createIdentity(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD, com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.ID);
+        public static Identity<TalentpoolProfilePoolRecord, Integer> IDENTITY_TALENTPOOL_PROFILE_POOL = createIdentity(TalentpoolProfilePool.TALENTPOOL_PROFILE_POOL, TalentpoolProfilePool.TALENTPOOL_PROFILE_POOL.ID);
         public static Identity<TalentpoolTagRecord, Integer> IDENTITY_TALENTPOOL_TAG = createIdentity(TalentpoolTag.TALENTPOOL_TAG, TalentpoolTag.TALENTPOOL_TAG.ID);
         public static Identity<TalentpoolUploadRecord, Integer> IDENTITY_TALENTPOOL_UPLOAD = createIdentity(TalentpoolUpload.TALENTPOOL_UPLOAD, TalentpoolUpload.TALENTPOOL_UPLOAD.ID);
     }
@@ -131,6 +144,8 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<TalentpoolApplicationRecord> KEY_TALENTPOOL_APPLICATION_PRIMARY = createUniqueKey(TalentpoolApplication.TALENTPOOL_APPLICATION, "KEY_talentpool_application_PRIMARY", TalentpoolApplication.TALENTPOOL_APPLICATION.HR_ID, TalentpoolApplication.TALENTPOOL_APPLICATION.COMPANY_ID);
         public static final UniqueKey<TalentpoolCommentRecord> KEY_TALENTPOOL_COMMENT_PRIMARY = createUniqueKey(TalentpoolComment.TALENTPOOL_COMMENT, "KEY_talentpool_comment_PRIMARY", TalentpoolComment.TALENTPOOL_COMMENT.ID);
+        public static final UniqueKey<TalentpoolCompanyManualTagRecord> KEY_TALENTPOOL_COMPANY_MANUAL_TAG_PRIMARY = createUniqueKey(TalentpoolCompanyManualTag.TALENTPOOL_COMPANY_MANUAL_TAG, "KEY_talentpool_company_manual_tag_PRIMARY", TalentpoolCompanyManualTag.TALENTPOOL_COMPANY_MANUAL_TAG.ID);
+        public static final UniqueKey<TalentpoolCompanyManualTagUserRecord> KEY_TALENTPOOL_COMPANY_MANUAL_TAG_USER_PRIMARY = createUniqueKey(TalentpoolCompanyManualTagUser.TALENTPOOL_COMPANY_MANUAL_TAG_USER, "KEY_talentpool_company_manual_tag_user_PRIMARY", TalentpoolCompanyManualTagUser.TALENTPOOL_COMPANY_MANUAL_TAG_USER.USER_ID, TalentpoolCompanyManualTagUser.TALENTPOOL_COMPANY_MANUAL_TAG_USER.TAG_ID);
         public static final UniqueKey<TalentpoolCompanyTagRecord> KEY_TALENTPOOL_COMPANY_TAG_PRIMARY = createUniqueKey(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG, "KEY_talentpool_company_tag_PRIMARY", TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID);
         public static final UniqueKey<TalentpoolCompanyTagUserRecord> KEY_TALENTPOOL_COMPANY_TAG_USER_PID_FID = createUniqueKey(TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER, "KEY_talentpool_company_tag_user_pid_fid", TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.TAG_ID, TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER.USER_ID);
         public static final UniqueKey<TalentpoolEmailRecord> KEY_TALENTPOOL_EMAIL_PRIMARY = createUniqueKey(TalentpoolEmail.TALENTPOOL_EMAIL, "KEY_talentpool_email_PRIMARY", TalentpoolEmail.TALENTPOOL_EMAIL.ID);
@@ -144,6 +159,7 @@ public class Keys {
         public static final UniqueKey<TalentpoolProfileMoveRecord> KEY_TALENTPOOL_PROFILE_MOVE_PRIMARY = createUniqueKey(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE, "KEY_talentpool_profile_move_PRIMARY", TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.ID);
         public static final UniqueKey<TalentpoolProfileMoveDetailRecord> KEY_TALENTPOOL_PROFILE_MOVE_DETAIL_PRIMARY = createUniqueKey(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL, "KEY_talentpool_profile_move_detail_PRIMARY", TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.ID);
         public static final UniqueKey<TalentpoolProfileMoveRecordRecord> KEY_TALENTPOOL_PROFILE_MOVE_RECORD_PRIMARY = createUniqueKey(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD, "KEY_talentpool_profile_move_record_PRIMARY", com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.ID);
+        public static final UniqueKey<TalentpoolProfilePoolRecord> KEY_TALENTPOOL_PROFILE_POOL_PRIMARY = createUniqueKey(TalentpoolProfilePool.TALENTPOOL_PROFILE_POOL, "KEY_talentpool_profile_pool_PRIMARY", TalentpoolProfilePool.TALENTPOOL_PROFILE_POOL.ID);
         public static final UniqueKey<TalentpoolTagRecord> KEY_TALENTPOOL_TAG_PRIMARY = createUniqueKey(TalentpoolTag.TALENTPOOL_TAG, "KEY_talentpool_tag_PRIMARY", TalentpoolTag.TALENTPOOL_TAG.ID);
         public static final UniqueKey<TalentpoolTalentRecord> KEY_TALENTPOOL_TALENT_PRIMARY = createUniqueKey(TalentpoolTalent.TALENTPOOL_TALENT, "KEY_talentpool_talent_PRIMARY", TalentpoolTalent.TALENTPOOL_TALENT.USER_ID, TalentpoolTalent.TALENTPOOL_TALENT.COMPANY_ID);
         public static final UniqueKey<TalentpoolUploadRecord> KEY_TALENTPOOL_UPLOAD_PRIMARY = createUniqueKey(TalentpoolUpload.TALENTPOOL_UPLOAD, "KEY_talentpool_upload_PRIMARY", TalentpoolUpload.TALENTPOOL_UPLOAD.ID);

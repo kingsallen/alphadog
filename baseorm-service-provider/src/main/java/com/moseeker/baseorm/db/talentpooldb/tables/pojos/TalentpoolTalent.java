@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolTalent implements Serializable {
 
-    private static final long serialVersionUID = -769236833;
+    private static final long serialVersionUID = 1332971903;
 
     private Integer   userId;
     private Integer   companyId;
@@ -32,6 +32,7 @@ public class TalentpoolTalent implements Serializable {
     private Byte      upload;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   profilePoolId;
 
     public TalentpoolTalent() {}
 
@@ -43,6 +44,7 @@ public class TalentpoolTalent implements Serializable {
         this.upload = value.upload;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.profilePoolId = value.profilePoolId;
     }
 
     public TalentpoolTalent(
@@ -52,7 +54,8 @@ public class TalentpoolTalent implements Serializable {
         Integer   publicNum,
         Byte      upload,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   profilePoolId
     ) {
         this.userId = userId;
         this.companyId = companyId;
@@ -61,6 +64,7 @@ public class TalentpoolTalent implements Serializable {
         this.upload = upload;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.profilePoolId = profilePoolId;
     }
 
     public Integer getUserId() {
@@ -119,6 +123,14 @@ public class TalentpoolTalent implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getProfilePoolId() {
+        return this.profilePoolId;
+    }
+
+    public void setProfilePoolId(Integer profilePoolId) {
+        this.profilePoolId = profilePoolId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TalentpoolTalent (");
@@ -130,6 +142,7 @@ public class TalentpoolTalent implements Serializable {
         sb.append(", ").append(upload);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(profilePoolId);
 
         sb.append(")");
         return sb.toString();
