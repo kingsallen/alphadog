@@ -87,8 +87,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
-        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.veryeastSwitch = value.veryeastSwitch;
+        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.mallSwitch = value.mallSwitch;
         this.mallGoodsMethod = value.mallGoodsMethod;
         this.mallGoodsMethodState = value.mallGoodsMethodState;
@@ -159,8 +159,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.veryeastSwitch = veryeastSwitch;
+        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.mallSwitch = mallSwitch;
         this.mallGoodsMethod = mallGoodsMethod;
         this.mallGoodsMethodState = mallGoodsMethodState;
@@ -471,8 +471,8 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
-        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(veryeastSwitch);
+        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(mallSwitch);
         sb.append(", ").append(mallGoodsMethod);
         sb.append(", ").append(mallGoodsMethodState);

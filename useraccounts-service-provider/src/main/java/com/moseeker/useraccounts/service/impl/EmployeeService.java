@@ -789,9 +789,15 @@ public class EmployeeService {
 
         ReferralPositionInfo referralPositionInfo = new ReferralPositionInfo();
         referralPositionInfo.setId(positionInfo.getId());
-        referralPositionInfo.setTitle(positionInfo.getTitle());
-        referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
-        referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
+        if(positionInfo.getTitle()!=null){
+            referralPositionInfo.setTitle(positionInfo.getTitle());
+        }
+        if(positionInfo.getSalaryBottom()!=null){
+            referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
+        }
+        if(positionInfo.getSalaryTop()!=null){
+            referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
+        }
         try {
             int experience = Integer.valueOf(positionInfo.getExperience());
             referralPositionInfo.setExperience(experience);
@@ -799,10 +805,19 @@ public class EmployeeService {
             log.info("getUploadType positioniId:{} 工作经验不是数值类型。experience:{}", positionInfo.getId(), positionInfo.getExperience());
         }
         referralPositionInfo.setExperienceAbove(positionInfo.getExperienceAbove() != null && positionInfo.getExperienceAbove() == 1);
-        referralPositionInfo.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
-        referralPositionInfo.setCompanyName(positionInfo.getCompanyName());
-        referralPositionInfo.setLogo(positionInfo.getLogo());
-        referralPositionInfo.setTeam(positionInfo.getTeamName());
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getCompanyAbbreviation())){
+            referralPositionInfo.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
+        }
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getCompanyName())){
+            referralPositionInfo.setCompanyName(positionInfo.getCompanyName());
+        }
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getLogo())){
+            referralPositionInfo.setLogo(positionInfo.getLogo());
+        }
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getTeamName())){
+            referralPositionInfo.setTeam(positionInfo.getTeamName());
+        }
+
         if (positionInfo.getCities() != null && positionInfo.getCities().size() > 0) {
             referralPositionInfo.setCities(positionInfo.getCities().stream().map(dictCity -> {
                 City city = new City();

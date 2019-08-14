@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -516782821;
+    private static final long serialVersionUID = 49534652;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -423,6 +423,20 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
         return (Integer) get(27);
     }
 
+    /**
+     * Setter for <code>jobdb.job_application.ats_errmsg</code>. ats同步错误信息
+     */
+    public void setAtsErrmsg(String value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>jobdb.job_application.ats_errmsg</code>. ats同步错误信息
+     */
+    public String getAtsErrmsg() {
+        return (String) get(28);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -449,7 +463,7 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     /**
      * Create a detached, initialised JobApplicationRecord
      */
-    public JobApplicationRecord(Integer id, Integer wechatId, Integer positionId, Integer recommenderId, Timestamp submitTime, Integer statusId, Integer lApplicationId, Integer reward, Integer sourceId, Timestamp _CreateTime, Integer applierId, Integer interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, Integer companyId, Timestamp updateTime, Integer appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount, Integer recommenderUserId, Integer origin) {
+    public JobApplicationRecord(Integer id, Integer wechatId, Integer positionId, Integer recommenderId, Timestamp submitTime, Integer statusId, Integer lApplicationId, Integer reward, Integer sourceId, Timestamp _CreateTime, Integer applierId, Integer interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, Integer companyId, Timestamp updateTime, Integer appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount, Integer recommenderUserId, Integer origin, String atsErrmsg) {
         super(JobApplication.JOB_APPLICATION);
 
         set(0, id);
@@ -480,5 +494,6 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
         set(25, viewCount);
         set(26, recommenderUserId);
         set(27, origin);
+        set(28, atsErrmsg);
     }
 }

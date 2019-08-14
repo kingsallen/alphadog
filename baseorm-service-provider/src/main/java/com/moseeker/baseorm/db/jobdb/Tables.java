@@ -4,7 +4,29 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.*;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess;
+import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionInterviewProcessRel;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 
 import javax.annotation.Generated;
 
@@ -31,6 +53,11 @@ public class Tables {
      * MoSeeker与ATS渠道申请编号对应关系
      */
     public static final JobApplicationAts JOB_APPLICATION_ATS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts.JOB_APPLICATION_ATS;
+
+    /**
+     * 招聘进度和具体申请对应表
+     */
+    public static final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
 
     /**
      * 职位自定义字段配置表
@@ -68,24 +95,14 @@ public class Tables {
     public static final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
-     * The table <code>jobdb.job_position_0413</code>.
+     * The table <code>jobdb.job_position_58_mapping</code>.
      */
-    public static final JobPosition_0413 JOB_POSITION_0413 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413.JOB_POSITION_0413;
+    public static final JobPosition_58Mapping JOB_POSITION_58_MAPPING = com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping.JOB_POSITION_58_MAPPING;
 
     /**
-     * The table <code>jobdb.job_position_1030</code>.
+     * 职位招聘流程绑定表
      */
-    public static final JobPosition_1030 JOB_POSITION_1030 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030.JOB_POSITION_1030;
-
-    /**
-     * The table <code>jobdb.job_position_1108</code>.
-     */
-    public static final JobPosition_1108 JOB_POSITION_1108 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108.JOB_POSITION_1108;
-
-    /**
-     * The table <code>jobdb.job_position_1113</code>.
-     */
-    public static final JobPosition_1113 JOB_POSITION_1113 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113.JOB_POSITION_1113;
+    public static final JobPositionAtsProcess JOB_POSITION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS;
 
     /**
      * The table <code>jobdb.job_position_ccmail</code>.
@@ -106,6 +123,11 @@ public class Tables {
      * 职位福利特色-关系表
      */
     public static final JobPositionHrCompanyFeature JOB_POSITION_HR_COMPANY_FEATURE = com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE;
+
+    /**
+     * 职位和面试流程中间关系表
+     */
+    public static final JobPositionInterviewProcessRel JOB_POSITION_INTERVIEW_PROCESS_REL = com.moseeker.baseorm.db.jobdb.tables.JobPositionInterviewProcessRel.JOB_POSITION_INTERVIEW_PROCESS_REL;
 
     /**
      * 58同城职位映射表
@@ -136,13 +158,4 @@ public class Tables {
      * 自定义简历副本记录表
      */
     public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
-    /**
-     * 招聘进度和具体申请对应表
-     */
-    public static final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
-
-    /**
-     * 职位招聘流程绑定表
-     */
-    public static final JobPositionAtsProcess JOB_POSITION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS;
 }

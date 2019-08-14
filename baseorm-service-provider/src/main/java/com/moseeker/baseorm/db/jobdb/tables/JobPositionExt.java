@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
 
-    private static final long serialVersionUID = 1215116273;
+    private static final long serialVersionUID = -311836751;
 
     /**
      * The reference instance of <code>jobdb.job_position_ext</code>
@@ -71,14 +71,14 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
     public final TableField<JobPositionExtRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
 
     /**
-     * The column <code>jobdb.job_position_ext.extra</code>. SuccessFactors对接
-     */
-    public final TableField<JobPositionExtRecord, String> EXTRA = createField("extra", org.jooq.impl.SQLDataType.VARCHAR.length(999).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "SuccessFactors对接");
-
-    /**
      * The column <code>jobdb.job_position_ext.job_occupation_id</code>. jobdb.job_occupation.id
      */
     public final TableField<JobPositionExtRecord, Integer> JOB_OCCUPATION_ID = createField("job_occupation_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "jobdb.job_occupation.id");
+
+    /**
+     * The column <code>jobdb.job_position_ext.extra</code>. SuccessFactors对接
+     */
+    public final TableField<JobPositionExtRecord, String> EXTRA = createField("extra", org.jooq.impl.SQLDataType.VARCHAR.length(999).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "SuccessFactors对接");
 
     /**
      * The column <code>jobdb.job_position_ext.alipay_job_id</code>.
