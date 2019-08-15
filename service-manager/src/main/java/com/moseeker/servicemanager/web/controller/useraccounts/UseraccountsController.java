@@ -1197,7 +1197,7 @@ public class UseraccountsController {
 
 		String user_id = request.getParameter("user_id");
 		if (user_id == null) {
-			throw ExceptionUtils.getCommonException("参数有误！");
+			return ResponseLogNotification.fail(request, "参数有误！");
 		}
 		try {
 			useraccountsServices.deletePrivacyRecordByUserId(Integer.parseInt(user_id));

@@ -37,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>talentpooldb</code>.
      */
-    public final Talentpooldb TALENTPOOLDB = com.moseeker.baseorm.db.talentpooldb.Talentpooldb.TALENTPOOLDB;
+    public final Talentpooldb TALENTPOOLDB = Talentpooldb.TALENTPOOLDB;
 
     /**
      * No further instances allowed

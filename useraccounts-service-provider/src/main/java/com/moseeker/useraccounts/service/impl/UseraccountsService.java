@@ -1476,6 +1476,7 @@ public class UseraccountsService {
                 userUserRecord.setName(name);
             }
             userUserRecord.setUsername(mobile.trim());
+            userUserRecord.setCountryCode("86");
             userUserRecord.setMobile(Long.valueOf(mobile.trim()));
             logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
             userdao.updateRecord(userUserRecord);
