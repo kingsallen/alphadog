@@ -10,6 +10,8 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.hrdb.tables.daos.HrWxWechatQrcodeDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -37,6 +39,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
+import com.moseeker.common.weixin.SceneType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
@@ -55,6 +58,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.infrastructure.HrWxWechatQrcodeJOOQDao;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
@@ -72,10 +76,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -148,6 +149,8 @@ public class UseraccountsService {
     @Autowired
     private JobApplicationDao applicationDao;
 
+    @Autowired
+    private HrWxWechatQrcodeJOOQDao hrWxWechatQrcodeJOOQDao;
 
     /**
      * 账号换绑操作
@@ -1106,9 +1109,31 @@ public class UseraccountsService {
     /**
      * 创建微信二维码
      */
-    public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
+    public Response cerateQrcode(int wechatId, Long sceneId, int expireSeconds, int action_name,String scene) throws TException {
 
         try {
+
+            //先判断需要生成的二维码是否为永久性的
+            if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
+                QrcodeType.QR_LIMIT_STR_SCENE.equals(QrcodeType.fromInt(action_name))){
+                logger.info("UseraccountsService cerateQrcode check qrcode is permanent",true);
+                String sceneDB = null;
+                if(sceneId!=null){
+                    sceneDB = String.valueOf(sceneId);
+                }else{
+                    sceneDB = scene;
+                }
+
+                logger.info("Useraccounts cerateQrcode fetchByWechatIdAndScenes query params:{} {}",sceneDB,wechatId);
+                HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(sceneDB,wechatId);
+                if(qrcode!=null){
+                    WeixinTicketBean bean = new WeixinTicketBean();
+                    bean.setUrl(qrcode.getQrcodeUrl());
+                    bean.setTicket(qrcode.getTicket());
+                    return ResponseUtils.success(bean);
+                }
+            }
+
             Query.QueryBuilder qu = new Query.QueryBuilder();
             qu.where("id", String.valueOf(wechatId));
             HrWxWechatRecord record = wechatDao.getRecord(qu.buildQuery());
@@ -1117,8 +1142,20 @@ public class UseraccountsService {
             } else {
                 String accessToken = record.getAccessToken();
                 if (StringUtils.isNotNullOrEmpty(accessToken)) {
-                    WeixinTicketBean bean = AccountMng.createTicket(accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, null);
+                    String scene2 = StringUtils.isNotNullOrEmpty(scene)?SceneType.valueOf(scene).getScene():null;
+                    WeixinTicketBean bean = AccountMng.createTicket(
+                            accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, scene2);
                     if (bean != null) {
+                        HrWxWechatQrcode qrcode = new HrWxWechatQrcode();
+                        qrcode.setQrcodeUrl(bean.getUrl());
+                        qrcode.setWechatId(wechatId);
+                        String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
+                        qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
+                        qrcode.setTicket(bean.getTicket());
+                        if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
+                                QrcodeType.QR_LIMIT_STR_SCENE.equals(QrcodeType.fromInt(action_name))){
+                            hrWxWechatQrcodeJOOQDao.insert(qrcode);
+                        }
                         return RespnoseUtil.SUCCESS.toResponse(bean);
                     } else {
                         return RespnoseUtil.USERACCOUNT_WECHAT_GETQRCODE_FAILED.toResponse();
