@@ -388,10 +388,13 @@ public class JobApplicataionService {
 
                     //神策埋点 加入 properties
                     Integer companyId = jobApplicationRecord.getCompanyId();
-                    String companyName = hrCompanyDao.getHrCompanyById(companyId).getName();
+                    HrCompanyDO company = hrCompanyDao.getCompanyById(companyId);
+                    String companyName = null;
+                    if(company!=null){
+                        companyName = company.getName();
+                    }
                     SensorProperties properties = new SensorProperties(true,companyId,companyName);
                     sensorSend.send(distinctId,"postApplication",properties);
-
                 }
             }
 
