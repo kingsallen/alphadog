@@ -27,6 +27,8 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
+
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -101,7 +103,7 @@ import org.springframework.transaction.annotation.Transactional;
 @CounterIface
 public class EmployeeEntity {
 
-    public static final byte EMPLOYEE_ACTIVATION_UNBIND = 1;
+
     @Autowired
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 

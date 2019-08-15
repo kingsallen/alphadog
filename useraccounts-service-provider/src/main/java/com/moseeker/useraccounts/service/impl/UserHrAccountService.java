@@ -94,8 +94,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
 import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
-import static com.moseeker.entity.EmployeeEntity.EMPLOYEE_ACTIVATION_UNBIND;
 import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
 import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
 

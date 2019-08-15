@@ -321,10 +321,12 @@ public class CompanyController {
     public String getHrEmployeeCertConf(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = parseRequestParam(request);
+            logger.debug("GET /hraccount/company/hremployeecertconf params : {}",params);
             int companyId = params.getInt("companyId", 0);
             int hraccountId = params.getInt("hraccountId", 0);
             int type = params.getInt("type", 0);
             CompanyCertConf companyCertConf = companyServices.getHrEmployeeCertConf(companyId, type, hraccountId);
+            logger.debug("GET /hraccount/company/hremployeecertconf companyCertConf : {}",companyCertConf);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyCertConf)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -393,6 +395,7 @@ public class CompanyController {
     public String updateWorkWxConf(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = parseRequestParam(request);
+            logger.debug("PUT /hraccount/company/employeebindconf/workwx params:{}" ,params);
             int companyId = params.getInt("companyId", 0);
             int hraccountId = params.getInt("hraccountId", 0);
             String corpid = params.getString("corpid");

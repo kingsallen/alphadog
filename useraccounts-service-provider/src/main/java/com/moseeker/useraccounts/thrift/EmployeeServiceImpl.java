@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
+
 /**
  * @author ltf
  * 员工服务thrift--实现
@@ -112,15 +115,38 @@ public class EmployeeServiceImpl implements Iface {
 		}
 	}
 
-	/* 
-	 * @see com.moseeker.thrift.gen.employee.service.EmployeeService.Iface#unbind(int, int, int)
-	 * 员工解绑
+	/**
+	 * 取消员工认证
+	 * @param employeeId
+	 * @param companyId
+	 * @param userId
+	 * @return
+	 * @throws TException
 	 */
 	@Override
-	public Result unbind(int employeeId, int companyId, int userId,byte activationChange)
-			throws TException {
+	public Result unbind(int employeeId, int companyId, int userId) throws TException {
 		try {
-			return service.unbind(employeeId, companyId, userId, activationChange);
+			return service.unbind(employeeId, companyId, userId, EMPLOYEE_ACTIVATION_UNBIND);
+		} catch (CommonException e) {
+			throw ExceptionConvertUtil.convertCommonException(e);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			throw new SysBIZException();
+		}
+	}
+
+	/**
+	 * 员工因离职取消认证
+	 * @param employeeId
+	 * @param companyId
+	 * @param userId
+	 * @return
+	 * @throws TException
+	 */
+	@Override
+	public Result unemploy(int employeeId, int companyId, int userId) throws TException {
+		try {
+			return service.unbind(employeeId, companyId, userId, EMPLOYEE_ACTIVATION_UNEMPLOYEE);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

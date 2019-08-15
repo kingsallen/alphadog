@@ -36,8 +36,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
 import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
-import static com.moseeker.entity.EmployeeEntity.EMPLOYEE_ACTIVATION_UNBIND;
 
 /**
  * HR账号服务
