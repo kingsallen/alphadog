@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
@@ -356,10 +357,14 @@ public abstract class EmployeeBinder {
         this.updateEsUsersAndProfile(useremployee.getSysuserId());
 
         //神策埋点加入 pro
-        HrCompanyDO companyDO = companyDao.getCompanyById(useremployee.getCompanyId());
-
+        HrCompany company = companyDao.getHrCompanyById(useremployee.getCompanyId());
+        String companyName = null;
+        if(company!=null){
+            String abbr = company.getAbbreviation();
+            companyName = StringUtils.isNullOrEmpty(abbr)?company.getName():abbr;
+        }
         SensorProperties properties = new SensorProperties(
-                true,companyDO.getId(),companyDO.getName());
+                true,company.getId(),companyName);
         properties.put("employee_origin",bindSource);
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
 

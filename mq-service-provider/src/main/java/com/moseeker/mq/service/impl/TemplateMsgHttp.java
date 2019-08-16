@@ -372,8 +372,13 @@ public class TemplateMsgHttp {
         } catch (ConnectException e) {
             logger.error(e.getMessage(), e);
         }
+        String companyName = null;
         HrCompany hrCompany = companyDao.getHrCompanyById(position.getCompanyId());
-        SensorProperties properties = new SensorProperties(true,hrCompany.getId(),hrCompany.getName());
+        if(hrCompany!=null){
+            String abbr = hrCompany.getAbbreviation();
+            companyName = StringUtils.isNullOrEmpty(abbr)?hrCompany.getName():abbr;
+        }
+        SensorProperties properties = new SensorProperties(true,hrCompany.getId(),companyName);
         properties.put("sendTime",dateTime);
         properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
 
@@ -488,8 +493,13 @@ public class TemplateMsgHttp {
             logger.error(e.getMessage(), e);
         }
 
-        HrCompanyDO hrCompany = companyDao.getCompanyById(position.getCompanyId());
-        SensorProperties properties = new SensorProperties(true,hrCompany.getId(),hrCompany.getName());
+        HrCompany hrCompany = companyDao.getHrCompanyById(position.getCompanyId());
+        String companyName = null;
+        if(hrCompany!=null){
+            String abbr = hrCompany.getAbbreviation();
+            companyName = StringUtils.isNullOrEmpty(abbr)?hrCompany.getName():abbr;
+        }
+        SensorProperties properties = new SensorProperties(true,hrCompany.getId(),companyName);
         properties.put("sendTime",sendTime);
         properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
 
@@ -1128,7 +1138,13 @@ public class TemplateMsgHttp {
         Date now = new Date();
         long sendTime=  now.getTime();
 
-        SensorProperties properties = new SensorProperties(true,hrWxWechatDO.getCompanyId(),hrWxWechatDO.getName());
+        HrCompany hrCompany = companyDao.getHrCompanyById(hrWxWechatDO.getCompanyId());
+        String companyName = null;
+        if(hrCompany!=null){
+            String abbr = hrCompany.getAbbreviation();
+            companyName = StringUtils.isNullOrEmpty(abbr)?hrCompany.getName():abbr;
+        }
+        SensorProperties properties = new SensorProperties(true,hrWxWechatDO.getCompanyId(),companyName);
         properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());
         properties.put("sendTime", sendTime);
 

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -340,7 +341,13 @@ public class ReceiverHandler {
                         this.handlerPosition(params);
                         logVo.setStatus_code(0);
                         if(type==2){
-                            SensorProperties properties = new SensorProperties(true,params.getCompanyId(),"");
+                            List<HrCompany> hrCompanies = employeeEntity.getCompaniesByIds(Collections.singletonList(params.getCompanyId()));
+                            String companyName = null;
+                            if(hrCompanies!=null&&hrCompanies.size()>0){
+                                String abbr = hrCompanies.get(0).getAbbreviation();
+                                companyName = StringUtils.isEmpty(abbr)?hrCompanies.get(0).getName():abbr;
+                            }
+                            SensorProperties properties = new SensorProperties(true,params.getCompanyId(),companyName);
                             properties.put("templateId", String.valueOf(params.getTemplateId()));
                             sensorSend.send(String.valueOf(params.getUserId()),"sendTemplateMessage",properties);
                         }

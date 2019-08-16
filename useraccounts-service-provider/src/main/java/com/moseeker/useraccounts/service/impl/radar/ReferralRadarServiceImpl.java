@@ -1301,8 +1301,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             properties.put("sendTime", sendTime);
 
             logger.info("神策邀请投递发送消息模板-----> sendTime{} templateId{}" +sendTime +templateId);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
-                return "0".equals(String.valueOf(response.get("errcode")));
+            sensorSend.send(distinctId,"sendTemplateMessage",properties);
+            return "0".equals(String.valueOf(response.get("errcode")));
             }
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
