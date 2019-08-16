@@ -523,8 +523,6 @@ public class ChatService {
         try {
             logger.info("saveChat chat:{}", JSON.toJSONString(chat));
 
-            byte chatStatus = getChatStatus(chat.getContent());
-
             HrWxHrChatDO chatDO = new HrWxHrChatDO();
             String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
 
@@ -536,7 +534,7 @@ public class ChatService {
             chatDO.setMsgType(chat.getMsgType());
             chatDO.setCompoundContent(chat.getCompoundContent());
             chatDO.setStats(chat.getStats());
-            chatDO.setStatus(chatStatus);
+            chatDO.setStatus(ChatStatus.DEFAULT.value());
             if (StringUtils.isNotNullOrEmpty(chat.getContent())) {
                 chatDO.setContent(chat.getContent());
             } else {
@@ -572,6 +570,7 @@ public class ChatService {
             chatDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date);
 
             // TODO 暂时标记求职者转人工暗语对应的上一条聊天问题为需要HR回答问题（等待算法自动识别对话中的问题）
+            byte chatStatus = getChatStatus(chat.getContent());
             if (chatStatus == ChatStatus.NEED_HR_ANSWER.value()){
                 Integer lastQuestionChatId = chatDao.getUserLastQuestionChatRecordId(chat.getRoomId(), chatId);
                 logger.info("getUserLastAnswerChatRecordId:{}", lastQuestionChatId);
