@@ -486,4 +486,9 @@ public class Tables {
      * 企业招聘阶段基础类别表
      */
     public static final HrAtsPhaseBase HR_ATS_PHASE_BASE = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase.HR_ATS_PHASE_BASE;
+
+    /**
+     * 微信公众号的场景二维码表(永久)
+     */
+    public static final HrWxWechatQrcode HR_WX_WECHAT_QRCODE = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode.HR_WX_WECHAT_QRCODE;
 }

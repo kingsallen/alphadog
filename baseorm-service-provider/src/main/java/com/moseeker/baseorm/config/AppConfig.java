@@ -60,6 +60,7 @@ public class AppConfig {
         boneCPDataSource.setIdleMaxAgeInMinutes(idleMaxAgeInMinutes);
         boneCPDataSource.setAcquireRetryDelayInMs(acquireRetryDelayInMs);
         boneCPDataSource.setAcquireRetryAttempts(acquireRetryAttempts);
+        boneCPDataSource.setInitSQL("SET NAMES utf8mb4");
         return boneCPDataSource;
     }
 

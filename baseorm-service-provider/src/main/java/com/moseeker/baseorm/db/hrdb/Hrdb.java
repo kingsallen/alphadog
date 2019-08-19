@@ -30,7 +30,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1007625344;
+    private static final long serialVersionUID = 150370258;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -503,6 +503,12 @@ public class Hrdb extends SchemaImpl {
     public final HrAtsPhaseBase HR_ATS_PHASE_BASE = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase.HR_ATS_PHASE_BASE;
 
     /**
+     * 微信公众号的场景二维码表(永久)
+     */
+    public final HrWxWechatQrcode HR_WX_WECHAT_QRCODE = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode.HR_WX_WECHAT_QRCODE;
+
+
+    /**
      * No further instances allowed
      */
     private Hrdb() {
@@ -619,6 +625,8 @@ public class Hrdb extends SchemaImpl {
             HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM,
             HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM,
             HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD,
-            HrAtsPhaseBase.HR_ATS_PHASE_BASE);
+            HrAtsPhaseBase.HR_ATS_PHASE_BASE,
+            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
+            HrWxWechatQrcode.HR_WX_WECHAT_QRCODE);
     }
 }

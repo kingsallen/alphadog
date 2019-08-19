@@ -100,4 +100,11 @@ public class TalentpoolTalentDao extends DAOImpl<TalentpoolTalentRecord, com.mos
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTalent> fetchByUpdateTime(Timestamp... values) {
         return fetch(TalentpoolTalent.TALENTPOOL_TALENT.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>profile_pool_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTalent> fetchByProfilePoolId(Integer... values) {
+        return fetch(TalentpoolTalent.TALENTPOOL_TALENT.PROFILE_POOL_ID, values);
+    }
 }

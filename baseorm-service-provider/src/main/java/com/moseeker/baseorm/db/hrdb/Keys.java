@@ -118,6 +118,7 @@ public class Keys {
     public static final Identity<HrAtsProcessCompanyItemPO, Integer> IDENTITY_HR_ATS_PROCESS_COMPANY_ITEM = Identities0.IDENTITY_HR_ATS_PROCESS_COMPANY_ITEM;
     public static final Identity<HrAtsProcessNewRecordPO, Integer> IDENTITY_HR_ATS_PROCESS_NEW_RECORD = Identities0.IDENTITY_HR_ATS_PROCESS_NEW_RECORD;
     public static final Identity<HrAtsPhaseBasePO, Integer> IDENTITY_HR_ATS_PHASE_BASE = Identities0.IDENTITY_HR_ATS_PHASE_BASE;
+    public static final Identity<HrWxWechatQrcodeRecord, Integer> IDENTITY_HR_WX_WECHAT_QRCODE = Identities0.IDENTITY_HR_WX_WECHAT_QRCODE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -223,6 +224,8 @@ public class Keys {
     public static final UniqueKey<HrAtsProcessCompanyItemPO> KEY_HR_ATS_PROCESS_COMPANY_ITEM_PRIMARY = UniqueKeys0.KEY_HR_ATS_PROCESS_COMPANY_ITEM_PRIMARY;
     public static final UniqueKey<HrAtsProcessNewRecordPO> KEY_HR_ATS_PROCESS_NEW_RECORD_PRIMARY = UniqueKeys0.KEY_HR_ATS_PROCESS_NEW_RECORD_PRIMARY;
     public static final UniqueKey<HrAtsPhaseBasePO> KEY_HR_ATS_PHASE_BASE_PRIMARY = UniqueKeys0.KEY_HR_ATS_PHASE_BASE_PRIMARY;
+    public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_QRCODE_PRIMARY;
+    public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL = UniqueKeys0.KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -320,6 +323,7 @@ public class Keys {
         public static Identity<HrAtsProcessCompanyItemPO, Integer> IDENTITY_HR_ATS_PROCESS_COMPANY_ITEM = createIdentity(HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM, HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM.ID);
         public static Identity<HrAtsProcessNewRecordPO, Integer> IDENTITY_HR_ATS_PROCESS_NEW_RECORD = createIdentity(HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD, HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD.ID);
         public static Identity<HrAtsPhaseBasePO, Integer> IDENTITY_HR_ATS_PHASE_BASE = createIdentity(HrAtsPhaseBase.HR_ATS_PHASE_BASE, HrAtsPhaseBase.HR_ATS_PHASE_BASE.ID);
+        public static Identity<HrWxWechatQrcodeRecord, Integer> IDENTITY_HR_WX_WECHAT_QRCODE = createIdentity(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -423,5 +427,7 @@ public class Keys {
         public static final UniqueKey<HrAtsProcessCompanyItemPO> KEY_HR_ATS_PROCESS_COMPANY_ITEM_PRIMARY = createUniqueKey(HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM, "KEY_hr_ats_process_company_item_PRIMARY", HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM.ID);
         public static final UniqueKey<HrAtsProcessNewRecordPO> KEY_HR_ATS_PROCESS_NEW_RECORD_PRIMARY = createUniqueKey(HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD, "KEY_hr_ats_process_new_record_PRIMARY", HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD.ID);
         public static final UniqueKey<HrAtsPhaseBasePO> KEY_HR_ATS_PHASE_BASE_PRIMARY = createUniqueKey(HrAtsPhaseBase.HR_ATS_PHASE_BASE, "KEY_hr_ats_phase_base_PRIMARY", HrAtsPhaseBase.HR_ATS_PHASE_BASE.ID);
+        public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_PRIMARY = createUniqueKey(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, "KEY_hr_wx_wechat_qrcode_PRIMARY", HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.ID);
+        public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL = createUniqueKey(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, "KEY_hr_wx_wechat_qrcode_unique_qrcode_url", HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.WECHAT_ID, HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.SCENE);
     }
 }

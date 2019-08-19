@@ -43,6 +43,7 @@ public class AccountMng {
 	public static WeixinTicketBean createTicket(String accessToken, Integer expireSeconds, QrcodeType actionName, Long sceneId, String sceneStr) throws ConnectException {
 		WeixinTicketBean bean = null;
 		JSONObject params = initParams(expireSeconds, actionName, sceneId, sceneStr);
+		LoggerFactory.getLogger(AccountMng.class).info("AccountMng createTicket params {}",params.toJSONString());
 		String result = UrlUtil.sendPost(qucreateUrl+"?access_token="+accessToken, params.toJSONString());
 		JSONObject jo = JSON.parseObject(result);
 		if(!jo.containsKey("errcode")) {
