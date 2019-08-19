@@ -588,7 +588,10 @@ public class ChatService {
 
     private byte getChatStatus(String content){
         // 回复暗语：请转HR，用于标记需要HR人工回复的消息记录
-        if(StringUtils.isNotNullOrEmpty(content) && "请转HR".equals(content.trim().toUpperCase())){
+        content = content.trim().toUpperCase();
+
+        if(StringUtils.isNotNullOrEmpty(content)
+                && ("请转HR".equals(content) || content.startsWith("[请转HR]"))){
             return ChatStatus.NEED_HR_ANSWER.value();
         }
         return ChatStatus.DEFAULT.value();
