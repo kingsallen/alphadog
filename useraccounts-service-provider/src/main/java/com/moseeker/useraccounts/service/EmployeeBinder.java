@@ -38,6 +38,7 @@ import java.util.*;
 import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -295,8 +296,12 @@ public abstract class EmployeeBinder {
         }
 
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}}, true);
+        long startTime = System.currentTimeMillis();
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
+        log.info("------neo4j更新员工信息-------,耗时{}ms",System.currentTimeMillis()-startTime);
+        startTime = System.currentTimeMillis();
         kafkaSender.sendEmployeeCertification(useremployee);
+        log.info("------kafka发送员工认证时间-------,耗时{}ms",System.currentTimeMillis()-startTime);
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
@@ -369,7 +374,6 @@ public abstract class EmployeeBinder {
         properties.put("isEmployee", 1);
         properties.put("employee_origin",bindSource);
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
-
         return response;
     }
 
