@@ -534,7 +534,14 @@ public class ChatService {
             chatDO.setMsgType(chat.getMsgType());
             chatDO.setCompoundContent(chat.getCompoundContent());
             chatDO.setStats(chat.getStats());
-            chatDO.setStatus(ChatStatus.DEFAULT.value());
+
+            // MoBot中 +号请转HR功能 直接像HR提问
+            if(StringUtils.isNotNullOrEmpty(chat.getContent()) && chat.getContent().trim().startsWith("[请转HR]")){
+                chatDO.setStatus(ChatStatus.NEED_HR_ANSWER.value());
+            }else{
+                chatDO.setStatus(ChatStatus.DEFAULT.value());
+            }
+
             if (StringUtils.isNotNullOrEmpty(chat.getContent())) {
                 chatDO.setContent(chat.getContent());
             } else {
