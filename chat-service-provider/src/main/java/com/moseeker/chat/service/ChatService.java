@@ -536,7 +536,7 @@ public class ChatService {
             chatDO.setStats(chat.getStats());
 
             // MoBot中 +号请转HR功能 直接像HR提问
-            if(StringUtils.isNotNullOrEmpty(chat.getContent()) && chat.getContent().trim().startsWith("[请转HR]")){
+            if(StringUtils.isNotNullOrEmpty(chat.getContent()) && chat.getContent().contains("[请转HR]")){
                 chatDO.setStatus(ChatStatus.NEED_HR_ANSWER.value());
             }else{
                 chatDO.setStatus(ChatStatus.DEFAULT.value());
@@ -595,10 +595,7 @@ public class ChatService {
 
     private byte getChatStatus(String content){
         // 回复暗语：请转HR，用于标记需要HR人工回复的消息记录
-        content = content.trim().toUpperCase();
-
-        if(StringUtils.isNotNullOrEmpty(content)
-                && ("请转HR".equals(content) || content.startsWith("[请转HR]"))){
+        if(StringUtils.isNotNullOrEmpty(content) && "请转HR".equals(content.trim().toUpperCase())){
             return ChatStatus.NEED_HR_ANSWER.value();
         }
         return ChatStatus.DEFAULT.value();
