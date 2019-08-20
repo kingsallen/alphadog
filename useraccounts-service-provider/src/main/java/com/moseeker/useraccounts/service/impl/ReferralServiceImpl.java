@@ -501,9 +501,13 @@ public class ReferralServiceImpl implements ReferralService {
         int recommendOrigin = recommendRecord.getOrigin();
 
         int origin = 0;
+        String companyName = null;
+        if(company!=null){
+            companyName = company.getName();
+        }
 
         //神策埋点 加入 properties
-        SensorProperties properties = new SensorProperties(true,companyId,company.getName());
+        SensorProperties properties = new SensorProperties(true,companyId,companyName);
         if(2==recommendOrigin){
             //邀请投递
             origin = ApplicationSource.INVITE_REFERRAL.getValue();

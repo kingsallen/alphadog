@@ -375,8 +375,7 @@ public class TemplateMsgHttp {
         String companyName = null;
         HrCompany hrCompany = companyDao.getHrCompanyById(position.getCompanyId());
         if(hrCompany!=null){
-            String abbr = hrCompany.getAbbreviation();
-            companyName = StringUtils.isNullOrEmpty(abbr)?hrCompany.getName():abbr;
+            companyName = hrCompany.getName();
         }
         SensorProperties properties = new SensorProperties(true,hrCompany.getId(),companyName);
         properties.put("sendTime",dateTime);
@@ -496,8 +495,7 @@ public class TemplateMsgHttp {
         HrCompany hrCompany = companyDao.getHrCompanyById(position.getCompanyId());
         String companyName = null;
         if(hrCompany!=null){
-            String abbr = hrCompany.getAbbreviation();
-            companyName = StringUtils.isNullOrEmpty(abbr)?hrCompany.getName():abbr;
+            companyName = hrCompany.getName();
         }
         SensorProperties properties = new SensorProperties(true,hrCompany.getId(),companyName);
         properties.put("sendTime",sendTime);
@@ -1141,8 +1139,7 @@ public class TemplateMsgHttp {
         HrCompany hrCompany = companyDao.getHrCompanyById(hrWxWechatDO.getCompanyId());
         String companyName = null;
         if(hrCompany!=null){
-            String abbr = hrCompany.getAbbreviation();
-            companyName = StringUtils.isNullOrEmpty(abbr)?hrCompany.getName():abbr;
+            companyName = hrCompany.getName();
         }
         SensorProperties properties = new SensorProperties(true,hrWxWechatDO.getCompanyId(),companyName);
         properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());

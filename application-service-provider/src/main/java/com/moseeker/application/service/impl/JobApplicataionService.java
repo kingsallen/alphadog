@@ -391,8 +391,7 @@ public class JobApplicataionService {
                     HrCompanyDO company = hrCompanyDao.getCompanyById(companyId);
                     String companyName = null;
                     if(company!=null){
-                        String abbr = company.getAbbreviation();
-                        companyName = StringUtils.isNullOrEmpty(abbr)?company.getName():abbr;
+                        companyName = company.getName();
                     }
                     SensorProperties properties = new SensorProperties(true,companyId,companyName);
                     sensorSend.send(distinctId,"postApplication",properties);

@@ -360,8 +360,7 @@ public abstract class EmployeeBinder {
         HrCompany company = companyDao.getHrCompanyById(useremployee.getCompanyId());
         String companyName = null;
         if(company!=null){
-            String abbr = company.getAbbreviation();
-            companyName = StringUtils.isNullOrEmpty(abbr)?company.getName():abbr;
+            companyName = company.getName();
         }
         SensorProperties properties = new SensorProperties(
                 true,company.getId(),companyName);

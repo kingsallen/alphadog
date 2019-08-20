@@ -1296,7 +1296,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
             String distinctId = String.valueOf(inviteInfo.getEndUserId());
 
-            SensorProperties properties = new SensorProperties(true,hrCompanyDO.getId(),hrCompanyDO.getName());
+            String companyName = null;
+            Integer companyId = null;
+            if(hrCompanyDO!=null){
+                companyId = hrCompanyDO.getId();
+                companyName = hrCompanyDO.getName();
+            }
+            SensorProperties properties = new SensorProperties(true,companyId,companyName);
             properties.put("templateId", templateId);
             properties.put("sendTime", sendTime);
 

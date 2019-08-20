@@ -344,8 +344,7 @@ public class ReceiverHandler {
                             List<HrCompany> hrCompanies = employeeEntity.getCompaniesByIds(Collections.singletonList(params.getCompanyId()));
                             String companyName = null;
                             if(hrCompanies!=null&&hrCompanies.size()>0){
-                                String abbr = hrCompanies.get(0).getAbbreviation();
-                                companyName = StringUtils.isEmpty(abbr)?hrCompanies.get(0).getName():abbr;
+                                companyName = hrCompanies.get(0).getName();
                             }
                             SensorProperties properties = new SensorProperties(true,params.getCompanyId(),companyName);
                             properties.put("templateId", String.valueOf(params.getTemplateId()));
