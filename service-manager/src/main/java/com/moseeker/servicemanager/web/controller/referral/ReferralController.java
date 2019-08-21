@@ -83,7 +83,7 @@ public class ReferralController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+            if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {

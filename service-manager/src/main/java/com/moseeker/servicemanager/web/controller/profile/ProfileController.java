@@ -374,6 +374,9 @@ public class ProfileController {
             Params<String, Object> params = ParamUtils.parseequestParameter(request);
             Integer uid = params.getInt("uid");
             if (file != null) {
+                if (!ProfileDocCheckTool.checkFileFormat(file.getOriginalFilename(),file.getBytes())) {
+                    return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+                }
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
                 logger.info("/profile/parser MultipartFile file :{}",file.getOriginalFilename());
                 Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
@@ -424,6 +427,9 @@ public class ProfileController {
                                      @RequestParam int appid,
                                      HttpServletRequest request) throws Exception {
         logger.info("position_id:{}, channel:{}, appid:{}", position_id, channel, appid);
+        if (!ProfileDocCheckTool.checkFileFormat(file.getOriginalFilename(),file.getBytes())) {
+            return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+        }
         if (file != null) {
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
             Response res = service.parseProfileAttachment(file.getOriginalFilename(), data);
@@ -588,6 +594,9 @@ public class ProfileController {
             String  companyId=(String)params.get("company_id");
             String  filename=(String)params.get("filename");
             logger.info("talent pool MultipartFile file :{}",filename);
+            if (!ProfileDocCheckTool.checkFileFormat(filename,file.getBytes())) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
             String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
             Response res = service.resumeTalentProfile( filename, data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
@@ -778,7 +787,7 @@ public class ProfileController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+            if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
@@ -825,7 +834,7 @@ public class ProfileController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+            if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             /*if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {

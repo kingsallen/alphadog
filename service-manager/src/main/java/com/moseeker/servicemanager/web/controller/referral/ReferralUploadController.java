@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.ParseResult;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
@@ -55,6 +56,10 @@ public class ReferralUploadController {
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return Result.fail(99999, "请上传小于5M的文件！").toJson();
+            }
+
+            if (!ProfileDocCheckTool.checkFileFormat(fileName,file.getBytes())) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
