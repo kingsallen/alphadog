@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * ä¼ä¸šå¾®ä¿¡é…ç½®
+ * 企业微信配置
  */
 @Generated(
     value = {
@@ -133,6 +133,13 @@ public class HrCompanyWorkwxConfDao extends DAOImpl<HrCompanyWorkwxConfRecord, c
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyWorkwxConf> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>jsapi_ticket IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyWorkwxConf> fetchByJsapiTicket(String... values) {
+        return fetch(HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF.JSAPI_TICKET, values);
     }
 
     /**

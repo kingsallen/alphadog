@@ -84,6 +84,7 @@ public class CompanyService {
 
     private final static Logger logger = LoggerFactory.getLogger(CompanyService.class);
     private final static String WORKWX_GET_TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s" ;
+    private final static String WORKWX_GET_JSAPI_TICKET_URL = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=%s" ;
 
     // private ChaosServices.Iface chaosService = ServiceManager.SERVICE_MANAGER.getService(ChaosServices.Iface.class);
 
@@ -861,12 +862,18 @@ public class CompanyService {
             workWxConfDO.setTokenUpdateTime(System.currentTimeMillis());
             workWxConfDO.setTokenExpireTime(expiresTime);
             workWxConfDO.setErrorCode(0);
-            workWxConfDO.setErrorMsg(null);
+
+            String jsapiurl = String.format(WORKWX_GET_JSAPI_TICKET_URL, accessToken);
+            Map jsapiRst =  new RestTemplate().getForEntity(jsapiurl,Map.class).getBody();
+            if(jsapiRst != null && (int)jsapiRst.get("errcode") == 0  && jsapiRst.get("ticket") != null){
+                workWxConfDO.setJsapiTicket((String)jsapiRst.get("ticket"));
+            }
             return true ;
         }else{
             return false ;
         }
     }
+
     public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
         HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
         if(workWxConfDO != null){
@@ -874,6 +881,7 @@ public class CompanyService {
             certConf.setCompanyId(companyId);
             certConf.setCorpid(workWxConfDO.getCorpid());
             certConf.setSecret(workWxConfDO.getSecret());
+            certConf.setJsapiTicket(workWxConfDO.getJsapiTicket());
             if(workWxConfDO.getErrorCode() > 0){
                 certConf.setErrCode(workWxConfDO.getErrorCode());
                 certConf.setErrMsg(workWxConfDO.getErrorMsg());

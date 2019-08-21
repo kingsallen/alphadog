@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
 
-    private static final long serialVersionUID = 238001919;
+    private static final long serialVersionUID = 1549249059;
 
     /**
      * The reference instance of <code>hrdb.hr_company_workwx_conf</code>
@@ -57,19 +57,19 @@ public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
     public final TableField<HrCompanyWorkwxConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.company_id</code>. å…³è”hr_company.id
+     * The column <code>hrdb.hr_company_workwx_conf.company_id</code>. 关联hr_company.id
      */
-    public final TableField<HrCompanyWorkwxConfRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "å…³è”hr_company.id");
+    public final TableField<HrCompanyWorkwxConfRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "关联hr_company.id");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.corpid</code>. ä¼ä¸šå¾®ä¿¡corpidï¼Œæ¥æºäºŽä¼ä¸šå¾®ä¿¡åŽå°é…ç½®
+     * The column <code>hrdb.hr_company_workwx_conf.corpid</code>. 企业微信corpid，来源于企业微信后台配置
      */
-    public final TableField<HrCompanyWorkwxConfRecord, String> CORPID = createField("corpid", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false), this, "ä¼ä¸šå¾®ä¿¡corpidï¼Œæ¥æºäºŽä¼ä¸šå¾®ä¿¡åŽå°é…ç½®");
+    public final TableField<HrCompanyWorkwxConfRecord, String> CORPID = createField("corpid", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false), this, "企业微信corpid，来源于企业微信后台配置");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.secret</code>. ä¼ä¸šå¾®ä¿¡corpsecretï¼Œæ¥æºäºŽä¼ä¸šå¾®ä¿¡åŽå°é…ç½®
+     * The column <code>hrdb.hr_company_workwx_conf.secret</code>. 企业微信corpsecret，来源于企业微信后台配置
      */
-    public final TableField<HrCompanyWorkwxConfRecord, String> SECRET = createField("secret", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false), this, "ä¼ä¸šå¾®ä¿¡corpsecretï¼Œæ¥æºäºŽä¼ä¸šå¾®ä¿¡åŽå°é…ç½®");
+    public final TableField<HrCompanyWorkwxConfRecord, String> SECRET = createField("secret", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false), this, "企业微信corpsecret，来源于企业微信后台配置");
 
     /**
      * The column <code>hrdb.hr_company_workwx_conf.access_token</code>. access_token
@@ -77,24 +77,24 @@ public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
     public final TableField<HrCompanyWorkwxConfRecord, String> ACCESS_TOKEN = createField("access_token", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "access_token");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.token_update_time</code>. access_tokenæœ€è¿‘èŽ·å–æ—¶é—´
+     * The column <code>hrdb.hr_company_workwx_conf.token_update_time</code>. access_token最近获取时间
      */
-    public final TableField<HrCompanyWorkwxConfRecord, Timestamp> TOKEN_UPDATE_TIME = createField("token_update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "access_tokenæœ€è¿‘èŽ·å–æ—¶é—´");
+    public final TableField<HrCompanyWorkwxConfRecord, Timestamp> TOKEN_UPDATE_TIME = createField("token_update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "access_token最近获取时间");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.token_expire_time</code>. access_tokenè¿‡æœŸæ—¶é—´
+     * The column <code>hrdb.hr_company_workwx_conf.token_expire_time</code>. access_token过期时间
      */
-    public final TableField<HrCompanyWorkwxConfRecord, Timestamp> TOKEN_EXPIRE_TIME = createField("token_expire_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "access_tokenè¿‡æœŸæ—¶é—´");
+    public final TableField<HrCompanyWorkwxConfRecord, Timestamp> TOKEN_EXPIRE_TIME = createField("token_expire_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "access_token过期时间");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.error_code</code>. èŽ·å–tokenå¤±è´¥
+     * The column <code>hrdb.hr_company_workwx_conf.error_code</code>. 获取token失败
      */
-    public final TableField<HrCompanyWorkwxConfRecord, Integer> ERROR_CODE = createField("error_code", org.jooq.impl.SQLDataType.INTEGER, this, "èŽ·å–tokenå¤±è´¥");
+    public final TableField<HrCompanyWorkwxConfRecord, Integer> ERROR_CODE = createField("error_code", org.jooq.impl.SQLDataType.INTEGER, this, "获取token失败");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.error_msg</code>. èŽ·å–tokenå¤±è´¥
+     * The column <code>hrdb.hr_company_workwx_conf.error_msg</code>. 获取token失败
      */
-    public final TableField<HrCompanyWorkwxConfRecord, String> ERROR_MSG = createField("error_msg", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "èŽ·å–tokenå¤±è´¥");
+    public final TableField<HrCompanyWorkwxConfRecord, String> ERROR_MSG = createField("error_msg", org.jooq.impl.SQLDataType.CLOB, this, "获取token失败");
 
     /**
      * The column <code>hrdb.hr_company_workwx_conf.create_time</code>.
@@ -107,9 +107,14 @@ public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
     public final TableField<HrCompanyWorkwxConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>hrdb.hr_company_workwx_conf.disable</code>. æ˜¯å¦æœ‰æ•ˆ 1:æ— æ•ˆ 0ï¼šæœ‰æ•ˆ
+     * The column <code>hrdb.hr_company_workwx_conf.jsapi_ticket</code>. H5应用调用企业微信JS接口的临时票据
      */
-    public final TableField<HrCompanyWorkwxConfRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "æ˜¯å¦æœ‰æ•ˆ 1:æ— æ•ˆ 0ï¼šæœ‰æ•ˆ");
+    public final TableField<HrCompanyWorkwxConfRecord, String> JSAPI_TICKET = createField("jsapi_ticket", org.jooq.impl.SQLDataType.VARCHAR.length(600), this, "H5应用调用企业微信JS接口的临时票据");
+
+    /**
+     * The column <code>hrdb.hr_company_workwx_conf.disable</code>. 是否有效 1:无效 0：有效
+     */
+    public final TableField<HrCompanyWorkwxConfRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效 1:无效 0：有效");
 
     /**
      * Create a <code>hrdb.hr_company_workwx_conf</code> table reference
@@ -130,7 +135,7 @@ public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
     }
 
     private HrCompanyWorkwxConf(String alias, Table<HrCompanyWorkwxConfRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "ä¼ä¸šå¾®ä¿¡é…ç½®");
+        super(alias, null, aliased, parameters, "企业微信配置");
     }
 
     /**
@@ -172,10 +177,6 @@ public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
     public HrCompanyWorkwxConf as(String alias) {
         return new HrCompanyWorkwxConf(alias, this);
     }
-
-
-
-
 
     /**
      * Rename this table

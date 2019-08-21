@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * ä¼ä¸šå¾®ä¿¡é…ç½®
+ * 企业微信配置
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyWorkwxConf implements Serializable {
 
-    private static final long serialVersionUID = 1959570548;
+    private static final long serialVersionUID = 241138656;
 
     private Integer   id;
     private Integer   companyId;
@@ -36,6 +36,7 @@ public class HrCompanyWorkwxConf implements Serializable {
     private String    errorMsg;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private String    jsapiTicket;
     private Byte      disable;
 
     public HrCompanyWorkwxConf() {}
@@ -52,6 +53,7 @@ public class HrCompanyWorkwxConf implements Serializable {
         this.errorMsg = value.errorMsg;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.jsapiTicket = value.jsapiTicket;
         this.disable = value.disable;
     }
 
@@ -67,6 +69,7 @@ public class HrCompanyWorkwxConf implements Serializable {
         String    errorMsg,
         Timestamp createTime,
         Timestamp updateTime,
+        String    jsapiTicket,
         Byte      disable
     ) {
         this.id = id;
@@ -80,6 +83,7 @@ public class HrCompanyWorkwxConf implements Serializable {
         this.errorMsg = errorMsg;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.jsapiTicket = jsapiTicket;
         this.disable = disable;
     }
 
@@ -171,6 +175,14 @@ public class HrCompanyWorkwxConf implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public String getJsapiTicket() {
+        return this.jsapiTicket;
+    }
+
+    public void setJsapiTicket(String jsapiTicket) {
+        this.jsapiTicket = jsapiTicket;
+    }
+
     public Byte getDisable() {
         return this.disable;
     }
@@ -194,6 +206,7 @@ public class HrCompanyWorkwxConf implements Serializable {
         sb.append(", ").append(errorMsg);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(jsapiTicket);
         sb.append(", ").append(disable);
 
         sb.append(")");

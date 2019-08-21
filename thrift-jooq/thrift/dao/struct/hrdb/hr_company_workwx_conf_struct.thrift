@@ -13,6 +13,7 @@ struct HrCompanyWorkWxConfDO {
     7: optional i64 tokenExpireTime, // access_token最近获取时间
     8: optional i32 errorCode,
     9: optional string errorMsg,
-    10: optional double disable	//是否启用 0：启用1：禁用
+    10: optional string jsapiTicket,
+    11: optional double disable	//是否启用 0：启用1：禁用
 
 }
