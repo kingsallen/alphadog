@@ -1059,7 +1059,7 @@ public class TemplateMsgHttp {
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String current = dateFormat.format(dateTime.toDate());
-        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~\n\n" +
+        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，立即戳我查阅→→~\n\n" +
                 "\t\t\t\toooO      \n" +
                 "\t\t\t\t (      )      Oooo\n" +
                 "\t\t\t\t   \\   (         (     )\n" +
@@ -1078,6 +1078,8 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("keyWord2", positionsName);
         inviteTemplateVO.put("keyWord3", "薪资面议");
         inviteTemplateVO.put("keyWord4", current);
+        inviteTemplateVO.put("keyWord5", "立即戳我查阅→→");
+        inviteTemplateVO.put("remark", "立即戳我查阅→→");
         inviteTemplateVO.put("templateId", Constant.POSITION_VIEW_TPL);
         String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
                 timestamp + "&page_size=10&page_number=1&wechat_signature=" + hrWxWechatDO.getSignature()
