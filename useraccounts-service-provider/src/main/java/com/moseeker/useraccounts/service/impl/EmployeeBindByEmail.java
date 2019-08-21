@@ -249,7 +249,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
 
                 //神策埋点加入 pro
-
+                //TODO 已测
                 SensorProperties properties = new SensorProperties(
                         userEmployee.isSetActivation(),companyDO.getId(),companyDO.getName());
                 sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
@@ -260,7 +260,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
 
                 //神策埋点加入 pro
-
+                //TODO 已测
                 SensorProperties properties = new SensorProperties(
                         userEmployee.isSetActivation(),companyDO.getId(),companyDO.getName());
                 sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);

@@ -1147,6 +1147,7 @@ public class TemplateMsgHttp {
 
         logger.info("神策--sendTemplateMessage---》》sendtime"+sendTime);
 
+        //TODO 已测
         wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
         //String templateId=inviteTemplateVO.getString("templateId");
         String distinctId = String.valueOf(userWxUserRecord.getSysuserId());
