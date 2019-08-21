@@ -5,8 +5,9 @@ dependencies {
 
     compile project (":rpc-center")
     compile project (":common")
-    compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
-    compile deps["libthrift"]
+    compile project (":thrift-jooq")
+    //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
+    //compile deps["libthrift"]
     compile project (":baseorm-service-provider")
     compile project (":common-service")
 

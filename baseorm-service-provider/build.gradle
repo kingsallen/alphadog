@@ -8,9 +8,9 @@ repositories {
 // 设置依赖
 dependencies { 
 	compile project (":common")
-	//compile project (":thrift-jooq")
-    compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
-    compile deps["libthrift"]
+	compile project (":thrift-jooq")
+    //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
+    //compile deps["libthrift"]
     compile deps["mysql-connector-java"]
 	compile deps["spring-core"]
     compile deps["spring-context"]
@@ -21,7 +21,7 @@ dependencies {
     compile deps["spring-tx"]
     compile deps["jooq"]
     compile deps["SensorsAnalyticsSDK"]
-    compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
+    //compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
 	testCompile 'junit:junit:4.12'
 }
 tasks.withType(JavaCompile) {
