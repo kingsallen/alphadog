@@ -1078,6 +1078,7 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("keyWord2", positionsName);
         inviteTemplateVO.put("keyWord3", "薪资面议");
         inviteTemplateVO.put("keyWord4", current);
+        inviteTemplateVO.put("keyWord5", "立即戳我查阅→→");
         inviteTemplateVO.put("remark", "立即戳我查阅→→");
         inviteTemplateVO.put("templateId", Constant.POSITION_VIEW_TPL);
         String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
