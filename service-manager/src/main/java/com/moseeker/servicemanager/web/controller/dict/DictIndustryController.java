@@ -23,7 +23,7 @@ import com.moseeker.thrift.gen.dict.service.IndustryService;
 public class DictIndustryController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictIndustryController.class);
-	IndustryService.Iface service = ServiceManager.SERVICEMANAGER
+	IndustryService.Iface service = ServiceManager.SERVICE_MANAGER
 			.getService(IndustryService.Iface.class);
 	
 	@RequestMapping(value = "/dict/industry", method = RequestMethod.GET)

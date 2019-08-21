@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class HRServiceImpl implements HRService {
 
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
+    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER
             .getService(UserHrAccountService.Iface.class);
 
     public HRInfo getHR(int id) throws Exception {

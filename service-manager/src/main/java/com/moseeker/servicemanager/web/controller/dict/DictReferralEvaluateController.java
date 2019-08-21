@@ -5,7 +5,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.Result;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
 import com.moseeker.thrift.gen.dict.service.DictReferralEvaluateService;
 import java.util.List;
@@ -32,7 +31,7 @@ public class DictReferralEvaluateController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-    DictReferralEvaluateService.Iface service = ServiceManager.SERVICEMANAGER
+    DictReferralEvaluateService.Iface service = ServiceManager.SERVICE_MANAGER
 			.getService(DictReferralEvaluateService.Iface.class);
 
 	@RequestMapping(value = "/dict/referral/evaluate", method = RequestMethod.GET)

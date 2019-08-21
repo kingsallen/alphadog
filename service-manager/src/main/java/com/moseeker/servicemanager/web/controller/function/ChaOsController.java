@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.function;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -27,7 +23,7 @@ import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartParamer;
 public class ChaOsController {
 
 	Logger logger = LoggerFactory.getLogger(FunctionController.class);
-	BindThirdPartService.Iface ChaosThriftService = ServiceManager.SERVICEMANAGER
+	BindThirdPartService.Iface ChaosThriftService = ServiceManager.SERVICE_MANAGER
 			.getService(BindThirdPartService.Iface.class);
 	
 	@RequestMapping(value = "/thirdparty/account/couple", method = RequestMethod.POST)

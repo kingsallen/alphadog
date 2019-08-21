@@ -33,7 +33,7 @@ public class ProfileMoveController {
 
     private static Logger logger = LoggerFactory.getLogger(ProfileMoveController.class);
 
-    private ProfileMoveThriftService.Iface profileMoveService = ServiceManager.SERVICEMANAGER.getService(ProfileMoveThriftService.Iface.class);
+    private ProfileMoveThriftService.Iface profileMoveService = ServiceManager.SERVICE_MANAGER.getService(ProfileMoveThriftService.Iface.class);
 
     /**
      * 简历搬家用户登录

@@ -7,7 +7,6 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyCompanyChannelConfDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.constants.CompanyType;
@@ -18,7 +17,6 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
 import com.moseeker.position.pojo.ChannelTypePojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
@@ -60,7 +58,7 @@ public class PositionATSService {
     private PositionQxService positionQxService;
 
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     @Autowired
     private HrCompanyDao companyDao;

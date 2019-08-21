@@ -20,10 +20,8 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.MandrillMailListConsumer;
-import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.pojo.profile.info.*;
-import com.moseeker.mq.service.email.MandrillMailConsumer;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
@@ -76,8 +74,8 @@ public class DeliveryEmailProducer {
     @Autowired
     private MandrillMailListConsumer mandrillMailListConsumer;
 
-    WholeProfileServices.Iface profileServices = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
+    WholeProfileServices.Iface profileServices = ServiceManager.SERVICE_MANAGER.getService(WholeProfileServices.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER
             .getService(ProfileOtherThriftService.Iface.class);
     /**
      * 当是简历投递时发送邮件中需要的信息

@@ -3,10 +3,8 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -26,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 public class UserRecommendRefusalContoller {
     Logger logger = LoggerFactory.getLogger(UserRecommendRefusalContoller.class);
 
-    UserRecommendRefusalService.Iface service = ServiceManager.SERVICEMANAGER.getService(UserRecommendRefusalService.Iface.class);
+    UserRecommendRefusalService.Iface service = ServiceManager.SERVICE_MANAGER.getService(UserRecommendRefusalService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig();
 

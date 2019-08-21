@@ -26,7 +26,7 @@ public class SkillController {
 
 	Logger logger = LoggerFactory.getLogger(SkillController.class);
 
-	SkillServices.Iface skillService = ServiceManager.SERVICEMANAGER.getService(SkillServices.Iface.class);
+	SkillServices.Iface skillService = ServiceManager.SERVICE_MANAGER.getService(SkillServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/skill", method = RequestMethod.GET)
 	@ResponseBody

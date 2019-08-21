@@ -23,7 +23,7 @@ import com.moseeker.thrift.gen.dict.service.DictOccupationService;
 @CounterIface
 public class DictOccupationController {
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictOccupationController.class);
-	DictOccupationService.Iface dictOccupationService = ServiceManager.SERVICEMANAGER
+	DictOccupationService.Iface dictOccupationService = ServiceManager.SERVICE_MANAGER
 			.getService(DictOccupationService.Iface.class);
 	@RequestMapping(value ="/thirdparty/occupation", method = RequestMethod.GET)
 	@ResponseBody

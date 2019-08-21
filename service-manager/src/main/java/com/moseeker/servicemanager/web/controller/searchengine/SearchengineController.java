@@ -36,13 +36,13 @@ public class SearchengineController {
 
     Logger logger = LoggerFactory.getLogger(SearchengineController.class);
 
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER
             .getService(SearchengineServices.Iface.class);
 
-    PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.
+    PositionServices.Iface positonServices = ServiceManager.SERVICE_MANAGER.
             getService(PositionServices.Iface.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.
             getService(CompanyServices.Iface.class);
 
     @RequestMapping(value = "/search/update", method = RequestMethod.POST)

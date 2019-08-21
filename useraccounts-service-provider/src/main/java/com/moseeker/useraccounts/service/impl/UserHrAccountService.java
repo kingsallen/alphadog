@@ -115,10 +115,10 @@ public class UserHrAccountService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER
             .getService(SearchengineServices.Iface.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 

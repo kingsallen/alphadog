@@ -997,7 +997,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
 
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
     private EmployeeEntity employeeEntity;

@@ -11,18 +11,14 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.mall.service.GoodsService;
 import com.moseeker.thrift.gen.mall.struct.*;
-import org.elasticsearch.search.aggregations.metrics.geobounds.InternalGeoBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +37,7 @@ public class GoodsManageController {
 
     private Logger logger = LoggerFactory.getLogger(GoodsManageController.class);
 
-    GoodsService.Iface goodsService = ServiceManager.SERVICEMANAGER.getService(GoodsService.Iface.class);
+    GoodsService.Iface goodsService = ServiceManager.SERVICE_MANAGER.getService(GoodsService.Iface.class);
 
     /**
      * 获取商品列表
