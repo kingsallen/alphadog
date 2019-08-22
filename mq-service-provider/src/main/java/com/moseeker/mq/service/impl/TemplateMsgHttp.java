@@ -1078,7 +1078,6 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("keyWord2", positionsName);
         inviteTemplateVO.put("keyWord3", "薪资面议");
         inviteTemplateVO.put("keyWord4", current);
-        inviteTemplateVO.put("keyWord5", "立即戳我查阅→→");
         inviteTemplateVO.put("remark", "立即戳我查阅→→");
         inviteTemplateVO.put("templateId", Constant.POSITION_VIEW_TPL);
         String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
@@ -1159,13 +1158,9 @@ public class TemplateMsgHttp {
         if(StringUtils.isNotNullOrEmpty(keyWord4)){
             dataMap.put("keyword4", createTplVO(color.getString("keyWord4"), keyWord4));
         }
-        String keyWord5 = templateVO.getString("keyWord5");
-        if(StringUtils.isNotNullOrEmpty(keyWord5)){
-            dataMap.put("keyword5", createTplVO(color.getString("first"), keyWord5));
-        }
         String remark = templateVO.getString("remark");
         if(StringUtils.isNotNullOrEmpty(remark)){
-            dataMap.put("remark", createTplVO(color.getString("remark"), remark));
+            dataMap.put("remark", createTplVO(color.getString("first"), remark));
         }
         return dataMap;
     }
