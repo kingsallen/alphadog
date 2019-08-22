@@ -752,6 +752,9 @@ public class CompanyService {
 
     /**
      * 设置企业微信认证方式
+     * 第一步 设置员工认证方式为企业微信
+     * 第二步 保存corpid,secret，同时获取access_token及jsapi_ticket并保存。
+     * 如果无法获取access_token，说明corpid或secret有误，报错。
      * @param companyId
      * @param hraccountId
      * @param corpId
@@ -796,39 +799,37 @@ public class CompanyService {
             throw e;
         }
 
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        boolean workWxConfExisted = true ;
+        if(workWxConfDO == null){
+            workWxConfDO = new HrCompanyWorkWxConfDO();
+            workWxConfDO.setCompanyId(companyId);
+            workWxConfExisted = false ;
+        }
+
         // 如果secret不变，前端不传入secret
         if(StringUtils.isNotNullOrEmpty(secret)){
             /** 保存企业微信corpId和secret **/
-            HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
-            boolean workWxConfExisted = true ;
-            if(workWxConfDO == null){
-                workWxConfDO = new HrCompanyWorkWxConfDO();
-                workWxConfDO.setCompanyId(companyId);
-                workWxConfExisted = false ;
-            }
             workWxConfDO.setCorpid(corpId);
             workWxConfDO.setSecret(secret);
-            if(!checkSecretKey(workWxConfDO)){
-                throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
-            }
-
-            try {
-                if (workWxConfExisted) {
-                    hrCompanyWorkwxConfDao.updateData(workWxConfDO);
-                } else{
-                    hrCompanyWorkwxConfDao.addData(workWxConfDO);
-                }
-            } catch (Exception e) {
-                logger.info(e.getMessage(),e);
-                throw e;
-            }
-        }else{
-            // 如果数据库已有配置有误
-            HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
-            if(workWxConfDO == null || !checkSecretKey(workWxConfDO)){
-                throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
-            }
         }
+
+        if(workWxConfDO == null || !checkSecretKey(workWxConfDO)){
+            throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
+        }
+
+        try {
+            // 保存corpid,secret,access_token,jsapi_ticket
+            if (workWxConfExisted) {
+                hrCompanyWorkwxConfDao.updateData(workWxConfDO);
+            } else{
+                hrCompanyWorkwxConfDao.addData(workWxConfDO);
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage(),e);
+            throw e;
+        }
+
         return true ;
     }
 
