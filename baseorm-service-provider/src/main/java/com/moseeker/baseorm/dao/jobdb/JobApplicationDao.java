@@ -440,6 +440,13 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.fetchInto(JobApplicationDO.class);
 	}
 
+	public List<JobApplicationDO> getNewAtsApplyByRecomUserIdAndCompanyId(int userId, int companyId) {
+		List<JobApplicationDO> applicationDOS = create.fetch("select t1.* from (select * from jobdb.job_application a where a.recommender_user_id=? and a.company_id=? " +
+				"and (a.apply_type=0 or (a.apply_type=1 and a.email_status=0))) t1 " +
+				"join jobdb.job_application_ats_process t2 on t1.id = t2.app_id", userId, companyId).into(JobApplicationDO.class);
+		return applicationDOS;
+	}
+
 	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyIdAndAppliers(int userId, int companyId, List<Integer> applierIds) {
 		return create.selectFrom(JOB_APPLICATION)
 				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
@@ -463,6 +470,17 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 								.and(JOB_APPLICATION.EMAIL_STATUS.eq(0))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.fetchInto(JobApplicationDO.class);
+	}
+
+	public List<JobApplicationDO> getNewAtsApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> queryNameIds) {
+		String queryStr = "";
+		if(queryNameIds != null && queryNameIds.size()>0){
+			queryStr = " and applier_id in ("+String.join(",",queryNameIds.stream().map(a->a.toString()).collect(Collectors.toSet()))+")";
+		}
+		List<JobApplicationDO> applicationDOS = create.fetch("select t1.* from (select * from jobdb.job_application a where a.recommender_user_id=? and a.company_id=? " +
+				queryStr+" and (a.apply_type=0 or (a.apply_type=1 and a.email_status=0))) t1 " +
+				"join jobdb.job_application_ats_process t2 on t1.id = t2.app_id", userId, companyId).into(JobApplicationDO.class);
+		return applicationDOS;
 	}
 
     public List<JobApplicationDO> getApplyByaApplierAndPositionIds(List<Integer> positionIds, List<Integer> applierIds) {

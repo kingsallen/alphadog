@@ -23,7 +23,7 @@ import com.moseeker.thrift.gen.dict.service.PositionService;
 public class DictPositionController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictPositionController.class);
-	PositionService.Iface sercie = ServiceManager.SERVICEMANAGER
+	PositionService.Iface sercie = ServiceManager.SERVICE_MANAGER
 			.getService(PositionService.Iface.class);
 	
 	@RequestMapping(value = "/dict/position", method = RequestMethod.GET)

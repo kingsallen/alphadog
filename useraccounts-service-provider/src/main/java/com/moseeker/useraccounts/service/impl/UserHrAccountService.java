@@ -70,6 +70,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.constant.FieldType;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
 import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
@@ -115,10 +116,10 @@ public class UserHrAccountService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICE_MANAGER
             .getService(SearchengineServices.Iface.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
@@ -2207,9 +2208,9 @@ public class UserHrAccountService {
             List<HrEmployeeCustomFields> customFieldList = customFieldsDao.listCustomFieldByCompanyIdList(companyIds);
             List<HrEmployeeCustomFields> fieldsList = customFieldList
                     .stream()
-                    .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(0)
-                            || hrEmployeeCustomFields.getFieldType().equals(1)
-                            || hrEmployeeCustomFields.getFieldType().equals(2)
+                    .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType() == FieldType.Department.getValue()
+                            || hrEmployeeCustomFields.getFieldType() == FieldType.Position.getValue()
+                            || hrEmployeeCustomFields.getFieldType() == FieldType.City.getValue()
                     )
                     .collect(Collectors.toList());
             List<EmployeeOptionValue> employeeOptionValues;

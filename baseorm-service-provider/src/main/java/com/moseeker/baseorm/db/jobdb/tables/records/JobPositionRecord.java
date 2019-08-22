@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -215613645;
+    private static final long serialVersionUID = -1581532903;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -170,14 +170,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities
+     * Setter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
      */
     public void setAccountabilities(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities
+     * Getter for <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
      */
     public String getAccountabilities() {
         return (String) get(10);
@@ -548,14 +548,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.priority</code>. 是否置顶， 0为置顶。
+     * Setter for <code>jobdb.job_position.priority</code>. 是否置顶
      */
     public void setPriority(Byte value) {
         set(37, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.priority</code>. 是否置顶， 0为置顶。
+     * Getter for <code>jobdb.job_position.priority</code>. 是否置顶
      */
     public Byte getPriority() {
         return (Byte) get(37);
@@ -884,14 +884,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     }
 
     /**
-     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Setter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public void setCurrentStatus(Byte value) {
         set(61, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * Getter for <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
     public Byte getCurrentStatus() {
         return (Byte) get(61);

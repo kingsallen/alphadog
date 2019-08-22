@@ -11,9 +11,7 @@ import com.moseeker.thrift.gen.mall.service.GoodsService;
 import com.moseeker.thrift.gen.mall.struct.GoodSearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,7 +31,7 @@ import java.util.Map;
 @RequestMapping("api/mall/visit")
 public class GoodsShowController {
 
-    GoodsService.Iface goodsService = ServiceManager.SERVICEMANAGER.getService(GoodsService.Iface.class);
+    GoodsService.Iface goodsService = ServiceManager.SERVICE_MANAGER.getService(GoodsService.Iface.class);
 
     private Logger logger = LoggerFactory.getLogger(GoodsShowController.class);
 

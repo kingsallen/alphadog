@@ -1,5 +1,6 @@
 package com.moseeker.common.biztools;
 
+import com.moseeker.common.weixin.QrcodeType;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
@@ -142,6 +143,11 @@ public class RecruitmentScheduleEnumTest {
         } catch(InvocationTargetException e) {
         }
         */
+    }
+
+    @Test
+    public void testQrcodeType(){
+        assertEquals(QrcodeType.QR_LIMIT_SCENE, QrcodeType.fromInt(1));
     }
 
 } 

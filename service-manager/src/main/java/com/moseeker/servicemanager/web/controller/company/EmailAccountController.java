@@ -26,7 +26,7 @@ public class EmailAccountController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    TalentpoolServices.Iface service= ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
+    TalentpoolServices.Iface service= ServiceManager.SERVICE_MANAGER.getService(TalentpoolServices.Iface.class);
 
     @RequestMapping(value = "/api/company/email/monitor", method = RequestMethod.GET)
     @ResponseBody

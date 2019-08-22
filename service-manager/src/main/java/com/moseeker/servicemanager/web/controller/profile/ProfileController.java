@@ -45,7 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -60,17 +59,17 @@ public class ProfileController {
 
     Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
-    WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
+    WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER
             .getService(WholeProfileServices.Iface.class);
-    ProfileServices.Iface service = ServiceManager.SERVICEMANAGER
+    ProfileServices.Iface service = ServiceManager.SERVICE_MANAGER
             .getService(ProfileServices.Iface.class);
     OutPutResumeUtil outPutResumeService = new OutPutResumeUtil();
 
-    ProfileBS.Iface profileBSService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+    ProfileBS.Iface profileBSService = ServiceManager.SERVICE_MANAGER.getService(ProfileBS.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
-    JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICEMANAGER.getService(JobApplicationServices.Iface.class);
+    JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICE_MANAGER.getService(JobApplicationServices.Iface.class);
 
     @RequestMapping(value = "/profile/pdf", method = RequestMethod.GET)
     @ResponseBody

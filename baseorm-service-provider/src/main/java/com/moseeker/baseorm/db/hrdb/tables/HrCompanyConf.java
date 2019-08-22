@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1818983938;
+    private static final long serialVersionUID = -634882916;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -143,7 +143,7 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     /**
      * The column <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
-    public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
+    public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
 
     /**
      * The column <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启，2：开启+chatbot
@@ -211,9 +211,14 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, String> MOBOT_NAME = createField("mobot_name", org.jooq.impl.SQLDataType.VARCHAR.length(32), this, "Mobot姓名，聊天使用");
 
     /**
-     * The column <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     * The column <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语, #多条对话分隔符#
      */
-    public final TableField<HrCompanyConfRecord, String> MOBOT_WELCOME = createField("mobot_welcome", org.jooq.impl.SQLDataType.VARCHAR.length(2000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "初次进入Mobot自定义的欢迎语");
+    public final TableField<HrCompanyConfRecord, String> MOBOT_WELCOME = createField("mobot_welcome", org.jooq.impl.SQLDataType.CLOB, this, "初次进入Mobot自定义的欢迎语, #多条对话分隔符#");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.new_ats_status</code>. 0是未开启new_ats_process流程 1表示开启了new_ats_process流程
+     */
+    public final TableField<HrCompanyConfRecord, Integer> NEW_ATS_STATUS = createField("new_ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是未开启new_ats_process流程 1表示开启了new_ats_process流程");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference

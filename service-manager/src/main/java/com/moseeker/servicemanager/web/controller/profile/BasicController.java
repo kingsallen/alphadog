@@ -4,9 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,7 +28,7 @@ public class BasicController {
 
 	Logger logger = LoggerFactory.getLogger(BasicController.class);
 
-	BasicServices.Iface basicService = ServiceManager.SERVICEMANAGER.getService(BasicServices.Iface.class);
+	BasicServices.Iface basicService = ServiceManager.SERVICE_MANAGER.getService(BasicServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/basic", method = RequestMethod.GET)
 	@ResponseBody

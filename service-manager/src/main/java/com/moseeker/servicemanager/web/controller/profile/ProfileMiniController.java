@@ -5,7 +5,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
@@ -27,9 +26,9 @@ import java.util.Map;
 public class ProfileMiniController {
 
     Logger logger = LoggerFactory.getLogger(ProfileController.class);
-    WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
+    WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER
             .getService(WholeProfileServices.Iface.class);
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER
             .getService(ProfileOtherThriftService.Iface.class);
     @RequestMapping(value = "/api/mini/profile/list", method = RequestMethod.GET)
     @ResponseBody

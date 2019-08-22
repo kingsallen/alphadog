@@ -22,6 +22,7 @@ import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeRecor
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -720,7 +721,10 @@ public class EmployeeEntity {
                 jsonObject.put("companyId", 0);
                 jsonObject.put("userIds", idList);
                 logger.info("employeeActivationChange :jsonObject{}", jsonObject);
-                amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                /*amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                        EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                .build());*/
+                amqpTemplate.convertAndSend(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
 
@@ -888,6 +892,22 @@ public class EmployeeEntity {
         }
         List<Integer> list = getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
         return permissionJudge(userEmployeeIds, list);
+    }
+
+    /*
+    * 根据公司编号获取公司信息
+    * @param companyId
+    * @return
+    * */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> getCompaniesByIds(List<Integer> ids){
+        List<HrCompanyRecord> records = hrCompanyDao.getCompaniesByIds(ids);
+        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> hrCompanies = new ArrayList<>(10);
+        if(records!=null&&records.size()>0){
+            records.forEach(e->{
+                hrCompanies.add(e.into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany.class));
+            });
+        }
+        return hrCompanies;
     }
 
 

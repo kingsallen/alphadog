@@ -53,11 +53,11 @@ public class CompanyController {
 
     Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
-	private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+	private PositionServices.Iface positonServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
 
-    private EmployeeService.Iface employeeServices = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+    private EmployeeService.Iface employeeServices = ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 

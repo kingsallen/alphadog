@@ -1,6 +1,5 @@
 package com.moseeker.rpccenter.server.thrift;
 
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.common.ServerNode;
 import com.moseeker.rpccenter.config.ThriftConfig;
 import com.moseeker.rpccenter.exception.IncompleteException;

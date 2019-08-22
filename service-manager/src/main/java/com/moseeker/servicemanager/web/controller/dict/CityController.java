@@ -28,7 +28,7 @@ public class CityController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-	CityServices.Iface cityServices = ServiceManager.SERVICEMANAGER.getService(CityServices.Iface.class);
+	CityServices.Iface cityServices = ServiceManager.SERVICE_MANAGER.getService(CityServices.Iface.class);
 
 	@RequestMapping(value = "/dict/cities", method = RequestMethod.GET)
     @ResponseBody

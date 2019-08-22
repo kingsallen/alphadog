@@ -20,8 +20,12 @@ import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBase;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBaseItem;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsProcessCompanyItem;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplicationAtsProcess;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
@@ -39,6 +43,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
@@ -54,19 +59,18 @@ import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.infrastructure.*;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
-import com.moseeker.useraccounts.service.constant.RadarStateEnum;
-import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
-import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
-import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
+import com.moseeker.useraccounts.service.constant.*;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
+import org.jooq.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -148,6 +152,20 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private SensorSend sensorSend;
 
     private static final long TEN_MINUTE = 10*60*1000;
+
+    private final Configuration configuration;
+    private JobApplicationAtsProcessJOOQDaoImpl jobApplicationAtsProcessJOOQDao;
+    private HrAtsProcessCompanyItemJOOQDaoImpl hrAtsProcessCompanyItemJOOQDao;
+    private HrAtsPhaseBaseJOOQDaoImpl hrAtsPhaseBaseJOOQDao;
+    private HrAtsPhaseBaseItemJOOQDaoImpl hrAtsPhaseBaseItemJOOQDao;
+    @Autowired
+    public ReferralRadarServiceImpl(Configuration configuration) {
+        this.configuration = configuration;
+        jobApplicationAtsProcessJOOQDao = new JobApplicationAtsProcessJOOQDaoImpl(configuration);
+        hrAtsProcessCompanyItemJOOQDao = new HrAtsProcessCompanyItemJOOQDaoImpl(configuration);
+        hrAtsPhaseBaseJOOQDao = new HrAtsPhaseBaseJOOQDaoImpl(configuration);
+        hrAtsPhaseBaseItemJOOQDao = new HrAtsPhaseBaseItemJOOQDaoImpl(configuration);
+    }
 
     @Override
     @RadarSwitchLimit
@@ -680,21 +698,89 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         if(StringUtils.isEmpty(queryName)){
             if(progress == 0){
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
+                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
+                jobApplicationDOS = handleJobApplicationDOS(list,progressList);
             }else {
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
+                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
+                // 查询新流程记录
+                List<JobApplicationDO> newAtsApps = jobApplicationDao.getNewAtsApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
+                list.addAll(newAtsApps);
+                // 去重
+                Map<Integer, JobApplicationDO> map = list.stream().collect(Collectors.toMap(JobApplicationDO::getId, jobApplicationDO -> jobApplicationDO, (k1, k2) -> k1));
+                List<JobApplicationDO> values = new ArrayList<>(map.values());
+                // submitTime倒序排序
+                List<JobApplicationDO> appDOS = values.stream().sorted(Comparator.comparing(JobApplicationDO::getSubmitTime).reversed()).collect(Collectors.toList());
+                jobApplicationDOS = handleJobApplicationDOS(appDOS,progressList);
             }
         }else {
             List<UserUserRecord> queryNameRecords = userUserDao.fetchByName(queryName);
             List<Integer> queryNameIds = queryNameRecords.stream().map(UserUserRecord::getId).collect(Collectors.toList());
             if(progress == 0){
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyIdAndAppliers(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
+                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyIdAndAppliers(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
+                jobApplicationDOS = handleJobApplicationDOS(list,progressList);
             }else {
-                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
+                List<JobApplicationDO> list  = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
+                // 查询新流程记录
+                List<JobApplicationDO> newAtsApps = jobApplicationDao.getNewAtsApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
+                list.addAll(newAtsApps);
+                // 去重
+                Map<Integer, JobApplicationDO> map = list.stream().collect(Collectors.toMap(JobApplicationDO::getId, jobApplicationDO -> jobApplicationDO, (k1, k2) -> k1));
+                List<JobApplicationDO> values = new ArrayList<>(map.values());
+                // submitTime倒序排序
+                List<JobApplicationDO> appDOS = values.stream().sorted(Comparator.comparing(JobApplicationDO::getSubmitTime).reversed()).collect(Collectors.toList());
+                jobApplicationDOS = handleJobApplicationDOS(appDOS,progressList);
             }
         }
         // 分页
         jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, pagination);
+        return jobApplicationDOS;
+    }
+
+    /**
+     * JobApplicationDO.appTplId匹配
+     * @param list
+     * @return
+     */
+    public List<JobApplicationDO> handleJobApplicationDOS(List<JobApplicationDO> list, List<Integer> progressList){
+        List<JobApplicationDO> jobApplicationDOS = new ArrayList<>();
+        for(JobApplicationDO item : list){
+            // 查询新流程的当前流程
+            JobApplicationAtsProcess applicationAtsProcess = jobApplicationAtsProcessJOOQDao.fetchOneByAppId(item.getId());
+            logger.info("handleJobApplicationDOS applicationAtsProcess:{}",JSON.toJSONString(applicationAtsProcess));
+            if(applicationAtsProcess == null){
+                jobApplicationDOS.add(item);
+            } else {
+                try {
+                    Integer currentPhaseId = applicationAtsProcess.getProcessId();
+                    // 当前阶段状态
+                    if(currentPhaseId < 0){
+                        // 当currentPhaseId为-1时,表示当前阶段未通过,直接返回淘汰
+                        if(progressList.contains(0) || progressList.contains(4)){
+                            item.setAppTplId(4);
+                            jobApplicationDOS.add(item);
+                        }
+                    } else {
+                        HrAtsProcessCompanyItem atsProcessCompanyItem = hrAtsProcessCompanyItemJOOQDao.fetchOneById(currentPhaseId);
+                        logger.info("handleJobApplicationDOS atsProcessCompanyItem:{}",JSON.toJSONString(atsProcessCompanyItem));
+                        HrAtsPhaseBaseItem baseItemVO = hrAtsPhaseBaseItemJOOQDao.fetchOneById(atsProcessCompanyItem.getItemId());
+                        logger.info("handleJobApplicationDOS baseItemVO:{}",JSON.toJSONString(baseItemVO));
+                        // 查询出阶段类型
+                        Integer parentId = baseItemVO.getParentId();
+                        HrAtsPhaseBase phaseBase = hrAtsPhaseBaseJOOQDao.fetchOneById(parentId);
+                        NewAtsMapReferralEnum typeEnum = NewAtsMapReferralEnum.getEnumByNewPhaseType(phaseBase.getType());
+                        int oldStep = typeEnum.getOldStep();
+                        if(progressList.contains(0) || progressList.contains(oldStep)){
+                            item.setAppTplId(oldStep);
+                            jobApplicationDOS.add(item);
+                        }
+                    }
+
+                } catch (Exception e) {
+                    logger.error("handleJobApplicationDOS Exception:{}",e);
+                }
+
+            }
+        }
         return jobApplicationDOS;
     }
 
@@ -1209,12 +1295,20 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             if("0".equals(String.valueOf(response.get("errcode")))) {
             String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
             String distinctId = String.valueOf(inviteInfo.getEndUserId());
-            Map<String, Object> properties = new HashMap<String, Object>();
+
+            String companyName = null;
+            Integer companyId = null;
+            if(hrCompanyDO!=null){
+                companyId = hrCompanyDO.getId();
+                companyName = hrCompanyDO.getName();
+            }
+            SensorProperties properties = new SensorProperties(true,companyId,companyName);
             properties.put("templateId", templateId);
             properties.put("sendTime", sendTime);
+
             logger.info("神策邀请投递发送消息模板-----> sendTime{} templateId{}" +sendTime +templateId);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
-                return "0".equals(String.valueOf(response.get("errcode")));
+            sensorSend.send(distinctId,"sendTemplateMessage",properties);
+            return "0".equals(String.valueOf(response.get("errcode")));
             }
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
