@@ -14,6 +14,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -40,6 +41,7 @@ import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -493,14 +495,19 @@ public class ReferralServiceImpl implements ReferralService {
             throw UserAccountException.PERMISSION_DENIED;
         }
         Future<UserEmployeeDO> employee = tp.startTast(()->employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId()));
+        HrCompany company = companyDao.getHrCompanyById(companyId);
 
         //候选人联系内推记录表(referral_seek_recommend)中的origin
         int recommendOrigin = recommendRecord.getOrigin();
 
         int origin = 0;
+        String companyName = null;
+        if(company!=null){
+            companyName = company.getName();
+        }
 
         //神策埋点 加入 properties
-        Map<String, Object> properties = new HashMap<String, Object>();
+        SensorProperties properties = new SensorProperties(true,companyId,companyName);
         if(2==recommendOrigin){
             //邀请投递
             origin = ApplicationSource.INVITE_REFERRAL.getValue();
@@ -530,14 +537,16 @@ public class ReferralServiceImpl implements ReferralService {
             }
         }
 
+
+
         //神策埋点
         try{
-            String distinctId =String.valueOf(user.get().getId());
+            String distinctId = String.valueOf(user.get().getId());
             sensorSend.send(distinctId,"inDirectReferral",properties);
 
             // 求推荐（对应联系内推）漏斗最终投递节点：完成推荐评价
             if(recommendOrigin != 2){     // 联系内推
-                sensorSend.send(distinctId,"SeekReferralEvaluate");
+                sensorSend.send(distinctId,"SeekReferralEvaluate",properties);
             }
 
         }catch (Exception e){

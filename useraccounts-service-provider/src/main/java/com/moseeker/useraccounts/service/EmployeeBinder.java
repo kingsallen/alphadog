@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
@@ -21,6 +22,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -355,12 +357,15 @@ public abstract class EmployeeBinder {
         this.updateEsUsersAndProfile(useremployee.getSysuserId());
 
         //神策埋点加入 pro
-        HrCompanyDO companyDO = companyDao.getCompanyById(useremployee.getCompanyId());
-        Map<String, Object> properties = new HashMap<>();
-        properties.put("companyName", companyDO.getName());
-        properties.put("companyId", useremployee.getCompanyId());
-        properties.put("isEmployee", 1);
+        HrCompany company = companyDao.getHrCompanyById(useremployee.getCompanyId());
+        String companyName = null;
+        if(company!=null){
+            companyName = company.getName();
+        }
+        SensorProperties properties = new SensorProperties(
+                true,company.getId(),companyName);
         properties.put("employee_origin",bindSource);
+
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
 
         return response;

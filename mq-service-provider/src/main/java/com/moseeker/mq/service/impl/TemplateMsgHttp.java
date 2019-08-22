@@ -17,6 +17,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
@@ -41,6 +42,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -370,6 +372,16 @@ public class TemplateMsgHttp {
         } catch (ConnectException e) {
             logger.error(e.getMessage(), e);
         }
+        String companyName = null;
+        HrCompany hrCompany = companyDao.getHrCompanyById(position.getCompanyId());
+        if(hrCompany!=null){
+            companyName = hrCompany.getName();
+        }
+        SensorProperties properties = new SensorProperties(true,hrCompany.getId(),companyName);
+        properties.put("sendTime",dateTime);
+        properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
+
+        sensorSend.send(String.valueOf(employee.getSysuserId()),"sendTemplateMessage",properties);
 
     }
 
@@ -480,6 +492,16 @@ public class TemplateMsgHttp {
             logger.error(e.getMessage(), e);
         }
 
+        HrCompany hrCompany = companyDao.getHrCompanyById(position.getCompanyId());
+        String companyName = null;
+        if(hrCompany!=null){
+            companyName = hrCompany.getName();
+        }
+        SensorProperties properties = new SensorProperties(true,hrCompany.getId(),companyName);
+        properties.put("sendTime",sendTime);
+        properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
+
+        sensorSend.send(String.valueOf(postUserId),"sendTemplateMessage",properties);
     }
 
     public void redpacketAmountTemplate(int companyId, int amount) throws TException {
@@ -1114,11 +1136,14 @@ public class TemplateMsgHttp {
         //神策生成埋点时间
         Date now = new Date();
         long sendTime=  now.getTime();
-        Map<String, Object> properties = new HashMap<String, Object>();
+
+        HrCompany hrCompany = companyDao.getHrCompanyById(hrWxWechatDO.getCompanyId());
+        String companyName = null;
+        if(hrCompany!=null){
+            companyName = hrCompany.getName();
+        }
+        SensorProperties properties = new SensorProperties(true,hrWxWechatDO.getCompanyId(),companyName);
         properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());
-        properties.put("companyId", hrWxWechatDO.getId());
-        properties.put("employeeId", employeeId);
-        properties.put("companyName", hrWxWechatDO.getName());
         properties.put("sendTime", sendTime);
 
         logger.info("神策--sendTemplateMessage---》》sendtime"+sendTime);
