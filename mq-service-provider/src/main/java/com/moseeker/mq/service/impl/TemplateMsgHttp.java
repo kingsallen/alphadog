@@ -1059,7 +1059,7 @@ public class TemplateMsgHttp {
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String current = dateFormat.format(dateTime.toDate());
-        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，立即戳我查阅→→~\n\n" +
+        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，立即戳我查阅→→\n\n" +
                 "\t\t\t\toooO      \n" +
                 "\t\t\t\t (      )      Oooo\n" +
                 "\t\t\t\t   \\   (         (     )\n" +
