@@ -708,7 +708,7 @@ public class BatchValidate {
 
                 Optional<HrEmployeeCustomFields> departmentOptional = fieldsList
                         .parallelStream()
-                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.Department.getValue())
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType() == FieldType.Department.getValue()
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
                 if (departmentOptional.isPresent() && departmentOptional.get().getOptionType() == OptionType.Select.getValue()) {
@@ -739,7 +739,7 @@ public class BatchValidate {
 
                 Optional<HrEmployeeCustomFields> positionOptional = fieldsList
                         .parallelStream()
-                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.Position.getValue())
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType() == FieldType.Position.getValue()
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
                 if (positionOptional.isPresent()) {
@@ -771,7 +771,7 @@ public class BatchValidate {
 
                 Optional<HrEmployeeCustomFields> cityOptional = fieldsList
                         .parallelStream()
-                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(FieldType.City.getValue())
+                        .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType() == FieldType.City.getValue()
                                 && hrEmployeeCustomFields.getCompanyId().equals(companyId))
                         .findAny();
                 if (cityOptional.isPresent()) {
