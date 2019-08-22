@@ -5,9 +5,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import org.apache.thrift.TException;
 import org.junit.Test;
 
@@ -23,7 +21,7 @@ public class ProfileProfileDaoTest {
 
     ////@Test
     public void testCompany() throws TException {
-        CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+        CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
         Response response = companyServices.getAllCompanies(new CommonQuery());
         System.out.println(response);
     }
@@ -31,7 +29,7 @@ public class ProfileProfileDaoTest {
     ////@Test
     public void testUser() throws TException {
 
-        UserEmployeeService.Iface useremployee = ServiceManager.SERVICEMANAGER.getService(UserEmployeeService.Iface.class);
+        UserEmployeeService.Iface useremployee = ServiceManager.SERVICE_MANAGER.getService(UserEmployeeService.Iface.class);
         Response response = useremployee.getUserEmployees(new CommonQuery());
         System.out.println(response);
     }
@@ -39,7 +37,7 @@ public class ProfileProfileDaoTest {
     ////@Test
 //    public void testProfile() throws TException {
 //
-//        ProfileServices.Iface profile = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+//        ProfileServices.Iface profile = ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
 //        Response response = profile.getProfileByApplication(107604,0,0,true,false);
 //        System.out.println(response);
 //    }

@@ -30,7 +30,7 @@ public class WorksExpController {
 
 	Logger logger = LoggerFactory.getLogger(WorksExpController.class);
 
-	WorkExpServices.Iface workExpService = ServiceManager.SERVICEMANAGER.getService(WorkExpServices.Iface.class);
+	WorkExpServices.Iface workExpService = ServiceManager.SERVICE_MANAGER.getService(WorkExpServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/workexp", method = RequestMethod.GET)
 	@ResponseBody

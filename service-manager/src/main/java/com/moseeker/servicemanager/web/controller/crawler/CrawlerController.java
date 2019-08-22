@@ -8,18 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
-import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.parser.ParserConfig;
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ScraperHtmlParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +44,10 @@ public class CrawlerController {
 	@Autowired
 	CrawlerUtils crawlerUtils;
 
-	WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
+	WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER
 			.getService(WholeProfileServices.Iface.class);
 
-	PositionBS.Iface positionbs = ServiceManager.SERVICEMANAGER
+	PositionBS.Iface positionbs = ServiceManager.SERVICE_MANAGER
 			.getService(PositionBS.Iface.class);
 
 	private ParserConfig parserConfig = new ParserConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题

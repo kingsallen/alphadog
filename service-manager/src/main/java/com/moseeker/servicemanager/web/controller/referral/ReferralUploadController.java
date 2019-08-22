@@ -30,8 +30,8 @@ import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 @ResponseBody
 public class ReferralUploadController {
 
-    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
-    private ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+    private ReferralService.Iface referralService = ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
+    private ProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
 
     /**
      *上传文件存储

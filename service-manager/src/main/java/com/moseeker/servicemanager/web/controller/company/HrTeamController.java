@@ -8,7 +8,6 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.service.HrTeamServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import org.slf4j.Logger;
@@ -20,10 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.AbstractMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -31,7 +27,7 @@ public class HrTeamController {
 
     Logger logger = LoggerFactory.getLogger(HrTeamController.class);
 
-    HrTeamServices.Iface hrTeamServices = ServiceManager.SERVICEMANAGER.getService(HrTeamServices.Iface.class);
+    HrTeamServices.Iface hrTeamServices = ServiceManager.SERVICE_MANAGER.getService(HrTeamServices.Iface.class);
 
     @RequestMapping(value = "/hrteam", method = RequestMethod.GET)
     @ResponseBody

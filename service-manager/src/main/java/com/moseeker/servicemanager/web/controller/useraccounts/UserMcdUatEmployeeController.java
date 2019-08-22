@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 @CounterIface
 public class UserMcdUatEmployeeController {
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-    McdUatService.Iface mcduatservice = ServiceManager.SERVICEMANAGER.getService(McdUatService.Iface.class);
+    McdUatService.Iface mcduatservice = ServiceManager.SERVICE_MANAGER.getService(McdUatService.Iface.class);
 
     @RequestMapping(value = "/mcdUser/bindUser", method = RequestMethod.POST)
     @ResponseBody

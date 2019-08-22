@@ -69,7 +69,7 @@ public class Schedule {
         }
 
         Set<String> employeeEmailVerifyNotices = redisClient.rangeByScore(AppId.APPID_ALPHADOG.getValue(),
-                KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(), 0l, now);
+                KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(), 0L, now);
 
         logger.info("startListeningMessageDelayQueue employeeEmailVerifyNotices:{}", employeeEmailVerifyNotices);
         if (employeeEmailVerifyNotices != null && employeeEmailVerifyNotices.size() > 0) {

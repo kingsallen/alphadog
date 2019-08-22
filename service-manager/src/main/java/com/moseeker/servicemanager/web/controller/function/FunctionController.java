@@ -24,7 +24,7 @@ public class FunctionController {
 
 	Logger logger = LoggerFactory.getLogger(FunctionController.class);
 
-	FunctionServices.Iface functionService = ServiceManager.SERVICEMANAGER
+	FunctionServices.Iface functionService = ServiceManager.SERVICE_MANAGER
 			.getService(FunctionServices.Iface.class);
 
 	@RequestMapping(value = "/function/sensitiveword", method = RequestMethod.POST)

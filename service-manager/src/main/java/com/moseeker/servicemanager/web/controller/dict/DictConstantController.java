@@ -32,7 +32,7 @@ public class DictConstantController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-	DictConstanService.Iface dictConstanService = ServiceManager.SERVICEMANAGER
+	DictConstanService.Iface dictConstanService = ServiceManager.SERVICE_MANAGER
 			.getService(DictConstanService.Iface.class);
 
 	@RequestMapping(value = "/dict/constant", method = RequestMethod.GET)

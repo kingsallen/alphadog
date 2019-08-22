@@ -53,7 +53,7 @@ public abstract class AbstractPositionTransfer<Form, R, Info, ExtP> {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     protected FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
-    ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+    ChaosServices.Iface chaosService = ServiceManager.SERVICE_MANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
     private JobPositionCityDao jobPositionCityDao;

@@ -67,10 +67,10 @@ public class JobApplicationFilterService {
 
 
 
-    WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
-    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
-    ProfileBS.Iface bsService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(WholeProfileServices.Iface.class);
+    TalentpoolServices.Iface talentpoolService = ServiceManager.SERVICE_MANAGER.getService(TalentpoolServices.Iface.class);
+    ProfileBS.Iface bsService = ServiceManager.SERVICE_MANAGER.getService(ProfileBS.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     public void handerApplicationFilter(MessageEmailStruct filterInfoStruct) throws Exception {
         logger.info("handerApplicationFilter filterInfoStruct:{}", filterInfoStruct);

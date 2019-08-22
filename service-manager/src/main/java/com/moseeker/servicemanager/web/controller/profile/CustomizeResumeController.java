@@ -1,12 +1,7 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
-import java.util.ArrayList;
-import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,9 +27,9 @@ import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 public class CustomizeResumeController {
 
 	Logger logger = LoggerFactory.getLogger(CustomizeResumeController.class);
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER
             .getService(ProfileOtherThriftService.Iface.class);
-	CustomizeResumeServices.Iface awardService = ServiceManager.SERVICEMANAGER.getService(CustomizeResumeServices.Iface.class);
+	CustomizeResumeServices.Iface awardService = ServiceManager.SERVICE_MANAGER.getService(CustomizeResumeServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/other", method = RequestMethod.GET)
 	@ResponseBody

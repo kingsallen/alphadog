@@ -1,9 +1,6 @@
 package com.moseeker.position.service.position.base.sync.check;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -13,7 +10,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,7 +19,7 @@ import java.util.List;
 public class Job51TransferCheck extends AbstractTransferCheck<ThirdPartyPosition> {
     Logger logger = LoggerFactory.getLogger(Job51TransferCheck.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     private static String SALARY_MUST_LT_ZERO = "薪资必须大于零!";
 

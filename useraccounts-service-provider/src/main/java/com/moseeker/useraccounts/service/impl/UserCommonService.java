@@ -36,7 +36,7 @@ public class UserCommonService {
 	
 	Logger logger = LoggerFactory.getLogger(UserCommonService.class);
 	
-	WordpressService.Iface wordpressService = ServiceManager.SERVICEMANAGER
+	WordpressService.Iface wordpressService = ServiceManager.SERVICE_MANAGER
 			.getService(WordpressService.Iface.class);
 
     @Resource(name = "cacheClient")

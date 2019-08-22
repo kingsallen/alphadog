@@ -26,7 +26,7 @@ public class CredentialsController {
 
 	Logger logger = LoggerFactory.getLogger(CredentialsController.class);
 
-	CredentialsServices.Iface credentialsService = ServiceManager.SERVICEMANAGER
+	CredentialsServices.Iface credentialsService = ServiceManager.SERVICE_MANAGER
 			.getService(CredentialsServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/credentials", method = RequestMethod.GET)

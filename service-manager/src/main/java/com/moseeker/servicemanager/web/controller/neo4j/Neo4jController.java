@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.neo4j;
 
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -28,7 +27,7 @@ public class Neo4jController {
 
 	Logger logger = LoggerFactory.getLogger(Neo4jController.class);
 
-	Neo4jServices.Iface service = ServiceManager.SERVICEMANAGER
+	Neo4jServices.Iface service = ServiceManager.SERVICE_MANAGER
 			.getService(Neo4jServices.Iface.class);
 
 	/**
