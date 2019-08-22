@@ -393,7 +393,6 @@ public class JobApplicataionService {
                     if(company!=null){
                         companyName = company.getName();
                     }
-                    //TODO已测
                     SensorProperties properties = new SensorProperties(true,companyId,companyName);
                     sensorSend.send(distinctId,"postApplication",properties);
                 }

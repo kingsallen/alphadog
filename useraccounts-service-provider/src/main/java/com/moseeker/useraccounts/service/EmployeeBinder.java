@@ -366,7 +366,6 @@ public abstract class EmployeeBinder {
                 true,company.getId(),companyName);
         properties.put("employee_origin",bindSource);
 
-        //TODO 已测
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
 
         return response;
