@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class RedPacketController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
+    private ReferralService.Iface referralService =  ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
 
     /**
      * 修改红包活动

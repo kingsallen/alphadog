@@ -20,7 +20,7 @@ import com.moseeker.thrift.gen.warn.struct.WarnBean;
 public class WarnController {
 	Logger logger = org.slf4j.LoggerFactory.getLogger(WarnController.class);
 
-	WarnSetService.Iface warnService = ServiceManager.SERVICEMANAGER
+	WarnSetService.Iface warnService = ServiceManager.SERVICE_MANAGER
 			.getService(WarnSetService.Iface.class);
 	@RequestMapping(value = "/sendWarn", method = RequestMethod.POST)
 	@ResponseBody

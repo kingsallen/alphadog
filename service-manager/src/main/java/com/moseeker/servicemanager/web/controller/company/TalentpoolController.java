@@ -11,7 +11,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-import com.moseeker.thrift.gen.company.struct.TalentpoolProfileFilterDO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @CounterIface
 public class TalentpoolController {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-    TalentpoolServices.Iface service= ServiceManager.SERVICEMANAGER.getService(TalentpoolServices.Iface.class);
+    TalentpoolServices.Iface service= ServiceManager.SERVICE_MANAGER.getService(TalentpoolServices.Iface.class);
 
     @RequestMapping(value = "/api/talentpool/talents", method = RequestMethod.POST)
     @ResponseBody

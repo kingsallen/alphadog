@@ -34,7 +34,7 @@ import java.util.Map;
 @CounterIface
 public class CandidateController {
 
-    CandidateService.Iface candidateService = ServiceManager.SERVICEMANAGER.getService(CandidateService.Iface.class);
+    CandidateService.Iface candidateService = ServiceManager.SERVICE_MANAGER.getService(CandidateService.Iface.class);
 
     @RequestMapping(value = "/candidate/info", method = RequestMethod.GET)
     @ResponseBody

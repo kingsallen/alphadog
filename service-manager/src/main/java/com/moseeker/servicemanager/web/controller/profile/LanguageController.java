@@ -26,7 +26,7 @@ public class LanguageController {
 
 	Logger logger = LoggerFactory.getLogger(LanguageController.class);
 
-	LanguageServices.Iface languageService = ServiceManager.SERVICEMANAGER.getService(LanguageServices.Iface.class);
+	LanguageServices.Iface languageService = ServiceManager.SERVICE_MANAGER.getService(LanguageServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/language", method = RequestMethod.GET)
 	@ResponseBody

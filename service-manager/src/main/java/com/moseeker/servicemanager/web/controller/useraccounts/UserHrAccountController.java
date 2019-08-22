@@ -62,10 +62,10 @@ public class UserHrAccountController {
 
     Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
+    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER
             .getService(UserHrAccountService.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 

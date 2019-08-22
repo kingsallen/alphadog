@@ -41,15 +41,15 @@ public class UseraccountsController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER
+	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER
 			.getService(UseraccountsServices.Iface.class);
-	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICEMANAGER
+	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICE_MANAGER
 			.getService(UsersettingServices.Iface.class);
-	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+	ProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
 
-	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
+	UserQxService.Iface userQxService = ServiceManager.SERVICE_MANAGER.getService(UserQxService.Iface.class);
 	
-	UserBS.Iface userBS = ServiceManager.SERVICEMANAGER.getService(UserBS.Iface.class);
+	UserBS.Iface userBS = ServiceManager.SERVICE_MANAGER.getService(UserBS.Iface.class);
 
 
 	/**

@@ -40,7 +40,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,11 +54,11 @@ import java.util.stream.Collectors;
 @CounterIface
 public class ReferralController {
 
-    private ProfileServices.Iface profileService =  ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
-    private EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
-    private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
-    private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
-    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+    private ProfileServices.Iface profileService =  ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
+    private EmployeeService.Iface employeeService =  ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
+    private UseraccountsServices.Iface userService =  ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
+    private ReferralService.Iface referralService =  ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
+    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER.getService(UserHrAccountService.Iface.class);
     private Logger logger = LoggerFactory.getLogger(ReferralController.class);
 
     /**

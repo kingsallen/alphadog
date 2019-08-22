@@ -75,7 +75,7 @@ public class EmployeeService {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    SearchengineServices.Iface searchService = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
 
     @Autowired
     private EmployeeEntity employeeEntity;

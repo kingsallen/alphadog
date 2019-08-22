@@ -38,7 +38,7 @@ public class OrderController {
 
     private Logger logger = LoggerFactory.getLogger(MallController.class);
 
-    OrderService.Iface orderService = ServiceManager.SERVICEMANAGER.getService(OrderService.Iface.class);
+    OrderService.Iface orderService = ServiceManager.SERVICE_MANAGER.getService(OrderService.Iface.class);
     /**
      * hr拉取兑换记录列表
      * //todo  兑换次数和兑换数量

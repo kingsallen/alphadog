@@ -53,7 +53,7 @@ public class CompanyTagService {
     private UserHrAccountDao userHrAccountDao;
 
 
-    SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    SearchengineServices.Iface service = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
 
 
     @CounterIface

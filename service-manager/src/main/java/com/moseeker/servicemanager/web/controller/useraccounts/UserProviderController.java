@@ -1,13 +1,9 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.servicemanager.common.CleanJsonResponse4Alphacloud;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -27,7 +23,7 @@ public class UserProviderController {
     Logger logger= LoggerFactory.getLogger(UserThirdPartyController.class);
 
     UserProviderService.Iface userProviderService
-            = ServiceManager.SERVICEMANAGER.getService(UserProviderService.Iface.class);
+            = ServiceManager.SERVICE_MANAGER.getService(UserProviderService.Iface.class);
 
     @RequestMapping(value = "/v4/user/company/user", method = RequestMethod.GET)
     @ResponseBody
