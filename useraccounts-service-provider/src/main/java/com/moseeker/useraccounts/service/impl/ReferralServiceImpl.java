@@ -546,7 +546,6 @@ public class ReferralServiceImpl implements ReferralService {
 
             // 求推荐（对应联系内推）漏斗最终投递节点：完成推荐评价
             if(recommendOrigin != 2){     // 联系内推
-                properties.remove("apply_origin");
                 sensorSend.send(distinctId,"SeekReferralEvaluate",properties);
             }
 
