@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.dao.hrdb.utils.ChatSpeakerType;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
@@ -130,4 +131,35 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
                 .limit(startIndex, pageSize)
                 .fetch();
     }
+
+    /**
+     * 获取求职者上一条记录的ID
+     *
+     * @param roomId 房间ID
+     * @param chatId 主键ID
+     * @return
+     */
+    public Integer getUserLastQuestionChatRecordId(int roomId, int chatId) {
+         return create.select(HrWxHrChat.HR_WX_HR_CHAT.ID)
+                .from(HrWxHrChat.HR_WX_HR_CHAT)
+                .where(HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID.eq(roomId))
+                .and(HrWxHrChat.HR_WX_HR_CHAT.SPEAKER.eq((byte)ChatSpeakerType.USER.getValue()))
+                .and(HrWxHrChat.HR_WX_HR_CHAT.ID.lt(chatId))
+                .orderBy(HrWxHrChat.HR_WX_HR_CHAT.ID.desc())
+                .limit(1).fetchOne().value1();
+    }
+
+    /**
+     * 更新聊天记录的status
+     *
+     * @param chatId 主键ID
+     * @param status 状态， 对应ChatStatus类
+     */
+    public void updateChatStatus(int chatId, byte status) {
+        create.update(HrWxHrChat.HR_WX_HR_CHAT)
+                .set(HrWxHrChat.HR_WX_HR_CHAT.STATUS, status)
+                .where(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(chatId))
+                .execute();
+    }
+
 }

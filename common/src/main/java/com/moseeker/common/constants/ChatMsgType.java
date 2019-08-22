@@ -1,10 +1,7 @@
 package com.moseeker.common.constants;
 
-import com.moseeker.thrift.gen.chat.struct.ChatVO;
-import org.apache.commons.lang.StringUtils;
-
 /**
- *
+ * 聊天消息类型
  */
 public enum ChatMsgType {
     HTML("html"),
