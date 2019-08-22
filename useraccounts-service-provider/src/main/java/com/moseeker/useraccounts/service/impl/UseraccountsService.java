@@ -1149,7 +1149,7 @@ public class UseraccountsService {
                         HrWxWechatQrcode qrcode = new HrWxWechatQrcode();
                         qrcode.setQrcodeUrl(bean.getUrl());
                         qrcode.setWechatId(wechatId);
-                        String sceneDB = StringUtils.isNotNullOrEmpty(scene)? SceneType.APPLY_FROM_PC.toString():null;
+                        String sceneDB = StringUtils.isNotNullOrEmpty(scene)? scene:null;
                         qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
                         qrcode.setTicket(bean.getTicket());
                         if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
