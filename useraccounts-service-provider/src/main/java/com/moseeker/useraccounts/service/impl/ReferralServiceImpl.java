@@ -541,12 +541,13 @@ public class ReferralServiceImpl implements ReferralService {
 
         //神策埋点
         try{
-            sensorSend.send(String.valueOf(postUserId),"inDirectReferral",properties);
+            String distinctId = String.valueOf(user.get().getId());
+            sensorSend.send(distinctId,"inDirectReferral",properties);
 
             // 求推荐（对应联系内推）漏斗最终投递节点：完成推荐评价
             if(recommendOrigin != 2){     // 联系内推
                 properties.remove("apply_origin");
-                sensorSend.send(String.valueOf(postUserId),"SeekReferralEvaluate",properties);
+                sensorSend.send(distinctId,"SeekReferralEvaluate",properties);
             }
 
         }catch (Exception e){
