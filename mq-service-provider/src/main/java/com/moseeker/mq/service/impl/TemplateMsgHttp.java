@@ -1161,7 +1161,7 @@ public class TemplateMsgHttp {
         }
         String keyWord5 = templateVO.getString("keyWord5");
         if(StringUtils.isNotNullOrEmpty(keyWord5)){
-            dataMap.put("keyword5", createTplVO(color.getString("keyWord5"), keyWord5));
+            dataMap.put("keyword5", createTplVO(color.getString("first"), keyWord5));
         }
         String remark = templateVO.getString("remark");
         if(StringUtils.isNotNullOrEmpty(remark)){

@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import java.util.List;
 import org.jooq.Result;
@@ -23,6 +24,7 @@ public class HrWxWechatDao extends JooqCrudImpl<HrWxWechatDO, HrWxWechatRecord> 
 	public HrWxWechatDO getHrWxWechatByCompanyId(int company_id ){
         List<HrWxWechatDO> result = create.selectFrom(HrWxWechat.HR_WX_WECHAT)
                 .where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.eq(company_id))
+                .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.eq((byte)AbleFlag.ENABLE.getValue()))
                 .fetchInto(HrWxWechatDO.class);
         if(result != null && result.size()>0){
             return result.get(0);
