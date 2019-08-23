@@ -81,7 +81,7 @@ public class EmployeeServiceTest {
     //@Test
     @Transactional
     public void unbind() throws Exception {
-        Result result = service.unbind(12528, 14, 143999);
+        Result result = service.unbind(12528, 14, 143999,(byte)6);
         System.out.println(result);
     }
 

@@ -46,6 +46,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
+
 /**
  * Created by eddie on 2017/3/7.
  */
@@ -242,7 +244,7 @@ public class UserEmployeeController {
                 }
 
                 switch (activationChange){
-                    case 6: result = employeeService.unemploy(employee.employee.id,userId, companyId);break;
+                    case EMPLOYEE_ACTIVATION_UNEMPLOYEE: result = employeeService.unemploy(employee.employee.id,userId, companyId);break;
                     default: result = employeeService.unbind(employee.employee.id,userId, companyId);break;
                 }
                 logger.debug("/user/employee/unbind result : {}",result);

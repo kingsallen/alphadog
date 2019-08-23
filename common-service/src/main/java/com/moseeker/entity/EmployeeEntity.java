@@ -28,6 +28,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
 
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
@@ -180,6 +181,9 @@ public class EmployeeEntity {
 
     @Autowired
     RedpacketActivityPositionJOOQDao activityPositionJOOQDao;
+
+    @Autowired
+    private UserWorkwxDao workwxDao ;
 
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -680,7 +684,7 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
-
+    @Transactional
     public boolean unbind(List<UserEmployeeDO> employees,byte activationChange) throws CommonException {
         logger.info("EmployeeEntity unbind employees:{}", JSONObject.toJSONString(employees));
         if (employees != null && employees.size() > 0) {
@@ -697,6 +701,14 @@ public class EmployeeEntity {
                 int userId = DO.getSysuserId();
                 int companyId = DO.getCompanyId();
                 convertCandidatePerson(userId, companyId);
+
+                // 如果企业微信关联了userid，解除关联(否则影响员工重新绑定)
+                if(activationChange == EMPLOYEE_ACTIVATION_UNEMPLOYEE){
+                    // 员工离职
+                    workwxDao.delete(userId,companyId);
+                }else{
+                    workwxDao.unbindSysUser(userId,companyId);
+                }
             }
             int[] rows = employeeDao.updateDatas(employees);
             logger.info("EmployeeEntity unbind rows:{}", rows.length);

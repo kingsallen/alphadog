@@ -263,10 +263,9 @@ public abstract class EmployeeBinder {
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
 
         if (unActiveEmployee != null) {
-            log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
-            log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
             employeeId = unActiveEmployee.getId();
-            log.info("userEmployee active:{}", unActiveEmployee.getActivation());
+            log.info("已存在非认证成功状态的员工数据 employeeId:{} active:{} bindingTime:{} userEmployee:{}", employeeId,
+                    unActiveEmployee.getActivation(),unActiveEmployee.getBindingTime(), unActiveEmployee);
             updateInfo(unActiveEmployee, useremployee, employeeId, currentTime);
         } else {
             if (useremployee.getId() > 0) {
