@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.userdb.UserWorkwxDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWorkwxRecord;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.useraccounts.exception.UserAccountException;
@@ -129,20 +130,49 @@ public class UserWorkwxService {
         return getCustomFields(record.getCompanyId(),Arrays.asList(record)).get(0);
     }
 
+    /**
+     * 获取员工已有系统字段值
+     * @param fieldIds
+     * @param sysuserid
+     * @param companyId
+     * @return
+     */
+    private Map<Integer,String> getEmployeeCustomFieldValues(List<Integer> fieldIds,int sysuserid,int companyId){
+        Map<Integer,String> customFieldValues = new HashMap<>(2);
+        if ( sysuserid > 0){
+            UserEmployeeRecord employeeRecord = employeeDao.getEmployeeIgnoreActivation(sysuserid, companyId);
+            if (employeeRecord != null && employeeRecord.getCustomFieldValues() != null
+                    && !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(employeeRecord.getCustomFieldValues().trim())){
+                JSONArray.parseArray(employeeRecord.getCustomFieldValues(),Map.class).forEach(map->map.forEach((k,v)->{
+                    int fieldId = Integer.parseInt(k.toString()) ;
+                    if(fieldIds.contains(fieldId)){
+                        customFieldValues.put(fieldId,v.toString());
+                    }
+                }));
+            }
+        }
+        return customFieldValues;
+    }
+
     protected List<Map<Integer,String>> getCustomFields(int companyId,List<UserWorkwxRecord> records){
         List<Map<Integer,String>> result = new ArrayList<>();
         Map<Byte,HrEmployeeCustomFields> fieldsMap = customFieldsDao.listSystemCustomFieldByCompanyIdList(Arrays.asList(
                 companyId)).stream().collect(Collectors.toMap(HrEmployeeCustomFields::getFieldType, f->f));
+        List<Integer> fieldIds = new ArrayList<>();
+        fieldsMap.values().forEach(f->fieldIds.add(f.getId()));
+
         HrEmployeeCustomFields positionField = fieldsMap.get(HrEmployeeCustomFieldsDao.FIELD_TYPE_POSITION);
         HrEmployeeCustomFields cityField = fieldsMap.get(HrEmployeeCustomFieldsDao.FIELD_TYPE_CITY);
         Map<Integer,String> cityOptions = customOptionJooqDao.listFieldOptions(cityField.getId());
         Map<Integer,String> positionOptions = customOptionJooqDao.listFieldOptions(positionField.getId());
 
         records.forEach(record->{
+            Map<Integer,String> customFieldValues = getEmployeeCustomFieldValues(fieldIds,companyId,record.getSysuserId());
+
             String position = org.apache.commons.lang3.StringUtils.trim(record.getPosition());
             String address = org.apache.commons.lang3.StringUtils.trim(record.getAddress());
 
-            Map<Integer,String> customFieldValues = new HashMap<>(2);
+
             if(!StringUtils.isNullOrEmpty(position) && positionField != null){
                 Integer positionId = match(position,positionOptions,(value)->position.equals(value)) ;
 
@@ -169,6 +199,7 @@ public class UserWorkwxService {
 
         return result;
     }
+
     /**
      * 匹配下拉框
      * @param address 具体地址
