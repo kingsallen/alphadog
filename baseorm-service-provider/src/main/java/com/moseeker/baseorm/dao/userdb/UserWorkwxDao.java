@@ -42,10 +42,23 @@ public class UserWorkwxDao extends JooqCrudImpl<UserWorkwxDO, UserWorkwxRecord> 
         return record;
     }
 
+    public int unbindSysUser(int userId) {
+        if(userId > 0) {
+            HashMap setMap = new HashMap();
+            setMap.put(USER_WORKWX.SYSUSER_ID,null);
+            return create.update(USER_WORKWX)
+                    .set(setMap)
+                    .where(USER_WORKWX.SYSUSER_ID.eq(userId))
+                    .and(USER_WORKWX.DISABLE.notEqual((byte) 1))
+                    .execute();
+        }
+        return 0;
+    }
+
     public int unbindSysUser(int userId,int companyId) {
         if(userId > 0) {
             HashMap setMap = new HashMap();
-            setMap.put(USER_WORKWX.SYSUSER_ID,0);
+            setMap.put(USER_WORKWX.SYSUSER_ID,null);
             return create.update(USER_WORKWX)
                     .set(setMap)
                     .where(USER_WORKWX.SYSUSER_ID.eq(userId))

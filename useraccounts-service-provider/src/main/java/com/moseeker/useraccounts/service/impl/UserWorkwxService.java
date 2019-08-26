@@ -14,6 +14,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import org.neo4j.cypher.internal.compiler.v2_2.ast.In;
 import org.neo4j.register.Register;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,8 +142,7 @@ public class UserWorkwxService {
         Map<Integer,String> customFieldValues = new HashMap<>(2);
         if ( sysuserid > 0){
             UserEmployeeRecord employeeRecord = employeeDao.getEmployeeIgnoreActivation(sysuserid, companyId);
-            if (employeeRecord != null && employeeRecord.getCustomFieldValues() != null
-                    && !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(employeeRecord.getCustomFieldValues().trim())){
+            if (employeeRecord != null && employeeRecord.getCustomFieldValues() != null){
                 JSONArray.parseArray(employeeRecord.getCustomFieldValues(),Map.class).forEach(map->map.forEach((k,v)->{
                     int fieldId = Integer.parseInt(k.toString()) ;
                     if(fieldIds.contains(fieldId)){
@@ -163,18 +163,23 @@ public class UserWorkwxService {
 
         HrEmployeeCustomFields positionField = fieldsMap.get(HrEmployeeCustomFieldsDao.FIELD_TYPE_POSITION);
         HrEmployeeCustomFields cityField = fieldsMap.get(HrEmployeeCustomFieldsDao.FIELD_TYPE_CITY);
-        Map<Integer,String> cityOptions = customOptionJooqDao.listFieldOptions(cityField.getId());
+        LinkedHashMap<String,Integer> cityOptions = prepareCitiOptions(customOptionJooqDao.listFieldOptions(cityField.getId()));
         Map<Integer,String> positionOptions = customOptionJooqDao.listFieldOptions(positionField.getId());
 
         records.forEach(record->{
-            Map<Integer,String> customFieldValues = getEmployeeCustomFieldValues(fieldIds,companyId,record.getSysuserId());
+            Map<Integer,String> customFieldValues = getEmployeeCustomFieldValues(fieldIds,record.getSysuserId(),companyId);
 
             String position = org.apache.commons.lang3.StringUtils.trim(record.getPosition());
             String address = org.apache.commons.lang3.StringUtils.trim(record.getAddress());
 
 
             if(!StringUtils.isNullOrEmpty(position) && positionField != null){
-                Integer positionId = match(position,positionOptions,(value)->position.equals(value)) ;
+                Integer positionId = null ;
+                for(Map.Entry<Integer,String> entry : positionOptions.entrySet()){
+                    if(Objects.equals(entry.getValue(),position)){
+                        positionId = entry.getKey();
+                    }
+                }
 
                 // 如果职位下拉框没有企业微信设置的职位，添加下拉选项
                 if(positionId == null) {  // 如果positionField.getFvalues()为空，
@@ -188,7 +193,7 @@ public class UserWorkwxService {
 
             // 城市下拉框智能匹配
             if(!StringUtils.isNullOrEmpty(address) && cityOptions != null && !cityOptions.isEmpty()){
-                Integer selectedCity = match(address,cityOptions,(value)->address.contains(value.replaceAll("[省,市,县,区]","")));
+                Integer selectedCity = matchCity(address,cityOptions);
                 // 如果匹配到相应城市
                 if(selectedCity != null){
                     customFieldValues.put(cityField.getId(),String.valueOf(selectedCity));
@@ -196,25 +201,75 @@ public class UserWorkwxService {
             }
             result.add(customFieldValues);
         });
-
         return result;
     }
 
+    private static LinkedHashMap<String,Integer> prepareCitiOptions(Map<Integer,String> cityOptions){
+        if( cityOptions == null || cityOptions.isEmpty()) return new LinkedHashMap<>();
+
+        LinkedHashMap<String,Integer> cityMap = new LinkedHashMap<>(cityOptions.size()); // 保持原先顺序不变
+        cityOptions.forEach((k,v)->{
+            if( k != null && v != null && (v = v.replaceAll("[省,市,县,区]","").trim()).length()>0){
+                cityMap.putIfAbsent(v,k);
+            }
+        });
+        return cityMap;
+    }
+
     /**
-     * 匹配下拉框
+     * 匹配城市下拉框
+     * 下拉框示例 [上海（市），北京（市），南京（市），西安（市），苏州（市）]，括号（市）表示可选
+     * 地址示例：
+     * 1 上海（市） -> 匹配'上海'、'上海市'
+     * 2 上海市北京西路 -> 匹配'上海'
+     * 3 上海市光路 -> 匹配'上海'
+     * 算法：
+     * 1. (准备)对所有下拉选项进行去除'省'、'市'、'县'、'区'后缀处理，比如'上海（市）'变成'上海'
+     * 2. (猜测市名)先尝试截取市名，因为目标城市为xx市的可能性最大。截断的规则为截取'省'（如果有）与'市'之间的内容。
+     *    例如"上海市南京西路"截断结果为"上海"，"江苏省苏州市太湖路"截断结果为"苏州"
+     * 1. 对地址按'市','县','区'进行分隔，得到序列，依次匹配。匹配方式分为两种，一种是准确匹配，另一种是优先匹配，前者优先级较高。
      * @param address 具体地址
-     * @param cityOptions 城市下拉选项
+     * @param cityMap 城市下拉选项
      * @return 配置项ID
      */
-    protected static Integer match(String address, Map<Integer,String> cityOptions, Predicate<String> predicate){
-        if(StringUtils.isNullOrEmpty(address) || cityOptions.isEmpty()) return null ;
+    protected static Integer matchCity(String address, LinkedHashMap<String,Integer> cityMap){
+        // 如果地址未填，返回null
+        if(StringUtils.isNullOrEmpty(address) || cityMap.isEmpty()) return null ;
 
-        for(Map.Entry<Integer,String> entry : cityOptions.entrySet()){
-            if(entry.getKey() == 0 || StringUtils.isNullOrEmpty(entry.getValue())) continue;
 
-            if(address.contains(entry.getValue().replaceAll("[省,市,县,区]","")) ){
-                return entry.getKey();
+        // 算法步骤2 (猜测)截取市名
+        int firstIdxProvinceChar = address.indexOf("省");
+        int firstIdxCityChar = address.indexOf("市");
+        if(firstIdxCityChar > 0 && firstIdxCityChar > firstIdxProvinceChar +1){
+            String city = address.substring(firstIdxProvinceChar>0?firstIdxProvinceChar+1:0 ,firstIdxCityChar );
+            Integer cityId = cityMap.get(city);
+            if( cityId != null) {
+                return cityId;
             }
+        }
+
+        // 算法步骤3
+        List<String> list = Arrays.asList(address.split("[省,市,县,区]"));
+        int firstPosition = address.length() ;
+        Integer firstMatch = null ;
+        // 准确匹配
+        for ( String str : list){
+            for(Map.Entry<String,Integer> entry : cityMap.entrySet()){
+                // 如'江苏省苏州市太湖路' -> '江苏'匹配失败，'苏州'匹配成功
+                if(entry.getKey().equals(str)) {
+                    return entry.getValue();
+                }
+                // 如'江苏苏州市太湖路',包含'苏州'
+                int idx = address.indexOf(entry.getKey());
+                if(idx != -1 && idx < firstPosition){
+                    firstPosition = idx;
+                    firstMatch = entry.getValue();
+                }
+            }
+        }
+        if(firstMatch != null){
+            // 优先获取第一个模糊匹配结果
+            return firstMatch ;
         }
         return null;
     }

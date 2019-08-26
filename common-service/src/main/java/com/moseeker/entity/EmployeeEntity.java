@@ -1268,6 +1268,7 @@ public class EmployeeEntity {
 
     }
 
+    @Transactional
     public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
         if(userId <= 0 || wechatId <= 0){
             throw EmployeeException.NODATA_EXCEPTION;
