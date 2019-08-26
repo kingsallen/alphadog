@@ -56,9 +56,9 @@ public class FollowStateSynchronizationTool {
             msgBody = new String(message.getBody(), "UTF-8");
             logger.info("FollowStateSynchronizationTool followWechat msgBody : {}", msgBody);
             FollowParam followParam = JSON.parseObject(msgBody, FollowParam.class);
-            employeeEntity.unfollowWechat(followParam.getUserId(), followParam.getWechatId(),
+            int companyId = employeeEntity.unfollowWechat(followParam.getUserId(), followParam.getWechatId(),
                     followParam.getSubscribeTime());
-            workwxDao.unbindSysUser(followParam.getUserId());
+            workwxDao.unbindSysUser(followParam.getUserId(),companyId);
         } catch (CommonException e) {
             logger.info(e.getMessage(), e);
         } catch (Exception e) {

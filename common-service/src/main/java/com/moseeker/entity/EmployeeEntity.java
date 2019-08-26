@@ -60,7 +60,6 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -81,8 +80,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -90,7 +87,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -1269,7 +1265,7 @@ public class EmployeeEntity {
     }
 
     @Transactional
-    public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+    public int unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
         if(userId <= 0 || wechatId <= 0){
             throw EmployeeException.NODATA_EXCEPTION;
         }
@@ -1289,6 +1285,7 @@ public class EmployeeEntity {
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
         }}, false);
+        return employeeDO.getCompanyId();
     }
 
     /**
