@@ -9,8 +9,7 @@ sourceCompatibility = 1.8
 
 dependencies {
     compile project(":common")
-
-    compile deps["libthrift"]
+    compile project(":thrift-jooq")
     //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
     //compile deps["libthrift"]
     compile deps["fastjson"]

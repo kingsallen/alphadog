@@ -615,3 +615,11 @@ struct EmployeeForwardViewPage{
     2:optional i32 page,
     3:optional list<EmployeeForwardView> userList
 }
+
+struct WeixinQrcode{
+    1:optional i32 wechatId,
+    2:optional i64 sceneId,
+    3:optional i32 expireSeconds,
+    4:optional i32 actionName,
+    5:optional string scene
+}

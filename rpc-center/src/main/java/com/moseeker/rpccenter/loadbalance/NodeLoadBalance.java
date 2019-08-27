@@ -45,7 +45,7 @@ public enum NodeLoadBalance {
                 //warning
             }
 			if (node == null){
-                logger.info("getNextNode name:{},root:{},children:{}",name,root,root.getChirldren());
+                logger.debug("getNextNode name:{},root:{},children:{}",name,root,root.getChirldren());
                 for (ZKPath parentPath : root.getChirldren()) {
                     logger.debug("parentPath:{},children:{}",parentPath,parentPath.getChirldren());
                     if (parentPath.getName().equals(name) && parentPath.getChirldren() != null

@@ -769,6 +769,7 @@ public class ProfileProcessBS {
             for (ConfigSysPointsConfTpl config : list) {
                 if (config.getRecruit_order() == progressStatus) {
                     operate_tpl_id = config.getId();
+                    break;
                 }
             }
             for (RewardsToBeAddBean bean : rewardsToBeAdd) {

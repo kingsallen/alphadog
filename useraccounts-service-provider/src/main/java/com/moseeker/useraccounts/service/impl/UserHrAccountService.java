@@ -66,6 +66,7 @@ import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.employee.struct.BindType;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.constant.FieldType;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
 import com.moseeker.useraccounts.constant.OptionType;
 import com.moseeker.useraccounts.constant.ResultMessage;
@@ -1416,6 +1417,9 @@ public class UserHrAccountService {
             if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCname())) {
                 v.setCname(v.getCname().trim());
             }
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCustomField())) {
+                v.setCustomField(v.getCustomField().trim());
+            }
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
@@ -2219,9 +2223,9 @@ public class UserHrAccountService {
             logger.info("UserHrAccountService packageEmployeeVOs customFieldList:{}", customFieldList);
             List<HrEmployeeCustomFields> fieldsList = customFieldList
                     .stream()
-                    .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType().equals(0)
-                            || hrEmployeeCustomFields.getFieldType().equals(1)
-                            || hrEmployeeCustomFields.getFieldType().equals(2)
+                    .filter(hrEmployeeCustomFields -> hrEmployeeCustomFields.getFieldType() == FieldType.Department.getValue()
+                            || hrEmployeeCustomFields.getFieldType() == FieldType.Position.getValue()
+                            || hrEmployeeCustomFields.getFieldType() == FieldType.City.getValue()
                     )
                     .collect(Collectors.toList());
             List<EmployeeOptionValue> employeeOptionValues;
