@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.service.impl.CompanyTagService;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
@@ -36,6 +37,9 @@ public class ReceiveHandler {
     private CompanyTagService companyTagService;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+    @Autowired
+    private ScheduledThread scheduledThread=ScheduledThread.Instance;
+
 
     @RabbitListener(queues = "#{profileCompanyTagNewQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -68,12 +72,12 @@ public class ReceiveHandler {
     private void handlerDataProfileIndex(List<Integer> userIdSet){
         if(!StringUtils.isEmptyList(userIdSet)){
             for(Integer userId:userIdSet){
-                log.info("==========更新data/profile==============");
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_DATA_USER_IDS",String.valueOf(userId));
-                log.info("==========更新data/profile===userId=={}==============",userId);
-
+                scheduledThread.startTast(()->{
+                    log.info("==========更新data/profile==============");
+                    redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_DATA_USER_IDS",String.valueOf(userId));
+                    log.info("==========更新data/profile===userId=={}==============",userId);
+                },1000*10);
             }
-
         }
     }
 
