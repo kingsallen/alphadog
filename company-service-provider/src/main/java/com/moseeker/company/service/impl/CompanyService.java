@@ -815,10 +815,6 @@ public class CompanyService {
         }
 
         if(workWxConfDO == null || !checkSecretKey(workWxConfDO)){
-            // 删除access_token,保存错误消息
-            if (workWxConfExisted) {
-                hrCompanyWorkwxConfDao.updateData(workWxConfDO);
-            }
             throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
         }
 
@@ -868,7 +864,7 @@ public class CompanyService {
             workWxConfDO.setTokenUpdateTime(System.currentTimeMillis());
             workWxConfDO.setTokenExpireTime(expiresTime);
             workWxConfDO.setErrorCode(0);
-            workWxConfDO.setErrorMsg(null);
+            workWxConfDO.setErrorMsg("");
 
             String jsapiurl = String.format(WORKWX_GET_JSAPI_TICKET_URL, accessToken);
             Map jsapiRst =  new RestTemplate().getForEntity(jsapiurl,Map.class).getBody();
@@ -877,8 +873,6 @@ public class CompanyService {
             }
             return true ;
         }else{
-            workWxConfDO.setErrorCode((int)result.get("errcode"));
-            workWxConfDO.setErrorMsg(result.get("errmsg").toString());
             return false ;
         }
     }
