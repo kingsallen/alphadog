@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = -812695121;
+    private static final long serialVersionUID = -1891129614;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -72,14 +72,14 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_position.id");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
+     * The column <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者，1：HR回复,  2：MoBot自动回复
      */
-    public final TableField<HrWxHrChatRecord, Byte> SPEAKER = createField("speaker", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)");
+    public final TableField<HrWxHrChatRecord, Byte> SPEAKER = createField("speaker", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聊天的发起人，0：求职者，1：HR回复,  2：MoBot自动回复");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.status</code>. 状态，0：有效，1：无效
+     * The column <code>hrdb.hr_wx_hr_chat.status</code>. 问题状态，0：正常聊天内容，1：等待HR回复，2:HR已回复
      */
-    public final TableField<HrWxHrChatRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态，0：有效，1：无效");
+    public final TableField<HrWxHrChatRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "问题状态，0：正常聊天内容，1：等待HR回复，2:HR已回复");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.create_time</code>. 创建时间
@@ -107,14 +107,19 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, String> BTN_CONTENT = createField("btn_content", org.jooq.impl.SQLDataType.CLOB, this, "控件类信息,当字段msg_type值为为\"button_radio\"时,会保存json格式:\"[{\"content\": \"\\u662f\"}, {\"content\": \"\\u5426”}]”，不再使用");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
+     * The column <code>hrdb.hr_wx_hr_chat.compound_content</code>. 消息类型对应的json数据内容
      */
-    public final TableField<HrWxHrChatRecord, String> COMPOUND_CONTENT = createField("compound_content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容，表单、button等复合字段,保存为json格式");
+    public final TableField<HrWxHrChatRecord, String> COMPOUND_CONTENT = createField("compound_content", org.jooq.impl.SQLDataType.CLOB, this, "消息类型对应的json数据内容");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用的参数
      */
     public final TableField<HrWxHrChatRecord, String> STATS = createField("stats", org.jooq.impl.SQLDataType.CLOB, this, "数据统计时使用的参数");
+
+    /**
+     * The column <code>hrdb.hr_wx_hr_chat.hr_reply_question_chat_id</code>. HR回复问题对应的聊天内容ID，hrdb.hr_wx_hr_chat.id
+     */
+    public final TableField<HrWxHrChatRecord, Integer> HR_REPLY_QUESTION_CHAT_ID = createField("hr_reply_question_chat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "HR回复问题对应的聊天内容ID，hrdb.hr_wx_hr_chat.id");
 
     /**
      * Create a <code>hrdb.hr_wx_hr_chat</code> table reference

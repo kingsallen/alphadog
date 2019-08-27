@@ -11,6 +11,14 @@ import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsApplicationRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsApplicationShowField;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsLastOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseEvent;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEvent;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEventItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
@@ -93,6 +101,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
 
 import javax.annotation.Generated;
@@ -145,6 +154,46 @@ public class Tables {
      * hr ats申请状态的上一个操作记录
      */
     public static final HrAtsLastOperationRecord HR_ATS_LAST_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD;
+
+    /**
+     * 企业招聘阶段基础类别表
+     */
+    public static final HrAtsPhaseBase HR_ATS_PHASE_BASE = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase.HR_ATS_PHASE_BASE;
+
+    /**
+     * hr阶段事件可配置选项表
+     */
+    public static final HrAtsPhaseBaseEvent HR_ATS_PHASE_BASE_EVENT = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT;
+
+    /**
+     * ats阶段具体的企业配置项
+     */
+    public static final HrAtsPhaseBaseItem HR_ATS_PHASE_BASE_ITEM = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM;
+
+    /**
+     * 企业l阶段事件挂载中间表
+     */
+    public static final HrAtsPhaseEvent HR_ATS_PHASE_EVENT = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEvent.HR_ATS_PHASE_EVENT;
+
+    /**
+     * 招聘管理事件
+     */
+    public static final HrAtsPhaseEventItems HR_ATS_PHASE_EVENT_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS;
+
+    /**
+     * ats流程企业端配置项
+     */
+    public static final HrAtsProcessCompany HR_ATS_PROCESS_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY;
+
+    /**
+     * ats流程企业端配置搭配表
+     */
+    public static final HrAtsProcessCompanyItem HR_ATS_PROCESS_COMPANY_ITEM = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM;
+
+    /**
+     * ats招聘流程进度流水表
+     */
+    public static final HrAtsProcessNewRecord HR_ATS_PROCESS_NEW_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD;
 
     /**
      * 聊天室未读消息
@@ -217,7 +266,7 @@ public class Tables {
     public static final HrCompanyWorkwxConf HR_COMPANY_WORKWX_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF;
 
     /**
-     * The table <code>hrdb.hr_dashboard_config</code>.
+     * dashboard展示项配置表
      */
     public static final HrDashboardConfig HR_DASHBOARD_CONFIG = com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig.HR_DASHBOARD_CONFIG;
 
@@ -560,4 +609,9 @@ public class Tables {
      * 微信消息通知同步状态
      */
     public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+
+    /**
+     * 微信公众号的场景二维码表(永久)
+     */
+    public static final HrWxWechatQrcode HR_WX_WECHAT_QRCODE = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode.HR_WX_WECHAT_QRCODE;
 }

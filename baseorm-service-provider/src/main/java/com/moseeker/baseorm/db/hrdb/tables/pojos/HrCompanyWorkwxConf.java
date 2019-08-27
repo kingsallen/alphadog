@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyWorkwxConf implements Serializable {
 
-    private static final long serialVersionUID = 241138656;
+    private static final long serialVersionUID = 480700349;
 
     private Integer   id;
     private Integer   companyId;

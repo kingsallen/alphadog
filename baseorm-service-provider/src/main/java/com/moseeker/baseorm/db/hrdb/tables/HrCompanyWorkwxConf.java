@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyWorkwxConf extends TableImpl<HrCompanyWorkwxConfRecord> {
 
-    private static final long serialVersionUID = 1549249059;
+    private static final long serialVersionUID = 1909319917;
 
     /**
      * The reference instance of <code>hrdb.hr_company_workwx_conf</code>

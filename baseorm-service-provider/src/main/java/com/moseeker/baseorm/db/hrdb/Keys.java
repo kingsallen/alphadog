@@ -11,6 +11,14 @@ import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsApplicationRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsApplicationShowField;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsLastOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseEvent;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEvent;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEventItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
@@ -91,6 +99,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAccountApplicationNotifyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
@@ -98,6 +107,14 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrAppExportFieldsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsApplicationRecommendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsApplicationShowFieldRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsLastOperationRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsPhaseBaseEventRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsPhaseBaseItemRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsPhaseBaseRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsPhaseEventItemsRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsPhaseEventRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsProcessCompanyItemRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsProcessCompanyRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrAtsProcessNewRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
@@ -177,6 +194,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatQrcodeRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 
 import javax.annotation.Generated;
@@ -211,6 +229,14 @@ public class Keys {
     public static final Identity<HrAtsApplicationRecommendRecord, Integer> IDENTITY_HR_ATS_APPLICATION_RECOMMEND = Identities0.IDENTITY_HR_ATS_APPLICATION_RECOMMEND;
     public static final Identity<HrAtsApplicationShowFieldRecord, Integer> IDENTITY_HR_ATS_APPLICATION_SHOW_FIELD = Identities0.IDENTITY_HR_ATS_APPLICATION_SHOW_FIELD;
     public static final Identity<HrAtsLastOperationRecordRecord, Integer> IDENTITY_HR_ATS_LAST_OPERATION_RECORD = Identities0.IDENTITY_HR_ATS_LAST_OPERATION_RECORD;
+    public static final Identity<HrAtsPhaseBaseRecord, Integer> IDENTITY_HR_ATS_PHASE_BASE = Identities0.IDENTITY_HR_ATS_PHASE_BASE;
+    public static final Identity<HrAtsPhaseBaseEventRecord, Integer> IDENTITY_HR_ATS_PHASE_BASE_EVENT = Identities0.IDENTITY_HR_ATS_PHASE_BASE_EVENT;
+    public static final Identity<HrAtsPhaseBaseItemRecord, Integer> IDENTITY_HR_ATS_PHASE_BASE_ITEM = Identities0.IDENTITY_HR_ATS_PHASE_BASE_ITEM;
+    public static final Identity<HrAtsPhaseEventRecord, Integer> IDENTITY_HR_ATS_PHASE_EVENT = Identities0.IDENTITY_HR_ATS_PHASE_EVENT;
+    public static final Identity<HrAtsPhaseEventItemsRecord, Integer> IDENTITY_HR_ATS_PHASE_EVENT_ITEMS = Identities0.IDENTITY_HR_ATS_PHASE_EVENT_ITEMS;
+    public static final Identity<HrAtsProcessCompanyRecord, Integer> IDENTITY_HR_ATS_PROCESS_COMPANY = Identities0.IDENTITY_HR_ATS_PROCESS_COMPANY;
+    public static final Identity<HrAtsProcessCompanyItemRecord, Integer> IDENTITY_HR_ATS_PROCESS_COMPANY_ITEM = Identities0.IDENTITY_HR_ATS_PROCESS_COMPANY_ITEM;
+    public static final Identity<HrAtsProcessNewRecordRecord, Integer> IDENTITY_HR_ATS_PROCESS_NEW_RECORD = Identities0.IDENTITY_HR_ATS_PROCESS_NEW_RECORD;
     public static final Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = Identities0.IDENTITY_HR_CMS_MEDIA;
     public static final Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = Identities0.IDENTITY_HR_CMS_MODULE;
     public static final Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = Identities0.IDENTITY_HR_CMS_PAGES;
@@ -287,6 +313,7 @@ public class Keys {
     public static final Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = Identities0.IDENTITY_HR_WX_TEMPLATE_MESSAGE;
     public static final Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = Identities0.IDENTITY_HR_WX_WECHAT;
     public static final Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = Identities0.IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+    public static final Identity<HrWxWechatQrcodeRecord, Integer> IDENTITY_HR_WX_WECHAT_QRCODE = Identities0.IDENTITY_HR_WX_WECHAT_QRCODE;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -299,6 +326,15 @@ public class Keys {
     public static final UniqueKey<HrAtsApplicationRecommendRecord> KEY_HR_ATS_APPLICATION_RECOMMEND_PRIMARY = UniqueKeys0.KEY_HR_ATS_APPLICATION_RECOMMEND_PRIMARY;
     public static final UniqueKey<HrAtsApplicationShowFieldRecord> KEY_HR_ATS_APPLICATION_SHOW_FIELD_PRIMARY = UniqueKeys0.KEY_HR_ATS_APPLICATION_SHOW_FIELD_PRIMARY;
     public static final UniqueKey<HrAtsLastOperationRecordRecord> KEY_HR_ATS_LAST_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_HR_ATS_LAST_OPERATION_RECORD_PRIMARY;
+    public static final UniqueKey<HrAtsPhaseBaseRecord> KEY_HR_ATS_PHASE_BASE_PRIMARY = UniqueKeys0.KEY_HR_ATS_PHASE_BASE_PRIMARY;
+    public static final UniqueKey<HrAtsPhaseBaseEventRecord> KEY_HR_ATS_PHASE_BASE_EVENT_PRIMARY = UniqueKeys0.KEY_HR_ATS_PHASE_BASE_EVENT_PRIMARY;
+    public static final UniqueKey<HrAtsPhaseBaseItemRecord> KEY_HR_ATS_PHASE_BASE_ITEM_PRIMARY = UniqueKeys0.KEY_HR_ATS_PHASE_BASE_ITEM_PRIMARY;
+    public static final UniqueKey<HrAtsPhaseEventRecord> KEY_HR_ATS_PHASE_EVENT_PRIMARY = UniqueKeys0.KEY_HR_ATS_PHASE_EVENT_PRIMARY;
+    public static final UniqueKey<HrAtsPhaseEventRecord> KEY_HR_ATS_PHASE_EVENT_HR_ATS_PHASE_EVENT_PROCESS_ID_EVENT_ID_UINDEX = UniqueKeys0.KEY_HR_ATS_PHASE_EVENT_HR_ATS_PHASE_EVENT_PROCESS_ID_EVENT_ID_UINDEX;
+    public static final UniqueKey<HrAtsPhaseEventItemsRecord> KEY_HR_ATS_PHASE_EVENT_ITEMS_PRIMARY = UniqueKeys0.KEY_HR_ATS_PHASE_EVENT_ITEMS_PRIMARY;
+    public static final UniqueKey<HrAtsProcessCompanyRecord> KEY_HR_ATS_PROCESS_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_ATS_PROCESS_COMPANY_PRIMARY;
+    public static final UniqueKey<HrAtsProcessCompanyItemRecord> KEY_HR_ATS_PROCESS_COMPANY_ITEM_PRIMARY = UniqueKeys0.KEY_HR_ATS_PROCESS_COMPANY_ITEM_PRIMARY;
+    public static final UniqueKey<HrAtsProcessNewRecordRecord> KEY_HR_ATS_PROCESS_NEW_RECORD_PRIMARY = UniqueKeys0.KEY_HR_ATS_PROCESS_NEW_RECORD_PRIMARY;
     public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
     public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = UniqueKeys0.KEY_HR_CMS_MEDIA_PRIMARY;
     public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = UniqueKeys0.KEY_HR_CMS_MODULE_PRIMARY;
@@ -389,6 +425,8 @@ public class Keys {
     public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = UniqueKeys0.KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY;
     public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_PRIMARY;
     public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY;
+    public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_QRCODE_PRIMARY;
+    public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL = UniqueKeys0.KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -407,6 +445,14 @@ public class Keys {
         public static Identity<HrAtsApplicationRecommendRecord, Integer> IDENTITY_HR_ATS_APPLICATION_RECOMMEND = createIdentity(HrAtsApplicationRecommend.HR_ATS_APPLICATION_RECOMMEND, HrAtsApplicationRecommend.HR_ATS_APPLICATION_RECOMMEND.ID);
         public static Identity<HrAtsApplicationShowFieldRecord, Integer> IDENTITY_HR_ATS_APPLICATION_SHOW_FIELD = createIdentity(HrAtsApplicationShowField.HR_ATS_APPLICATION_SHOW_FIELD, HrAtsApplicationShowField.HR_ATS_APPLICATION_SHOW_FIELD.ID);
         public static Identity<HrAtsLastOperationRecordRecord, Integer> IDENTITY_HR_ATS_LAST_OPERATION_RECORD = createIdentity(HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD, HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD.ID);
+        public static Identity<HrAtsPhaseBaseRecord, Integer> IDENTITY_HR_ATS_PHASE_BASE = createIdentity(HrAtsPhaseBase.HR_ATS_PHASE_BASE, HrAtsPhaseBase.HR_ATS_PHASE_BASE.ID);
+        public static Identity<HrAtsPhaseBaseEventRecord, Integer> IDENTITY_HR_ATS_PHASE_BASE_EVENT = createIdentity(HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT, HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT.ID);
+        public static Identity<HrAtsPhaseBaseItemRecord, Integer> IDENTITY_HR_ATS_PHASE_BASE_ITEM = createIdentity(HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM, HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM.ID);
+        public static Identity<HrAtsPhaseEventRecord, Integer> IDENTITY_HR_ATS_PHASE_EVENT = createIdentity(HrAtsPhaseEvent.HR_ATS_PHASE_EVENT, HrAtsPhaseEvent.HR_ATS_PHASE_EVENT.ID);
+        public static Identity<HrAtsPhaseEventItemsRecord, Integer> IDENTITY_HR_ATS_PHASE_EVENT_ITEMS = createIdentity(HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS, HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS.ID);
+        public static Identity<HrAtsProcessCompanyRecord, Integer> IDENTITY_HR_ATS_PROCESS_COMPANY = createIdentity(HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY, HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY.ID);
+        public static Identity<HrAtsProcessCompanyItemRecord, Integer> IDENTITY_HR_ATS_PROCESS_COMPANY_ITEM = createIdentity(HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM, HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM.ID);
+        public static Identity<HrAtsProcessNewRecordRecord, Integer> IDENTITY_HR_ATS_PROCESS_NEW_RECORD = createIdentity(HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD, HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD.ID);
         public static Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = createIdentity(HrCmsMedia.HR_CMS_MEDIA, HrCmsMedia.HR_CMS_MEDIA.ID);
         public static Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = createIdentity(HrCmsModule.HR_CMS_MODULE, HrCmsModule.HR_CMS_MODULE.ID);
         public static Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = createIdentity(HrCmsPages.HR_CMS_PAGES, HrCmsPages.HR_CMS_PAGES.ID);
@@ -483,6 +529,7 @@ public class Keys {
         public static Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = createIdentity(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = createIdentity(HrWxWechat.HR_WX_WECHAT, HrWxWechat.HR_WX_WECHAT.ID);
         public static Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = createIdentity(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
+        public static Identity<HrWxWechatQrcodeRecord, Integer> IDENTITY_HR_WX_WECHAT_QRCODE = createIdentity(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -493,6 +540,15 @@ public class Keys {
         public static final UniqueKey<HrAtsApplicationRecommendRecord> KEY_HR_ATS_APPLICATION_RECOMMEND_PRIMARY = createUniqueKey(HrAtsApplicationRecommend.HR_ATS_APPLICATION_RECOMMEND, "KEY_hr_ats_application_recommend_PRIMARY", HrAtsApplicationRecommend.HR_ATS_APPLICATION_RECOMMEND.ID);
         public static final UniqueKey<HrAtsApplicationShowFieldRecord> KEY_HR_ATS_APPLICATION_SHOW_FIELD_PRIMARY = createUniqueKey(HrAtsApplicationShowField.HR_ATS_APPLICATION_SHOW_FIELD, "KEY_hr_ats_application_show_field_PRIMARY", HrAtsApplicationShowField.HR_ATS_APPLICATION_SHOW_FIELD.ID);
         public static final UniqueKey<HrAtsLastOperationRecordRecord> KEY_HR_ATS_LAST_OPERATION_RECORD_PRIMARY = createUniqueKey(HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD, "KEY_hr_ats_last_operation_record_PRIMARY", HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD.ID);
+        public static final UniqueKey<HrAtsPhaseBaseRecord> KEY_HR_ATS_PHASE_BASE_PRIMARY = createUniqueKey(HrAtsPhaseBase.HR_ATS_PHASE_BASE, "KEY_hr_ats_phase_base_PRIMARY", HrAtsPhaseBase.HR_ATS_PHASE_BASE.ID);
+        public static final UniqueKey<HrAtsPhaseBaseEventRecord> KEY_HR_ATS_PHASE_BASE_EVENT_PRIMARY = createUniqueKey(HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT, "KEY_hr_ats_phase_base_event_PRIMARY", HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT.ID);
+        public static final UniqueKey<HrAtsPhaseBaseItemRecord> KEY_HR_ATS_PHASE_BASE_ITEM_PRIMARY = createUniqueKey(HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM, "KEY_hr_ats_phase_base_item_PRIMARY", HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM.ID);
+        public static final UniqueKey<HrAtsPhaseEventRecord> KEY_HR_ATS_PHASE_EVENT_PRIMARY = createUniqueKey(HrAtsPhaseEvent.HR_ATS_PHASE_EVENT, "KEY_hr_ats_phase_event_PRIMARY", HrAtsPhaseEvent.HR_ATS_PHASE_EVENT.ID);
+        public static final UniqueKey<HrAtsPhaseEventRecord> KEY_HR_ATS_PHASE_EVENT_HR_ATS_PHASE_EVENT_PROCESS_ID_EVENT_ID_UINDEX = createUniqueKey(HrAtsPhaseEvent.HR_ATS_PHASE_EVENT, "KEY_hr_ats_phase_event_hr_ats_phase_event_process_id_event_id_uindex", HrAtsPhaseEvent.HR_ATS_PHASE_EVENT.PROCESS_ID, HrAtsPhaseEvent.HR_ATS_PHASE_EVENT.EVENT_ID);
+        public static final UniqueKey<HrAtsPhaseEventItemsRecord> KEY_HR_ATS_PHASE_EVENT_ITEMS_PRIMARY = createUniqueKey(HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS, "KEY_hr_ats_phase_event_items_PRIMARY", HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS.ID);
+        public static final UniqueKey<HrAtsProcessCompanyRecord> KEY_HR_ATS_PROCESS_COMPANY_PRIMARY = createUniqueKey(HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY, "KEY_hr_ats_process_company_PRIMARY", HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY.ID);
+        public static final UniqueKey<HrAtsProcessCompanyItemRecord> KEY_HR_ATS_PROCESS_COMPANY_ITEM_PRIMARY = createUniqueKey(HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM, "KEY_hr_ats_process_company_item_PRIMARY", HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM.ID);
+        public static final UniqueKey<HrAtsProcessNewRecordRecord> KEY_HR_ATS_PROCESS_NEW_RECORD_PRIMARY = createUniqueKey(HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD, "KEY_hr_ats_process_new_record_PRIMARY", HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD.ID);
         public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
         public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = createUniqueKey(HrCmsMedia.HR_CMS_MEDIA, "KEY_hr_cms_media_PRIMARY", HrCmsMedia.HR_CMS_MEDIA.ID);
         public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = createUniqueKey(HrCmsModule.HR_CMS_MODULE, "KEY_hr_cms_module_PRIMARY", HrCmsModule.HR_CMS_MODULE.ID);
@@ -583,5 +639,7 @@ public class Keys {
         public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = createUniqueKey(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, "KEY_hr_wx_template_message_PRIMARY", HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = createUniqueKey(HrWxWechat.HR_WX_WECHAT, "KEY_hr_wx_wechat_PRIMARY", HrWxWechat.HR_WX_WECHAT.ID);
         public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = createUniqueKey(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, "KEY_hr_wx_wechat_notice_sync_status_PRIMARY", HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
+        public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_PRIMARY = createUniqueKey(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, "KEY_hr_wx_wechat_qrcode_PRIMARY", HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.ID);
+        public static final UniqueKey<HrWxWechatQrcodeRecord> KEY_HR_WX_WECHAT_QRCODE_UNIQUE_QRCODE_URL = createUniqueKey(HrWxWechatQrcode.HR_WX_WECHAT_QRCODE, "KEY_hr_wx_wechat_qrcode_unique_qrcode_url", HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.WECHAT_ID, HrWxWechatQrcode.HR_WX_WECHAT_QRCODE.SCENE);
     }
 }
