@@ -1417,6 +1417,9 @@ public class UserHrAccountService {
             if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCname())) {
                 v.setCname(v.getCname().trim());
             }
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCustomField())) {
+                v.setCustomField(v.getCustomField().trim());
+            }
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
