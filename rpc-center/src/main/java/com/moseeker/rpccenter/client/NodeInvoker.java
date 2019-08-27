@@ -90,9 +90,9 @@ public class NodeInvoker<T> implements Invoker {
                 	//warning
                     continue;
                 }
-                LOGGER.info("NodeInvoker invoke node.name:{}, node.data:{}", JSONObject.toJSONString(node.getName()), JSONObject.toJSONString(node.getData()));
+                LOGGER.debug("NodeInvoker invoke node.name:{}, node.data:{}", JSONObject.toJSONString(node.getName()), JSONObject.toJSONString(node.getData()));
                 client = pool.borrowObject(node);
-                LOGGER.info("node:{}, getNumActive:{}",node,pool.getNumActive());
+                LOGGER.debug("node:{}, getNumActive:{}",node,pool.getNumActive());
                 Object result = method.invoke(client, args);
 
                 return result;

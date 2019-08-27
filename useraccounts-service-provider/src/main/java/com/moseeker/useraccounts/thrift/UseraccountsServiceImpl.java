@@ -450,9 +450,17 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
+	public Response cerateQrcode(WeixinQrcode qrcode) throws TException {
 		try {
-			return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
+			Integer wechatId = qrcode.getWechatId();
+			Long sceneId = qrcode.isSetSceneId()?qrcode.getSceneId():null;
+			Integer expireSeconds = qrcode.getExpireSeconds();
+			Integer action_name = qrcode.getActionName();
+			String sceneStr = qrcode.getScene();
+		    logger.info("useraccountsServiceImpl.cerateQrcode params-> " +
+                    "wechatId:{} sceneId:{} expireSeconds:{} action_name:{} sceneStr:{}",
+                    wechatId,sceneId,expireSeconds,action_name,sceneStr);
+			return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name,sceneStr);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

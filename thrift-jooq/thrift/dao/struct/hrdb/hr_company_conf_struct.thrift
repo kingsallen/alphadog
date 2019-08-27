@@ -39,5 +39,6 @@ struct HrCompanyConfDO {
 struct HrCompanyMobotConfDO {
     1: optional i32 companyId,	//null
 	2: optional string mobotHeadImg,	//Mobot头像，聊天使用
-	3: optional string mobotName	//Mobot姓名，聊天使用
+	3: optional string mobotName,	//Mobot姓名，聊天使用
+	4: optional string mobotWelcome  //Mobot欢迎语
 }

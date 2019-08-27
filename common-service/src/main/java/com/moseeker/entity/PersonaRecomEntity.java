@@ -75,7 +75,6 @@ public class PersonaRecomEntity {
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             String[] ids=positionIds.split(",");
             List<CampaignPersonaRecomRecord> list=new ArrayList<>();
-            // TODO 需要补充每次推荐的唯一标识和推荐排序记录
             for(String positionId :ids){
                 CampaignPersonaRecomRecord campaignPersonaRecomRecord=new CampaignPersonaRecomRecord();
                 campaignPersonaRecomRecord.setUserId(userId);

@@ -1,6 +1,7 @@
 package com.moseeker.entity;
 
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +49,9 @@ public class SensorSend {
         tp.startTast(()->{
             try {
                 Map<String, Object> properties = new HashMap<>();
-              //  properties.put("$project", "ToCProduction");//线上环境专用
-              //  properties.put("$project", "ToCTest");//沙盒环境专用
                 properties.put("$project", configUtils.get("sensor_env",String.class).trim());//动态加载环境
                 sa.track(distinctId, true, eventName, properties);
+                logger.info("sensorSend send successful distinctId:{} eventName:{} properties:{}",distinctId,eventName,properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
@@ -62,10 +62,24 @@ public class SensorSend {
     public void send(String distinctId, String eventName, Map<String, Object> properties){
         tp.startTast(()->{
             try {
-               // properties.put("$project", "ToCProduction");//线上环境专用
+                // properties.put("$project", "ToCProduction");//线上环境专用
                 //properties.put("$project", "ToCTest");//沙盒环境专用
                 properties.put("$project", configUtils.get("sensor_env",String.class).trim());//动态加载环境
                 sa.track(distinctId, true, eventName,properties);
+                logger.info("sensorSend send successful distinctId:{} eventName:{} properties:{}",distinctId,eventName,properties);
+            }catch (Exception e){
+                logger.error(e.getMessage(),e);
+            }
+            return 0;
+        });
+    }
+
+    public void send(String distinctId, String eventName, SensorProperties properties){
+        tp.startTast(()->{
+            try {
+                properties.put("$project", configUtils.get("sensor_env",String.class).trim());//动态加载环境
+                sa.track(distinctId, true, eventName,properties);
+                logger.info("sensorSend send successful distinctId:{} eventName:{} properties:{}",distinctId,eventName,properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }

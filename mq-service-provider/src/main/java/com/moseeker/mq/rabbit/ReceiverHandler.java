@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -17,6 +18,7 @@ import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.*;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
 import com.moseeker.entity.pojo.readpacket.RedPacketData;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
@@ -206,31 +208,17 @@ public class ReceiverHandler {
             log.info("seekReferralReceive jsonObject:{}", jsonObject);
             if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
+
                 Date now = new Date();
                 long sendTime=  now.getTime();
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE);
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
-                String distinctId = String.valueOf(postUserId);
-                // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
-                Date now = new Date();
-                now.getTime();
-                Map<String, Object> properties = new HashMap<String, Object>();
 
                 Date nowTime= new Date();
                 long  sendTime= nowTime.getTime();
-                properties.put("sendTime",sendTime);
-                properties.put("templateId",Constant.EMPLOYEE_REFERRAL_EVALUATE);
-                log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
-                String distinctId = String.valueOf(userId);
-               // sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
-                sensorSend.send(distinctId,"sendTemplateMessage",properties);
             }
         } catch (CommonException e) {
             log.info(e.getMessage(), e);
@@ -352,11 +340,16 @@ public class ReceiverHandler {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
                         logVo.setStatus_code(0);
-
-                        // 添加发送模板的神策埋点记录
-                        this.addSendMessageTemplageSensorTrack(String.valueOf(params.getUserId()),
-                                params.getTemplateId(), params.getCompanyId());
-
+                        if(type==2){
+                            List<HrCompany> hrCompanies = employeeEntity.getCompaniesByIds(Collections.singletonList(params.getCompanyId()));
+                            String companyName = null;
+                            if(hrCompanies!=null&&hrCompanies.size()>0){
+                                companyName = hrCompanies.get(0).getName();
+                            }
+                            SensorProperties properties = new SensorProperties(true,params.getCompanyId(),companyName);
+                            properties.put("templateId", String.valueOf(params.getTemplateId()));
+                            sensorSend.send(String.valueOf(params.getUserId()),"sendTemplateMessage",properties);
+                        }
                     } else {
                         log.info("元夕飞花令 handlerMessageTemplate messageTemplate == null");
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
@@ -377,20 +370,6 @@ public class ReceiverHandler {
             ELKLog.ELK_LOG.log(logVo);
         }
     }
-
-    private void addSendMessageTemplageSensorTrack(String distinctId, Integer templateId, Integer companyId){
-        String eventName = "sendTemplateMessage";
-
-        Map<String, Object> properties = new HashMap();
-        properties.put("templateId", templateId);
-        properties.put("companyId", companyId);
-
-        // TODO 发送消息的埋点最好都在mtp[python]的队列脚本中统一处理，临时添加sendSource为RabbitListener标识为渠道特征识别
-        properties.put("sendSource", "RabbitListener");
-
-        sensorSend.send(distinctId, eventName, properties);
-    }
-
     private void handlerPosition(AIRecomParams params){
         if(params.getType()==2){
             personaRecomEntity.updateIsSendPersonaRecom(params.getUserId(),params.getCompanyId(),0,1,20);
