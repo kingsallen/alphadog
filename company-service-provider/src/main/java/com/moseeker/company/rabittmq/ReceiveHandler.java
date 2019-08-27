@@ -37,7 +37,7 @@ public class ReceiveHandler {
     private CompanyTagService companyTagService;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
-    @Autowired
+
     private ScheduledThread scheduledThread=ScheduledThread.Instance;
 
 
