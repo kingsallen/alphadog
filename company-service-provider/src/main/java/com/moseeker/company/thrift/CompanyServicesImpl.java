@@ -187,7 +187,11 @@ public class CompanyServicesImpl implements Iface {
     @Override
     public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
         try {
-            return service.getWorkWechatEmployeeBindConf(companyId);
+            WorkWxCertConf conf =  service.getWorkWechatEmployeeBindConf(companyId);
+            if (conf == null){
+                conf = new WorkWxCertConf();
+            }
+            return conf;
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

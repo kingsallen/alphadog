@@ -1,7 +1,6 @@
 package com.moseeker.baseorm.config;
 
 import com.jolbox.bonecp.BoneCPDataSource;
-import com.moseeker.baseorm.exception.CommonServiceException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.baseorm.exception.ExceptionTranslator;
 
@@ -37,21 +36,8 @@ public class AppConfig {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Bean(destroyMethod = "close")
-    public DataSource getDataSource() throws CommonServiceException {
-
+    public DataSource getDataSource() {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-
-        Boolean configServer = propertiesReader.get("mycat.configServer", Boolean.class);
-        if (configServer != null && configServer) {
-            String domain = propertiesReader.get("mycat.configServerDomain", String.class);
-            String application = propertiesReader.get("mycat.application", String.class);
-            String profile = propertiesReader.get("mycat.profile", String.class);
-            String branch = propertiesReader.get("mycat.branch", String.class);
-            ConfigurationClient configurationClient = new ConfigurationClient(domain, application, profile, branch);
-            configurationClient.fetchProperties();
-            configurationClient.appendDBProperty();
-        }
-
         String driverClass = propertiesReader.get("mycat.classname", String.class);
         String url = propertiesReader.get("mycat.url", String.class);
         String userName = propertiesReader.get("mycat.userName", String.class);
@@ -61,9 +47,6 @@ public class AppConfig {
         Integer idleMaxAgeInMinutes = propertiesReader.get("mycat.idleMaxAgeInMinutes", Integer.class);
         Integer acquireRetryDelayInMs = propertiesReader.get("mycat.acquireRetryDelayInMs", Integer.class);
         Integer acquireRetryAttempts = propertiesReader.get("mycat.acquireRetryAttempts", Integer.class);
-
-        logger.info("getDataSource() driverClass:{} url:{} " , driverClass,url);
-        logger.debug("getDataSource() username:{} password{}" , userName,password);
 
         BoneCPDataSource boneCPDataSource = new BoneCPDataSource();
 

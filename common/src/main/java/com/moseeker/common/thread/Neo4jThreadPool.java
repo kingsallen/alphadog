@@ -59,7 +59,7 @@ public enum Neo4jThreadPool {
                 33,
                 60L,
                 TimeUnit.SECONDS,
-                new SynchronousQueue<>(), threadFactory,
+                new LinkedBlockingQueue<>(20000), threadFactory,
                 new ThreadPoolExecutor.AbortPolicy());
     }
 }

@@ -258,9 +258,8 @@ public class SearchengineEntity {
                                     .setSource(jsonObject)
                     );
                 }
-                long startTime = System.currentTimeMillis();
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-                logger.info("------ES更新员工积分信息结束-------,耗时{}ms",System.currentTimeMillis()-startTime);
+                logger.info("------更新员工积分信息结束-------");
                 logger.info("bulkResponse.buildFailureMessage():{}", bulkResponse.buildFailureMessage());
                 logger.info("bulkResponse.toString():" + bulkResponse.toString());
                 if (bulkResponse.buildFailureMessage() != null) {
@@ -434,9 +433,8 @@ public class SearchengineEntity {
                                     .setSource(jsonObject)
                     );
                 }
-                long startTime = System.currentTimeMillis();
                 BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-                logger.info("------ES全量更新员工积分结束-------,耗时{}",System.currentTimeMillis()-startTime);
+                logger.info("------全量更新员工积分结束-------");
                 logger.info("bulkResponse.buildFailureMessage():{}", bulkResponse.buildFailureMessage());
                 logger.info("bulkResponse.toString():" + bulkResponse.toString());
                 if (bulkResponse.buildFailureMessage() != null) {

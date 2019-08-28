@@ -10,7 +10,7 @@ import java.util.Map;
 public enum EmployeeActiveState {
 
     Actived(0, "认证成功"), Cancel(1, "认证后取消认证"), Failure(2, "认证失败"), Init(3, "未认证"),
-    MigrateToOtherCompany(4, "认证后又认证了其他公司"), UnFollow(5, "取消关注"),QuitJob(6,"员工离职");
+    MigrateToOtherCompany(4, "认证后又认证了其他公司"), UnFollow(5, "取消关注");
 
     private EmployeeActiveState(int state, String name) {
         this.state = (byte)state;
