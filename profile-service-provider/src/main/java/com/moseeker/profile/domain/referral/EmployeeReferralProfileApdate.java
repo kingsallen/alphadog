@@ -45,6 +45,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                                   UserEmployeeDO employeeDO, ProfileAttementVO attementVO){
         int userId = 0;
         int attachementId = 0;
+        logger.info("EmployeeReferralProfileApdate storeReferralUser userRecord:{}", userRecord);
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
             UserUserRecord userUserRecord = new UserUserRecord();
@@ -65,6 +66,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             }
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            logger.info("EmployeeReferralProfileApdate storeReferralUser userName:{}", userRecord.getUsername());
             if (StringUtils.isBlank(userRecord.getUsername())) {
                 if (profilePojo.getProfileRecord() != null) {
                     profilePojo.getProfileRecord().setUserId(userRecord.getId());
@@ -75,6 +77,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                     id = logRecord.getAttementId();
                 }
                 attachementId = profileEntity.mergeProfileReferral(profilePojo, userId, id);
+                logger.info("EmployeeReferralProfileApdate storeReferralUser attachementId:{}", attachementId);
                 int temp= userId;
                 tp.startTast(() -> {
                     companyTagService.handlerCompanyTagByUserId(temp);
@@ -83,11 +86,16 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             }
         } else {
             ProfileSaveResult result = profileEntity.storeReferralUser(profilePojo, profileNotice.getEmployeeId(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
+            logger.info("EmployeeReferralProfileApdate storeReferralUser result:{}", result);
             if (result != null) {
+                logger.info("EmployeeReferralProfileApdate storeReferralUser result.userId:{}, result.profileId:{}", result.getProfileRecord().getUserId(), result.getProfileRecord().getId());
                 userId = result.getProfileRecord().getUserId();
                 profilePojo.getProfileRecord().setUserId(result.getProfileRecord().getUserId());
+                logger.info("EmployeeReferralProfileApdate storeReferralUser result.attachments:{}", result.getAttachmentRecords());
                 if(result.getAttachmentRecords() != null && result.getAttachmentRecords().size() > 0) {
+                    logger.info("EmployeeReferralProfileApdate storeReferralUser result.attachment:{}", result.getAttachmentRecords().get(0));
                     attachementId = result.getAttachmentRecords().get(0).getId();
+                    logger.info("EmployeeReferralProfileApdate storeReferralUser attachmentId:{}", attachementId);
                 }
                 int temp= userId;
                 tp.startTast(() -> {

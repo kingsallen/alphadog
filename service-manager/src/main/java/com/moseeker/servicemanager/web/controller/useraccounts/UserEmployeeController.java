@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
@@ -45,6 +46,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
+
 /**
  * Created by eddie on 2017/3/7.
  */
@@ -55,6 +58,7 @@ public class UserEmployeeController {
     UserEmployeeService.Iface service = ServiceManager.SERVICE_MANAGER.getService(UserEmployeeService.Iface.class);
 
     EmployeeService.Iface employeeService =  ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
+
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
@@ -222,10 +226,13 @@ public class UserEmployeeController {
     @RequestMapping(value="/user/employee/unbind", method = RequestMethod.POST)
     @ResponseBody
     public String unbind(HttpServletRequest request,  HttpServletResponse response) {
+        Result result = null ;
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            logger.debug("POST /user/employee/unbind params:{}",params);
             int userId = params.getInt("user_id", 0);
             int companyId = params.getInt("company_id", 0);
+            byte activationChange = params.getByte("activationChange",(byte)1);
             if (companyId == 0) {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
             } else if (userId == 0) {
@@ -237,20 +244,25 @@ public class UserEmployeeController {
                     return ResponseLogNotification.fail(request, "员工不存在");
                 }
 
-                Result result = employeeService.unbind(employee.employee.id,userId, companyId);
-                if(!result.success){
+                switch (activationChange){
+                    case EMPLOYEE_ACTIVATION_UNEMPLOYEE: result = employeeService.unemploy(employee.employee.id,userId, companyId);break;
+                    default: result = employeeService.unbind(employee.employee.id,userId, companyId);break;
+                }
+                logger.debug("/user/employee/unbind result : {}",result);
+                if(result == null || !result.success){
                     return ResponseLogNotification.fail(request, result.getMessage());
                 }
                 return ResponseLogNotification.successJson(request, result.employeeId);
             }
         } catch (BIZException e){
+            logger.error("POST /user/employee/unbind error",e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
+            logger.error("POST /user/employee/unbind error",e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 
     /**
      * 员工认证
@@ -263,7 +275,7 @@ public class UserEmployeeController {
     public String bind(HttpServletRequest request,  HttpServletResponse response) {
         try {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
-
+            logger.debug("POST /user/employee/bind params: {}",param);
             // 处理一下type，必须是int类型
             int type = param.getInt("type");
             param.put("type",type);
@@ -274,14 +286,16 @@ public class UserEmployeeController {
                 putAll(param);
             }}.toJavaObject(BindingParams.class);
             Result result = employeeService.bind(bindingParams,bindSource);
+            logger.debug("POST /user/employee/bind result:{}",result);
             if(!result.success){
                 return ResponseLogNotification.fail(request, result.getMessage());
             }
             return ResponseLogNotification.successJson(request, result.employeeId);
         } catch (BIZException e){
+            logger.error("POST /user/employee/bind error",e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error("POST /user/employee/bind error",e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -616,6 +630,20 @@ public class UserEmployeeController {
         }
     }
 
+    @RequestMapping(value="/employee/user/updateFromWorkwx", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateEmployeeFromWorkwx(HttpServletRequest request,  HttpServletResponse response)throws Exception{
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> userIds= JSONArray.parseArray(params.getString("userIds"),int.class);
+            int companyId =  Integer.parseInt(params.getString("companyId"));
+            service.batchUpdateEmployeeFromWorkwx(userIds,companyId);
+            return com.moseeker.servicemanager.web.controller.Result.SUCCESS;
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
 
 
     @RequestMapping(value="/v1/contact/referral/info", method = RequestMethod.GET)

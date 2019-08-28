@@ -4,9 +4,10 @@
 package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
-import javax.annotation.Generated;
 import java.io.Serializable;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -22,7 +23,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAtsProcessNewRecord implements Serializable {
 
-    private static final long serialVersionUID = -536565959;
+    private static final long serialVersionUID = -545619773;
 
     private Integer   id;
     private Integer   appId;

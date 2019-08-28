@@ -4,7 +4,105 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.*;
+import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
+import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppExportFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsApplicationRecommend;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsApplicationShowField;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsLastOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseEvent;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEvent;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEventItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcess;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyRecruitProcessItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyWorkwxConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrDashboardConfig;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
+import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterCandidate;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterJob;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterOmsConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrHeadhunterProfile;
+import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewAddress;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewConcrete;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewFeedbackResultAnswerSheet;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewFeedbackResultItemAnswer;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewFeedbackTemplate;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewFeedbackTemplateItem;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewFeedbackTemplateItemOption;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewNotice;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcess;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcessRound;
+import com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard;
+import com.moseeker.baseorm.db.hrdb.tables.HrNps;
+import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
+import com.moseeker.baseorm.db.hrdb.tables.HrOperationAllRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
+import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxModule;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNewsReply;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +128,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 150370258;
+    private static final long serialVersionUID = 588794556;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -71,6 +169,46 @@ public class Hrdb extends SchemaImpl {
      * hr ats申请状态的上一个操作记录
      */
     public final HrAtsLastOperationRecord HR_ATS_LAST_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD;
+
+    /**
+     * 企业招聘阶段基础类别表
+     */
+    public final HrAtsPhaseBase HR_ATS_PHASE_BASE = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase.HR_ATS_PHASE_BASE;
+
+    /**
+     * hr阶段事件可配置选项表
+     */
+    public final HrAtsPhaseBaseEvent HR_ATS_PHASE_BASE_EVENT = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT;
+
+    /**
+     * ats阶段具体的企业配置项
+     */
+    public final HrAtsPhaseBaseItem HR_ATS_PHASE_BASE_ITEM = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM;
+
+    /**
+     * 企业l阶段事件挂载中间表
+     */
+    public final HrAtsPhaseEvent HR_ATS_PHASE_EVENT = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEvent.HR_ATS_PHASE_EVENT;
+
+    /**
+     * 招聘管理事件
+     */
+    public final HrAtsPhaseEventItems HR_ATS_PHASE_EVENT_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS;
+
+    /**
+     * ats流程企业端配置项
+     */
+    public final HrAtsProcessCompany HR_ATS_PROCESS_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY;
+
+    /**
+     * ats流程企业端配置搭配表
+     */
+    public final HrAtsProcessCompanyItem HR_ATS_PROCESS_COMPANY_ITEM = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM;
+
+    /**
+     * ats招聘流程进度流水表
+     */
+    public final HrAtsProcessNewRecord HR_ATS_PROCESS_NEW_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD;
 
     /**
      * 聊天室未读消息
@@ -136,6 +274,11 @@ public class Hrdb extends SchemaImpl {
      * 公司内推配置表
      */
     public final HrCompanyReferralConf HR_COMPANY_REFERRAL_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF;
+
+    /**
+     * 企业微信配置
+     */
+    public final HrCompanyWorkwxConf HR_COMPANY_WORKWX_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF;
 
     /**
      * dashboard展示项配置表
@@ -483,30 +626,9 @@ public class Hrdb extends SchemaImpl {
     public final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 
     /**
-     * ats阶段具体的企业配置项
-     */
-    public final HrAtsPhaseBaseItem HR_ATS_PHASE_BASE_ITEM = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM;
-
-    /**
-     * ats流程企业端配置搭配表
-     */
-    public final HrAtsProcessCompanyItem HR_ATS_PROCESS_COMPANY_ITEM = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM;
-
-    /**
-     * ats招聘流程进度流水表
-     */
-    public final HrAtsProcessNewRecord HR_ATS_PROCESS_NEW_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD;
-
-    /**
-     * 企业招聘阶段基础类别表
-     */
-    public final HrAtsPhaseBase HR_ATS_PHASE_BASE = com.moseeker.baseorm.db.hrdb.tables.HrAtsPhaseBase.HR_ATS_PHASE_BASE;
-
-    /**
      * 微信公众号的场景二维码表(永久)
      */
     public final HrWxWechatQrcode HR_WX_WECHAT_QRCODE = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatQrcode.HR_WX_WECHAT_QRCODE;
-
 
     /**
      * No further instances allowed
@@ -540,6 +662,14 @@ public class Hrdb extends SchemaImpl {
             HrAtsApplicationRecommend.HR_ATS_APPLICATION_RECOMMEND,
             HrAtsApplicationShowField.HR_ATS_APPLICATION_SHOW_FIELD,
             HrAtsLastOperationRecord.HR_ATS_LAST_OPERATION_RECORD,
+            HrAtsPhaseBase.HR_ATS_PHASE_BASE,
+            HrAtsPhaseBaseEvent.HR_ATS_PHASE_BASE_EVENT,
+            HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM,
+            HrAtsPhaseEvent.HR_ATS_PHASE_EVENT,
+            HrAtsPhaseEventItems.HR_ATS_PHASE_EVENT_ITEMS,
+            HrAtsProcessCompany.HR_ATS_PROCESS_COMPANY,
+            HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM,
+            HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
             HrCmsMedia.HR_CMS_MEDIA,
             HrCmsModule.HR_CMS_MODULE,
@@ -553,6 +683,7 @@ public class Hrdb extends SchemaImpl {
             HrCompanyRecruitProcess.HR_COMPANY_RECRUIT_PROCESS,
             HrCompanyRecruitProcessItems.HR_COMPANY_RECRUIT_PROCESS_ITEMS,
             HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF,
+            HrCompanyWorkwxConf.HR_COMPANY_WORKWX_CONF,
             HrDashboardConfig.HR_DASHBOARD_CONFIG,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
             HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
@@ -621,11 +752,6 @@ public class Hrdb extends SchemaImpl {
             HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
             HrWxWechat.HR_WX_WECHAT,
             HrWxWechat_20180127chendi.HR_WX_WECHAT_20180127CHENDI,
-            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-            HrAtsPhaseBaseItem.HR_ATS_PHASE_BASE_ITEM,
-            HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM,
-            HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD,
-            HrAtsPhaseBase.HR_ATS_PHASE_BASE,
             HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
             HrWxWechatQrcode.HR_WX_WECHAT_QRCODE);
     }

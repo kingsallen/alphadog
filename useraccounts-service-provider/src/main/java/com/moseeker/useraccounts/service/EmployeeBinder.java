@@ -40,6 +40,7 @@ import java.util.*;
 import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,16 +135,22 @@ public abstract class EmployeeBinder {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
         try {
+            // 请求参数有效值校验
             validate(bindingParams);
+            // 检查是否有有效员工认证配置
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
             HrEmployeeCertConfDO certConf = hrEmployeeCertConfDao.getData(query.buildQuery());
             if(certConf == null || certConf.getCompanyId() == 0) {
                 throw UserAccountException.EMPLOYEE_VERIFICATION_NOT_SUPPORT;
             }
+            // 查询
             paramCheck(bindingParams, certConf);
+            // 自定义字段值检验
             validateCustomFieldValues(bindingParams);
+            //
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
+            //
             response = doneBind(userEmployee,bingSource);
         } catch (CommonException e) {
             response.setSuccess(false);
@@ -176,6 +183,7 @@ public abstract class EmployeeBinder {
      * @param bindingParams 认证参数
      */
     protected void validate(BindingParams bindingParams) {
+        // 如果已认证，报错
         UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId());
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0
                 && userEmployeeDO.getActivation() == EmployeeActiveState.Actived.getState()) {
@@ -257,10 +265,9 @@ public abstract class EmployeeBinder {
         UserEmployeeRecord unActiveEmployee = fetchUnActiveEmployee(useremployee);
 
         if (unActiveEmployee != null) {
-            log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
-            log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
             employeeId = unActiveEmployee.getId();
-            log.info("userEmployee active:{}", unActiveEmployee.getActivation());
+            log.info("已存在非认证成功状态的员工数据 employeeId:{} active:{} bindingTime:{} userEmployee:{}", employeeId,
+                    unActiveEmployee.getActivation(),unActiveEmployee.getBindingTime(), unActiveEmployee);
             updateInfo(unActiveEmployee, useremployee, employeeId, currentTime);
         } else {
             if (useremployee.getId() > 0) {
@@ -290,8 +297,12 @@ public abstract class EmployeeBinder {
         }
 
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}}, true);
+        long startTime = System.currentTimeMillis();
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
+        log.info("------neo4j更新员工信息-------,耗时{}ms",System.currentTimeMillis()-startTime);
+        startTime = System.currentTimeMillis();
         kafkaSender.sendEmployeeCertification(useremployee);
+        log.info("------kafka发送员工认证时间-------,耗时{}ms",System.currentTimeMillis()-startTime);
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
@@ -367,7 +378,6 @@ public abstract class EmployeeBinder {
         properties.put("employee_origin",bindSource);
 
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
-
         return response;
     }
 

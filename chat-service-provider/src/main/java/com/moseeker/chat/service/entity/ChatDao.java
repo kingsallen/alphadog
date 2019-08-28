@@ -585,9 +585,7 @@ public class ChatDao {
         try {
             HrChatUnreadCountDO hrChatUnreadCountDO =  hrChatUnreadCountDao.getData(queryUtil);
 
-            // 初次聊天npe问题，由于初次设置未读消息是在savaChat之后处理的
-            if(hrChatUnreadCountDO != null
-                    && hrChatUnreadCountDO.getRoomId() > 0) {
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
                 switch (speaker) {
                     case 1:
                         hrChatUnreadCountDO.setHrChatTime(date);

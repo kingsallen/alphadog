@@ -4,9 +4,10 @@
 package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
-import javax.annotation.Generated;
 import java.io.Serializable;
 import java.sql.Timestamp;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -22,7 +23,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAtsPhaseBase implements Serializable {
 
-    private static final long serialVersionUID = 1889069551;
+    private static final long serialVersionUID = 947394520;
 
     private Integer   id;
     private String    name;
@@ -31,6 +32,7 @@ public class HrAtsPhaseBase implements Serializable {
     private String    description;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   system;
 
     public HrAtsPhaseBase() {}
 
@@ -42,6 +44,7 @@ public class HrAtsPhaseBase implements Serializable {
         this.description = value.description;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.system = value.system;
     }
 
     public HrAtsPhaseBase(
@@ -51,7 +54,8 @@ public class HrAtsPhaseBase implements Serializable {
         Integer   type,
         String    description,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   system
     ) {
         this.id = id;
         this.name = name;
@@ -60,6 +64,7 @@ public class HrAtsPhaseBase implements Serializable {
         this.description = description;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.system = system;
     }
 
     public Integer getId() {
@@ -118,6 +123,14 @@ public class HrAtsPhaseBase implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getSystem() {
+        return this.system;
+    }
+
+    public void setSystem(Integer system) {
+        this.system = system;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrAtsPhaseBase (");
@@ -129,6 +142,7 @@ public class HrAtsPhaseBase implements Serializable {
         sb.append(", ").append(description);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(system);
 
         sb.append(")");
         return sb.toString();

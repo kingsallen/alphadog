@@ -135,11 +135,12 @@ public class ReferralUploadController {
         String fileId = request.getParameter("fileId");
         String userId = request.getParameter("userId");
         String sceneId = request.getParameter("sceneId");
-        logger.info("ReferralUploadController  parseFileProfile  fileId{},userId{},sceneId{}",fileId,userId,sceneId);
+        logger.info("ReferralUploadController parseFileProfile  fileId: {},userId: {},sceneId: {}",fileId,userId,sceneId);
         ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(fileId);
-        logger.info("ReferralUploadController parseFileProfile:{}", JSONObject.toJSONString(uploadFilesResult));
+        logger.info("ReferralUploadController parseFileProfile uploadFilesResult: {}", JSONObject.toJSONString(uploadFilesResult));
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId), sceneId);
+        logger.info("ReferralUploadController parseFileProfile result: {}",JSONObject.toJSONString(result));
         return Result.success(result).toJson();
     }
 

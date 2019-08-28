@@ -34,6 +34,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
+import com.moseeker.baseorm.db.userdb.tables.UserWorkwx;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
 
@@ -219,6 +220,11 @@ public class Userdb extends SchemaImpl {
     public final UserViewedPosition USER_VIEWED_POSITION = com.moseeker.baseorm.db.userdb.tables.UserViewedPosition.USER_VIEWED_POSITION;
 
     /**
+     * 企业微信用户信息
+     */
+    public final UserWorkwx USER_WORKWX = com.moseeker.baseorm.db.userdb.tables.UserWorkwx.USER_WORKWX;
+
+    /**
      * 微信用户表
      */
     public final UserWxUser USER_WX_USER = com.moseeker.baseorm.db.userdb.tables.UserWxUser.USER_WX_USER;
@@ -283,6 +289,7 @@ public class Userdb extends SchemaImpl {
             UserThirdpartyUser.USER_THIRDPARTY_USER,
             UserUser.USER_USER,
             UserViewedPosition.USER_VIEWED_POSITION,
+            UserWorkwx.USER_WORKWX,
             UserWxUser.USER_WX_USER,
             UserWxViewer.USER_WX_VIEWER);
     }

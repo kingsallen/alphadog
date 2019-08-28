@@ -73,13 +73,6 @@ public class JobPositionAtsProcessDao extends DAOImpl<JobPositionAtsProcessRecor
     }
 
     /**
-     * Fetch a unique record that has <code>pid = value</code>
-     */
-    public com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionAtsProcess fetchOneByPid(Integer value) {
-        return fetchOne(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PID, value);
-    }
-
-    /**
      * Fetch records that have <code>process_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionAtsProcess> fetchByProcessId(Integer... values) {

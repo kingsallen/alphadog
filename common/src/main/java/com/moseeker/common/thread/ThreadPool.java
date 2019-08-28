@@ -73,7 +73,7 @@ public enum ThreadPool {
                 1000,
                 60L,
                 TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(20000), threadFactory,
+                new SynchronousQueue<>(), threadFactory,
                 new ThreadPoolExecutor.AbortPolicy());
     }
 

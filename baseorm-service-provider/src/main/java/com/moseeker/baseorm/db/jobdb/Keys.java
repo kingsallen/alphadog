@@ -6,7 +6,6 @@ package com.moseeker.baseorm.db.jobdb;
 
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
@@ -24,9 +23,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsProcessRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobCustomRecord;
@@ -46,7 +43,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionLiepinMappingReco
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionShareTplConfRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPosition_58MappingRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
 
 import javax.annotation.Generated;
@@ -75,7 +71,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<JobApplicationRecord, Integer> IDENTITY_JOB_APPLICATION = Identities0.IDENTITY_JOB_APPLICATION;
-    public static final Identity<JobApplicationAtsProcessRecord, Integer> IDENTITY_JOB_APPLICATION_ATS_PROCESS = Identities0.IDENTITY_JOB_APPLICATION_ATS_PROCESS;
     public static final Identity<JobCustomRecord, Integer> IDENTITY_JOB_CUSTOM = Identities0.IDENTITY_JOB_CUSTOM;
     public static final Identity<JobOccupationRecord, Integer> IDENTITY_JOB_OCCUPATION = Identities0.IDENTITY_JOB_OCCUPATION;
     public static final Identity<JobPcAdvertisementRecord, Integer> IDENTITY_JOB_PC_ADVERTISEMENT = Identities0.IDENTITY_JOB_PC_ADVERTISEMENT;
@@ -83,7 +78,6 @@ public class Keys {
     public static final Identity<JobPcRecommendPositionItemRecord, Integer> IDENTITY_JOB_PC_RECOMMEND_POSITION_ITEM = Identities0.IDENTITY_JOB_PC_RECOMMEND_POSITION_ITEM;
     public static final Identity<JobPcReportedRecord, Integer> IDENTITY_JOB_PC_REPORTED = Identities0.IDENTITY_JOB_PC_REPORTED;
     public static final Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = Identities0.IDENTITY_JOB_POSITION;
-    public static final Identity<JobPosition_58MappingRecord, Integer> IDENTITY_JOB_POSITION_58_MAPPING = Identities0.IDENTITY_JOB_POSITION_58_MAPPING;
     public static final Identity<JobPositionAtsProcessRecord, Integer> IDENTITY_JOB_POSITION_ATS_PROCESS = Identities0.IDENTITY_JOB_POSITION_ATS_PROCESS;
     public static final Identity<JobPositionCcmailRecord, Integer> IDENTITY_JOB_POSITION_CCMAIL = Identities0.IDENTITY_JOB_POSITION_CCMAIL;
     public static final Identity<JobPositionInterviewProcessRelRecord, Integer> IDENTITY_JOB_POSITION_INTERVIEW_PROCESS_REL = Identities0.IDENTITY_JOB_POSITION_INTERVIEW_PROCESS_REL;
@@ -97,8 +91,6 @@ public class Keys {
 
     public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_PRIMARY;
     public static final UniqueKey<JobApplicationAtsRecord> KEY_JOB_APPLICATION_ATS_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PRIMARY;
-    public static final UniqueKey<JobApplicationAtsProcessRecord> KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY;
-    public static final UniqueKey<JobApplicationAtsProcessRecord> KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX = UniqueKeys0.KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX;
     public static final UniqueKey<JobCustomRecord> KEY_JOB_CUSTOM_PRIMARY = UniqueKeys0.KEY_JOB_CUSTOM_PRIMARY;
     public static final UniqueKey<JobOccupationRecord> KEY_JOB_OCCUPATION_PRIMARY = UniqueKeys0.KEY_JOB_OCCUPATION_PRIMARY;
     public static final UniqueKey<JobPcAdvertisementRecord> KEY_JOB_PC_ADVERTISEMENT_PRIMARY = UniqueKeys0.KEY_JOB_PC_ADVERTISEMENT_PRIMARY;
@@ -106,9 +98,8 @@ public class Keys {
     public static final UniqueKey<JobPcRecommendPositionItemRecord> KEY_JOB_PC_RECOMMEND_POSITION_ITEM_PRIMARY = UniqueKeys0.KEY_JOB_PC_RECOMMEND_POSITION_ITEM_PRIMARY;
     public static final UniqueKey<JobPcReportedRecord> KEY_JOB_PC_REPORTED_PRIMARY = UniqueKeys0.KEY_JOB_PC_REPORTED_PRIMARY;
     public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_PRIMARY;
-    public static final UniqueKey<JobPosition_58MappingRecord> KEY_JOB_POSITION_58_MAPPING_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_58_MAPPING_PRIMARY;
     public static final UniqueKey<JobPositionAtsProcessRecord> KEY_JOB_POSITION_ATS_PROCESS_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_PRIMARY;
-    public static final UniqueKey<JobPositionAtsProcessRecord> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_UINDEX = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_UINDEX;
+    public static final UniqueKey<JobPositionAtsProcessRecord> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX = UniqueKeys0.KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX;
     public static final UniqueKey<JobPositionCcmailRecord> KEY_JOB_POSITION_CCMAIL_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_CCMAIL_PRIMARY;
     public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = UniqueKeys0.KEY_JOB_POSITION_CITY_IDX_PID_CODE;
     public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_EXT_PRIMARY;
@@ -132,7 +123,6 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<JobApplicationRecord, Integer> IDENTITY_JOB_APPLICATION = createIdentity(JobApplication.JOB_APPLICATION, JobApplication.JOB_APPLICATION.ID);
-        public static Identity<JobApplicationAtsProcessRecord, Integer> IDENTITY_JOB_APPLICATION_ATS_PROCESS = createIdentity(JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.ID);
         public static Identity<JobCustomRecord, Integer> IDENTITY_JOB_CUSTOM = createIdentity(JobCustom.JOB_CUSTOM, JobCustom.JOB_CUSTOM.ID);
         public static Identity<JobOccupationRecord, Integer> IDENTITY_JOB_OCCUPATION = createIdentity(JobOccupation.JOB_OCCUPATION, JobOccupation.JOB_OCCUPATION.ID);
         public static Identity<JobPcAdvertisementRecord, Integer> IDENTITY_JOB_PC_ADVERTISEMENT = createIdentity(JobPcAdvertisement.JOB_PC_ADVERTISEMENT, JobPcAdvertisement.JOB_PC_ADVERTISEMENT.ID);
@@ -140,7 +130,6 @@ public class Keys {
         public static Identity<JobPcRecommendPositionItemRecord, Integer> IDENTITY_JOB_PC_RECOMMEND_POSITION_ITEM = createIdentity(JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM, JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM.ID);
         public static Identity<JobPcReportedRecord, Integer> IDENTITY_JOB_PC_REPORTED = createIdentity(JobPcReported.JOB_PC_REPORTED, JobPcReported.JOB_PC_REPORTED.ID);
         public static Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = createIdentity(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
-        public static Identity<JobPosition_58MappingRecord, Integer> IDENTITY_JOB_POSITION_58_MAPPING = createIdentity(JobPosition_58Mapping.JOB_POSITION_58_MAPPING, JobPosition_58Mapping.JOB_POSITION_58_MAPPING.ID);
         public static Identity<JobPositionAtsProcessRecord, Integer> IDENTITY_JOB_POSITION_ATS_PROCESS = createIdentity(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.ID);
         public static Identity<JobPositionCcmailRecord, Integer> IDENTITY_JOB_POSITION_CCMAIL = createIdentity(JobPositionCcmail.JOB_POSITION_CCMAIL, JobPositionCcmail.JOB_POSITION_CCMAIL.ID);
         public static Identity<JobPositionInterviewProcessRelRecord, Integer> IDENTITY_JOB_POSITION_INTERVIEW_PROCESS_REL = createIdentity(JobPositionInterviewProcessRel.JOB_POSITION_INTERVIEW_PROCESS_REL, JobPositionInterviewProcessRel.JOB_POSITION_INTERVIEW_PROCESS_REL.ID);
@@ -152,8 +141,6 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = createUniqueKey(JobApplication.JOB_APPLICATION, "KEY_job_application_PRIMARY", JobApplication.JOB_APPLICATION.ID);
         public static final UniqueKey<JobApplicationAtsRecord> KEY_JOB_APPLICATION_ATS_PRIMARY = createUniqueKey(JobApplicationAts.JOB_APPLICATION_ATS, "KEY_job_application_ats_PRIMARY", JobApplicationAts.JOB_APPLICATION_ATS.APP_ID);
-        public static final UniqueKey<JobApplicationAtsProcessRecord> KEY_JOB_APPLICATION_ATS_PROCESS_PRIMARY = createUniqueKey(JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, "KEY_job_application_ats_process_PRIMARY", JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.ID);
-        public static final UniqueKey<JobApplicationAtsProcessRecord> KEY_JOB_APPLICATION_ATS_PROCESS_JOB_APPLICATION_ATS_PROCESS_APP_ID_UINDEX = createUniqueKey(JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS, "KEY_job_application_ats_process_job_application_ats_process_app_id_uindex", JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS.APP_ID);
         public static final UniqueKey<JobCustomRecord> KEY_JOB_CUSTOM_PRIMARY = createUniqueKey(JobCustom.JOB_CUSTOM, "KEY_job_custom_PRIMARY", JobCustom.JOB_CUSTOM.ID);
         public static final UniqueKey<JobOccupationRecord> KEY_JOB_OCCUPATION_PRIMARY = createUniqueKey(JobOccupation.JOB_OCCUPATION, "KEY_job_occupation_PRIMARY", JobOccupation.JOB_OCCUPATION.ID);
         public static final UniqueKey<JobPcAdvertisementRecord> KEY_JOB_PC_ADVERTISEMENT_PRIMARY = createUniqueKey(JobPcAdvertisement.JOB_PC_ADVERTISEMENT, "KEY_job_pc_advertisement_PRIMARY", JobPcAdvertisement.JOB_PC_ADVERTISEMENT.ID);
@@ -161,9 +148,8 @@ public class Keys {
         public static final UniqueKey<JobPcRecommendPositionItemRecord> KEY_JOB_PC_RECOMMEND_POSITION_ITEM_PRIMARY = createUniqueKey(JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM, "KEY_job_pc_recommend_position_item_PRIMARY", JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM.ID);
         public static final UniqueKey<JobPcReportedRecord> KEY_JOB_PC_REPORTED_PRIMARY = createUniqueKey(JobPcReported.JOB_PC_REPORTED, "KEY_job_pc_reported_PRIMARY", JobPcReported.JOB_PC_REPORTED.ID);
         public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, "KEY_job_position_PRIMARY", JobPosition.JOB_POSITION.ID);
-        public static final UniqueKey<JobPosition_58MappingRecord> KEY_JOB_POSITION_58_MAPPING_PRIMARY = createUniqueKey(JobPosition_58Mapping.JOB_POSITION_58_MAPPING, "KEY_job_position_58_mapping_PRIMARY", JobPosition_58Mapping.JOB_POSITION_58_MAPPING.ID);
         public static final UniqueKey<JobPositionAtsProcessRecord> KEY_JOB_POSITION_ATS_PROCESS_PRIMARY = createUniqueKey(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_PRIMARY", JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.ID);
-        public static final UniqueKey<JobPositionAtsProcessRecord> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_UINDEX = createUniqueKey(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_job_position_ats_process_pid_uindex", JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PID);
+        public static final UniqueKey<JobPositionAtsProcessRecord> KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX = createUniqueKey(JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS, "KEY_job_position_ats_process_job_position_ats_process_pid_process_id_uindex", JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PID, JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS.PROCESS_ID);
         public static final UniqueKey<JobPositionCcmailRecord> KEY_JOB_POSITION_CCMAIL_PRIMARY = createUniqueKey(JobPositionCcmail.JOB_POSITION_CCMAIL, "KEY_job_position_ccmail_PRIMARY", JobPositionCcmail.JOB_POSITION_CCMAIL.ID);
         public static final UniqueKey<JobPositionCityRecord> KEY_JOB_POSITION_CITY_IDX_PID_CODE = createUniqueKey(JobPositionCity.JOB_POSITION_CITY, "KEY_job_position_city_idx_pid_code", JobPositionCity.JOB_POSITION_CITY.PID, JobPositionCity.JOB_POSITION_CITY.CODE);
         public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = createUniqueKey(JobPositionExt.JOB_POSITION_EXT, "KEY_job_position_ext_PRIMARY", JobPositionExt.JOB_POSITION_EXT.PID);

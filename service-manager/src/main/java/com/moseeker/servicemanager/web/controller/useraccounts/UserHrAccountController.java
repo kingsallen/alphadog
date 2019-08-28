@@ -1015,6 +1015,7 @@ public class UserHrAccountController {
     public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            logger.debug("PUT /hraccount/employee/update params:{}",params);
             int userEmployeeId = params.getInt("userEmployeeId", 0);
             String cname = params.getString("cname", "");
             String mobile = params.getString("mobile", "");
@@ -1027,11 +1028,13 @@ public class UserHrAccountController {
             }
             int companyId = params.getInt("companyId", 0);
             Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);
+            logger.debug("PUT /hraccount/employee/update res:{}",res);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
+            logger.debug("PUT /hraccount/employee/update error",e);
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("PUT /hraccount/employee/update error",e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

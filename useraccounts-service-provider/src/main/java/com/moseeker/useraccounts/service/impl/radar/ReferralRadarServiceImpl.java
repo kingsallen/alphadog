@@ -20,12 +20,8 @@ import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBase;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsPhaseBaseItem;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsProcessCompanyItem;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplicationAtsProcess;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
@@ -39,6 +35,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
@@ -59,18 +56,20 @@ import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.exception.UserAccountException;
-import com.moseeker.useraccounts.infrastructure.*;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
-import com.moseeker.useraccounts.service.constant.*;
+import com.moseeker.useraccounts.service.constant.RadarStateEnum;
+import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
+import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
+import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
-import org.jooq.Configuration;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -85,6 +84,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -153,19 +153,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private static final long TEN_MINUTE = 10*60*1000;
 
-    private final Configuration configuration;
-    private JobApplicationAtsProcessJOOQDaoImpl jobApplicationAtsProcessJOOQDao;
-    private HrAtsProcessCompanyItemJOOQDaoImpl hrAtsProcessCompanyItemJOOQDao;
-    private HrAtsPhaseBaseJOOQDaoImpl hrAtsPhaseBaseJOOQDao;
-    private HrAtsPhaseBaseItemJOOQDaoImpl hrAtsPhaseBaseItemJOOQDao;
-    @Autowired
-    public ReferralRadarServiceImpl(Configuration configuration) {
-        this.configuration = configuration;
-        jobApplicationAtsProcessJOOQDao = new JobApplicationAtsProcessJOOQDaoImpl(configuration);
-        hrAtsProcessCompanyItemJOOQDao = new HrAtsProcessCompanyItemJOOQDaoImpl(configuration);
-        hrAtsPhaseBaseJOOQDao = new HrAtsPhaseBaseJOOQDaoImpl(configuration);
-        hrAtsPhaseBaseItemJOOQDao = new HrAtsPhaseBaseItemJOOQDaoImpl(configuration);
-    }
+    private ThreadPool pool = ThreadPool.Instance;
 
     @Override
     @RadarSwitchLimit
@@ -514,7 +502,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+        long t1 = System.currentTimeMillis();
         List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+        long t2 = System.currentTimeMillis();
+        logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getQueryJobApplications : {}",t2-t1);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
             return "";
         }
@@ -533,7 +524,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             long start = System.currentTimeMillis();
             applierDegrees = neo4jService.fetchDepthUserList(progressInfo.getUserId(), progressInfo.getCompanyId(), applierUserIds);
             long end = System.currentTimeMillis();
-            logger.info("=======referralTypeMap:{}", end - start);
+            logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for neo4jService.fetchDepthUserList :{}", end - start);
         }
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         logger.info("ReferralRadarServiceImpl getProgressBatch applyPids:{}", JSONObject.toJSONString(applyPids));
@@ -542,12 +533,53 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 组装每种申请类型需要的数据
         long start = System.currentTimeMillis();
         Map<Integer, JSONObject> referralTypeMap = getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
+
+
         long end = System.currentTimeMillis();
-        logger.info("=======referralTypeMap:{}", end - start);
+        logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getReferralTypeMap:{}", end - start);
 
         List<JSONObject> result = new ArrayList<>();
+        final List<UserDepthVO> applierDegrees1 = applierDegrees;
+        CountDownLatch count = new CountDownLatch(jobApplicationDOS.size());
+        long t3 = System.currentTimeMillis();
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
 
+            pool.startTast(()->{
+                createApplyCard(jobApplicationDO,positionMap,hrOperationMap,referralTypeMap,allUserMap,radarSwitchOpen,
+                        applierDegrees1,result,count);
+                return 0;
+            });
+
+        }
+
+        try{
+            count.await();
+            logger.info("getProgressBatch:{}", result);
+            long t4 = System.currentTimeMillis();
+            logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for createApplyCards : {}",t4-t3);
+            Collections.sort(result, new Comparator<JSONObject>() {
+                @Override
+                public int compare(JSONObject o1, JSONObject o2) {
+                    return String.valueOf(o2.get("datetime")).compareTo(String.valueOf(o1.get("datetime")));
+                }
+            });
+            return JSON.toJSONString(result);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+            throw UserAccountException.PROGRAM_EXCEPTION;
+        }
+
+    }
+
+    public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,
+                                Map<Integer, List<HrOperationRecordRecord>> hrOperationMap,
+                                Map<Integer, JSONObject> referralTypeMap,
+                                Map<Integer, UserUserRecord> allUserMap,
+                                boolean radarSwitchOpen,List<UserDepthVO> applierDegrees,
+                                List<JSONObject> result,CountDownLatch count
+                                )throws BIZException{
+
+        try{
             int referralType = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin()).getType();
 
             AbstractReferralTypeHandler handler = referralTypeFactory.getHandlerByType(referralType);
@@ -566,9 +598,15 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             handler.postProcessAfterCreateCard(card, jobApplicationDO, applierDegrees);
 
             result.add(card);
+        }catch(BIZException e){
+            logger.error(e.getMessage(),e);
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }finally{
+            count.countDown();
         }
-        logger.info("getProgressBatch:{}", result);
-        return JSON.toJSONString(result);
+
+
     }
 
     @Override
@@ -698,89 +736,21 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         if(StringUtils.isEmpty(queryName)){
             if(progress == 0){
-                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
-                jobApplicationDOS = handleJobApplicationDOS(list,progressList);
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
             }else {
-                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
-                // 查询新流程记录
-                List<JobApplicationDO> newAtsApps = jobApplicationDao.getNewAtsApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
-                list.addAll(newAtsApps);
-                // 去重
-                Map<Integer, JobApplicationDO> map = list.stream().collect(Collectors.toMap(JobApplicationDO::getId, jobApplicationDO -> jobApplicationDO, (k1, k2) -> k1));
-                List<JobApplicationDO> values = new ArrayList<>(map.values());
-                // submitTime倒序排序
-                List<JobApplicationDO> appDOS = values.stream().sorted(Comparator.comparing(JobApplicationDO::getSubmitTime).reversed()).collect(Collectors.toList());
-                jobApplicationDOS = handleJobApplicationDOS(appDOS,progressList);
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
             }
         }else {
             List<UserUserRecord> queryNameRecords = userUserDao.fetchByName(queryName);
             List<Integer> queryNameIds = queryNameRecords.stream().map(UserUserRecord::getId).collect(Collectors.toList());
             if(progress == 0){
-                List<JobApplicationDO> list = jobApplicationDao.getApplyByRecomUserIdAndCompanyIdAndAppliers(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
-                jobApplicationDOS = handleJobApplicationDOS(list,progressList);
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyIdAndAppliers(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
             }else {
-                List<JobApplicationDO> list  = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
-                // 查询新流程记录
-                List<JobApplicationDO> newAtsApps = jobApplicationDao.getNewAtsApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds);
-                list.addAll(newAtsApps);
-                // 去重
-                Map<Integer, JobApplicationDO> map = list.stream().collect(Collectors.toMap(JobApplicationDO::getId, jobApplicationDO -> jobApplicationDO, (k1, k2) -> k1));
-                List<JobApplicationDO> values = new ArrayList<>(map.values());
-                // submitTime倒序排序
-                List<JobApplicationDO> appDOS = values.stream().sorted(Comparator.comparing(JobApplicationDO::getSubmitTime).reversed()).collect(Collectors.toList());
-                jobApplicationDOS = handleJobApplicationDOS(appDOS,progressList);
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
             }
         }
         // 分页
         jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, pagination);
-        return jobApplicationDOS;
-    }
-
-    /**
-     * JobApplicationDO.appTplId匹配
-     * @param list
-     * @return
-     */
-    public List<JobApplicationDO> handleJobApplicationDOS(List<JobApplicationDO> list, List<Integer> progressList){
-        List<JobApplicationDO> jobApplicationDOS = new ArrayList<>();
-        for(JobApplicationDO item : list){
-            // 查询新流程的当前流程
-            JobApplicationAtsProcess applicationAtsProcess = jobApplicationAtsProcessJOOQDao.fetchOneByAppId(item.getId());
-            logger.info("handleJobApplicationDOS applicationAtsProcess:{}",JSON.toJSONString(applicationAtsProcess));
-            if(applicationAtsProcess == null){
-                jobApplicationDOS.add(item);
-            } else {
-                try {
-                    Integer currentPhaseId = applicationAtsProcess.getProcessId();
-                    // 当前阶段状态
-                    if(currentPhaseId < 0){
-                        // 当currentPhaseId为-1时,表示当前阶段未通过,直接返回淘汰
-                        if(progressList.contains(0) || progressList.contains(4)){
-                            item.setAppTplId(4);
-                            jobApplicationDOS.add(item);
-                        }
-                    } else {
-                        HrAtsProcessCompanyItem atsProcessCompanyItem = hrAtsProcessCompanyItemJOOQDao.fetchOneById(currentPhaseId);
-                        logger.info("handleJobApplicationDOS atsProcessCompanyItem:{}",JSON.toJSONString(atsProcessCompanyItem));
-                        HrAtsPhaseBaseItem baseItemVO = hrAtsPhaseBaseItemJOOQDao.fetchOneById(atsProcessCompanyItem.getItemId());
-                        logger.info("handleJobApplicationDOS baseItemVO:{}",JSON.toJSONString(baseItemVO));
-                        // 查询出阶段类型
-                        Integer parentId = baseItemVO.getParentId();
-                        HrAtsPhaseBase phaseBase = hrAtsPhaseBaseJOOQDao.fetchOneById(parentId);
-                        NewAtsMapReferralEnum typeEnum = NewAtsMapReferralEnum.getEnumByNewPhaseType(phaseBase.getType());
-                        int oldStep = typeEnum.getOldStep();
-                        if(progressList.contains(0) || progressList.contains(oldStep)){
-                            item.setAppTplId(oldStep);
-                            jobApplicationDOS.add(item);
-                        }
-                    }
-
-                } catch (Exception e) {
-                    logger.error("handleJobApplicationDOS Exception:{}",e);
-                }
-
-            }
-        }
         return jobApplicationDOS;
     }
 

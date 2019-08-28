@@ -6,7 +6,6 @@ package com.moseeker.baseorm.db.jobdb;
 
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
@@ -25,7 +24,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 
 import javax.annotation.Generated;
@@ -53,11 +51,6 @@ public class Tables {
      * MoSeeker与ATS渠道申请编号对应关系
      */
     public static final JobApplicationAts JOB_APPLICATION_ATS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts.JOB_APPLICATION_ATS;
-
-    /**
-     * 招聘进度和具体申请对应表
-     */
-    public static final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
 
     /**
      * 职位自定义字段配置表
@@ -93,11 +86,6 @@ public class Tables {
      * The table <code>jobdb.job_position</code>.
      */
     public static final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
-
-    /**
-     * The table <code>jobdb.job_position_58_mapping</code>.
-     */
-    public static final JobPosition_58Mapping JOB_POSITION_58_MAPPING = com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping.JOB_POSITION_58_MAPPING;
 
     /**
      * 职位招聘流程绑定表

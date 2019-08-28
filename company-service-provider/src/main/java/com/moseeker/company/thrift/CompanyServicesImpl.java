@@ -11,8 +11,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.company.service.impl.CompanyService;
@@ -147,6 +145,49 @@ public class CompanyServicesImpl implements Iface {
                 return true;
             }
             return false;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public boolean setWorkWechatEmployeeBindConf(int companyId, int hraccountId, String corpId, String secret) throws BIZException, TException {
+        try {
+            return service.setWorkWechatEmployeeBindConf(companyId, hraccountId, corpId, secret);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    /**
+     * 重新获取企业微信员工认证配置的access token
+     * @param companyId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Override
+    public boolean updateWorkWeChatConfToken(int companyId) throws BIZException, TException {
+        try {
+            return service.updateWorkWeChatConfToken(companyId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
+        try {
+            return service.getWorkWechatEmployeeBindConf(companyId);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionAtsProcess extends TableImpl<JobPositionAtsProcessRecord> {
 
-    private static final long serialVersionUID = 62770090;
+    private static final long serialVersionUID = -721043356;
 
     /**
      * The reference instance of <code>jobdb.job_position_ats_process</code>
@@ -127,7 +127,7 @@ public class JobPositionAtsProcess extends TableImpl<JobPositionAtsProcessRecord
      */
     @Override
     public List<UniqueKey<JobPositionAtsProcessRecord>> getKeys() {
-        return Arrays.<UniqueKey<JobPositionAtsProcessRecord>>asList(Keys.KEY_JOB_POSITION_ATS_PROCESS_PRIMARY, Keys.KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_UINDEX);
+        return Arrays.<UniqueKey<JobPositionAtsProcessRecord>>asList(Keys.KEY_JOB_POSITION_ATS_PROCESS_PRIMARY, Keys.KEY_JOB_POSITION_ATS_PROCESS_JOB_POSITION_ATS_PROCESS_PID_PROCESS_ID_UINDEX);
     }
 
     /**

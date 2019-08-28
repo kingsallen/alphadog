@@ -31,11 +31,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
 import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 
 /**
@@ -47,7 +49,7 @@ import static com.moseeker.common.constants.Constant.FIVE_THOUSAND;
 @Service
 public class UserHrAccountServiceImpl implements Iface {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    final static Logger logger = LoggerFactory.getLogger(UserHrAccountServiceImpl.class);
 
     @Autowired
     private UserHrAccountService service;
@@ -422,7 +424,7 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public boolean unbindEmployee(List<Integer> ids) throws BIZException, TException {
         try {
-            return employeeEntity.unbind(ids);
+            return employeeEntity.unbind(ids,EMPLOYEE_ACTIVATION_UNBIND);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
@@ -641,24 +643,22 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public Response employeeImport(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
-        LocalDateTime initDateTime = LocalDateTime.now();
-        logger.info("UserHrAccountServiceImpl employeeImport initDateTime:{}", initDateTime.toString());
         try {
+            // 去除空格
+            userEmployeeDOMap.values().forEach(UserHrAccountServiceImpl::trimUserEmployeeDO);
             return service.employeeImport(companyId, userEmployeeDOMap, filePath, fileName, type, hraccountId);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
-        } finally {
-            LocalDateTime lastDateTime = LocalDateTime.now();
-            logger.info("UserHrAccountServiceImpl employeeImport lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
-
         }
     }
 
     @Override
     public ImportUserEmployeeStatistic updateEmployee(List<UserEmployeeDO> userEmployeeDOS, int companyId, String filePath, String fileName, int type, int hraccountId) throws BIZException, TException {
+        // 去除空格
+        userEmployeeDOS.forEach(UserHrAccountServiceImpl::trimUserEmployeeDO);
         try {
             return service.updateEmployees(companyId, userEmployeeDOS, filePath, fileName, type, hraccountId);
         } catch (Exception e) {
@@ -679,12 +679,12 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public ImportUserEmployeeStatistic checkBatchInsert(Map<Integer, UserEmployeeDO> userEmployeeDOMap, int companyId) throws BIZException, TException {
 
-        logger.info("UserHrAccountServiceImpl checkBatchInsert");
-
         if (userEmployeeDOMap.size() > FIVE_THOUSAND) {
             throw UserAccountException.EMPLOYEE_BATCH_UPDAT_OVER_LIMIT;
         }
 
+        // 去除空格
+        userEmployeeDOMap.values().forEach(UserHrAccountServiceImpl::trimUserEmployeeDO);
         try {
             return service.checkBatchInsert(userEmployeeDOMap, companyId);
         } catch (CommonException e) {
@@ -692,10 +692,38 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
-        } finally {
-            logger.info("UserHrAccountServiceImpl after checkBatchInsert");
         }
     }
+
+    /**
+     * 去除输入字符串字段的首尾空格
+     * @param edo
+     */
+    private static void trimUserEmployeeDO(UserEmployeeDO edo) {
+        if (edo != null){
+            try{
+                for (Field field : edo.getClass().getFields()){
+                    if(field.getType().equals(String.class) && field.get(edo) != null){
+                        String value = field.get(edo).toString();
+                        String trimedValue = value.trim();
+                        if(!value.equals(trimedValue)){
+                            boolean access = field.isAccessible();
+                            if(!access){
+                                field.setAccessible(true);
+                            }
+                            field.set(edo,trimedValue);
+                            if(!access){
+                                field.setAccessible(false);
+                            }
+                        }
+                    }
+                }
+            }catch (IllegalAccessException e){
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
 
     @Override
     public List<HrAppExportFieldsDO> getExportFields(int companyId, int userHrAccountId) throws TException {

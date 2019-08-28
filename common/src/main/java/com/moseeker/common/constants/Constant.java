@@ -222,7 +222,12 @@ public final class Constant {
     public static final String EMPLOYEE_AUTH_INFO = "EMPLOYEE_AUTH_INFO"; // 员工认证（员工认证信息）
     public static final String EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE = "[]"; // user_employee.custom_field_value默认值
 
-	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
+    // 认证状态 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
+    // 5:取消关注公众号   6：员工离职取消认证
+    public static final byte EMPLOYEE_ACTIVATION_UNBIND = 1;
+    public static final byte EMPLOYEE_ACTIVATION_UNEMPLOYEE = 6;
+
+    public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	
 	public static final int READ_TIME_OUT = 300*1000;
 	public static final int CONNECTION_TIME_OUT = 300*1000;

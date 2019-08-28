@@ -219,6 +219,9 @@ public class JobApplicataionService {
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
 
+        if(jobApplicationId==-1){
+            return ResponseUtils.fail(ApplicationException.APPLICATION_POSITION_DUPLICATE.getMessage());
+        }
         if (jobApplicationId > 0) {
             boolean isNewAtsStatus=validateNewAtsProcess((int)jobApplication.getCompany_id(),(int)jobApplication.getPosition_id());
             if(!isNewAtsStatus){
@@ -226,11 +229,12 @@ public class JobApplicataionService {
                         jobApplication.getApply_type(), jobApplication.getEmail_status(),
                         (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
                         jobApplication.getOrigin());
+                // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
+                handleReferralState(jobApplicationId);
             }else{
                 this.sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
             }
-            // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
-            handleReferralState(jobApplicationId);
+
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
             this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
@@ -283,13 +287,17 @@ public class JobApplicataionService {
         params.put("companyId",companyId);
         String message=JSON.toJSONString(params);
         scheduledThread.startTast(()->{
+            logger.info("发送rabbitmq ，走简历的新流程");
+            logger.info("===========发送的数据为====================");
+            logger.info(message);
+            logger.info("==================");
             amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
                     MessageBuilder.withBody(message.getBytes()).build());
-        },500);
+        },1000);
 
     }
     /*
-     * @Author zztaiwl6
+     * @Author zztaiwll
      * @Description  组装流水记录
      * @Date 上午10:32 19/3/8
      * @Param [jobApplication, jobPositionRecord]
@@ -359,8 +367,8 @@ public class JobApplicataionService {
             String result=redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             if(StringUtils.isNotNullOrEmpty(result)){
-                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
-
+//                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
+                return -1;
             }
             redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "","1");

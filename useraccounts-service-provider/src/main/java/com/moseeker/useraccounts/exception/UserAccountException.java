@@ -79,6 +79,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_VERIFICATION_ACTIVATION_EXPIRED = new UserAccountException(42067, "邮件认证的认证信息过期！");
     public static final UserAccountException USEREMPLOYEES_EMPTY_OR_NO_NEED_UPDATE = new UserAccountException(42068, "员工数据不存在或无需修改！");
     public static final UserAccountException ERROR_REDIS_LIVE_TIME = new UserAccountException(42069, "错误的redis过期时间！");
+    public static final UserAccountException USER_WORKWX_NOT_EXIST = new UserAccountException(42070, "企业微信用户信息不存在！");
 
     private final int code;
 
