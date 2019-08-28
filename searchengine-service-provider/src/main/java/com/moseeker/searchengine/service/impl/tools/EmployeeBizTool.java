@@ -43,7 +43,8 @@ public class EmployeeBizTool {
                 activation = EmployeeActiveState.Cancel.getState()+", "+
                         EmployeeActiveState.Failure.getState()+", "+
                         EmployeeActiveState.MigrateToOtherCompany.getState()+", "+
-                        EmployeeActiveState.UnFollow.getState();
+                        EmployeeActiveState.UnFollow.getState()+", "+
+                        EmployeeActiveState.QuitJob.getState();
             }
             if (StringUtils.isNotBlank(activation)) {
                 searchUtil.handleTerms(activation, defaultquery, "activation");
