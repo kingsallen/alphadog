@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration
+	xmlns="http://www.jooq.org/xsd/jooq-codegen-3.9.2.xsd">
+	<!-- 配置jdbc驱动连接 -->
+	<jdbc>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url>jdbc:mysql://localhost:3306/hrdb?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false
+		</url>
+		<user>root</user>
+		<password>root</password>
+	</jdbc>
+	<generator>
+		<!-- 代码生成器 -->
+		<name>org.jooq.util.JavaGenerator</name>
+		<database>
+			<!-- 数据库类型 -->
+			<name>org.jooq.util.mysql.MySQLDatabase</name>
+			<!-- 数据库名 -->
+			<inputSchema>hrdb</inputSchema>
+			<!-- 生成包含，*表示包含所有内容 -->
+			<includes>.*</includes>
+			<!--剔除，此处未剔除 -->
+			<!--<excludes>job_position</excludes>-->
+			<outputSchema>hrdb</outputSchema>
+			<unsignedTypes>false</unsignedTypes>
+		</database>
+		<generate>
+			<pojos>true</pojos>
+			<daos>true</daos>
+			<deprecated>true</deprecated>
+		</generate>
+		<target>
+			<!-- 生成的代码所在的包结构 -->
+			<packageName>com.moseeker.baseorm.db.hrdb</packageName>
+			<!-- 生成的代码存放路径，默认会以src同目录开始 -->
+			<directory>src/main/java/</directory>
+		</target>
+		<!--<strategy>
+			<matchers>
+				<tables>
+					<table>
+						<expression>^(.*)$</expression>
+						<tableClass>
+							<transform>PASCAL</transform>
+							&lt;!&ndash;<expression>$1_Table</expression>&ndash;&gt;
+							<expression>$1</expression>
+						</tableClass>
+						<pojoClass>
+							<transform>PASCAL</transform>
+							<expression>$1_D_O</expression>
+						</pojoClass>
+						&lt;!&ndash;<recordClass>
+							<transform>PASCAL</transform>
+							<expression>$1_P_O</expression>
+						</recordClass>&ndash;&gt;
+					</table>
+				</tables>
+			</matchers>
+		</strategy>-->
+	</generator>
+</configuration>
