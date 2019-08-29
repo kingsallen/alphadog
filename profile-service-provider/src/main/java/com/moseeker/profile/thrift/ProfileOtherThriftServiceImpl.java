@@ -10,13 +10,18 @@ import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.OmsSwitchEnum;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.entity.pojos.RequireFieldInfo;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -45,6 +50,9 @@ import java.util.List;
 public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.Iface {
 
     Logger logger = LoggerFactory.getLogger(ProfileOtherThriftServiceImpl.class);
+
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
+
 
     @Autowired
     private ProfileOtherDao dao;
@@ -193,6 +201,15 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             queryBuilder.orderBy("priority");
             List<ConfigSysCvTplRecord> configSysCvTplRecordList = configSysCvTplDao.getRecords(queryBuilder.buildQuery());
             if (configSysCvTplRecordList != null && configSysCvTplRecordList.size() > 0) {
+                List<CompanySwitchVO> switches = companyServices.switchCheck(companyId, Arrays.asList(OmsSwitchEnum.instanceFromValue(15).getName()));
+                if(switches!=null&&switches.size()>0&&switches.get(0).getValid()==0){
+                    configSysCvTplRecordList = configSysCvTplRecordList.stream().filter(e->{
+                        //若oms开关状态为关，过滤掉身份证识别组件
+                        String fieldName = e.getFieldName();
+                       return !(Constant.IDCARD_RECOG.equals(fieldName)||Constant.IDPHOTO_FRONT.equals(fieldName)||
+                               Constant.IDPHOTO_BACK.equals(fieldName));
+                    }).collect(Collectors.toList());
+                }
                 configCustomMetaDatas = configSysCvTplRecordList.stream().map(m -> BeanUtils.DBToBean(m, ConfigCustomMetaVO.class)).collect(Collectors.toList());
                 configCustomMetaDatas.stream().filter(f -> f.getConstantParentCode() != 0).forEach(e -> {
                     queryBuilder.clear();
