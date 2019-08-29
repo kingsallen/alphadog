@@ -143,5 +143,6 @@ struct WorkWxCertConf{
     3: optional string secret;
     4: optional i32 errCode;
     5: optional string errMsg;
-    6: optional string jsapiTicket;
+    6: optional string accessToken;
+    7: optional string jsapiTicket;
 }
