@@ -101,13 +101,14 @@ public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFiel
         create.update(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
                 .set(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE, (byte)1)
                 .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.eq(companyId))
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE.gt((byte)2))
                 .execute();
         // 启用系统字段
         return create.update(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS)
                 .set(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE, (byte)0)
                 .set(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.MANDATORY,0) // 设置为非必填，以免企业微信认证因系统字段为空检验失败
-                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.eq(companyId))
                 .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE.in(new ArrayList<Integer>(){{add(0); add(1); add(2);}}))
                 .execute();
     }
