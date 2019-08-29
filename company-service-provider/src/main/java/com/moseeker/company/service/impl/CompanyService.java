@@ -885,6 +885,7 @@ public class CompanyService {
             certConf.setCorpid(workWxConfDO.getCorpid());
             certConf.setSecret(workWxConfDO.getSecret());
             certConf.setJsapiTicket(workWxConfDO.getJsapiTicket());
+            certConf.setAccessToken(workWxConfDO.getAccessToken());
             if(workWxConfDO.getErrorCode() > 0){
                 certConf.setErrCode(workWxConfDO.getErrorCode());
                 certConf.setErrMsg(workWxConfDO.getErrorMsg());
