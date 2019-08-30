@@ -1,6 +1,7 @@
 package com.moseeker.profile;
 
 import com.moseeker.profile.utils.OfficeUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
@@ -22,6 +23,11 @@ public class OfficeUtilsTest {
         boolean errorCompare = new File("/Users/wulei/Documents/工作文档/杂乱/黄成杰简历.docx").length()<
                 new File("/Users/wulei/Documents/工作文档/杂乱/黄成杰简历.pdf").length();
         System.out.println(errorCompare);
+    }
+
+    @Test
+    public void test02(){
+        Assert.assertEquals(true,"0".equals(String.valueOf((byte)0)));
     }
 
 }
