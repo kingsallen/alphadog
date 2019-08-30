@@ -201,13 +201,13 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             queryBuilder.orderBy("priority");
             List<ConfigSysCvTplRecord> configSysCvTplRecordList = configSysCvTplDao.getRecords(queryBuilder.buildQuery());
             if (configSysCvTplRecordList != null && configSysCvTplRecordList.size() > 0) {
-                List<CompanySwitchVO> switches = companyServices.switchCheck(companyId, Arrays.asList(OmsSwitchEnum.instanceFromValue(15).getName()));
-                if(switches!=null&&switches.size()>0&&switches.get(0).getValid()==0){
+                CompanySwitchVO omsSwitch = companyServices.companySwitch(companyId, OmsSwitchEnum.instanceFromValue(15).getName());
+                if(omsSwitch==null||"0".equals(omsSwitch.getValid())){
+                    //若该公司没有开关配置，默认为关闭
                     configSysCvTplRecordList = configSysCvTplRecordList.stream().filter(e->{
-                        //若oms开关状态为关，过滤掉身份证识别组件
                         String fieldName = e.getFieldName();
-                       return !(Constant.IDCARD_RECOG.equals(fieldName)||Constant.IDPHOTO_FRONT.equals(fieldName)||
-                               Constant.IDPHOTO_BACK.equals(fieldName));
+                        return !(Constant.IDPHOTO_BACK.equals(fieldName)||Constant.IDPHOTO_FRONT.equals(fieldName)||
+                                Constant.IDCARD_RECOG.equals(fieldName));
                     }).collect(Collectors.toList());
                 }
                 configCustomMetaDatas = configSysCvTplRecordList.stream().map(m -> BeanUtils.DBToBean(m, ConfigCustomMetaVO.class)).collect(Collectors.toList());
