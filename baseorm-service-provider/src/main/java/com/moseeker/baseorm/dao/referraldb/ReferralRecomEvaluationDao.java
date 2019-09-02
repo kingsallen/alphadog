@@ -90,6 +90,13 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
                 .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
                 .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(referenceId))
                 .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID.eq(positionId))
+                .andNotExists(
+                        selectOne()
+                        .from(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
+                        .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(positionId))
+                        .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
+                        .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(id))
+                )
                 .execute();
     }
 

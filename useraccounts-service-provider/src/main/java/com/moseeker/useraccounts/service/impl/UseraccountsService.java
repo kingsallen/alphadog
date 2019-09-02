@@ -1440,7 +1440,7 @@ public class UseraccountsService {
         }
 
         Map<Integer, String> positionIdTitleMap = getPositionIdTitleMap(referralLogs);
-        CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
+        //CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
         List<ClaimResult> claimResults = new ArrayList<>();
         // 更新申请记录的申请人
 

@@ -91,15 +91,14 @@ public class UserReferralRecordDao extends JooqCrudImpl<UserReferralRecord, User
      * 根据用户编号和公司编号查找用户与公司的关系信息（员工上传的用户与公司的关系）
      * @param userIdList 用户编号
      * @param companyId 公司编号
-     * @param referralScene
      * @return 用户与公司的关系信息
      */
-    public List<UserReferralRecordRecord> getRecordsByUserIdListCompanyId(List<Integer> userIdList, int companyId, ReferralScene referralScene) {
+    public List<UserReferralRecordRecord> getRecordsByUserIdListCompanyId(List<Integer> userIdList, int companyId) {
         return create
                 .selectFrom(USER_REFERRAL_RECORD)
                 .where(USER_REFERRAL_RECORD.USER_ID.in(userIdList))
                 .and(USER_REFERRAL_RECORD.COMPANY_ID.eq(companyId))
-                .and(USER_REFERRAL_RECORD.SCENE.eq(referralScene.getScene()))
+                .orderBy(USER_REFERRAL_RECORD.SCENE.asc())
                 .fetch();
     }
 
