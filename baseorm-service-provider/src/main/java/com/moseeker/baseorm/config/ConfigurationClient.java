@@ -122,6 +122,7 @@ public class ConfigurationClient {
                 }
             }
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw CommonServiceException.CONFIG_SERVER_ERROR;
         }
     }
