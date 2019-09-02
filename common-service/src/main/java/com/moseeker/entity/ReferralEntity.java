@@ -292,18 +292,14 @@ public class ReferralEntity {
 
         logger.info("ReferralEntity claimReferralCard userUserDO:{}", JSONObject.toJSONString(application));
         logger.info("ReferralEntity claimReferralCard application:{}", JSONObject.toJSONString(userUserDO));
-        ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
+        boolean update = false;
         if (application != null) {
-            JobApplicationRecord record = new JobApplicationRecord();
-            BeanUtils.copyProperties(application, record);
-            record.setApplierId(userUserDO.getId());
-            record.setApplierName(userUserDO.getName());
-            record.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()));
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            record.setUpdateTime(updateTime);
-            resultVO = applicationDao.addIfNotExists(record);
+            update = applicationDao.updateIfNotExist(application.getId(), application.getPositionId(),
+                    userUserDO.getId(), userUserDO.getName(),
+                    ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()));
 
-            logger.info("ReferralEntity claimReferralCard");
+            logger.info("ReferralEntity claimReferralCard update:{}", update);
+
         }
 
         // 更新简历中的userId，计算简历完整度
@@ -326,11 +322,16 @@ public class ReferralEntity {
         if (postUserId > 0) {
             recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
         }
-        if (resultVO.isCreate()) {
-            updateApplicationEsIndex(userUserDO.getId());
+        if (update) {
+            updateApplicationEsIndex(referralLog.getReferenceId());
         }
+        updateApplicationEsIndex(userUserDO.getId());
         logger.info("ReferralEntity claimReferralCard end!");
-        return resultVO.getApplicationId();
+        if (application != null) {
+            return application.getId();
+        } else {
+            return 0;
+        }
     }
 
     public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
@@ -1149,5 +1150,19 @@ public class ReferralEntity {
             logger.info("====================redis==============application更新=============");
             logger.info("================userid={}=================",userId);
         },3000);
+    }
+
+    /**
+     * 根据职位和被推荐人查找内推记录
+     * 再次内推时，需要查找历史上被认领的推荐记录，避免重复推荐
+     * @param positionIds 职位信息
+     * @param userId 被推荐人
+     */
+    public List<ReferralLog> fetchByPositionIdAndOldReferenceId(List<Integer> positionIds, int userId) {
+        if (positionIds != null && positionIds.size() > 0 && userId > 0) {
+            return referralLogDao.fetchByPositionIdListAndOldReferenceId(positionIds, userId);
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 }

@@ -448,6 +448,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         List<Short> sources = new ArrayList<>();
         sources.add((short) UserSource.TALENT_UPLOAD.getValue());
         sources.add((short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue());
+        sources.add((short) UserSource.EMPLOYEE_REFERRAL.getValue());
         return create
                 .selectFrom(UserUser.USER_USER)
                 .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
