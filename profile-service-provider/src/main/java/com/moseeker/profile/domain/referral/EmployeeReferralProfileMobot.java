@@ -31,13 +31,12 @@ public class EmployeeReferralProfileMobot extends EmployeeReferralProfile {
     }
 
     @Override
-    protected boolean storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
+    protected void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
                                      UserEmployeeDO employeeDO, ProfileAttementVO attementVO) {
         int userId = userRecord.getId();
         ProfileProfileDO profileDO = profileEntity.getProfileByUserId(userId);
         attementVO.setAttachmentId(profileEntity.getProfileAttachmentByProfileId(profileDO.getId()).getId());
         attementVO.setUserId(userId);
-        return false;
     }
 
 

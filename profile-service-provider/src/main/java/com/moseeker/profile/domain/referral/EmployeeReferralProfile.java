@@ -37,6 +37,8 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +104,7 @@ public abstract class EmployeeReferralProfile {
      * @param attementVO
      * @return
      */
-    protected abstract boolean storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
+    protected abstract void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
                                               ProfilePojo profilePojo, UserEmployeeDO employeeDO, ProfileAttementVO attementVO);
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
@@ -118,7 +120,7 @@ public abstract class EmployeeReferralProfile {
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
 
-        boolean updateUser = storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
+        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
 
         List<JobPositionDO> positions = getJobPositions(profileNotice.getPositionIds(), employeeDO.getCompanyId());
 
@@ -184,14 +186,31 @@ public abstract class EmployeeReferralProfile {
          * 如果 storeReferralUser 方法更新了userRecord的属性（用户信息），
          * 那么如果有一次推荐成功就将userRecord的信息持久化到数据库
          */
-        if (updateUser) {
-            Optional<MobotReferralResultVO> successReferralOption = resultVOS
-                    .stream()
-                    .filter(MobotReferralResultVO::getSuccess)
-                    .findAny();
-            successReferralOption.ifPresent(mobotReferralResultVO -> {
-                userAccountEntity.updateUserRecord(userRecord);
-            });
+        if (userRecord != null) {
+            boolean flag = false;
+            UserUserRecord userUserRecord = new UserUserRecord();
+            userUserRecord.setId(userRecord.getId());
+            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(profileNotice.getName())) {
+                userRecord.setName(profileNotice.getName());
+                userUserRecord.setName(profileNotice.getName());
+                flag = true;
+            }
+            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
+                userRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
+                userUserRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
+                flag = true;
+            }
+            if (flag) {
+                userAccountEntity.updateUserRecord(userUserRecord);
+                Optional<MobotReferralResultVO> successReferralOption = resultVOS
+                        .stream()
+                        .filter(MobotReferralResultVO::getSuccess)
+                        .findAny();
+
+                successReferralOption.ifPresent(mobotReferralResultVO -> {
+                    userAccountEntity.updateUserRecord(userRecord);
+                });
+            }
         }
         return resultVOS;
     }
