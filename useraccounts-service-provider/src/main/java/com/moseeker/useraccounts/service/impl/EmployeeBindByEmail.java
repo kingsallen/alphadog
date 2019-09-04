@@ -90,7 +90,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         List<UserEmployeeDO> userEmployees = employeeDao.getDatas(query.buildQuery());
         if (userEmployees != null && userEmployees.size() > 0) {
             log.info("邮箱:{} 已被占用", bindingParams.getEmail());
-            throw new RuntimeException("该邮箱已被认证\n请使用其他邮箱");
+            throw new RuntimeException("该邮箱已被认证请使用其他邮箱");
         }
 
         if (userEmployeeDOThreadLocal.get() != null && StringUtils.isNotNullOrEmpty(userEmployeeDOThreadLocal.get().getActivationCode())) {

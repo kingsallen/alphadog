@@ -40,7 +40,6 @@ import java.util.*;
 import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
-import org.elasticsearch.action.bulk.BulkResponse;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

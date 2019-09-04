@@ -668,7 +668,6 @@ public class ProfileEntity {
     public ProfileAttachmentDO getProfileAttachmentByProfileId(int profileId){
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(PROFILE_ATTACHMENT.PROFILE_ID.getName(), profileId);
-        logger.info("ProfileEntity getProfileAttachmentByProfileId profileId:{}", profileId);
         return attachmentDao.getData(queryBuilder.buildQuery());
     }
 

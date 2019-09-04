@@ -458,6 +458,10 @@ public class CompanyController {
                 return ResponseLogNotification.fail(request, "公司Id不能为空");
             } else {
                 WorkWxCertConf result = companyServices.getWorkWechatEmployeeBindConf(companyId);
+                // thrift接口的方法不可返回null，通过corpid==null转化
+                if( result != null && result.getCorpid() == null){
+                    result = null ;
+                }
                 return Result.success(result).toJson();
             }
         } catch (BIZException e) {
