@@ -9,8 +9,11 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BonusTools;
 import com.moseeker.common.util.FormCheck;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.exception.ProfileException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -29,7 +32,9 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -39,11 +44,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileInputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -74,12 +77,15 @@ public class ReferralController {
                                 HttpServletRequest request) throws Exception {
         Params<String, Object> params = ParamUtils.parseequestParameter(request);
         int employeeId = params.getInt("employee", 0);
+        Integer appid = params.getInt("appid");
+        String fileName = params.getString("file_name");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
-        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addRequiredStringValidate("简历名称", fileName);
         validateUtil.addIntTypeValidate("员工", employeeId, 1, null);
-        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        validateUtil.addRequiredValidate("appid", appid);
         String result = validateUtil.validate();
+
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
@@ -89,13 +95,25 @@ public class ReferralController {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
 
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-            logger.info("ReferralController parseFileProfile file_name:{}", params.getString("file_name"));
-            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileProfile(employeeId, params.getString("file_name"), byteBuffer);
-            ProfileDocParseResult parseResult = new ProfileDocParseResult();
-            BeanUtils.copyProperties(result1, parseResult);
-            return Result.success(parseResult).toJson();
+            // 调用alphacloud接口
+            String url = ProfileEntity.CLOUD_PARSING_HOST + "v4/referral/file-parser";
+            Map<String, Object> parameter = new LinkedHashMap<>();
+            //parameter.put("file", FILE);
+            //parameter.put("file", new FileInputStream(FILE));
+            parameter.put("file", file);
+            parameter.put("filename", fileName);
+            parameter.put("employeeId", employeeId);
+            parameter.put("appid",appid);
+            try{
+                Object jsonObject = HttpClient.postMultipartForm(url, parameter, fileName, Object.class);
+                if ( jsonObject == null){
+                    throw ProfileException.PROFILE_PARSING_ERROR;
+                }
+                return com.moseeker.servicemanager.web.controller.Result.success(jsonObject).toJson();
+            }catch (CommonException e){
+                logger.error("调用简历解析服务错误",e);
+                return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
+            }
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }

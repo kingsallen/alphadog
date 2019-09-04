@@ -119,7 +119,6 @@ public class ReferralServiceImpl implements ReferralService {
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
                                UserAccountEntity userAccountEntity, ProfileParseUtil profileParseUtil,
                                PositionEntity positionEntity, ReferralEntity referralEntity,
-
                                Environment env ) {
         this.employeeEntity = employeeEntity;
         this.profileEntity = profileEntity;
@@ -150,46 +149,6 @@ public class ReferralServiceImpl implements ReferralService {
         long millis = duration.toMillis();//相差毫秒数
         logger.info("ReferralServiceImpl parseFileProfile 员工简历解析耗时：millis{}",millis);
         return profileDocParseResult;
-//        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
-//
-//        if (!ProfileDocCheckTool.checkFileName(fileName)) {
-//            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
-//        }
-//
-//        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
-//        if (employeeDO == null || employeeDO.getId() <= 0) {
-//            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
-//        }
-//
-//        byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
-//        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
-//        FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
-//        profileDocParseResult.setFile(fileNameData.getFileName());
-//        fileNameData.setOriginName(fileName);
-//
-//        return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
-
-        /*// 调用SDK得到结果
-        ResumeObj resumeObj;
-        try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, StreamUtils.byteArrayToBase64String(dataArray));
-        } catch (TException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
-        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
-        profileDocParseResult.setName(profileObj.getUser().getName());
-        profileObj.setResumeObj(null);
-        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
-        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
-        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
-
-        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", profilePojo.toJson(), 24*60*60);
-        return profileDocParseResult;*/
     }
 
     @Override
@@ -211,7 +170,6 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
         }
 
-        String data = new String(Base64.encodeBase64(fileData), Consts.UTF_8);
         FileNameData fileNameData = new FileNameData();
         fileNameData.setFileName(file.getName());
         fileNameData.setFileAbsoluteName(filePath);
@@ -222,7 +180,7 @@ public class ReferralServiceImpl implements ReferralService {
         Duration duration = Duration.between(parseFileStart,parseFileStartReadFile);
         long millis = duration.toMillis();//相差毫秒数
         logger.info("ReferralServiceImpl parseFileProfileByFilePath 读取文件时间差:millis{}",millis);
-        ProfileDocParseResult profileDocParseResult = parseResult(employeeDO.getId(), file.getName(), data, fileNameData);
+        ProfileDocParseResult profileDocParseResult = parseResult(employeeDO.getId(), file.getName(), file, fileNameData);
         LocalDateTime parseFileEnd = LocalDateTime.now();
         Duration parseTimeDiffer = Duration.between(parseFileStart,parseFileEnd);
         long parseTimeDifferMills = parseTimeDiffer.toMillis();//相差毫秒数
@@ -241,7 +199,7 @@ public class ReferralServiceImpl implements ReferralService {
         FileNameData fileNameData = StreamUtils.persistFile(fileDataArray, env.getProperty("profile.persist.url"), suffix);
         fileNameData.setOriginName(fileName);
 
-        return parseResult(employeeId, fileAbsoluteName, StreamUtils.byteArrayToBase64String(fileDataArray), fileNameData);
+        return parseResult(employeeId, fileAbsoluteName,new File(fileNameData.getFileAbsoluteName()), fileNameData);
     }
 
     @Override
@@ -926,19 +884,18 @@ public class ReferralServiceImpl implements ReferralService {
 //
 //    }
 
-    private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
+    private ProfileDocParseResult parseResult(int employeeId, String fileName, File file,
                                               FileNameData fileNameData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
         profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
-        ResumeObj resumeObj;
+        ProfileObj profileObj;
         try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
-        } catch (TException | IOException e) {
+            profileObj = profileEntity.parseProfile(0,fileName, file);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
         profileDocParseResult.setMobile(profileObj.getUser().getMobile());
         profileDocParseResult.setName(profileObj.getUser().getName());
         profileObj.setResumeObj(null);
