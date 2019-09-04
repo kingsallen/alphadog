@@ -1053,8 +1053,8 @@ public class PositionService {
                     formRcord.setCity(city);
                 }
                 if(StringUtils.isNotNullOrEmpty(formRcord.getTitle())){
-                    String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
-                    jobPositionRecord.setFirstPinyin(pinYin);
+                    String pinYin=PinyinUtil.getFirstLetter(formRcord.getTitle());
+                    formRcord.setFirstPinyin(pinYin);
                 }
                 logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + formRcord.toString() + "--");
                 Integer pid = jobPositionDao.addRecord(formRcord).getId();
