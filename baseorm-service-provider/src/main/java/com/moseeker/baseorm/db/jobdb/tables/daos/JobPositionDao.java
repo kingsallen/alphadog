@@ -519,4 +519,11 @@ public class JobPositionDao extends DAOImpl<JobPositionRecord, com.moseeker.base
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchByIsReferral(Byte... values) {
         return fetch(JobPosition.JOB_POSITION.IS_REFERRAL, values);
     }
+
+    /**
+     * Fetch records that have <code>first_pinyin IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchByFirstPinyin(String... values) {
+        return fetch(JobPosition.JOB_POSITION.FIRST_PINYIN, values);
+    }
 }

@@ -4,9 +4,15 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import com.moseeker.baseorm.db.jobdb.tables.ConfigAtsEventType;
+import com.moseeker.baseorm.db.jobdb.tables.HrAtsRecommend;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationCenter;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationOfferCommunicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationRemark;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
@@ -27,6 +33,9 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.TmpAppUser;
+import com.moseeker.baseorm.db.jobdb.tables.TmpMyData;
+import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,12 +61,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1884206539;
+    private static final long serialVersionUID = 9970892;
 
     /**
      * The reference instance of <code>jobdb</code>
      */
     public static final Jobdb JOBDB = new Jobdb();
+
+    /**
+     * 事件状态管理表
+     */
+    public final ConfigAtsEventType CONFIG_ATS_EVENT_TYPE = com.moseeker.baseorm.db.jobdb.tables.ConfigAtsEventType.CONFIG_ATS_EVENT_TYPE;
+
+    /**
+     * 推荐给用人部门表
+     */
+    public final HrAtsRecommend HR_ATS_RECOMMEND = com.moseeker.baseorm.db.jobdb.tables.HrAtsRecommend.HR_ATS_RECOMMEND;
 
     /**
      * The table <code>jobdb.job_application</code>.
@@ -73,6 +92,26 @@ public class Jobdb extends SchemaImpl {
      * 招聘进度和具体申请对应表
      */
     public final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
+
+    /**
+     * 职位申请备注沟通信息总览关系
+     */
+    public final JobApplicationCommunicationCenter JOB_APPLICATION_COMMUNICATION_CENTER = com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationCenter.JOB_APPLICATION_COMMUNICATION_CENTER;
+
+    /**
+     * The table <code>jobdb.job_application_communication_record</code>.
+     */
+    public final JobApplicationCommunicationRecord JOB_APPLICATION_COMMUNICATION_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationRecord.JOB_APPLICATION_COMMUNICATION_RECORD;
+
+    /**
+     * The table <code>jobdb.job_application_offer_communication_record</code>.
+     */
+    public final JobApplicationOfferCommunicationRecord JOB_APPLICATION_OFFER_COMMUNICATION_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobApplicationOfferCommunicationRecord.JOB_APPLICATION_OFFER_COMMUNICATION_RECORD;
+
+    /**
+     * 职位投递备注表
+     */
+    public final JobApplicationRemark JOB_APPLICATION_REMARK = com.moseeker.baseorm.db.jobdb.tables.JobApplicationRemark.JOB_APPLICATION_REMARK;
 
     /**
      * 职位自定义字段配置表
@@ -175,6 +214,21 @@ public class Jobdb extends SchemaImpl {
     public final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
 
     /**
+     * The table <code>jobdb.tmp_app_user</code>.
+     */
+    public final TmpAppUser TMP_APP_USER = com.moseeker.baseorm.db.jobdb.tables.TmpAppUser.TMP_APP_USER;
+
+    /**
+     * The table <code>jobdb.tmp_my_data</code>.
+     */
+    public final TmpMyData TMP_MY_DATA = com.moseeker.baseorm.db.jobdb.tables.TmpMyData.TMP_MY_DATA;
+
+    /**
+     * VIEW
+     */
+    public final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
+
+    /**
      * No further instances allowed
      */
     private Jobdb() {
@@ -199,9 +253,15 @@ public class Jobdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            ConfigAtsEventType.CONFIG_ATS_EVENT_TYPE,
+            HrAtsRecommend.HR_ATS_RECOMMEND,
             JobApplication.JOB_APPLICATION,
             JobApplicationAts.JOB_APPLICATION_ATS,
             JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS,
+            JobApplicationCommunicationCenter.JOB_APPLICATION_COMMUNICATION_CENTER,
+            JobApplicationCommunicationRecord.JOB_APPLICATION_COMMUNICATION_RECORD,
+            JobApplicationOfferCommunicationRecord.JOB_APPLICATION_OFFER_COMMUNICATION_RECORD,
+            JobApplicationRemark.JOB_APPLICATION_REMARK,
             JobCustom.JOB_CUSTOM,
             JobOccupation.JOB_OCCUPATION,
             JobPcAdvertisement.JOB_PC_ADVERTISEMENT,
@@ -221,6 +281,9 @@ public class Jobdb extends SchemaImpl {
             JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
             JobPositionTopic.JOB_POSITION_TOPIC,
-            JobResumeOther.JOB_RESUME_OTHER);
+            JobResumeOther.JOB_RESUME_OTHER,
+            TmpAppUser.TMP_APP_USER,
+            TmpMyData.TMP_MY_DATA,
+            UserProfileJobapply.USER_PROFILE_JOBAPPLY);
     }
 }
