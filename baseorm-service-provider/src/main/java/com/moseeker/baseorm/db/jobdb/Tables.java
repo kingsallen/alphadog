@@ -4,9 +4,15 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import com.moseeker.baseorm.db.jobdb.tables.ConfigAtsEventType;
+import com.moseeker.baseorm.db.jobdb.tables.HrAtsRecommend;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationCenter;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationOfferCommunicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationRemark;
 import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
 import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
@@ -27,6 +33,9 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.TmpAppUser;
+import com.moseeker.baseorm.db.jobdb.tables.TmpMyData;
+import com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply;
 
 import javax.annotation.Generated;
 
@@ -45,6 +54,16 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * 事件状态管理表
+     */
+    public static final ConfigAtsEventType CONFIG_ATS_EVENT_TYPE = com.moseeker.baseorm.db.jobdb.tables.ConfigAtsEventType.CONFIG_ATS_EVENT_TYPE;
+
+    /**
+     * 推荐给用人部门表
+     */
+    public static final HrAtsRecommend HR_ATS_RECOMMEND = com.moseeker.baseorm.db.jobdb.tables.HrAtsRecommend.HR_ATS_RECOMMEND;
+
+    /**
      * The table <code>jobdb.job_application</code>.
      */
     public static final JobApplication JOB_APPLICATION = com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION;
@@ -58,6 +77,26 @@ public class Tables {
      * 招聘进度和具体申请对应表
      */
     public static final JobApplicationAtsProcess JOB_APPLICATION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobApplicationAtsProcess.JOB_APPLICATION_ATS_PROCESS;
+
+    /**
+     * 职位申请备注沟通信息总览关系
+     */
+    public static final JobApplicationCommunicationCenter JOB_APPLICATION_COMMUNICATION_CENTER = com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationCenter.JOB_APPLICATION_COMMUNICATION_CENTER;
+
+    /**
+     * The table <code>jobdb.job_application_communication_record</code>.
+     */
+    public static final JobApplicationCommunicationRecord JOB_APPLICATION_COMMUNICATION_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobApplicationCommunicationRecord.JOB_APPLICATION_COMMUNICATION_RECORD;
+
+    /**
+     * The table <code>jobdb.job_application_offer_communication_record</code>.
+     */
+    public static final JobApplicationOfferCommunicationRecord JOB_APPLICATION_OFFER_COMMUNICATION_RECORD = com.moseeker.baseorm.db.jobdb.tables.JobApplicationOfferCommunicationRecord.JOB_APPLICATION_OFFER_COMMUNICATION_RECORD;
+
+    /**
+     * 职位投递备注表
+     */
+    public static final JobApplicationRemark JOB_APPLICATION_REMARK = com.moseeker.baseorm.db.jobdb.tables.JobApplicationRemark.JOB_APPLICATION_REMARK;
 
     /**
      * 职位自定义字段配置表
@@ -158,4 +197,19 @@ public class Tables {
      * 自定义简历副本记录表
      */
     public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
+
+    /**
+     * The table <code>jobdb.tmp_app_user</code>.
+     */
+    public static final TmpAppUser TMP_APP_USER = com.moseeker.baseorm.db.jobdb.tables.TmpAppUser.TMP_APP_USER;
+
+    /**
+     * The table <code>jobdb.tmp_my_data</code>.
+     */
+    public static final TmpMyData TMP_MY_DATA = com.moseeker.baseorm.db.jobdb.tables.TmpMyData.TMP_MY_DATA;
+
+    /**
+     * VIEW
+     */
+    public static final UserProfileJobapply USER_PROFILE_JOBAPPLY = com.moseeker.baseorm.db.jobdb.tables.UserProfileJobapply.USER_PROFILE_JOBAPPLY;
 }

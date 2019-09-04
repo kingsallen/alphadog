@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition implements Serializable {
 
-    private static final long serialVersionUID = 739105777;
+    private static final long serialVersionUID = 618996638;
 
     private Integer   id;
     private String    jobnumber;
@@ -91,6 +91,7 @@ public class JobPosition implements Serializable {
     private Integer   teamId;
     private Byte      profileCcMailEnabled;
     private Byte      isReferral;
+    private String    firstPinyin;
 
     public JobPosition() {}
 
@@ -161,6 +162,7 @@ public class JobPosition implements Serializable {
         this.teamId = value.teamId;
         this.profileCcMailEnabled = value.profileCcMailEnabled;
         this.isReferral = value.isReferral;
+        this.firstPinyin = value.firstPinyin;
     }
 
     public JobPosition(
@@ -229,7 +231,8 @@ public class JobPosition implements Serializable {
         Integer   positionCode,
         Integer   teamId,
         Byte      profileCcMailEnabled,
-        Byte      isReferral
+        Byte      isReferral,
+        String    firstPinyin
     ) {
         this.id = id;
         this.jobnumber = jobnumber;
@@ -297,6 +300,7 @@ public class JobPosition implements Serializable {
         this.teamId = teamId;
         this.profileCcMailEnabled = profileCcMailEnabled;
         this.isReferral = isReferral;
+        this.firstPinyin = firstPinyin;
     }
 
     public Integer getId() {
@@ -827,6 +831,14 @@ public class JobPosition implements Serializable {
         this.isReferral = isReferral;
     }
 
+    public String getFirstPinyin() {
+        return this.firstPinyin;
+    }
+
+    public void setFirstPinyin(String firstPinyin) {
+        this.firstPinyin = firstPinyin;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("JobPosition (");
@@ -897,6 +909,7 @@ public class JobPosition implements Serializable {
         sb.append(", ").append(teamId);
         sb.append(", ").append(profileCcMailEnabled);
         sb.append(", ").append(isReferral);
+        sb.append(", ").append(firstPinyin);
 
         sb.append(")");
         return sb.toString();
