@@ -20,9 +20,9 @@ public final class Constant {
     public static int MAX_SIZE = 60000;
 
     //身份证识别组件
-    public static final String IDCARD_RECOG = "idcard-recog";
-    public static final String IDPHOTO_FRONT = "IdPhotoFront";
-    public static final String IDPHOTO_BACK = "IdPhotoBack";
+    public static final String IDCARD_RECOG = "id_card";
+    public static final String IDPHOTO_FRONT = "id_card_front";
+    public static final String IDPHOTO_BACK = "id_card_back";
 
     private Constant() throws AssertionError {
         throw new AssertionError();
