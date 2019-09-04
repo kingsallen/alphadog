@@ -1052,6 +1052,10 @@ public class PositionService {
                 if (city != null) {
                     formRcord.setCity(city);
                 }
+                if(StringUtils.isNotNullOrEmpty(formRcord.getTitle())){
+                    String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
+                    jobPositionRecord.setFirstPinyin(pinYin);
+                }
                 logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + formRcord.toString() + "--");
                 Integer pid = jobPositionDao.addRecord(formRcord).getId();
                 logger.info("-- 新增jobPostion数据结束,新增职位ID为：" + pid);
@@ -1101,6 +1105,12 @@ public class PositionService {
             // 更新jobPostion数据
             if (jobPositionUpdateRecordList.size() > 0) {
                 logger.info("-------------更新jobPostion数据开始------------------");
+                for(JobPositionRecord jobPositionRecord: jobPositionUpdateRecordList){
+                    if(StringUtils.isNotNullOrEmpty(jobPositionRecord.getTitle())){
+                        String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
+                        jobPositionRecord.setFirstPinyin(pinYin);
+                    }
+                }
                 jobPositionDao.updateRecords(jobPositionUpdateRecordList);
                 logger.info("-------------更新jobPostion数据结束------------------");
             }
