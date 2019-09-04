@@ -93,7 +93,16 @@ public abstract class EmployeeReferralProfile {
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
-    protected abstract void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
+    /**
+     * 存储
+     * @param userRecord
+     * @param profileNotice
+     * @param profilePojo
+     * @param employeeDO
+     * @param attementVO
+     * @return
+     */
+    protected abstract boolean storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
                                               ProfilePojo profilePojo, UserEmployeeDO employeeDO, ProfileAttementVO attementVO);
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
@@ -109,7 +118,7 @@ public abstract class EmployeeReferralProfile {
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
 
-        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
+        boolean updateUser = storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
 
         List<JobPositionDO> positions = getJobPositions(profileNotice.getPositionIds(), employeeDO.getCompanyId());
 
@@ -169,6 +178,20 @@ public abstract class EmployeeReferralProfile {
             for (int i=0; i<profileNotice.getPositionIds().size(); i++) {
                 resultVOS.add(generateNotExistInfo(i));
             }
+        }
+
+        /**
+         * 如果 storeReferralUser 方法更新了userRecord的属性（用户信息），
+         * 那么如果有一次推荐成功就将userRecord的信息持久化到数据库
+         */
+        if (updateUser) {
+            Optional<MobotReferralResultVO> successReferralOption = resultVOS
+                    .stream()
+                    .filter(MobotReferralResultVO::getSuccess)
+                    .findAny();
+            successReferralOption.ifPresent(mobotReferralResultVO -> {
+                userAccountEntity.updateUserRecord(userRecord);
+            });
         }
         return resultVOS;
     }

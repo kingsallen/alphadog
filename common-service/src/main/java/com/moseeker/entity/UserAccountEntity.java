@@ -227,11 +227,11 @@ public class UserAccountEntity {
             countryCode=phoneArray[0];
             phone=phoneArray[1];
         }
-        short source = (short) UserSource.EMPLOYEE_REFERRAL.getValue();
+       /* short source = (short) UserSource.EMPLOYEE_REFERRAL.getValue();
         if(referralScene.getScene() == ReferralScene.ChatBot.getScene()){
             source = (short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue();
-        }
-        List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode, source);
+        }*/
+        List<UserUserRecord> list = userDao.getAllReferralUser(phone, countryCode);
         if (list != null && list.size() > 0) {
             userUserRecord = findEmployeeReferral(list, companyId);
         }
