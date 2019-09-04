@@ -719,6 +719,9 @@ public class PositionService {
                 List<JobPositionRecord> noDeleJobPostionRecords = new ArrayList<>();
                 // 提交的数据处理
                 for (JobPositionRecord jobPositionRecord : dbOnlineList) {
+                    //处理拼音问题
+                    String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
+
                     boolean existed = false;
                     for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
                         // 当ID相同，数据不需要删除
