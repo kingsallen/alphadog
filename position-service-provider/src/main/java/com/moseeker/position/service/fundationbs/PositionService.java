@@ -721,7 +721,7 @@ public class PositionService {
                 for (JobPositionRecord jobPositionRecord : dbOnlineList) {
                     //处理拼音问题
                     String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
-
+                    jobPositionRecord.setFirstPinyin(pinYin);
                     boolean existed = false;
                     for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
                         // 当ID相同，数据不需要删除
