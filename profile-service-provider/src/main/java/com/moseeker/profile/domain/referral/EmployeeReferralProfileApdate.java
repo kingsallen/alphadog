@@ -41,32 +41,13 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
     @Override
-    public boolean storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
+    public void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
                                   UserEmployeeDO employeeDO, ProfileAttementVO attementVO){
-        boolean flag = false;
         int userId = 0;
         int attachementId = 0;
         logger.info("EmployeeReferralProfileApdate storeReferralUser userRecord:{}", userRecord);
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
-            UserUserRecord userUserRecord = new UserUserRecord();
-            userUserRecord.setId(userRecord.getId());
-            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(profileNotice.getName())) {
-                userRecord.setName(profileNotice.getName());
-                userUserRecord.setName(profileNotice.getName());
-                flag = true;
-            }
-            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
-                userRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
-                userUserRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
-                flag = true;
-            }
-            /**
-             * 移到外部。需要至少一份内推成功才更新用户信息
-             */
-            /*if (flag) {
-                userAccountEntity.updateUserRecord(userUserRecord);
-            }*/
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             logger.info("EmployeeReferralProfileApdate storeReferralUser userName:{}", userRecord.getUsername());
@@ -109,7 +90,6 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
         }
         attementVO.setUserId(userId);
         attementVO.setAttachmentId(attachementId);
-        return flag;
     }
 
 }
