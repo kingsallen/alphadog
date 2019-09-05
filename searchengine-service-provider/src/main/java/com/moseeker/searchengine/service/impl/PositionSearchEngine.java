@@ -333,9 +333,6 @@ public class PositionSearchEngine {
      */
     private Map<String,Object> fetchFallback(int pageNo,int pageSize, int companyId) {
 
-        if (companyId <= 0) {
-            return new HashMap<>(0);
-        }
         if (pageNo <=0) {
             pageNo = 1;
         }
