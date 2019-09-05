@@ -15,6 +15,7 @@ import redis.clients.jedis.exceptions.JedisException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 
 import java.net.ConnectException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -776,4 +777,63 @@ public abstract class RedisClient {
 		} finally {
 		}
 	}
+
+	/**
+	 * 获取锁
+	 * @param appId 项目编号
+	 * @param keyIdentifier 关键词
+	 * @param key 锁的名称
+	 * @param value 锁的内容。用于排他解锁
+	 * @return true 获得锁；false 被其他锁住，无法获得锁
+	 */
+	public boolean tryGetLock(int appId, String keyIdentifier, String key, String value) {
+
+		RedisConfigRedisKey redisKey = readRedisKey(appId, keyIdentifier);
+		String cacheKey = String.format(redisKey.getPattern(), key);
+		long expireTime = redisKey.getTtl() > 0 ? redisKey.getTtl() * 1000 : EXPIRE_TIME;
+		String result = redisCluster.set(cacheKey, value, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, expireTime);
+
+		if (LOCK_SUCCESS.equals(result)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 释放锁
+	 * @param key 锁的名称
+	 * @param value 锁的内容。用于排他解锁。如果锁的内容和当前的值不相等，无法解锁
+	 * @return true 解锁成功；false 解锁失败
+	 */
+	public boolean releaseLock(int appId, String keyIdentifier, String key, String value) {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, keyIdentifier);
+		String cacheKey = String.format(redisKey.getPattern(), key);
+		String script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+		Object result = redisCluster.eval(script, Collections.singletonList(cacheKey), Collections.singletonList(value));
+
+		if (RELEASE_SUCCESS.equals(result)) {
+			return true;
+		}
+		return false;
+
+	}
+
+	/**
+	 * 暴力解锁
+	 * @param key 锁的名字
+	 * @return 直接删除
+	 */
+	public boolean violentlyReleaseLock(int appId, String keyIdentifier, String key) {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, keyIdentifier);
+		String cacheKey = String.format(redisKey.getPattern(), key);
+		redisCluster.del(cacheKey);
+		return true;
+
+	}
+
+	private static final String LOCK_SUCCESS = "OK";
+	private static final String SET_IF_NOT_EXIST = "NX";
+	private static final String SET_WITH_EXPIRE_TIME = "PX";
+	private static final int EXPIRE_TIME = 60*1000;
+	private static final Long RELEASE_SUCCESS = 1L;
 }

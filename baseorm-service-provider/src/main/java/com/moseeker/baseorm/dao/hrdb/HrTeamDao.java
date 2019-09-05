@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -18,8 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import static com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
+import static org.jooq.impl.DSL.count;
 
 /**
  * @author xxx HrTeamDao 实现类 （groovy 生成） 2017-03-21
@@ -28,7 +34,7 @@ import org.springframework.stereotype.Repository;
 public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
 
     public HrTeamDao() {
-        super(HrTeam.HR_TEAM, HrTeamDO.class);
+        super(HR_TEAM, HrTeamDO.class);
     }
 
     public HrTeamDao(TableImpl<HrTeamRecord> table, Class<HrTeamDO> hrTeamDOClass) {
@@ -98,5 +104,32 @@ public class HrTeamDao extends JooqCrudImpl<HrTeamDO, HrTeamRecord> {
     public HrTeamDO getHrTeam(int id) {
         Query query = new Query.QueryBuilder().where("id", id).buildQuery();
         return getData(query);
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> listByIdList(List<Integer> teamIdList) {
+        if(teamIdList==null||teamIdList.size()==0){
+            return new ArrayList<>(0);
+        }
+        Result<HrTeamRecord> records = create
+                .selectFrom(HR_TEAM)
+                .where(HR_TEAM.IS_SHOW.eq(1))
+                .and(HR_TEAM.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HR_TEAM.ID.in(teamIdList))
+                .orderBy(HR_TEAM.SHOW_ORDER.asc())
+                .fetch();
+        if (records != null && records.size() > 0) {
+            return records.into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam.class);
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+    public List<Record2<Integer, Integer>> countByCompanyIdList(List<Integer> companyIdList) {
+        return create
+                .select(HR_TEAM.COMPANY_ID, count(HR_TEAM.ID))
+                .from(HR_TEAM)
+                .where(HR_TEAM.COMPANY_ID.in(companyIdList))
+                .groupBy(HR_TEAM.COMPANY_ID)
+                .fetch();
     }
 }

@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -171,5 +172,46 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
             return null;
         }
         return companys;
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> list(List<Integer> companyIdList) {
+        if (companyIdList == null || companyIdList.size() == 0) {
+            return new ArrayList<>(0);
+        }
+        Result<HrCompanyRecord> results = create
+                .selectFrom(HrCompany.HR_COMPANY)
+                .where(HrCompany.HR_COMPANY.ID.in(companyIdList))
+                .fetch();
+        return convertToPojos(results);
+    }
+
+    public int count() {
+        return create
+                .selectCount()
+                .from(HrCompany.HR_COMPANY)
+                .where(HrCompany.HR_COMPANY.TYPE.eq((byte) CompanyType.PAY.getCode()))
+                .and(HrCompany.HR_COMPANY.PARENT_ID.eq(0))
+                .fetchOne()
+                .value1();
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> list(int pageNo, int pageSize) {
+
+        Result<HrCompanyRecord> result = create
+                .selectFrom(HrCompany.HR_COMPANY)
+                .where(HrCompany.HR_COMPANY.TYPE.eq((byte) CompanyType.PAY.getCode()))
+                .and(HrCompany.HR_COMPANY.PARENT_ID.eq(0))
+                .limit((pageNo-1)*pageSize,pageSize)
+                .fetch();
+        return convertToPojos(result);
+
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> convertToPojos(Result<HrCompanyRecord> result) {
+        if (result != null && result.size() > 0) {
+            return result.into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany.class);
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 }
