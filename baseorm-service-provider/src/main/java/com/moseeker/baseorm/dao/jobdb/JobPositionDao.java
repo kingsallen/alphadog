@@ -896,6 +896,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                     .selectFrom(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
                     .and(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                    .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.desc())
                     .limit((pageNo-1)*pageSize,pageSize)
                     .fetch();
             return convertToPojo(records);
@@ -904,6 +905,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             Result<JobPositionRecord> records = create
                     .selectFrom(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                    .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.desc())
                     .limit((pageNo-1)*pageSize,pageSize)
                     .fetch();
             return convertToPojo(records);
