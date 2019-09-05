@@ -2,6 +2,7 @@ package com.moseeker.commonservice.utils;
 
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -134,19 +135,54 @@ public class ProfileDocCheckTool {
     }
 
     /**
+     * 猎聘网导出的简历是html格式，后缀名".doc"
+     * @param fileContent 文本内容
+     * @return
+     */
+    private static boolean isHtmlOrXml(byte[] fileContent){
+        // 跳过空格
+        int skipBlank = 0 ;
+        byte[] blankChars = new byte[]{' ','\t','\n','\r'};
+        do{
+            if(!ArrayUtils.contains(blankChars,fileContent[skipBlank])){
+                break;
+            }
+        }while (++skipBlank<fileContent.length);
+        // xml及html第一个非空字符一定是'<'
+        if(skipBlank >= fileContent.length - 4 || fileContent[skipBlank] != ((byte)'<')){
+            return false ;
+        }
+
+        String html = new String(fileContent,skipBlank,fileContent.length-skipBlank, com.google.common.base.Charsets.UTF_8);
+
+        // 如果不是以'<'开头，跳过
+        // 如果有注释，跳过注释
+        for(String prefix : new String[]{"<?xml ","<html","<!DOCTYPE","<?XML","<HTML","<!doctype"}){
+            if( html.startsWith(prefix)) return true ;
+        }
+        return false ;
+    }
+    /**
      * 校验文件是否是支持的文件格式
      * @param fileName 文件名称
      * @param fileContent 文件内容
      * @return true 支持；false 不支持
      */
     public static boolean checkFileFormat(String fileName,byte[] fileContent) {
-        return checkFileName(fileName) && checkMagicNumber(fileContent);
+        if(fileContent.length <= 4) {
+            // 如果文件太小，不可能匹配任何文档或图片格式，直接返回false。造成的原因可能是空文件。
+            return false ;
+        }
+        if( !checkFileName(fileName)) return false;
+        return checkMagicNumber(fileContent) || isHtmlOrXml(fileContent);
     }
 
-
-
     public static void main(String[] args) throws IOException {
-        File file = new File("/Users/huangxia/Desktop/EMPLOYEE.XLSX");
+        File file = new File("/Users/huangxia/Desktop/郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");//"郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");
+        String content = new String(IOUtils.toByteArray(new FileInputStream(file)));
         System.out.print(checkFileFormat(file.getName(), IOUtils.toByteArray(new FileInputStream(file))));
+        /*Arrays.asList("   <!DOCTYPE html>"," \t \r \n <html> </html>","   <HTML> </HTML>","<?XML> <XML>").forEach(html->{
+            System.out.printf("%s \tisHtmlOrXml : %s\n",html.trim(),isHtmlOrXml(html.getBytes()));
+        });*/
     }
 }
