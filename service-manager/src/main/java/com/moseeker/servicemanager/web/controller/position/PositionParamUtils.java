@@ -135,6 +135,7 @@ public class PositionParamUtils extends ParamUtils {
         if (datas != null) {
             datas.forEach(temp -> {
                 try {
+                    logger.info("parseSyncBatchHandlerJobPostionParam For PlusPy : {}", temp);
                     Map<String, Object> jobPostrionObj = (Map<String, Object>) temp.get("position");
                     JobPostrionObj c = ParamUtils.initModelForm(jobPostrionObj, JobPostrionObj.class);
                     c.setThirdParty_position(JSON.toJSONString(temp.get("thirdParty_position")));
@@ -142,6 +143,7 @@ public class PositionParamUtils extends ParamUtils {
                     cs.add(c);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    logger.info("parseSyncBatchHandlerJobPostionParam For PlusPy ParseError : {}, params : {}", e, temp);
                     LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
                 } finally {
                     //do nothing
