@@ -143,14 +143,17 @@ public abstract class EmployeeReferralProfile {
     private void updateApplicationEsIndex(int userId){
 
         logger.info("************************更新data/application索引=================================");
+        logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS===");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
         logger.info("************************更新data/profile索引=================================");
+        logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         logger.info("====================redis==============application更新=============");
         logger.info("================userid={}=================",userId);
         Map<String,Object> result=new HashMap<>();
         result.put("tableName","application_recom");
         result.put("user_id",userId);
+        logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS===");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", JSON.toJSONString(result));
         logger.info("ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING====={}",JSON.toJSONString(result));
 

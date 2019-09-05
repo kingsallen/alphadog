@@ -443,6 +443,8 @@ public abstract class EmployeeBinder {
         result.put("user_id", userId);
         result.put("tableName","user_meassage");
         scheduledThread.startTast(()->{
+            log.info("==========更新users===========ES_REALTIME_UPDATE_INDEX_USER_IDS===");
+            log.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             client.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
             client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         },2000);

@@ -73,8 +73,8 @@ public class ReceiveHandler {
         if(!StringUtils.isEmptyList(userIdSet)){
             for(Integer userId:userIdSet){
                 scheduledThread.startTast(()->{
-                    log.info("==========更新data/profile==============");
-                    redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_DATA_USER_IDS",String.valueOf(userId));
+                    log.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_DATA_USER_IDS===");
+                    redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
                     log.info("==========更新data/profile===userId=={}==============",userId);
                 },1000*10);
             }

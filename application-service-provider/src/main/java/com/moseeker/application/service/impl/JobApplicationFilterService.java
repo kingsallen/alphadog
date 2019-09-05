@@ -109,6 +109,7 @@ public class JobApplicationFilterService {
      更新data/application索引
       */
     private void updateApplicationEsIndex(int userId){
+        logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS===");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
 //        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         logger.info("====================redis==============application更新=============");
