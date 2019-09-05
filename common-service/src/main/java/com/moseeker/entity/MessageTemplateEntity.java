@@ -333,9 +333,9 @@ public class MessageTemplateEntity {
             StringBuffer firstName = new StringBuffer();
             firstName.append("#肥水不流外人田~# 靠谱职位转起来！相信优秀的你身边也一定有很多优秀的人~👍\n");
             firstName.append("\n");
-            firstName.append("            ● \n");
-            firstName.append("            █┳ 《 内~推~有~你~❤️》\n");
-            firstName.append("            ┛┗\n\n");
+            firstName.append("   ● \n");
+            firstName.append("   █┳ 《 内~推~有~你~❤️》\n");
+            firstName.append("   ┛┗\n\n");
 
             String remarkName = "";
             colMap = this.handlerTemplateData(weChatId, firstName.toString(), remarkName, Constant.EMPLOYEE_RECOM_POSITION);
