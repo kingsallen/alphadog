@@ -8,14 +8,16 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
+
 public class EmployeeServiceTest {
 
 
-	public EmployeeService.Iface service  = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);;
+	public EmployeeService.Iface service  = ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);;
 
     //@Before
 	public void init() {
-		service = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+		service = ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
 	}
 
     ////@Test
@@ -42,7 +44,7 @@ public class EmployeeServiceTest {
     ////@Test
 	public void unbindTest(){
 		try {
-			Result unbind = service.unbind(6, 1, 1);
+			Result unbind = service.unbind(EMPLOYEE_ACTIVATION_UNEMPLOYEE, 1, 1);
 			System.out.println(unbind);
 		} catch (TException e) {
 			// TODO Auto-generated catch block

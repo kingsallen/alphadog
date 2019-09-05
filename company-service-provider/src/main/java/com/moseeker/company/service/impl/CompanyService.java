@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ValidGeneralType;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigOmsSwitchManagementDao;
-import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -28,6 +27,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.OmsSwitchEnum;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -40,7 +40,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.company.constant.OmsSwitchEnum;
+import com.moseeker.company.constant.EmployeeCertAuthMode;
 import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.CompanySwitchException;
@@ -61,15 +61,16 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.SmsType;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -81,47 +82,50 @@ import java.util.stream.Collectors;
 @Service
 public class CompanyService {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final static Logger logger = LoggerFactory.getLogger(CompanyService.class);
+    private final static String WORKWX_GET_TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s" ;
+    private final static String WORKWX_GET_JSAPI_TICKET_URL = "https://qyapi.weixin.qq.com/cgi-bin/get_jsapi_ticket?access_token=%s" ;
 
-
-	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
-
-    @Autowired
-    protected HrCompanyDao companyDao;
+    // private ChaosServices.Iface chaosService = ServiceManager.SERVICE_MANAGER.getService(ChaosServices.Iface.class);
 
     @Autowired
-    protected HrWxWechatDao wechatDao;
+    private HrCompanyDao companyDao;
 
     @Autowired
-    protected HrWxTemplateMessageDao messageDao;
+    private HrWxWechatDao wechatDao;
 
     @Autowired
-    protected HrWxNoticeMessageDao noticeDao;
+    private HrWxTemplateMessageDao messageDao;
 
     @Autowired
-    HrGroupCompanyRelDao hrGroupCompanyRelDao;
+    private HrWxNoticeMessageDao noticeDao;
 
     @Autowired
-    HrEmployeeSectionDao hrEmployeeSectionDao;
+    private HrGroupCompanyRelDao hrGroupCompanyRelDao;
 
     @Autowired
-    HrEmployeePositionDao hrEmployeePositionDao;
+    private HrEmployeeSectionDao hrEmployeeSectionDao;
 
     @Autowired
-    HrEmployeeCertConfDao hrEmployeeCertConfDao;
-
-
-    @Autowired
-    HrSuperaccountApplyDao superaccountApplyDao;
+    private HrEmployeePositionDao hrEmployeePositionDao;
 
     @Autowired
-    UserEmployeeDao userEmployeeDao;
+    private HrEmployeeCertConfDao hrEmployeeCertConfDao;
 
     @Autowired
-    EmployeeEntity employeeEntity;
+    private HrCompanyWorkWxConfDao hrCompanyWorkwxConfDao;
 
     @Autowired
-    HrPointsConfDao hrPointsConfDao;
+    private HrSuperaccountApplyDao superaccountApplyDao;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private HrPointsConfDao hrPointsConfDao;
 
     @Autowired
     private HrImporterMonitorDao hrImporterMonitorDao;
@@ -161,7 +165,7 @@ public class CompanyService {
     @Autowired
     CompanySwitchFactory companySwitchFactory;
 
-    MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     public Response getResource(CommonQuery query) throws TException {
         try {
@@ -242,8 +246,6 @@ public class CompanyService {
         } catch (Exception e) {
             logger.error("getResources error", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
@@ -321,17 +323,19 @@ public class CompanyService {
      */
     public List<CompanyForVerifyEmployee> getGroupCompanies(int companyId) throws Exception {
 
+        logger.info("CompanyService getGroupCompanies companyId:{}", companyId);
         /** 如果是子公司的话，则查找母公司的所属集团 */
         companyId = findSuperCompanyId(companyId);
-
+        logger.info("CompanyService getGroupCompanies companyId:{}", companyId);
         HrGroupCompanyRelDO groupCompanyDO = findGroupCompanyRelByCompanyId(companyId);
+        logger.info("CompanyService getGroupCompanies groupCompanyDO:{}", JSONObject.toJSONString(groupCompanyDO));
         if (groupCompanyDO == null) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
         }
 
         /** 查找集团下公司的编号 */
         List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
-
+        logger.info("CompanyService getGroupCompanies companyIdList:{}", JSONObject.toJSONString(companyIdList));
         if (companyIdList == null || companyIdList.size() == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_NOT_BELONG_GROUPCOMPANY);
         }
@@ -581,7 +585,6 @@ public class CompanyService {
      * @return
      */
     public Response bindingSwitch(Integer companyId, Integer disable) throws Exception {
-        Response response = new Response();
         try {
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId);
@@ -612,19 +615,18 @@ public class CompanyService {
                 // 数据太大会造成性能不行，有待提高
                 userEmployeeDao.updateDatas(list);
             }
-            response = ResultMessage.SUCCESS.toResponse();
+            return ResultMessage.SUCCESS.toResponse();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionFactory.buildException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS);
         }
-        return response;
     }
 
     /**
      * 获取公司认证配置信息
      *
      * @param companyId 公司ID
-     * @return
+     * @return 公司认证配置信息
      * @throws BIZException
      */
     public CompanyCertConf getHrEmployeeCertConf(Integer companyId, Integer type, Integer hraccountId) throws Exception {
@@ -661,7 +663,8 @@ public class CompanyService {
      * @return 受影响行数
      */
     @Transactional
-    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint, String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws Exception {
+    public int updateHrEmployeeCertConf(Integer companyId, Integer authMode, String emailSuffix, String custom, String customHint,
+                                        String questions, String filePath, String fileName, Integer type, Integer hraccountId) throws Exception {
         if (companyId == 0) {
             throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
         }
@@ -677,12 +680,8 @@ public class CompanyService {
             falg = 1;
         } else {
             Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
-            if ((oldAuthMode == 2 || oldAuthMode == 4) && (authMode != 2 && authMode != 4)) {
-                query.clear();
-                query.select("id");
-                query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ)).and(new Condition("custom_field", "", ValueOp.EQ));
-                List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
-                employeeEntity.removeEmployee(employeeIds);
+            if (EmployeeCertAuthMode.includeUserDefinedMode(oldAuthMode) || !EmployeeCertAuthMode.includeUserDefinedMode(authMode)) {
+                removeNonActivationEmployee( companyId);
             }
         }
         hrEmployeeCertConfDO.setAuthMode(authMode);
@@ -738,6 +737,164 @@ public class CompanyService {
         }
         return 1;
     }
+
+
+    private void removeNonActivationEmployee(int companyId){
+        // 清除非认证状态且自定义字段为空的员工信息
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.clear();
+        query.select("id");
+        query.where("company_id", companyId).and(new Condition("activation", 0, ValueOp.NEQ))
+                .and(new Condition("custom_field", "", ValueOp.EQ));
+        List<Integer> employeeIds = userEmployeeDao.getDatas(query.buildQuery(), Integer.class);
+        employeeEntity.removeEmployee(employeeIds);
+    }
+
+    /**
+     * 设置企业微信认证方式
+     * 第一步 设置员工认证方式为企业微信
+     * 第二步 保存corpid,secret，同时获取access_token及jsapi_ticket并保存。
+     * 如果无法获取access_token，说明corpid或secret有误，报错。
+     * @param companyId
+     * @param hraccountId
+     * @param corpId
+     * @param secret
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public boolean setWorkWechatEmployeeBindConf(int companyId, int hraccountId, String corpId, String secret) throws Exception {
+        if (companyId == 0) {
+            throw ExceptionFactory.buildException(ExceptionCategory.COMPANY_ID_EMPTY);
+        }
+
+        /** 设置认证方式 **/
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.COMPANY_ID.getName(), companyId)
+                .and(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.DISABLE.getName(), 0);
+        HrEmployeeCertConfDO hrEmployeeCertConfDO = hrEmployeeCertConfDao.getData(query.buildQuery());
+        // 员工认证信息为空需要新建
+        boolean exist = false;
+        if (hrEmployeeCertConfDO == null) {
+            hrEmployeeCertConfDO = new HrEmployeeCertConfDO();
+        } else {
+            exist = true ;
+            Integer oldAuthMode = ((int) hrEmployeeCertConfDO.getAuthMode());
+            if (EmployeeCertAuthMode.includeUserDefinedMode(oldAuthMode)) { // 新认证方式不包含自定义字段认证
+                removeNonActivationEmployee( companyId);
+            }
+        }
+        hrEmployeeCertConfDO.setAuthMode(EmployeeCertAuthMode.WORK_WECHAT.value());
+        hrEmployeeCertConfDO.setCompanyId(companyId);
+        try {
+            if (exist) {
+                hrEmployeeCertConfDao.updateData(hrEmployeeCertConfDO);
+            } else {
+                hrEmployeeCertConfDao.addData(hrEmployeeCertConfDO);
+            }
+            // 启用部门职位城市配置
+            hrEmployeeCustomFieldsDao.enableOnlySystemCustomFields(companyId);
+        } catch (Exception e) {
+            logger.info(e.getMessage(),e);
+            throw e;
+        }
+
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        boolean workWxConfExisted = true ;
+        if(workWxConfDO == null){
+            workWxConfDO = new HrCompanyWorkWxConfDO();
+            workWxConfDO.setCompanyId(companyId);
+            workWxConfExisted = false ;
+        }
+
+        // 如果secret不变，前端不传入secret
+        if(StringUtils.isNotNullOrEmpty(secret)){
+            /** 保存企业微信corpId和secret **/
+            workWxConfDO.setCorpid(corpId);
+            workWxConfDO.setSecret(secret);
+        }
+
+        if(workWxConfDO == null || !checkSecretKey(workWxConfDO)){
+            throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
+        }
+
+        try {
+            // 保存corpid,secret,access_token,jsapi_ticket
+            if (workWxConfExisted) {
+                hrCompanyWorkwxConfDao.updateData(workWxConfDO);
+            } else{
+                hrCompanyWorkwxConfDao.addData(workWxConfDO);
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage(),e);
+            throw e;
+        }
+
+        return true ;
+    }
+
+
+    /**
+     * 更新企业微信配置access_token
+     * @param companyId
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public boolean updateWorkWeChatConfToken(int companyId) throws Exception {
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        if(workWxConfDO == null){
+            throw CompanyException.WORKWX_COMPANY_ID_NOT_EXIST;
+        }
+        if(!checkSecretKey(workWxConfDO)){
+            throw CompanyException.WORKWX_CORPID_OR_SERCRET_ERROR;
+        }
+        hrCompanyWorkwxConfDao.updateData(workWxConfDO);
+        return true;
+    }
+    private static boolean checkSecretKey(HrCompanyWorkWxConfDO workWxConfDO){
+        long start = System.currentTimeMillis() ;
+        String url = String.format(WORKWX_GET_TOKEN_URL,workWxConfDO.getCorpid(),workWxConfDO.getSecret()) ;
+        RestTemplate restTemplate = new RestTemplate();
+        Map result =  restTemplate.getForEntity(url,Map.class).getBody();
+        if(result != null && (int)result.get("errcode") == 0 ){
+            String accessToken = result.get("access_token").toString();
+            long expiresTime = start + (int)result.get("expires_in") * 1000 ;
+            workWxConfDO.setAccessToken(accessToken);
+            workWxConfDO.setTokenUpdateTime(System.currentTimeMillis());
+            workWxConfDO.setTokenExpireTime(expiresTime);
+            workWxConfDO.setErrorCode(0);
+            workWxConfDO.setErrorMsg("");
+
+            String jsapiurl = String.format(WORKWX_GET_JSAPI_TICKET_URL, accessToken);
+            Map jsapiRst =  new RestTemplate().getForEntity(jsapiurl,Map.class).getBody();
+            if(jsapiRst != null && (int)jsapiRst.get("errcode") == 0  && jsapiRst.get("ticket") != null){
+                workWxConfDO.setJsapiTicket((String)jsapiRst.get("ticket"));
+            }
+            return true ;
+        }else{
+            return false ;
+        }
+    }
+
+    public WorkWxCertConf getWorkWechatEmployeeBindConf(int companyId) throws BIZException, TException {
+        HrCompanyWorkWxConfDO workWxConfDO = hrCompanyWorkwxConfDao.getByCompanyId(companyId);
+        if(workWxConfDO != null){
+            WorkWxCertConf certConf = new WorkWxCertConf();
+            certConf.setCompanyId(companyId);
+            certConf.setCorpid(workWxConfDO.getCorpid());
+            certConf.setSecret(workWxConfDO.getSecret());
+            certConf.setJsapiTicket(workWxConfDO.getJsapiTicket());
+            certConf.setAccessToken(workWxConfDO.getAccessToken());
+            if(workWxConfDO.getErrorCode() > 0){
+                certConf.setErrCode(workWxConfDO.getErrorCode());
+                certConf.setErrMsg(workWxConfDO.getErrorMsg());
+            }
+            return certConf;
+        }
+        return null;
+    }
+
     /*
      * 获取pc端获取banner图
      */
@@ -1341,7 +1498,7 @@ public class CompanyService {
         List<Integer> moduleList = new ArrayList<>();
         if(moduleNames!=null){
             moduleList = moduleNames.stream().map(str ->{
-                return OmsSwitchEnum.instanceFromName(str).getValue();
+                return toOmsSwitchValue(str);
             } ).collect(Collectors.toList());
         }
        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
@@ -1349,12 +1506,13 @@ public class CompanyService {
            CompanySwitchVO companySwitchVO = new CompanySwitchVO();
            companySwitchVO.setId(configOmsSwitchManagementDO.getId());
            companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
-           companySwitchVO.setKeyword(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()).getName());
+           companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
            companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
            companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
            return companySwitchVO;
        }).collect(Collectors.toList());
     }
+
 
 
     /*
@@ -1370,7 +1528,7 @@ public class CompanyService {
 
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companySwitchVO.getCompanyId());
         companySwitchVO.setCompanyId(hrCompanyDO.getId());
-        Integer moduleId = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword()).getValue();
+        int moduleId = toOmsSwitchValue(companySwitchVO.getKeyword());
         ConfigOmsSwitchManagement configOmsSwitchManagementDO = new ConfigOmsSwitchManagement();
         ConfigOmsSwitchManagement configOmsSwitchManagement = configOmsSwitchManagementDao.getOmsSwitchByParams(hrCompanyDO.getId(),moduleId);
         if(configOmsSwitchManagement!=null){
@@ -1388,7 +1546,7 @@ public class CompanyService {
                 if(i>0){
                     companySwitchVO.setId(configOmsSwitchManagementDO.getId());
                     companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
-                    AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+                    AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()));
                     if(abstractCompanySwitchHandler!=null) {
                         abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
                     }
@@ -1404,12 +1562,13 @@ public class CompanyService {
         configOmsSwitchManagementDO.setModuleParam(companySwitchVO.getFieldValue());
         Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagementDO);
         companySwitchVO.setId(id);
-        AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+        AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()));
         if(abstractCompanySwitchHandler!=null) {
             abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
         }
         return companySwitchVO;
     }
+
 
     /*
      *
@@ -1422,7 +1581,7 @@ public class CompanyService {
     public CompanySwitchVO switchPatch(CompanySwitchVO companySwitchVO) {
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companySwitchVO.getCompanyId());
         companySwitchVO.setCompanyId(hrCompanyDO.getId());
-        Integer moduleId = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword()).getValue();
+        int moduleId = toOmsSwitchValue(companySwitchVO.getKeyword());
         ConfigOmsSwitchManagement configOmsSwitchManagement =configOmsSwitchManagementDao.getValidOmsSwitchByParams(companySwitchVO.getId(),hrCompanyDO.getId(),moduleId);
         if(configOmsSwitchManagement==null){
             throw CompanySwitchException.SWITCH_NOT_EXISTS;
@@ -1441,7 +1600,7 @@ public class CompanyService {
             Integer i = configOmsSwitchManagementDao.update(configOmsSwitchManagement);
             //如果更新成功，返回开关对象
             if(i>0){
-                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagement.getModuleName()));
+                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(getOmsSwitch(configOmsSwitchManagement.getModuleName()));
                 if(abstractCompanySwitchHandler!=null) {
                     abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
                 }
@@ -1456,37 +1615,45 @@ public class CompanyService {
 
     public CompanySwitchVO companySwitch(int companyId, String moduleNames) {
         if(companyId==0){
-         throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
         companyId = hrCompanyDO.getId();
-        ConfigOmsSwitchManagement configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,OmsSwitchEnum.instanceFromName(moduleNames).getValue());
+        ConfigOmsSwitchManagement configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
         if(configOmsSwitchManagementDO==null&&companyId!=0){
             ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
             configOmsSwitchManagement.setCompanyId(companyId);
-            configOmsSwitchManagement.setModuleName(OmsSwitchEnum.instanceFromName(moduleNames).getValue());
+            configOmsSwitchManagement.setModuleName(toOmsSwitchValue(moduleNames));
             configOmsSwitchManagement.setIsValid((byte)0);
-            Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagement);
-            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,OmsSwitchEnum.instanceFromName(moduleNames).getValue());
+            configOmsSwitchManagementDao.add(configOmsSwitchManagement);
+            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
         }
         CompanySwitchVO companySwitchVO = new CompanySwitchVO();
-        companySwitchVO.setId(configOmsSwitchManagementDO.getId());
-        companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
-        companySwitchVO.setKeyword(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()).getName());
-        companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
-        companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+        if(configOmsSwitchManagementDO != null){
+            companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+            companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
+            companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
+            companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
+            companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+        }
         return companySwitchVO;
     }
 
-//    public List<CompanySwitchVO> batchCompanySwitch(int moduleName){
-//        List<ConfigOmsSwitchManagementDO> switchs = configOmsSwitchManagementDao.getOmsSwitchByModuleName(moduleName);
-//        List<CompanySwitchVO> list = new ArrayList<>();
-//        for(ConfigOmsSwitchManagementDO switchDO : switchs){
-//            CompanySwitchVO switchVO = new CompanySwitchVO();
-//            switchDO.setCompanyId(switchDO.getCompanyId());
-//            switchVO.setKeyword(switchDO.getModuleName())
-//
-//        }
-//        return list;
-//    }
+    private static int toOmsSwitchValue(String moduleNames){
+        OmsSwitchEnum omsSwitchEnum = OmsSwitchEnum.instanceFromName(moduleNames);
+        if(omsSwitchEnum == null){
+            throw CompanySwitchException.MODULE_NAME_NOT_EXISTS;
+        }
+        return omsSwitchEnum.getValue();
+    }
+    private static OmsSwitchEnum getOmsSwitch(Integer value){
+        if (value == null){
+            throw CompanySwitchException.SWITCH_NOT_EXISTS;
+        }
+        OmsSwitchEnum omsSwitchEnum = OmsSwitchEnum.instanceFromValue(value);
+        if(omsSwitchEnum == null){
+            throw CompanySwitchException.SWITCH_NOT_EXISTS;
+        }
+        return omsSwitchEnum;
+    }
 }

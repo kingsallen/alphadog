@@ -1,9 +1,8 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.servicemanager.web.controller.mq.vo.SmsInfo;
 import com.moseeker.thrift.gen.mq.struct.*;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public class MqController {
 
     Logger logger = LoggerFactory.getLogger(MqController.class);
 
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     @RequestMapping(value = "/message/template", method = RequestMethod.POST)
     @ResponseBody

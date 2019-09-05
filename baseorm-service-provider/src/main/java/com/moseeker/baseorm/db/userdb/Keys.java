@@ -32,6 +32,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
+import com.moseeker.baseorm.db.userdb.tables.UserWorkwx;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
 import com.moseeker.baseorm.db.userdb.tables.records.EmployeeAwardRecord;
@@ -62,6 +63,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserSysAuthGroupRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserThirdpartyUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserViewedPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWorkwxRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxViewerRecord;
 
@@ -117,6 +119,7 @@ public class Keys {
     public static final Identity<UserThirdpartyUserRecord, Long> IDENTITY_USER_THIRDPARTY_USER = Identities0.IDENTITY_USER_THIRDPARTY_USER;
     public static final Identity<UserUserRecord, Integer> IDENTITY_USER_USER = Identities0.IDENTITY_USER_USER;
     public static final Identity<UserViewedPositionRecord, Integer> IDENTITY_USER_VIEWED_POSITION = Identities0.IDENTITY_USER_VIEWED_POSITION;
+    public static final Identity<UserWorkwxRecord, Integer> IDENTITY_USER_WORKWX = Identities0.IDENTITY_USER_WORKWX;
     public static final Identity<UserWxUserRecord, Long> IDENTITY_USER_WX_USER = Identities0.IDENTITY_USER_WX_USER;
     public static final Identity<UserWxViewerRecord, Integer> IDENTITY_USER_WX_VIEWER = Identities0.IDENTITY_USER_WX_VIEWER;
 
@@ -164,6 +167,7 @@ public class Keys {
     public static final UniqueKey<UserUserRecord> KEY_USER_USER_COUNTRYCODE_USERNAME = UniqueKeys0.KEY_USER_USER_COUNTRYCODE_USERNAME;
     public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_PRIMARY = UniqueKeys0.KEY_USER_VIEWED_POSITION_PRIMARY;
     public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE = UniqueKeys0.KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE;
+    public static final UniqueKey<UserWorkwxRecord> KEY_USER_WORKWX_PRIMARY = UniqueKeys0.KEY_USER_WORKWX_PRIMARY;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
     public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = UniqueKeys0.KEY_USER_WX_VIEWER_PRIMARY;
@@ -205,6 +209,7 @@ public class Keys {
         public static Identity<UserThirdpartyUserRecord, Long> IDENTITY_USER_THIRDPARTY_USER = createIdentity(UserThirdpartyUser.USER_THIRDPARTY_USER, UserThirdpartyUser.USER_THIRDPARTY_USER.ID);
         public static Identity<UserUserRecord, Integer> IDENTITY_USER_USER = createIdentity(UserUser.USER_USER, UserUser.USER_USER.ID);
         public static Identity<UserViewedPositionRecord, Integer> IDENTITY_USER_VIEWED_POSITION = createIdentity(UserViewedPosition.USER_VIEWED_POSITION, UserViewedPosition.USER_VIEWED_POSITION.ID);
+        public static Identity<UserWorkwxRecord, Integer> IDENTITY_USER_WORKWX = createIdentity(UserWorkwx.USER_WORKWX, UserWorkwx.USER_WORKWX.ID);
         public static Identity<UserWxUserRecord, Long> IDENTITY_USER_WX_USER = createIdentity(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
         public static Identity<UserWxViewerRecord, Integer> IDENTITY_USER_WX_VIEWER = createIdentity(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
     }
@@ -250,6 +255,7 @@ public class Keys {
         public static final UniqueKey<UserUserRecord> KEY_USER_USER_COUNTRYCODE_USERNAME = createUniqueKey(UserUser.USER_USER, "KEY_user_user_countrycode_username", UserUser.USER_USER.USERNAME, UserUser.USER_USER.COUNTRY_CODE);
         public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_PRIMARY = createUniqueKey(UserViewedPosition.USER_VIEWED_POSITION, "KEY_user_viewed_position_PRIMARY", UserViewedPosition.USER_VIEWED_POSITION.ID);
         public static final UniqueKey<UserViewedPositionRecord> KEY_USER_VIEWED_POSITION_USER_POSITION_UNIQUE = createUniqueKey(UserViewedPosition.USER_VIEWED_POSITION, "KEY_user_viewed_position_user_position_unique", UserViewedPosition.USER_VIEWED_POSITION.USER_ID, UserViewedPosition.USER_VIEWED_POSITION.POSITION_ID);
+        public static final UniqueKey<UserWorkwxRecord> KEY_USER_WORKWX_PRIMARY = createUniqueKey(UserWorkwx.USER_WORKWX, "KEY_user_workwx_PRIMARY", UserWorkwx.USER_WORKWX.ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_PRIMARY", UserWxUser.USER_WX_USER.ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_wechat_id", UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
         public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = createUniqueKey(UserWxViewer.USER_WX_VIEWER, "KEY_user_wx_viewer_PRIMARY", UserWxViewer.USER_WX_VIEWER.ID);

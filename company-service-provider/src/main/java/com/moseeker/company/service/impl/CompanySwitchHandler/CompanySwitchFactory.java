@@ -1,7 +1,6 @@
 package com.moseeker.company.service.impl.CompanySwitchHandler;
 
-import com.moseeker.company.constant.OmsSwitchEnum;
-import com.moseeker.company.exception.CompanySwitchException;
+import com.moseeker.common.constants.OmsSwitchEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

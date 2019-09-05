@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAppExportFieldsRecord extends UpdatableRecordImpl<HrAppExportFieldsRecord> implements Record7<Integer, String, String, Integer, Integer, Integer, String> {
 
-    private static final long serialVersionUID = -1773850198;
+    private static final long serialVersionUID = -1649131998;
 
     /**
      * Setter for <code>hrdb.hr_app_export_fields.id</code>.
@@ -59,14 +59,14 @@ public class HrAppExportFieldsRecord extends UpdatableRecordImpl<HrAppExportFiel
     }
 
     /**
-     * Setter for <code>hrdb.hr_app_export_fields.field_title</code>. 属性标题
+     * Setter for <code>hrdb.hr_app_export_fields.field_title</code>.
      */
     public void setFieldTitle(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_app_export_fields.field_title</code>. 属性标题
+     * Getter for <code>hrdb.hr_app_export_fields.field_title</code>.
      */
     public String getFieldTitle() {
         return (String) get(2);

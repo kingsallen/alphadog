@@ -75,7 +75,7 @@ public class EmployeeService {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    SearchengineServices.Iface searchService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    SearchengineServices.Iface searchService = ServiceManager.SERVICE_MANAGER.getService(SearchengineServices.Iface.class);
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -139,7 +139,6 @@ public class EmployeeService {
 
     @Autowired
     private HrCompanyDao companyDao;
-
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -272,7 +271,7 @@ public class EmployeeService {
         return response;
     }
 
-    public Result unbind(int employeeId, int companyId, int userId) {
+    public Result unbind(int employeeId, int companyId, int userId,byte activationChange) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
         response.setSuccess(true);
@@ -287,7 +286,7 @@ public class EmployeeService {
         }
 
         // 解绑
-        if (!employeeEntity.unbind(Arrays.asList(employeeId))) {
+        if (!employeeEntity.unbind(Arrays.asList(employeeId),activationChange)) {
             response.setSuccess(false);
             response.setMessage("fail");
         }
@@ -789,9 +788,15 @@ public class EmployeeService {
 
         ReferralPositionInfo referralPositionInfo = new ReferralPositionInfo();
         referralPositionInfo.setId(positionInfo.getId());
-        referralPositionInfo.setTitle(positionInfo.getTitle());
-        referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
-        referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
+        if(positionInfo.getTitle()!=null){
+            referralPositionInfo.setTitle(positionInfo.getTitle());
+        }
+        if(positionInfo.getSalaryBottom()!=null){
+            referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
+        }
+        if(positionInfo.getSalaryTop()!=null){
+            referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
+        }
         try {
             int experience = Integer.valueOf(positionInfo.getExperience());
             referralPositionInfo.setExperience(experience);
@@ -799,10 +804,19 @@ public class EmployeeService {
             log.info("getUploadType positioniId:{} 工作经验不是数值类型。experience:{}", positionInfo.getId(), positionInfo.getExperience());
         }
         referralPositionInfo.setExperienceAbove(positionInfo.getExperienceAbove() != null && positionInfo.getExperienceAbove() == 1);
-        referralPositionInfo.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
-        referralPositionInfo.setCompanyName(positionInfo.getCompanyName());
-        referralPositionInfo.setLogo(positionInfo.getLogo());
-        referralPositionInfo.setTeam(positionInfo.getTeamName());
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getCompanyAbbreviation())){
+            referralPositionInfo.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
+        }
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getCompanyName())){
+            referralPositionInfo.setCompanyName(positionInfo.getCompanyName());
+        }
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getLogo())){
+            referralPositionInfo.setLogo(positionInfo.getLogo());
+        }
+        if(!org.springframework.util.StringUtils.isEmpty(positionInfo.getTeamName())){
+            referralPositionInfo.setTeam(positionInfo.getTeamName());
+        }
+
         if (positionInfo.getCities() != null && positionInfo.getCities().size() > 0) {
             referralPositionInfo.setCities(positionInfo.getCities().stream().map(dictCity -> {
                 City city = new City();
@@ -977,4 +991,5 @@ public class EmployeeService {
         EmployeeBindByEmail bindByEmail = (EmployeeBindByEmail)employeeBinder.get("auth_method_email");
         bindByEmail.retrySendVerificationMail(userId, companyId, source);
     }
+
 }

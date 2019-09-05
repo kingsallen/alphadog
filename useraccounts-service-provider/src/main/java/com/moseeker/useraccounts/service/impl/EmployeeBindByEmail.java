@@ -16,6 +16,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.LogEmployeeOperationLogEntity;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -89,7 +90,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
         List<UserEmployeeDO> userEmployees = employeeDao.getDatas(query.buildQuery());
         if (userEmployees != null && userEmployees.size() > 0) {
             log.info("邮箱:{} 已被占用", bindingParams.getEmail());
-            throw new RuntimeException("该邮箱已被认证\n请使用其他邮箱");
+            throw new RuntimeException("该邮箱已被认证请使用其他邮箱");
         }
 
         if (userEmployeeDOThreadLocal.get() != null && StringUtils.isNotNullOrEmpty(userEmployeeDOThreadLocal.get().getActivationCode())) {
@@ -248,12 +249,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
 
                 //神策埋点加入 pro
-
-                Map<String, Object> properties = new HashMap<>();
-                properties.put("companyName", companyDO.getName());
-                properties.put("companyId", companyDO.getId());
-                //  properties.put("userId", userEmployee.getSysuserId());
-                properties.put("isEmployee", userEmployee.isSetActivation());
+                SensorProperties properties = new SensorProperties(
+                        userEmployee.isSetActivation(),companyDO.getId(),companyDO.getName());
                 sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
             } else {
                 response.setMessage("发送激活邮件失败");
@@ -262,12 +259,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
 
                 //神策埋点加入 pro
-
-                Map<String, Object> properties = new HashMap<>();
-                properties.put("companyName", companyDO.getName());
-                properties.put("companyId", companyDO.getId());
-                //  properties.put("userId", userEmployee.getSysuserId());
-                properties.put("isEmployee", userEmployee.isSetActivation());
+                SensorProperties properties = new SensorProperties(
+                        userEmployee.isSetActivation(),companyDO.getId(),companyDO.getName());
                 sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
 
 

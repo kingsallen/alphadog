@@ -83,6 +83,17 @@ public class ConfigPropertiesUtil {
     }
 
     /**
+     * 添加配置
+     * @param key 关键词
+     * @param obj 值
+     */
+    public void appendConfig(String key, Object obj) {
+        if (org.apache.commons.lang.StringUtils.isNotBlank(key) && obj != null) {
+            properties.put(key, obj);
+        }
+    }
+
+    /**
      * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
      *
      * @param fileName 配置文件的名称

@@ -1,6 +1,7 @@
 package com.moseeker.company.service.impl.CompanySwitchHandler;
 
-import com.moseeker.company.constant.OmsSwitchEnum;
+
+import com.moseeker.common.constants.OmsSwitchEnum;
 
 public interface CompanySwitchInterface {
 

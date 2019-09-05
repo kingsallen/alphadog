@@ -30,7 +30,7 @@ public class WarnService {
 	public static WarnSetService.Iface getInstance(){
 		synchronized (WarnService.class) {
 			if (warn == null) {
-				warn = ServiceManager.SERVICEMANAGER.getService(WarnSetService.Iface.class);
+				warn = ServiceManager.SERVICE_MANAGER.getService(WarnSetService.Iface.class);
 			}
 		}
 		return warn;

@@ -15,6 +15,7 @@ import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionATsProcessDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
@@ -27,9 +28,12 @@ import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRec
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionAtsProcess;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
@@ -43,10 +47,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -62,6 +63,7 @@ import com.moseeker.entity.*;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.pojo.company.HrOperationAllRecord;
+import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -160,11 +162,11 @@ public class JobApplicataionService {
     @Autowired
     private RabbitMQOperationRecord rabbitMQOperationRecord;
 
-    MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
-    ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
+    ChatService.Iface chatService = ServiceManager.SERVICE_MANAGER.getService(ChatService.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     @Autowired
     ApplicationRepository applicationRepository;
@@ -177,6 +179,8 @@ public class JobApplicataionService {
 
     @Autowired
     private SensorSend sensorSend;
+    @Autowired
+    private JobPositionATsProcessDao jobPositionATsProcessDao;
 
 
 
@@ -214,11 +218,17 @@ public class JobApplicataionService {
             }
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
+
         if (jobApplicationId > 0) {
-            sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
-                    jobApplication.getApply_type(), jobApplication.getEmail_status(),
-                    (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
-                    jobApplication.getOrigin());
+            boolean isNewAtsStatus=validateNewAtsProcess((int)jobApplication.getCompany_id(),(int)jobApplication.getPosition_id());
+            if(!isNewAtsStatus){
+                sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
+                        jobApplication.getApply_type(), jobApplication.getEmail_status(),
+                        (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
+                        jobApplication.getOrigin());
+            }else{
+                this.sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
+            }
             // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
             handleReferralState(jobApplicationId);
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
@@ -249,8 +259,37 @@ public class JobApplicataionService {
             logger.info("================userid={}=================",userId);
         },6000);
     }
+
+    private boolean  validateNewAtsProcess(int companyId,int positionId){
+        HrCompanyConf conf=hrCompanyConfDao.getConfbyCompanyId(companyId);
+        if(conf==null){
+            return false;
+        }
+        if(conf.getNewAtsStatus()==0){
+            return false;
+        }
+        JobPositionAtsProcess data=jobPositionATsProcessDao.getJobPositionAtsProcessSingle(positionId);
+        if(data==null){
+            return false;
+        }
+        return true;
+    }
+
+    private void sendNewAtsProcess(int positionId,int hrId,int appId,int companyId){
+        Map<String,Object> params=new HashMap<>();
+        params.put("positionId",positionId);
+        params.put("appId",appId);
+        params.put("hrId",hrId);
+        params.put("companyId",companyId);
+        String message=JSON.toJSONString(params);
+        scheduledThread.startTast(()->{
+            amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
+                    MessageBuilder.withBody(message.getBytes()).build());
+        },500);
+
+    }
     /*
-     * @Author zztaiwll
+     * @Author zztaiwl6
      * @Description  组装流水记录
      * @Date 上午10:32 19/3/8
      * @Param [jobApplication, jobPositionRecord]
@@ -348,12 +387,14 @@ public class JobApplicataionService {
                     String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
 
                     //神策埋点 加入 properties
-                    Map<String, Object> properties = new HashMap<String, Object>();
-                    properties.put("companyId",jobApplicationRecord.getCompanyId());
-                    properties.put("companyName",jobApplicationRecord.getCompanyId());
-                    properties.put("isEmployee",jobApplication.getRecommender_user_id());
+                    Integer companyId = jobApplicationRecord.getCompanyId();
+                    HrCompanyDO company = hrCompanyDao.getCompanyById(companyId);
+                    String companyName = null;
+                    if(company!=null){
+                        companyName = company.getName();
+                    }
+                    SensorProperties properties = new SensorProperties(true,companyId,companyName);
                     sensorSend.send(distinctId,"postApplication",properties);
-
                 }
             }
 
@@ -1191,6 +1232,14 @@ public class JobApplicataionService {
         if (positionList.size() != positionIdList.size()) {
             throw ApplicationException.APPLICATION_POSITIONS_NOT_LEGAL;
         }
+        Map<Integer,Integer> positionPublisher=new HashMap<>();
+        for(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position:positionList){
+            int pid=position.getId();
+            int publisher=position.getPublisher();
+            if(!positionPublisher.containsKey(pid)){
+                positionPublisher.put(pid,publisher);
+            }
+        }
 
         //校验投递限制
         UserApplyCount userApplyCount = applicationEntity.getApplyCount(applierId, employeeDO.getCompanyId());
@@ -1251,9 +1300,15 @@ public class JobApplicataionService {
                     }
 
                     if (resultVO.isCreate()) {
-                        sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
-                                0, referenceId, resultVO.getApplierId(),
-                                ApplicationSource.EMPLOYEE_CHATBOT.getValue());
+                        boolean isNewAtsStatus=validateNewAtsProcess(employeeDO.getCompanyId(),resultVO.getPositionId());
+                        if(!isNewAtsStatus) {
+                            sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
+                                    0, referenceId, resultVO.getApplierId(),
+                                    ApplicationSource.EMPLOYEE_CHATBOT.getValue());
+                        }else{
+                            //todo 这一段要注意
+                            this.sendNewAtsProcess(resultVO.getPositionId(),positionPublisher.get(resultVO.getPositionId()),resultVO.getApplicationId(),employeeDO.getCompanyId());
+                        }
                     }
                     return 0;
                 });

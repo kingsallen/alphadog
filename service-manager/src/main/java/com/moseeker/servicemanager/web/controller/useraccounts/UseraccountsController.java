@@ -41,15 +41,15 @@ public class UseraccountsController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER
+	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER
 			.getService(UseraccountsServices.Iface.class);
-	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICEMANAGER
+	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICE_MANAGER
 			.getService(UsersettingServices.Iface.class);
-	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+	ProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
 
-	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
+	UserQxService.Iface userQxService = ServiceManager.SERVICE_MANAGER.getService(UserQxService.Iface.class);
 	
-	UserBS.Iface userBS = ServiceManager.SERVICEMANAGER.getService(UserBS.Iface.class);
+	UserBS.Iface userBS = ServiceManager.SERVICE_MANAGER.getService(UserBS.Iface.class);
 
 
 	/**
@@ -846,15 +846,35 @@ public class UseraccountsController {
 	@ResponseBody
 	public String cerateQrcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			logger.info("UseraccountsController cerateQrcode start");
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
-			int wechatId = param.getInt("wechatid", 0);
-			long sceneId = param.getLong("scene_id", 0l);
-			int expireSeconds = param.getInt("expire_seconds", 0);
-			int actionName = param.getInt("action_name", 0);
-			
-			Response result = useraccountsServices.cerateQrcode(wechatId, sceneId, expireSeconds, actionName);
+			Integer wechatId = param.getInt("wechatid", 0);
+			Long sceneId = param.getLong("scene_id", null);
+			Integer expireSeconds = param.getInt("expire_seconds", 0);
+			Integer actionName = param.getInt("action_name", 0);
+			String sceneStr = param.getString("scene",null);
+
+			//只需要一个场景值
+			if(sceneId!=null&&sceneStr!=null){
+				return ResponseLogNotification.fail(request, "只需要一个场景值");
+			}
+
+			WeixinQrcode qrcode = new WeixinQrcode();
+			qrcode.setWechatId(wechatId);
+			if(sceneId!=null){
+				qrcode.setSceneId(sceneId);
+			}
+			qrcode.setExpireSeconds(expireSeconds);
+			qrcode.setActionName(actionName);
+			if(StringUtils.isNotNullOrEmpty(sceneStr)){
+				qrcode.setScene(sceneStr);
+			}
+
+			logger.info("Start creating qrcode : {}",qrcode);
+			Response result = useraccountsServices.cerateQrcode(qrcode);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
+			logger.info(e.getMessage(),e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
@@ -1177,7 +1197,7 @@ public class UseraccountsController {
 
 		String user_id = request.getParameter("user_id");
 		if (user_id == null) {
-			throw ExceptionUtils.getCommonException("参数有误！");
+			return ResponseLogNotification.fail(request, "参数有误！");
 		}
 		try {
 			useraccountsServices.deletePrivacyRecordByUserId(Integer.parseInt(user_id));

@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1079393125;
+    private static final long serialVersionUID = 316764270;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -478,17 +478,31 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     * Setter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语, #多条对话分隔符#
      */
     public void setMobotWelcome(String value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     * Getter for <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语, #多条对话分隔符#
      */
     public String getMobotWelcome() {
         return (String) get(32);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.new_ats_status</code>. 0是未开启new_ats_process流程 1表示开启了new_ats_process流程
+     */
+    public void setNewAtsStatus(Integer value) {
+        set(33, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.new_ats_status</code>. 0是未开启new_ats_process流程 1表示开启了new_ats_process流程
+     */
+    public Integer getNewAtsStatus() {
+        return (Integer) get(33);
     }
 
     // -------------------------------------------------------------------------
@@ -517,7 +531,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte job51SalaryDiscuss, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName, String mobotWelcome) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte job51SalaryDiscuss, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName, String mobotWelcome, Integer newAtsStatus) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -553,5 +567,6 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(30, mobotHeadImg);
         set(31, mobotName);
         set(32, mobotWelcome);
+        set(33, newAtsStatus);
     }
 }

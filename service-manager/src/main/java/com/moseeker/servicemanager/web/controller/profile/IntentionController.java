@@ -29,7 +29,7 @@ public class IntentionController {
 
 	Logger logger = LoggerFactory.getLogger(IntentionController.class);
 
-	IntentionServices.Iface intentionService = ServiceManager.SERVICEMANAGER.getService(IntentionServices.Iface.class);
+	IntentionServices.Iface intentionService = ServiceManager.SERVICE_MANAGER.getService(IntentionServices.Iface.class);
 
 	@RequestMapping(value = "/profile/intention", method = RequestMethod.GET)
 	@ResponseBody

@@ -87,17 +87,17 @@ public class JobPositionExtDao extends DAOImpl<JobPositionExtRecord, com.moseeke
     }
 
     /**
-     * Fetch records that have <code>extra IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionExt> fetchByExtra(String... values) {
-        return fetch(JobPositionExt.JOB_POSITION_EXT.EXTRA, values);
-    }
-
-    /**
      * Fetch records that have <code>job_occupation_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionExt> fetchByJobOccupationId(Integer... values) {
         return fetch(JobPositionExt.JOB_POSITION_EXT.JOB_OCCUPATION_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>extra IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionExt> fetchByExtra(String... values) {
+        return fetch(JobPositionExt.JOB_POSITION_EXT.EXTRA, values);
     }
 
     /**

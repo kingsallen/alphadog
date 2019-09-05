@@ -24,7 +24,7 @@ public class ApplicationTask implements Task<ApplicationTaskParam, Integer> {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICEMANAGER.getService(JobApplicationServices.Iface.class);
+    JobApplicationServices.Iface jobApplicationServices = ServiceManager.SERVICE_MANAGER.getService(JobApplicationServices.Iface.class);
 
     public Integer handler(ApplicationTaskParam param) throws CommonException {
 

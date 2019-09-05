@@ -7,6 +7,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.OmsSwitchEnum;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -53,11 +54,11 @@ public class CompanyController {
 
     Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
-    CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
-	private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+	private PositionServices.Iface positonServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
 
-    private EmployeeService.Iface employeeServices = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+    private EmployeeService.Iface employeeServices = ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
@@ -320,10 +321,12 @@ public class CompanyController {
     public String getHrEmployeeCertConf(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = parseRequestParam(request);
+            logger.debug("GET /hraccount/company/hremployeecertconf params : {}",params);
             int companyId = params.getInt("companyId", 0);
             int hraccountId = params.getInt("hraccountId", 0);
             int type = params.getInt("type", 0);
             CompanyCertConf companyCertConf = companyServices.getHrEmployeeCertConf(companyId, type, hraccountId);
+            logger.debug("GET /hraccount/company/hremployeecertconf companyCertConf : {}",companyCertConf);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyCertConf)));
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -372,6 +375,94 @@ public class CompanyController {
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
                     put("result", result);
                 }}));
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 修改公司企业微信员工认证配置
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/employeebindconf/workwx", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateWorkWxConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = parseRequestParam(request);
+            logger.debug("PUT /hraccount/company/employeebindconf/workwx params:{}" ,params);
+            int companyId = params.getInt("companyId", 0);
+            int hraccountId = params.getInt("hraccountId", 0);
+            String corpid = params.getString("corpid");
+            String secret = params.getString("secret");
+            if (companyId == 0 ) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else if (StringUtils.isNullOrEmpty(corpid ) )  {
+                return ResponseLogNotification.fail(request, "secret不能为空");
+            } else {
+                boolean result = companyServices.setWorkWechatEmployeeBindConf(companyId, hraccountId,corpid,secret);
+                return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>() {{
+                    put("result", result);
+                }}));
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 重新获取企业微信员工认证配置的access token
+     *
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/refreshWorkWxToken/{companyId}", method = RequestMethod.POST)
+    @ResponseBody
+    public String requireWorkWxAccessToken(HttpServletRequest request,@PathVariable Integer companyId) {
+        try {
+            if (companyId == 0 ) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else {
+                boolean result = companyServices.updateWorkWeChatConfToken(companyId);
+                return ResponseLogNotification.successJson(request, result);
+            }
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 修改公司企业微信员工认证配置
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/company/employeebindconf/workwx", method = RequestMethod.GET)
+    @ResponseBody
+    public String getWorkWxConf(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = parseRequestParam(request);
+            int companyId = params.getInt("companyId", 0);
+            //int hraccountId = params.getInt("hraccountId", 0);
+            if (companyId == 0 ) {
+                return ResponseLogNotification.fail(request, "公司Id不能为空");
+            } else {
+                WorkWxCertConf result = companyServices.getWorkWechatEmployeeBindConf(companyId);
+                // thrift接口的方法不可返回null，通过corpid==null转化
+                if( result != null && result.getCorpid() == null){
+                    result = null ;
+                }
+                return Result.success(result).toJson();
             }
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -962,6 +1053,27 @@ public class CompanyController {
             return Result.validateFailed(result).toJson();
         } else {
             return Result.success(companyServices.companySwitch(companyId,moduleName)).toJson();
+        }
+    }
+
+    /*
+     *
+     *获取当前公司的企业微信开关权限
+     *@Param appid
+     *@Param companyId 公司id
+     *
+     * */
+    @RequestMapping(value = "/api/company/switch/workwx/{companyId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String worxwxSwitch(@RequestParam Integer appid,@PathVariable(name = "companyId" ) Integer companyId) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            CompanySwitchVO vo = companyServices.companySwitch(companyId, OmsSwitchEnum.WORK_WEICHAT.getName());
+            return Result.success(vo != null && vo.getValid() == 1).toJson();
         }
     }
 

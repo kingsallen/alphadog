@@ -26,7 +26,7 @@ public class WorkController {
 
 	Logger logger = LoggerFactory.getLogger(WorkController.class);
 
-	WorksServices.Iface worksService = ServiceManager.SERVICEMANAGER.getService(WorksServices.Iface.class);
+	WorksServices.Iface worksService = ServiceManager.SERVICE_MANAGER.getService(WorksServices.Iface.class);
 
 	@RequestMapping(value = "/profile/works", method = RequestMethod.GET)
 	@ResponseBody

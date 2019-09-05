@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1818983938;
+    private static final long serialVersionUID = 849948075;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -211,9 +211,14 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, String> MOBOT_NAME = createField("mobot_name", org.jooq.impl.SQLDataType.VARCHAR.length(32), this, "Mobot姓名，聊天使用");
 
     /**
-     * The column <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语
+     * The column <code>hrdb.hr_company_conf.mobot_welcome</code>. 初次进入Mobot自定义的欢迎语, #多条对话分隔符#
      */
-    public final TableField<HrCompanyConfRecord, String> MOBOT_WELCOME = createField("mobot_welcome", org.jooq.impl.SQLDataType.VARCHAR.length(2000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "初次进入Mobot自定义的欢迎语");
+    public final TableField<HrCompanyConfRecord, String> MOBOT_WELCOME = createField("mobot_welcome", org.jooq.impl.SQLDataType.CLOB, this, "初次进入Mobot自定义的欢迎语, #多条对话分隔符#");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.new_ats_status</code>. 0是未开启new_ats_process流程 1表示开启了new_ats_process流程
+     */
+    public final TableField<HrCompanyConfRecord, Integer> NEW_ATS_STATUS = createField("new_ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是未开启new_ats_process流程 1表示开启了new_ats_process流程");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference

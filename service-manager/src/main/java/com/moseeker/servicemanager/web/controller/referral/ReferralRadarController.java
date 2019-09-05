@@ -22,7 +22,7 @@ public class ReferralRadarController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
+    private ReferralService.Iface referralService = ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
 
     @RequestMapping(value = "v1/referral/progress", method = RequestMethod.POST)
     public String progress(@RequestBody ProgressForm progressForm) throws TException {

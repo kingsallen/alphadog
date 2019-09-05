@@ -136,4 +136,13 @@ struct CompanySwitchVO{
     5: optional i8 valid;
 }
 
-
+// 企业微信配置
+struct WorkWxCertConf{
+    1: optional i32 companyId,
+    2: optional string corpid;
+    3: optional string secret;
+    4: optional i32 errCode;
+    5: optional string errMsg;
+    6: optional string accessToken;
+    7: optional string jsapiTicket;
+}

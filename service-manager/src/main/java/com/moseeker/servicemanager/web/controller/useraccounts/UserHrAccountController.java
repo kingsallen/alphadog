@@ -62,10 +62,10 @@ public class UserHrAccountController {
 
     Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
+    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER
             .getService(UserHrAccountService.Iface.class);
 
-    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
+    ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICE_MANAGER.getService(ProfileOtherThriftService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
@@ -1015,6 +1015,7 @@ public class UserHrAccountController {
     public String updateUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            logger.debug("PUT /hraccount/employee/update params:{}",params);
             int userEmployeeId = params.getInt("userEmployeeId", 0);
             String cname = params.getString("cname", "");
             String mobile = params.getString("mobile", "");
@@ -1027,11 +1028,13 @@ public class UserHrAccountController {
             }
             int companyId = params.getInt("companyId", 0);
             Response res = userHrAccountService.updateUserEmployee(cname, mobile, email, customField, userEmployeeId, companyId, customFieldValues);
+            logger.debug("PUT /hraccount/employee/update res:{}",res);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
+            logger.debug("PUT /hraccount/employee/update error",e);
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug("PUT /hraccount/employee/update error",e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

@@ -28,7 +28,7 @@ public class ProfileProjectExpServicesImplTest {
     @Autowired
     private ProfileProjectExpServicesImpl projectExpServices;
 
-    ProjectExpServices.Iface projectExpService = ServiceManager.SERVICEMANAGER
+    ProjectExpServices.Iface projectExpService = ServiceManager.SERVICE_MANAGER
             .getService(ProjectExpServices.Iface.class);
 
     @Test

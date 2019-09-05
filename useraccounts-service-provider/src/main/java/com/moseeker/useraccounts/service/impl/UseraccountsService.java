@@ -10,6 +10,8 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.hrdb.tables.daos.HrWxWechatQrcodeDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -37,6 +39,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
+import com.moseeker.common.weixin.SceneType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
@@ -50,11 +53,13 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
+import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.infrastructure.HrWxWechatQrcodeJOOQDao;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
@@ -65,16 +70,14 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -92,7 +95,10 @@ public class UseraccountsService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
-    MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+    MqService.Iface mqService = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
+
+    WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER
+            .getService(WholeProfileServices.Iface.class);
 
     @Autowired
     protected UserWxUserDao wxuserdao;
@@ -147,11 +153,14 @@ public class UseraccountsService {
     @Autowired
     private JobApplicationDao applicationDao;
 
+    @Autowired
+    private HrWxWechatQrcodeJOOQDao hrWxWechatQrcodeJOOQDao;
 
     /**
      * 账号换绑操作
      */
     public Response userChangeBind(String unionid, String mobile,String countryCode) {
+        logger.info("userChangeBind( unionid{},  mobile{}, countryCode{})",unionid,  mobile, countryCode);
         try {
             // 通过unionid查询，查询新微信是否已经被绑定
             try {
@@ -470,6 +479,7 @@ public class UseraccountsService {
      */
     @Deprecated
     public Response postuserbdbindmobile(int appid,String countryCode, String userid, String mobile) throws TException {
+        logger.info("postuserbdbindmobile( countryCode:{},  userid:{},  mobile:{}) ",countryCode,  userid,  mobile);
         try {
             return bindOnAccount.get("baidu").handler(appid, userid, mobile,countryCode);
         } catch (Exception e) {
@@ -481,6 +491,7 @@ public class UseraccountsService {
     }
 
     public Response postuserbindmobile(int appid, String unionid, String code,String countryCode, String mobile, BindType bindType) throws TException {
+        logger.info("postuserbindmobile(unionid{},code:{}, countryCode:{},  mobile:{}) ",unionid,code,countryCode,  mobile);
         try {
             return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile,countryCode);
         } catch (Exception e) {
@@ -798,20 +809,21 @@ public class UseraccountsService {
      * 修改手机号时， 向新手机号发送验证码。
      */
     public Response postsendresetmobilecode(String countryCode, String newmobile) throws TException {
+        logger.info("postsendresetmobilecode {}-{}",countryCode,  newmobile);
         Query.QueryBuilder query = new Query.QueryBuilder();
 
+        // 如果新手机号绑定的账号同时绑定了微信号,则不允许并绑定
         if (newmobile.length() > 0) {
             query.where("username", newmobile).and("country_code",countryCode);
             try {
                 UserUserRecord user = userdao.getRecord(query.buildQuery());
-                if (user != null) {
+                if (user != null && org.apache.commons.lang3.StringUtils.isNotBlank(user.getUnionid())) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
                 }
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 logger.error("postsendresetmobilecode error: ", e);
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-
             }
         }
         boolean result=false;
@@ -835,45 +847,68 @@ public class UseraccountsService {
     /**
      * 修改当前用户手机号。
      *
+     * @param userId 当前user id
      * @param newmobile 新手机号
      * @param code      新手机号的验证码
      */
-    public Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws TException {
+    public Response postresetmobile(int userId, String countryCode, String newmobile, String code) throws TException {
+        logger.info("postresetmobile( userId:{},  mobile:{}-{},  code:{})",userId,  countryCode,  newmobile,  code);
         String verifynewmobile = newmobile;
         if(StringUtils.isNotNullOrEmpty(countryCode) && !"86".equals(countryCode)){
             verifynewmobile = countryCode + newmobile;
         }
-        if (code != null && !validateCode(verifynewmobile, code, 4)) {
+        if (code == null || !validateCode(verifynewmobile, code, 4)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
         Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("id", String.valueOf(user_id));
+        query.where("id", String.valueOf(userId));
+
+        Query.QueryBuilder queryByMobile = new Query.QueryBuilder();
+        queryByMobile.where("username", newmobile);
+        queryByMobile.where("country_code",countryCode);
 
         int result;
         try {
             UserUserRecord user = userdao.getRecord(query.buildQuery());
-
+            UserUserRecord anotherAccount = userdao.getRecord(queryByMobile.buildQuery());
+            logger.info("postresetmobile user :{} user2 :{}",user,anotherAccount);
             if (user != null) {
-                // login success
-                int parentid = user.getParentid().intValue();
-                if (parentid > 0) {
-                    // 当前帐号已经被合并到 parentid.
-                    query.clear();
-                    query.where("id", String.valueOf(parentid));
-                    UserUserRecord userParent = userdao.getRecord(query.buildQuery());
-                    userParent.setMobile(Long.parseLong(newmobile));
-                    userParent.setUsername(newmobile);
-                    userParent.setCountryCode(countryCode);
-                    userdao.updateRecord(userParent);
-                }
-                user.setMobile(Long.parseLong(newmobile));
-                user.setUsername(newmobile);
-                user.setCountryCode(countryCode);
+                if(anotherAccount == null || (anotherAccount.getId() != user.getId() && anotherAccount.getId() != user.getParentid() )){
+                    // login success
+                    int parentid = user.getParentid().intValue();
 
-                result = userdao.updateRecord(user);
-                if (result > 0) {
-                    return ResponseUtils.success(null);
+                    UserUserRecord userParent = null;
+                    if (parentid > 0) {
+                        // 当前帐号已经被合并到 parentid.
+                        query.clear();
+                        query.where("id", String.valueOf(parentid));
+                        userParent = userdao.getRecord(query.buildQuery());
+
+                        user.setCountryCode(countryCode);
+                        user.setMobile(Long.parseLong(newmobile));
+                        user.setUsername(null);
+                        userdao.updateRecord(user);
+
+                        user = userParent;
+                    }
+
+
+                    if(anotherAccount != null){
+                        logger.info("postresetmobile() merge {} {}",user,anotherAccount);
+                        // 合并账号
+                        combineAccount(user,anotherAccount);
+
+                    }
+
+                    user.setCountryCode(countryCode);
+                    user.setMobile(Long.parseLong(newmobile));
+                    user.setUsername(newmobile);
+                    userdao.updateRecord(user);
+                    result = userdao.updateRecord(user);
+                    if (result > 0) {
+                        return ResponseUtils.success(null);
+                    }
                 }
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
@@ -886,6 +921,72 @@ public class UseraccountsService {
 
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    /**
+     * 账号合并完善账号信息
+     *
+     * @param cur
+     *            需要完善的账号
+     * @param ano
+     *            信息来源
+     */
+    public void combineAccount(UserUserRecord cur,UserUserRecord ano) {
+        ano.setParentid(cur.getId());
+        ano.setIsDisable((byte) 1);
+        ano.setUsername(org.apache.commons.lang3.StringUtils.isNotBlank(ano.getUnionid())?ano.getUnionid():null);
+
+		/* 完善用户名称 */
+        if (StringUtils.isNullOrEmpty(cur.getName()) && StringUtils.isNotNullOrEmpty(ano.getName())) {
+            cur.setName(ano.getName());
+        }
+		/* 完善用户昵称 */
+        if (StringUtils.isNullOrEmpty(cur.getNickname())
+                && StringUtils.isNotNullOrEmpty(ano.getNickname())) {
+            cur.setNickname(ano.getNickname());
+        }
+		/* 完善用户级别，预计rank越高，表示用户等级越高。 */
+        if ((ano.getRank() != null && cur.getRank() == null) || (ano.getRank() != null
+                && cur.getRank() != null && ano.getRank() > cur.getRank())) {
+            cur.setRank(ano.getRank());
+        }
+		/* 完善用户未验证的手机号码 */
+        if (ano.getMobile() != null && ano.getMobile() > 0
+                && (cur.getMobile() == null || cur.getMobile() == 0)) {
+            cur.setMobile(ano.getMobile());
+        }
+		/* 完善用户邮箱 */
+        if (StringUtils.isNullOrEmpty(cur.getEmail()) && StringUtils.isNotNullOrEmpty(ano.getEmail())) {
+            cur.setEmail(ano.getEmail());
+        }
+		/* 完善用户头像 */
+        if (StringUtils.isNullOrEmpty(cur.getHeadimg())
+                && StringUtils.isNotNullOrEmpty(ano.getHeadimg())) {
+            cur.setHeadimg(ano.getHeadimg());
+        }
+		/* 完善国家代码 */
+        if (ano.getNationalCodeId() != null && ano.getNationalCodeId() != 1
+                && (cur.getNationalCodeId() == null || cur.getNationalCodeId() == 1)) {
+            cur.setNationalCodeId(ano.getNationalCodeId());
+        }
+		/* 完善感兴趣的公司 */
+        if (StringUtils.isNullOrEmpty(cur.getCompany())
+                && StringUtils.isNotNullOrEmpty(ano.getCompany())) {
+            cur.setCompany(ano.getCompany());
+        }
+		/* 完善感兴趣的职位 */
+        if (StringUtils.isNullOrEmpty(cur.getPosition())
+                && StringUtils.isNotNullOrEmpty(ano.getPosition())) {
+            cur.setPosition(ano.getPosition());
+        }
+        try {
+            userdao.updateRecord(ano);
+            profileService.moveProfile(cur.getId(),ano.getId());
+            //userdao.updateRecord(cur);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+
     }
 
     /**
@@ -1105,9 +1206,31 @@ public class UseraccountsService {
     /**
      * 创建微信二维码
      */
-    public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
+    public Response cerateQrcode(int wechatId, Long sceneId, int expireSeconds, int action_name,String scene) throws TException {
 
         try {
+
+            //先判断需要生成的二维码是否为永久性的
+            if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
+                QrcodeType.QR_LIMIT_STR_SCENE.equals(QrcodeType.fromInt(action_name))){
+                logger.info("UseraccountsService cerateQrcode check qrcode is permanent",true);
+                String sceneDB = null;
+                if(sceneId!=null){
+                    sceneDB = String.valueOf(sceneId);
+                }else{
+                    sceneDB = scene;
+                }
+
+                logger.info("Useraccounts cerateQrcode fetchByWechatIdAndScenes query params:{} {}",sceneDB,wechatId);
+                HrWxWechatQrcode qrcode = hrWxWechatQrcodeJOOQDao.fetchByWechatIdAndScenes(sceneDB,wechatId);
+                if(qrcode!=null){
+                    WeixinTicketBean bean = new WeixinTicketBean();
+                    bean.setUrl(qrcode.getQrcodeUrl());
+                    bean.setTicket(qrcode.getTicket());
+                    return ResponseUtils.success(bean);
+                }
+            }
+
             Query.QueryBuilder qu = new Query.QueryBuilder();
             qu.where("id", String.valueOf(wechatId));
             HrWxWechatRecord record = wechatDao.getRecord(qu.buildQuery());
@@ -1116,8 +1239,20 @@ public class UseraccountsService {
             } else {
                 String accessToken = record.getAccessToken();
                 if (StringUtils.isNotNullOrEmpty(accessToken)) {
-                    WeixinTicketBean bean = AccountMng.createTicket(accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, null);
+                    String scene2 = StringUtils.isNotNullOrEmpty(scene)?SceneType.valueOf(scene).getScene():null;
+                    WeixinTicketBean bean = AccountMng.createTicket(
+                            accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, scene2);
                     if (bean != null) {
+                        HrWxWechatQrcode qrcode = new HrWxWechatQrcode();
+                        qrcode.setQrcodeUrl(bean.getUrl());
+                        qrcode.setWechatId(wechatId);
+                        String sceneDB = StringUtils.isNotNullOrEmpty(scene)? scene:null;
+                        qrcode.setScene(StringUtils.isNotNullOrEmpty(sceneDB)?sceneDB:String.valueOf(sceneId));
+                        qrcode.setTicket(bean.getTicket());
+                        if(QrcodeType.QR_LIMIT_SCENE.equals(QrcodeType.fromInt(action_name))||
+                                QrcodeType.QR_LIMIT_STR_SCENE.equals(QrcodeType.fromInt(action_name))){
+                            hrWxWechatQrcodeJOOQDao.insert(qrcode);
+                        }
                         return RespnoseUtil.SUCCESS.toResponse(bean);
                     } else {
                         return RespnoseUtil.USERACCOUNT_WECHAT_GETQRCODE_FAILED.toResponse();
@@ -1308,7 +1443,7 @@ public class UseraccountsService {
         // 更新申请记录的申请人
 
         for(ReferralLog referralLog : referralLogs){
-            pool.startTast(()->{
+//            pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferral_id(referralLog.getId());
                 claimResult.setSuccess(true);
@@ -1317,69 +1452,74 @@ public class UseraccountsService {
                 try{
                     int appid = claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
                     claimResult.setApply_id(appid);
-                }catch (RuntimeException e){
+                }catch(UserAccountException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
                     logger.error("员工认领异常信息:{}", e.getMessage());
                     throw e;
+                }catch (RuntimeException e){
+                    claimResult.setSuccess(false);
+                    claimResult.setErrmsg(e.getMessage());
+                    logger.error("员工认领异常信息:{}", e.getMessage());
+                    //throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg("后台异常");
                     logger.error("员工认领异常信息:{}", e.getMessage());
-                    throw e;
+                    //throw e;
                 }finally {
                     claimResults.add(claimResult);
                     this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId,referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
-                    countDownLatch.countDown();
+//                    countDownLatch.countDown();
                 }
-                return 0;
-            });
+//                return 0;
+//            });
         }
-        try {
-            countDownLatch.await(20, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw CommonException.PROGRAM_EXCEPTION;
-        }
+//        try {
+//            countDownLatch.await(20, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            throw CommonException.PROGRAM_EXCEPTION;
+//        }
         return claimResults;
     }
 
     private void updateDataApplicationBatchItems(int positionId,int userId,int applierId ){
-            scheduledThread.startTast(()->{
-                JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
-                if (application!=null) {
+        scheduledThread.startTast(()->{
+            JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
+            if (application!=null) {
+                int app_id=application.getId();
+                redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                logger.info("====================redis==============application更新=============");
+                logger.info("================app_id={}=================", app_id);
+            }else{
+                JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
+                if(application1!=null){
                     int app_id=application.getId();
                     redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
                     logger.info("====================redis==============application更新=============");
                     logger.info("================app_id={}=================", app_id);
-                }else{
-                    JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
-                    if(application1!=null){
-                        int app_id=application.getId();
-                        redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
-                        logger.info("====================redis==============application更新=============");
-                        logger.info("================app_id={}=================", app_id);
-                    }
                 }
-                redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
-                redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
-            },3000);
-        }
+            }
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
+        },3000);
+    }
     /*
     这块主要是做兼容处理
     */
     private void updateDataApplicationRealTime(int userId,int applierId ){
-            Map<String,Object> result=new HashMap<>();
-            result.put("tableName","application_recom");
-            result.put("user_id",userId);
-            Map<String,Object> data=new HashMap<>();
-            data.put("tableName","application_recom");
-            data.put("user_id",applierId);
-            scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(result));
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(data));
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","application_recom");
+        result.put("user_id",userId);
+        Map<String,Object> data=new HashMap<>();
+        data.put("tableName","application_recom");
+        data.put("user_id",applierId);
+        scheduledThread.startTast(()->{
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(result));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_REALTIME_UPDATE_INDEX_USER_IDS",JSON.toJSONString(data));
 
-            },5000);
+        },5000);
     }
 
     private Map<Integer, String> getPositionIdTitleMap(List<ReferralLog> referralLogs){
@@ -1438,6 +1578,7 @@ public class UseraccountsService {
                 userUserRecord.setName(name);
             }
             userUserRecord.setUsername(mobile.trim());
+            userUserRecord.setCountryCode("86");
             userUserRecord.setMobile(Long.valueOf(mobile.trim()));
             logger.info("UseraccountsService claimReferral updateName : {}",userUserRecord);
             userdao.updateRecord(userUserRecord);
@@ -1450,7 +1591,13 @@ public class UseraccountsService {
                 userdao.updateRecord(userUserRecord);
             }
         }
-        int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
+        int appid = 0;
+        try{
+            appid = referralEntity.claimReferralCard(userUserDO, referralLog);
+        }catch (DuplicateKeyException e){
+            logger.error(e.getMessage(),e);
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
+        }
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
         logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
 

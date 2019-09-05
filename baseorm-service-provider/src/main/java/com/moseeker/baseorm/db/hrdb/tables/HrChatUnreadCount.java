@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-    private static final long serialVersionUID = 1024550822;
+    private static final long serialVersionUID = 654115382;
 
     /**
      * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -88,7 +88,7 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
     /**
      * The column <code>hrdb.hr_chat_unread_count.update_time</code>. 更新时间
      */
-    public final TableField<HrChatUnreadCountRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<HrChatUnreadCountRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * The column <code>hrdb.hr_chat_unread_count.apply</code>. 是否投递简历 0 未投递， 1已经投递过简历

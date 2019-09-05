@@ -21,13 +21,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class PositionATSController {
     Logger logger = LoggerFactory.getLogger(PositionATSController.class);
 
-    private PositionATSServices.Iface positonATSServices = ServiceManager.SERVICEMANAGER.getService(PositionATSServices.Iface.class);
+    private PositionATSServices.Iface positonATSServices = ServiceManager.SERVICE_MANAGER.getService(PositionATSServices.Iface.class);
 
     /**
      * 获取可同步渠道

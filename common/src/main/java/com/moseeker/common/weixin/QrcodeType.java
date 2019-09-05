@@ -14,7 +14,7 @@ import java.util.List;
  */
 public enum QrcodeType {
 
-	QR_SCENE,QR_LIMIT_SCENE;
+	QR_SCENE,QR_LIMIT_SCENE,QR_STR_SCENE,QR_LIMIT_STR_SCENE,;
 	
 	private static final List<QrcodeType> intToQrcodeType = new ArrayList<>();
 	

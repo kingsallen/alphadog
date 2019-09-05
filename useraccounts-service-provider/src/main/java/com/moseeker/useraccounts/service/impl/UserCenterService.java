@@ -490,7 +490,7 @@ public class UserCenterService {
                             applicationDetailVO.setPosition_title(positionDO.getTitle());
                         }
                         HrCompanyDO companyDO = (HrCompanyDO) companyDOFuture.get();
-                        if(companyDO != null) {
+                        if(companyDO != null){
                             if(StringUtils.isNotNullOrEmpty(companyDO.getName())) {
                                 applicationDetailVO.setCompany_name(companyDO.getName());
                             } else {

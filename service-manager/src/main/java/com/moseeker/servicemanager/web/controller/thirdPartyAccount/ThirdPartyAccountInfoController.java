@@ -7,17 +7,12 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.thirdpart.service.ThirdPartyAccountInfoService;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfo;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyCommonInfo;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +28,7 @@ public class ThirdPartyAccountInfoController {
 
     Logger logger = LoggerFactory.getLogger(ThirdPartyAccountInfoController.class);
 
-    private ThirdPartyAccountInfoService.Iface thirdPartyAccountInfoServices = ServiceManager.SERVICEMANAGER.getService(ThirdPartyAccountInfoService.Iface.class);
+    private ThirdPartyAccountInfoService.Iface thirdPartyAccountInfoServices = ServiceManager.SERVICE_MANAGER.getService(ThirdPartyAccountInfoService.Iface.class);
 
     @RequestMapping(value = "/thirdPartyAccountInfo/getAllInfo", method = RequestMethod.GET)
     @ResponseBody

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.vo.ParseResult;
 import com.moseeker.servicemanager.web.controller.referral.vo.UploadControllerVO;
@@ -30,8 +31,8 @@ import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 @ResponseBody
 public class ReferralUploadController {
 
-    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
-    private ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+    private ReferralService.Iface referralService = ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
+    private ProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
 
     /**
      *上传文件存储
@@ -55,6 +56,10 @@ public class ReferralUploadController {
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return Result.fail(99999, "请上传小于5M的文件！").toJson();
+            }
+
+            if (!ProfileDocCheckTool.checkFileFormat(fileName,file.getBytes())) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
@@ -135,11 +140,12 @@ public class ReferralUploadController {
         String fileId = request.getParameter("fileId");
         String userId = request.getParameter("userId");
         String sceneId = request.getParameter("sceneId");
-        logger.info("ReferralUploadController  parseFileProfile  fileId{},userId{},sceneId{}",fileId,userId,sceneId);
+        logger.info("ReferralUploadController parseFileProfile  fileId: {},userId: {},sceneId: {}",fileId,userId,sceneId);
         ReferralUploadFiles uploadFilesResult = profileService.referralResumeInfo(fileId);
-        logger.info("ReferralUploadController parseFileProfile:{}", JSONObject.toJSONString(uploadFilesResult));
+        logger.info("ReferralUploadController parseFileProfile uploadFilesResult: {}", JSONObject.toJSONString(uploadFilesResult));
         com.moseeker.thrift.gen.profile.struct.ProfileParseResult result =
                 profileService.parseFileProfileByFilePath(uploadFilesResult.getUrl(), Integer.valueOf(userId), sceneId);
+        logger.info("ReferralUploadController parseFileProfile result: {}",JSONObject.toJSONString(result));
         return Result.success(result).toJson();
     }
 

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 
@@ -26,7 +25,7 @@ public class RecommendedPositionsController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(RecommendedPositionsController.class);
 
-    PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+    PositionServices.Iface positonServices = ServiceManager.SERVICE_MANAGER.getService(PositionServices.Iface.class);
 
     @RequestMapping(value = "/positions/recommended", method = RequestMethod.GET)
     @ResponseBody
