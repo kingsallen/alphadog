@@ -1144,7 +1144,9 @@ public class ReferralEntity {
 
     private void updateApplicationEsIndex(int userId){
         scheduledThread.startTast(()->{
+            logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
             logger.info("====================redis==============application更新=============");
             logger.info("================userid={}=================",userId);

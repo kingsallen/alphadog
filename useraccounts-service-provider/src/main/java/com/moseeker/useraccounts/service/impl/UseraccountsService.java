@@ -720,7 +720,9 @@ public class UseraccountsService {
         result.put("user_id", userId);
         result.put("tableName","user_meassage");
         scheduledThread.startTast(()->{
+            logger.info("==========更新users===========ES_REALTIME_UPDATE_INDEX_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         },2000);
     }
@@ -1489,6 +1491,7 @@ public class UseraccountsService {
             JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
             if (application!=null) {
                 int app_id=application.getId();
+                logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING===");
                 redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
                 logger.info("====================redis==============application更新=============");
                 logger.info("================app_id={}=================", app_id);
@@ -1496,11 +1499,14 @@ public class UseraccountsService {
                 JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
                 if(application1!=null){
                     int app_id=application.getId();
+                    logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING===");
                     redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
                     logger.info("====================redis==============application更新=============");
                     logger.info("================app_id={}=================", app_id);
                 }
             }
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
         },3000);
