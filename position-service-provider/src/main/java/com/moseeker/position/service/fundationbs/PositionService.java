@@ -704,7 +704,9 @@ public class PositionService {
         List<Integer> batchLiepinPositionDownShelf = new ArrayList<>();
 
         // 需要更新ES的jobpostionID
-        List<Integer> jobPositionIds = new ArrayList<>();
+        Set<Integer> jobPositionIds = new LinkedHashSet<>();
+        //记录需要更新的jobpostionID
+        Set<Integer> updatePostionIds = new LinkedHashSet<>();
         Integer deleteCounts = 0;
         Integer sourceId = jobPositionHandlerDates.get(0).getSource_id();
         // 删除操作,删除除了data以外的数据库中的数据
@@ -943,7 +945,11 @@ public class PositionService {
                     formRcord.setId(jobPositionRecord.getId());
                     // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
                     formData.setId(jobPositionRecord.getId());
-                    jobPositionIds.add(jobPositionRecord.getId());
+                    //title 不为null的时，刷新es
+                    if (!Objects.equals(formData.getTitle(), jobPositionRecord.getTitle())) {
+                        jobPositionIds.add(jobPositionRecord.getId());
+                        updatePostionIds.add(jobPositionRecord.getId());
+                    }
                 }
                 // 添加同步数据
                 addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
@@ -1158,6 +1164,10 @@ public class PositionService {
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
+
+            if (updatePostionIds.size() > 0) {
+                logger.info("saveAndSync更新的updatePostionIds长度为：{}, 数据为：{}", updatePostionIds.size(), updatePostionIds);
+            }
             positionStateAsyncHelper.resync(batchHandlerCountDown,needReSyncData);
             positionStateAsyncHelper.edit(batchHandlerCountDown,jobPositionUpdateRecordList ,oldJobMap);
 
@@ -1173,15 +1183,17 @@ public class PositionService {
         jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
         jobPostionResponse.setSyncData(syncData);
         if (jobPositionIds.size() > 0) {
-            logger.info("插入和新增的jobPositionIds为:" + jobPositionIds.toString());
+            List<Integer> jobPositionIdsList = new ArrayList<>();
+            jobPositionIdsList.addAll(jobPositionIds);
+            logger.info("saveAndSync插入和新增的jobPositionIds size 为:{}, 数据为:{}", jobPositionIds.size(), jobPositionIds.toString());
             // 更新ES Search Engine
-            PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
+            PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIdsList);
             Thread thread = new Thread(updataESThread);
             thread.start();
             //此处使用硬编码，感觉十分不好
             String exchange="new_position_es_index_update_exchange";
             String routingKey="newpositionesindexupdate.#";
-            sender.sendMqRequest(jobPositionIds,routingKey,exchange);
+            sender.sendMqRequest(jobPositionIdsList,routingKey,exchange);
             return jobPostionResponse;
         }
         if(!StringUtils.isEmptyList(jobPositionAddRecordList)

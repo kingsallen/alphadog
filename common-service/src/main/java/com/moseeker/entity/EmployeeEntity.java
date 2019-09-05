@@ -27,10 +27,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
-import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
-import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
-import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
-
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -75,15 +71,6 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import java.math.BigDecimal;
-import java.net.ConnectException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +80,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.net.ConnectException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -763,6 +764,7 @@ public class EmployeeEntity {
                 int userId = DO.getSysuserId();
                 int companyId = DO.getCompanyId();
                 convertCandidatePerson(userId, companyId);
+                workwxDao.unbindSysUser(userId,companyId);
             }
             int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
