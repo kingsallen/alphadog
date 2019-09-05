@@ -4,11 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.constants.*;
-import com.moseeker.entity.SensorSend;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.EmployeeOperationEntrance;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -16,6 +17,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.LogEmployeeOperationLogEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
@@ -28,12 +30,6 @@ import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -42,6 +38,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -206,8 +206,9 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getQrcode(), ""));
             mesBody.put("#date_today#",  LocalDate.now().toString());
             String url = ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrwechatResult.getSignature());
-            if(bindEmailSource==EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
-                url = url.concat("&bind_email_source=").concat(EmployeeOperationEntrance.IMEMPLOYEE.getKey()+"");
+            // 将source加到邮件中激活请求url中，以便上层应用解析
+            if(EmployeeOperationEntrance.contains(bindEmailSource)) {
+                url = url.concat("&bind_email_source=").concat(Integer.toString(bindEmailSource));
             }
             mesBody.put("#auth_url#", url);
             // 发件人信息
