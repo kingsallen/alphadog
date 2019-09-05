@@ -328,13 +328,14 @@ public class MessageTemplateEntity {
         if(type==3){
             jobName = this.getJobName(userId, companyId,1, recomMatchPositionId);
 
-            // 设置趣味简笔画提升消息模板打开率,（微信消息模板中有表情字符出现，可能会导致表情字符之后的字体颜色显示不正确）
+            // 设置趣味简笔画提升消息模板打开率,（微信消息模板中有表情字符出现，可能会导致表情字符之后的字体颜色显示不正确，
+            // 将对应的字体设置为黑色#000000可以视觉上避免这个问题）
             StringBuffer firstName = new StringBuffer();
             firstName.append("#肥水不流外人田~# 靠谱职位转起来！相信优秀的你身边也一定有很多优秀的人~👍\n");
             firstName.append("\n");
-            firstName.append("                          ● \n");
-            firstName.append("                          █┳ 《 内~推~有~你~❤️》\n");
-            firstName.append("                          ┛┗\n\n");
+            firstName.append("            ● \n");
+            firstName.append("            █┳ 《 内~推~有~你~❤️》\n");
+            firstName.append("            ┛┗\n\n");
 
             String remarkName = "";
             colMap = this.handlerTemplateData(weChatId, firstName.toString(), remarkName, Constant.EMPLOYEE_RECOM_POSITION);
@@ -355,16 +356,16 @@ public class MessageTemplateEntity {
         }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
-        keyword1.setColor("#2A95FC");
+        keyword1.setColor("#000000");
         keyword1.setValue(jobName);
         colMap.put("keyword1", keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
-        keyword2.setColor("#555555");
+        keyword2.setColor("#000000");
         keyword2.setValue(companyName);
         colMap.put("keyword2", keyword2);
         String data=sf.format(new Date());
         MessageTplDataCol keyword3=new MessageTplDataCol();
-        keyword3.setColor("#555555");
+        keyword3.setColor("#000000");
         keyword3.setValue(data);
         colMap.put("keyword3", keyword3);
 
