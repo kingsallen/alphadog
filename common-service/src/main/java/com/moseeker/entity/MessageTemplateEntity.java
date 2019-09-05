@@ -391,7 +391,7 @@ public class MessageTemplateEntity {
         }
         colMap.put("first", first);
         MessageTplDataCol remark=new MessageTplDataCol();
-        remark.setColor("#555555");
+        remark.setColor("#000000");
         if(record!=null&&StringUtils.isNotNullOrEmpty(record.getRemark())){
             remark.setValue(record.getRemark());
         }else {
