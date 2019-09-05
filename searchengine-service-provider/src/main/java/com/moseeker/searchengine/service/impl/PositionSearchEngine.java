@@ -1,12 +1,22 @@
 package com.moseeker.searchengine.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.util.EsClientInstance;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.searchengine.domain.fallback.FallBack;
+import com.moseeker.searchengine.domain.vo.PositionDetail;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -26,11 +36,39 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.searchengine.util.SearchUtil;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import static com.moseeker.common.constants.Constant.DATABASE_PAGE_SIZE;
+import static com.moseeker.common.constants.Constant.PAGE_SIZE;
+import static com.moseeker.common.constants.Constant.RETRY_UPPER_LIMIT;
+
 @Service
 public class PositionSearchEngine {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
     @Autowired
     private SearchUtil searchUtil;
+
+    @Autowired
+    private HrTeamDao teamDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private JobPositionDao positionDao;
+
+    private SerializeConfig config = new SerializeConfig();
+
+    @PostConstruct
+    public void init() {
+        config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     //按条件查询，如果prefix的方式无法差的数据，那么转换为query_string的方式查询
     @CounterIface
     public Map<String,Object> search(String keyWord,String industry,String salaryCode,int page,int pageSize,String cityCode,String startTime
@@ -57,8 +95,8 @@ public class PositionSearchEngine {
                 }
             }
         } catch (Exception e) {
-            logger.info(e.getMessage(),e);
-
+            logger.error(e.getMessage(),e);
+            return fetchFallback(page, pageSize, companyId);
         }
         return new HashMap<String,Object>();
     }
@@ -286,4 +324,143 @@ public class PositionSearchEngine {
         return script;
     }
 
+    /**
+     * 该方法不支持聚合好！！！即必须要有公司编号才能生效
+     * @param pageNo 页码
+     * @param pageSize 每页数量
+     * @param companyId 公司编号
+     * @return 备份方案的职位列表数据
+     */
+    private Map<String,Object> fetchFallback(int pageNo,int pageSize, int companyId) {
+
+        if (companyId <= 0) {
+            return new HashMap<>(0);
+        }
+        if (pageNo <=0) {
+            pageNo = 1;
+        }
+        if (pageSize <= 0 || pageSize > DATABASE_PAGE_SIZE) {
+            pageSize = PAGE_SIZE;
+        }
+
+        String pattern = FallBack.generatePCPositionListPattern(pageNo, pageSize, companyId);
+        String json = FallBack.fetchFromCache(client, pattern);
+        if (json != null) {
+            return JSONObject.parseObject(json);
+        }
+
+        String uuid = UUID.randomUUID().toString();
+        try {
+            boolean getLock = client.tryGetLock(Constant.APPID_ALPHACLOUD, KeyIdentifier.REDIS_LOG.toString(), pattern, uuid);
+            if (getLock) {
+                JSONObject jsonObject = fetchFromDB(pageNo, pageSize, companyId);
+
+                client.set(Constant.APPID_ALPHACLOUD, KeyIdentifier.POSITION_LIST_FALLBACK.toString(), pattern, jsonObject.toJSONString());
+
+                return jsonObject;
+            } else {
+                //等待获取redis内容
+                try {
+                    return waitForCache(0, pattern);
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                    Thread.interrupted();
+                    return new HashMap<>(0);
+                }
+            }
+        } finally {
+            client.releaseLock(Constant.APPID_ALPHACLOUD, KeyIdentifier.REDIS_LOG.toString(), pattern, uuid);
+        }
+    }
+
+    /**
+     * 从数据库中查找职位列表数据
+     * @param pageNo 页码
+     * @param pageSize 每页显示的数量
+     * @param companyId 公司编号
+     * @return 备份方案的职位列表数据
+     */
+    private JSONObject fetchFromDB(int pageNo, int pageSize, int companyId) {
+
+        JSONObject jsonObject = new JSONObject();
+
+        int total = positionDao.count(companyId);
+        jsonObject.put("totalNum", total);
+        List<PositionDetail> positionDetails = new ArrayList<>();
+        jsonObject.put("positions", positionDetails);
+        List<JobPosition> positionList = positionDao.fetch(companyId, pageNo, pageSize);
+        if (positionList != null && positionList.size() > 0) {
+
+            List<Integer> positionIdList = new ArrayList<>(positionList.size());
+
+            List<Integer> companyIdList = new ArrayList<>(positionList.size());
+
+            List<Integer> teamIdList = new ArrayList<>(positionIdList.size());
+            for (JobPosition position : positionList) {
+                if (position.getCompanyId() != null && position.getCompanyId() > 0) {
+                    companyIdList.add(position.getCompanyId());
+                }
+                if (position.getTeamId() != null && position.getTeamId() > 0) {
+                    teamIdList.add(position.getTeamId());
+                }
+                positionIdList.add(position.getId());
+
+            }
+            List<HrTeam> teams = teamDao.listByIdList(teamIdList);
+
+            List<HrCompany> companyList = companyDao.list(companyIdList);
+
+            for (JobPosition position : positionList) {
+                PositionDetail positionDetail = new PositionDetail();
+                positionDetail.setPosition(position);
+                Optional<HrTeam> hrTeamOptional = teams
+                        .stream()
+                        .filter(team -> team.getId().equals(position.getTeamId()))
+                        .findAny();
+                if (hrTeamOptional.isPresent()) {
+                    positionDetail.setTeam(hrTeamOptional.get());
+                }
+
+                Optional<HrCompany> companyOptional = companyList
+                        .stream()
+                        .filter(company -> company.getId().equals(position.getCompanyId()))
+                        .findAny();
+                if (companyOptional.isPresent()) {
+                    positionDetail.setCompany(companyOptional.get());
+                }
+                positionDetails.add(positionDetail);
+            }
+
+        } else {
+            return jsonObject;
+        }
+        String str = JSONObject.toJSONString(jsonObject, config);
+        return (JSONObject) JSONObject.parse(str);
+    }
+
+    /**
+     * 如果触发锁，那么循环等待redis的数据
+     * @param times 等待次数
+     * @param pattern 查询条件
+     * @return 备份方案的职位列表数据
+     * @throws InterruptedException 线程中断异常
+     */
+    private JSONObject waitForCache(int times, String pattern) throws InterruptedException {
+        while (times <= RETRY_UPPER_LIMIT) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
+                Thread.currentThread().interrupt();
+                return new JSONObject();
+            }
+            String json = FallBack.fetchFromCache(client, pattern);
+            if (json != null) {
+                return JSONObject.parseObject(json);
+            } else {
+                return waitForCache(times+1, pattern);
+            }
+        }
+        return new JSONObject();
+    }
 }

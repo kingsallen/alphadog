@@ -1,12 +1,23 @@
 package com.moseeker.searchengine.service.impl;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.EsClientInstance;
+import com.moseeker.searchengine.domain.fallback.FallBack;
+import com.moseeker.searchengine.domain.vo.CompanyDetail;
+import com.moseeker.searchengine.domain.vo.OtherVO;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
@@ -29,6 +40,7 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.jooq.Record2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +48,39 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
+import static com.moseeker.common.constants.Constant.DATABASE_PAGE_SIZE;
+import static com.moseeker.common.constants.Constant.PAGE_SIZE;
+import static com.moseeker.common.constants.Constant.RETRY_UPPER_LIMIT;
+
 @Service
 @CounterIface
 public class CompanySearchengine {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private SearchUtil searchUtil;
+
+	@Resource(name = "cacheClient")
+	private RedisClient client;
+
+	@Autowired
+	private HrCompanyDao companyDao;
+
+	@Autowired
+	private HrTeamDao teamDao;
+
+	@Autowired
+	private JobPositionDao positionDao;
+
+	private SerializeConfig config = new SerializeConfig();
+
+	@PostConstruct
+	public void init() {
+		config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+	}
+
 	//搜索信息
 	@CounterIface
 	public Map<String,Object>  query(String keywords,String citys,String industry,String scale,Integer page,Integer pageSize) throws TException{
@@ -59,6 +98,7 @@ public class CompanySearchengine {
 			}
 		}catch(Exception e){
 			logger.info(e.getMessage(),e);
+			return fetchFallback(page, pageSize);
 		}
 		return map;
 
@@ -270,5 +310,135 @@ public class CompanySearchengine {
 				.reduceScript(new Script(reduceScript))
 				.combineScript(new Script(combinScript));
 		return build;
+	}
+
+	/**
+	 * 从数据库冲查找公司列表
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 * @return 公司数据
+	 */
+	private Map<String,Object> fetchFallback(int pageNo,int pageSize) {
+
+		if (pageNo <=0) {
+			pageNo = 1;
+		}
+		if (pageSize <= 0 || pageSize > DATABASE_PAGE_SIZE) {
+			pageSize = PAGE_SIZE;
+		}
+
+		String pattern = FallBack.generatePCCompanyListPattern(pageNo, pageSize);
+		String json = FallBack.fetchFromCache(client, pattern);
+		if (json != null) {
+			return JSONObject.parseObject(json);
+		}
+
+		String uuid = UUID.randomUUID().toString();
+		try {
+			boolean getLock = client.tryGetLock(Constant.APPID_ALPHACLOUD, KeyIdentifier.REDIS_LOG.toString(), pattern, uuid);
+			if (getLock) {
+				JSONObject jsonObject = fetchFromDB(pageNo, pageSize);
+
+				client.set(Constant.APPID_ALPHACLOUD, KeyIdentifier.POSITION_LIST_FALLBACK.toString(), pattern, jsonObject.toJSONString());
+
+				return jsonObject;
+			} else {
+				//等待获取redis内容
+				try {
+					return waitForCache(0, pattern);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage(), e);
+					Thread.interrupted();
+					return new HashMap<>(0);
+				}
+			}
+		} finally {
+			client.releaseLock(Constant.APPID_ALPHACLOUD, KeyIdentifier.REDIS_LOG.toString(), pattern, uuid);
+		}
+	}
+
+	/**
+	 * 从数据库中查找职位列表数据
+	 * @param pageNo 页码
+	 * @param pageSize 每页显示的数量
+	 * @return 备份方案的职位列表数据
+	 */
+	private JSONObject fetchFromDB(int pageNo, int pageSize) {
+
+		JSONObject jsonObject = new JSONObject();
+
+		int total = companyDao.count();
+		jsonObject.put("totalNum", total);
+		List<CompanyDetail> companyDetails = new ArrayList<>();
+		jsonObject.put("companies", companyDetails);
+		List<HrCompany> companyList = companyDao.list(pageNo, pageSize);
+		if (companyList != null && companyList.size() > 0) {
+
+			List<Integer> companyIdList = companyList
+					.stream()
+					.map(HrCompany::getId)
+					.collect(Collectors.toList());
+
+			List<Record2<Integer, Integer>> teamCount = teamDao.countByCompanyIdList(companyIdList);
+			Map<Integer, Integer> teamCountRel = new HashMap<>(companyIdList.size());
+			if (teamCount != null && teamCount.size() > 0) {
+				for (Record2<Integer, Integer> record2 : teamCount) {
+					teamCountRel.put(record2.value1(), record2.value2());
+				}
+			}
+
+			Map<Integer, Integer> positionCountRel = new HashMap<>(companyIdList.size());
+			List<Record2<Integer, Integer>> positionCount = positionDao.countByCompanyIdList(companyIdList);
+			if (positionCount != null && positionCount.size() > 0) {
+				for (Record2<Integer, Integer> record2 : positionCount) {
+					positionCountRel.put(record2.value1(), record2.value2());
+				}
+			}
+
+			for (HrCompany company : companyList) {
+				CompanyDetail companyDetail = new CompanyDetail();
+				companyDetail.setCompany(company);
+				OtherVO otherVO = new OtherVO();
+				if (teamCountRel.get(company.getId()) != null) {
+					otherVO.setTeamNum(teamCountRel.get(company.getId()));
+				}
+				if (positionCountRel.get(company.getId()) != null) {
+					otherVO.setPositionNum(positionCountRel.get(company.getId()));
+				}
+				otherVO.setWeight(10000);
+				companyDetail.setOther(otherVO);
+				companyDetails.add(companyDetail);
+			}
+		} else {
+			return jsonObject;
+		}
+		String str = JSONObject.toJSONString(jsonObject, config);
+		return (JSONObject) JSONObject.parse(str);
+	}
+
+	/**
+	 * 如果触发锁，那么循环等待redis的数据
+	 * @param times 等待次数
+	 * @param pattern 查询条件
+	 * @return 备份方案的职位列表数据
+	 * @throws InterruptedException 线程中断异常
+	 */
+	private JSONObject waitForCache(int times, String pattern) throws InterruptedException {
+		while (times <= RETRY_UPPER_LIMIT) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage(), e);
+				Thread.currentThread().interrupt();
+				return new JSONObject();
+			}
+			String json = FallBack.fetchFromCache(client, pattern);
+			if (json != null) {
+				return JSONObject.parseObject(json);
+			} else {
+				return waitForCache(times+1, pattern);
+			}
+		}
+		return new JSONObject();
 	}
 }
