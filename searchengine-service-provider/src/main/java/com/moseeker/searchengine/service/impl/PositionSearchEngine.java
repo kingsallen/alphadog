@@ -96,7 +96,7 @@ public class PositionSearchEngine {
             }
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
-            return fetchFallback(page, pageSize, companyId);
+            return fetchFallback(page, pageSize, motherCompanyId);
         }
         return new HashMap<String,Object>();
     }
