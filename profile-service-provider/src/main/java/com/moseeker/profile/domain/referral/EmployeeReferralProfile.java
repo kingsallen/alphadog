@@ -208,7 +208,7 @@ public abstract class EmployeeReferralProfile {
                         .findAny();
 
                 successReferralOption.ifPresent(mobotReferralResultVO -> {
-                    userAccountEntity.updateUserRecord(userRecord);
+                    userAccountEntity.updateUserRecord(userUserRecord);
                 });
             }
         }
