@@ -165,7 +165,6 @@ public abstract class EmployeeReferralProfile {
                                 logger.info("============三秒后执行=============================");
                                 updateApplicationEsIndex(attementVO.getUserId());
                             },3000);
-                            return resultVOS;
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);
                             throw ProfileException.PROGRAM_EXCEPTION;
