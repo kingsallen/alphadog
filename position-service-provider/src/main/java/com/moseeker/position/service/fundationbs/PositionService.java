@@ -945,8 +945,8 @@ public class PositionService {
                     formRcord.setId(jobPositionRecord.getId());
                     // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
                     formData.setId(jobPositionRecord.getId());
-                    //title 不为null的时，刷新es
-                    if (!Objects.equals(formData.getTitle(), jobPositionRecord.getTitle())) {
+                    // TODO: 2019/9/6 job更新刷新Es规则
+                    if(isUpdatePosition(formData, jobPositionRecord)) {
                         jobPositionIds.add(jobPositionRecord.getId());
                         updatePostionIds.add(jobPositionRecord.getId());
                     }
@@ -1202,6 +1202,60 @@ public class PositionService {
         }
         logger.info("-------批量修改职位结束---------");
         return jobPostionResponse;
+    }
+
+    /**
+     * 判断传入的职位信息是否有更新
+     *
+     * @param  formData 传入的数据
+     * @param jobPositionRecord 数据库原有数据
+     * @return bool
+     * @Author lee
+     * @Date 2019/9/6 14:07
+     */
+    private boolean isUpdatePosition(JobPostrionObj formData, JobPositionRecord jobPositionRecord) {
+        //只要如下有任一属性发生变化，则认为该职位有更新
+        return notEquals(formData.getTitle(), jobPositionRecord.getTitle())
+                || notEquals(formData.getDepartment(), jobPositionRecord.getDepartment())
+                || notEquals(formData.getAccountabilities(), jobPositionRecord.getAccountabilities())
+                || notEquals(formData.getExperience(), jobPositionRecord.getExperience())
+                || notEquals(formData.getSalary(), jobPositionRecord.getSalary())
+                || notEquals(formData.getLanguage(), jobPositionRecord.getLanguage())
+                || notEquals(formData.getBusiness_group(), jobPositionRecord.getBusinessGroup())
+                || !Objects.equals(formData.getEmployment_type(), jobPositionRecord.getEmploymentType())
+                || notEquals(formData.getHr_email(), jobPositionRecord.getHrEmail())
+                || !Objects.equals(formData.getDegree(), jobPositionRecord.getDegree())
+                || notEquals(formData.getFeature(), jobPositionRecord.getFeature())
+                || !Objects.equals(formData.getEmail_notice(), jobPositionRecord.getEmailNotice())
+                || !Objects.equals(formData.getCandidate_source(), jobPositionRecord.getCandidateSource())
+                || notEquals(formData.getOccupation(), jobPositionRecord.getOccupation())
+                || notEquals(formData.getIndustry(), jobPositionRecord.getIndustry())
+                || !Objects.equals(formData.getEmail_resume_conf(), jobPositionRecord.getEmailResumeConf())
+                || notEquals(formData.getDistrict(), jobPositionRecord.getDistrict())
+                || !Objects.equals(formData.getCount(), jobPositionRecord.getCount())
+                || !Objects.equals(formData.getSalary_top(), jobPositionRecord.getSalaryTop())
+                || !Objects.equals(formData.getSalary_bottom(), jobPositionRecord.getSalaryBottom())
+                || !Objects.equals(formData.getExperience_above(), jobPositionRecord.getExperienceAbove())
+                || !Objects.equals(formData.getDegree_above(), jobPositionRecord.getDegreeAbove())
+                || !Objects.equals(formData.getManagement_experience(), jobPositionRecord.getManagementExperience())
+                || !Objects.equals(formData.getGender(), jobPositionRecord.getGender())
+                || !Objects.equals(formData.getPublisher(), jobPositionRecord.getPublisher())
+                || !Objects.equals(formData.getApp_cv_config_id(), jobPositionRecord.getAppCvConfigId())
+                || !Objects.equals(formData.getAge(), jobPositionRecord.getAge())
+                || notEquals(formData.getMajor_required(), jobPositionRecord.getMajorRequired())
+                || notEquals(formData.getWork_address() , jobPositionRecord.getWorkAddress())
+                || notEquals(formData.getKeyword(), jobPositionRecord.getKeyword())
+                || notEquals(formData.getReporting_to(), jobPositionRecord.getReportingTo())
+                || !Objects.equals(formData.getIs_hiring(), jobPositionRecord.getIsHiring())
+                || !Objects.equals(formData.getUnderlings(), jobPositionRecord.getUnderlings())
+                || !Objects.equals(formData.getLanguage_required(), jobPositionRecord.getLanguageRequired())
+                || !Objects.equals(formData.getPosition_code(), jobPositionRecord.getPositionCode())
+                || !Objects.equals(formData.getTeam_id(), jobPositionRecord.getTeamId());
+    }
+
+    //不相同的规则为传入值不能为null，并且和原始值不相同
+    private boolean notEquals(String value1, String value2) {
+        return StringUtils.isNotNullOrEmpty(value1) && !value1.equals(value2);
     }
 
     @Autowired
