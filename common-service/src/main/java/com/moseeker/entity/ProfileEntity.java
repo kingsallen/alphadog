@@ -885,7 +885,7 @@ public class ProfileEntity {
         //Redis 同步锁
 
         if (profilePojo.getUserRecord() != null) {
-            UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference, companyId,
+            UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertReferralTypeIfNotExist(reference, companyId,
                     profilePojo.getUserRecord().getMobile(),
                             ReferralScene.ChatBot);
 
@@ -906,7 +906,8 @@ public class ProfileEntity {
         UserSource userSource = referralScene.getScene() == ReferralScene.Referral.getScene() ? UserSource.EMPLOYEE_REFERRAL : UserSource.EMPLOYEE_REFERRAL_CHATBOT;
         UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
                 companyId, profilePojo.getUserRecord().getMobile(),
-                referralScene, userSource);
+                referralScene);
+        logger.info("ProfileEntity storeReferralUser referralRecordRecord:{}", referralRecordRecord);
         if (referralRecordRecord != null) {
             ProfileSaveResult profileSaveResult = storeUserRecordForReferral(profilePojo, userSource,null,null,null);
             if (profileSaveResult != null && profileSaveResult.getProfileRecord() != null) {

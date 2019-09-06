@@ -180,7 +180,9 @@ public class UserAccountEntity {
             countryCode=phoneArray[0];
             phone=phoneArray[1];
         }
+
         List<UserUserRecord> list = userDao.getCompanyUserUser(phone, countryCode);
+
         if (list != null && list.size() > 0) {
 
             userUserRecord = findTalent(list, companyId);
