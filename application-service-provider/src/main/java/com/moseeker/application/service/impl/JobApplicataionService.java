@@ -254,7 +254,7 @@ public class JobApplicataionService {
     private void updateApplicationEsIndex(int userId){
         scheduledThread.startTast(()->{
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
-//            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
             logger.info("====================redis==============application更新=============");
             logger.info("================userid={}=================",userId);
         },6000);

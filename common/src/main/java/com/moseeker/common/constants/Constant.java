@@ -25,6 +25,7 @@ public final class Constant {
 
     /** 系统appid 常量定义 && 共同常量定义 START **/
     public static final int APPID_ALPHADOG = 0;     // 基础服务本身
+    public static final int APPID_ALPHACLOUD = 301; // 基础服务
     public static final int APPID_C = 1;            // c端
     public static final int APPID_QX = 2;           // weixin端(聚合号)
     public static final int APPID_PLATFORM = 3;     // weixin端（企业号）
