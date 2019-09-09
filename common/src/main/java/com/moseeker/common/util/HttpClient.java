@@ -1,17 +1,37 @@
 package com.moseeker.common.util;
 
-import java.io.BufferedReader;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.exception.CommonException;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.content.*;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.util.Map;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+
 
 public class HttpClient {
-	
+
+    private final static Logger logger = LoggerFactory.getLogger(HttpClient.class);
+    
 	public static String sendGet(String url, String param) {
         String result = "";
         BufferedReader in = null;
@@ -31,7 +51,7 @@ public class HttpClient {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                System.out.println(key + "--->" + map.get(key));
+                logger.debug(key + "--->" + map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -41,7 +61,7 @@ public class HttpClient {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送GET请求出现异常！" + e);
+            logger.debug("发送GET请求出现异常！" + e);
             e.printStackTrace();
         }
         // 使用finally块来关闭输入流
@@ -157,6 +177,130 @@ public class HttpClient {
             }
         }
         return result;
+    }
+
+
+    /**
+     * POST发送MultipartForm表单
+     * 表单parameter参数值常用数据类型有java基本类型、String、byte[] 、InputStream 、File MultipartFile 或者直接写ContentBody
+     * 当表单含有文件时，建议声明contentType,fileName。contentType为空，使用默认ContentType.DEFAULT_BINARY。
+     * filename如果为空，先从parameter中查找有没filename（忽略大小写）值，如果有使用此值。
+     * 当传入byte[]文件内容但未指定文件名fileName参数，同时parameter中也不包含filename（忽略大小写）参数时，抛出异常。
+     * @param url
+     * @param parameter form内容
+     * @param contentType 文件类型
+     * @param fileName 文件名称
+     * @return
+     * @throws IllegalArgumentException 当传入byte[]文件内容但未指定文件名fileName时，抛出异常。
+     * @throws IOException 文件读取或网络请求错误是抛出IOException
+     */
+    public static String postMultipartForm(String url, Map<String,Object> parameter, ContentType contentType, String fileName) throws IOException{
+        try(CloseableHttpClient httpclient = HttpClients.createDefault()) {
+            HttpPost httppost = new HttpPost(url);
+
+            if(parameter != null && !parameter.isEmpty()){
+                if( fileName == null){
+                    for(Map.Entry<String,Object> entry : parameter.entrySet()){
+                        if ( "FILENAME".equalsIgnoreCase(entry.getKey()) && entry.getValue() instanceof String){
+                            fileName = entry.getValue().toString();
+                        }
+                    }
+                }
+                String filename = fileName;
+                MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                parameter.forEach((name,value)->{
+                    if( value != null){
+                        ContentBody contentBody;
+                        if( value instanceof String){
+                            contentBody = new StringBody( value.toString(), ContentType.TEXT_PLAIN);
+                        }else if( value instanceof File) {
+                            if( contentType != null && org.apache.commons.lang.StringUtils.isNotBlank(filename)){
+                                contentBody = new FileBody((File) value,contentType,filename);
+                            }else{
+                                contentBody = new FileBody((File) value);
+                            }
+                        }else if( value instanceof byte[]) {
+                            if( filename == null) {
+                                throw new IllegalArgumentException("filename不可为空" );
+                            }
+                            if( contentType != null && org.apache.commons.lang.StringUtils.isNotBlank(filename)){
+                                contentBody = new ByteArrayBody((byte[]) value,contentType,filename);
+                            }else{
+                                contentBody = new ByteArrayBody((byte[]) value,filename);
+                            }
+                        }else if( value instanceof InputStream) {
+                            if( contentType != null){
+                                contentBody = new InputStreamBody((InputStream) value,contentType,filename);
+                            }else{
+                                contentBody = new InputStreamBody((InputStream) value,filename);
+                            }
+                        }else if( value instanceof MultipartFile) {
+                            MultipartFile multipartFile = (MultipartFile)value;
+                            byte[] bytes ;
+                            try {
+                                bytes = multipartFile.getBytes();
+                            } catch (IOException e) {
+                                throw new RuntimeException("上传文件读取异常",e);
+                            }
+                            if( StringUtils.isNotNullOrEmpty(multipartFile.getContentType())){
+                                contentBody = new ByteArrayBody(bytes,multipartFile.getContentType(),multipartFile.getOriginalFilename());
+                            }else{
+                                contentBody = new ByteArrayBody(bytes,contentType != null ? contentType : ContentType.DEFAULT_BINARY,multipartFile.getOriginalFilename());
+                            }
+                        }else if( value instanceof ContentBody) {
+                            contentBody = (ContentBody)value ;
+                        }else {
+                            // 其他参数统统转化为String
+                            contentBody = new StringBody( value.toString(), ContentType.TEXT_PLAIN);
+                        }
+                        builder.addPart(name,contentBody);
+                    }
+                });
+
+                HttpEntity reqEntity = builder.build();
+                httppost.setEntity(reqEntity);
+            }
+
+            //logger.debug("executing request " + httppost.getRequestLine());
+            try(CloseableHttpResponse response = httpclient.execute(httppost)) {
+                //logger.debug("----------------------------------------");
+                //logger.debug(response.getStatusLine());
+                HttpEntity resEntity = response.getEntity();
+                if (resEntity != null) {
+                    //logger.debug("Response content length: " + resEntity.getContentLength());
+                }
+                try(InputStream is = resEntity.getContent()){
+                    return IOUtils.toString(is,"UTF-8");
+                }
+            }
+        }
+    }
+
+    public static <T> T postMultipartForm(String url, Map<String,Object> parameter,String fileName, Class<T> jsonClass) throws IOException{
+        logger.debug("postMultipartForm url: {}, parameter :{} ,fileName :{},jsonClass :{} ",url,parameter,fileName,jsonClass);
+        String resText = postMultipartForm(url,parameter,null,fileName);
+        logger.debug("postMultipartForm response {} ",resText);
+        return getDataFromJsonString(resText,jsonClass);
+    }
+
+    public static <T> T getDataFromJsonString(String restext, Class<T> tClass) {
+        if (StringUtils.isNullOrEmpty(restext)) return null;
+        Map<String, Object> resMap = JSONObject.parseObject(restext, Map.class);
+        if (resMap != null) {
+            String codeStr = Objects.toString(resMap.get("code"), "0");
+            int code = Integer.valueOf(codeStr.replaceAll("\\D+", ""));
+            if (code != 0) {
+                throw new CommonException(code, Objects.toString(resMap.get("message")));
+            }
+            JSONObject data = (JSONObject) resMap.get("data");
+            if (data != null ) {
+                if( tClass.isAssignableFrom(data.getClass())){
+                    return (T)data ;
+                }
+                return JSONObject.toJavaObject(data, tClass);
+            }
+        }
+        return null;
     }
 
 }

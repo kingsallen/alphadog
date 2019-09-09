@@ -6,13 +6,18 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FileUtil;
 import com.moseeker.common.util.FormCheck;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.exception.ProfileException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -48,10 +53,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @CounterIface
@@ -461,18 +463,8 @@ public class ProfileController {
     public String upsertProfile(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userId = 0;
-            if (params.get("userId") != null) {
-                if (params.get("userId") instanceof String) {
-                    userId = Integer.parseInt((String) params.get("userId"));
-                } else if (params.get("userId") instanceof Integer) {
-                    userId = (Integer) params.get("userId");
-                }
-            }
-            String profile = null;
-            if (params.get("profile") != null) {
-                profile = (String) params.get("profile");
-            }
+            int userId = params.getInt("userId",0);
+            String profile = params.getString("profile");
             int profileId = service.upsertProfile(userId, profile);
             return ResponseLogNotification.successJson(request, profileId);
         } catch (BIZException e) {
@@ -778,11 +770,13 @@ public class ProfileController {
                                    HttpServletRequest request) throws Exception {
         Params<String, Object> params = ParamUtils.parseequestParameter(request);
         int userId = params.getInt("user", 0);
+        Integer appid = params.getInt("appid");
         ValidateUtil validateUtil = new ValidateUtil();
+        String filename = params.getString("file_name");
+        validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("简历", file);
-        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addRequiredStringValidate("简历名称", filename);
         validateUtil.addIntTypeValidate("用户", userId, 1, null);
-        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
@@ -793,13 +787,25 @@ public class ProfileController {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
 
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
-            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    service.parseUserFileProfile(userId, params.getString("file_name"), byteBuffer);
-            ProfileDocParseResult parseResult = new ProfileDocParseResult();
-            org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
-            return Result.success(parseResult).toJson();
+            // 调用alphacloud接口
+            String url = ProfileEntity.CLOUD_PARSING_HOST + "/v4/profile/file-parser";
+            Map<String, Object> parameter = new LinkedHashMap<>();
+            //parameter.put("file", FILE);
+            //parameter.put("file", new FileInputStream(FILE));
+            parameter.put("file", file);
+            parameter.put("fileName", filename);
+            parameter.put("userId", userId);
+            parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
+            parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
+            try{
+                Object jsonObject = HttpClient.postMultipartForm(url, parameter, filename, Object.class);
+                if ( jsonObject == null){
+                    throw ProfileException.PROFILE_PARSING_ERROR;
+                }
+                return com.moseeker.servicemanager.web.controller.Result.success(jsonObject).toJson();
+            }catch (CommonException e){
+                return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
+            }
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
@@ -807,6 +813,7 @@ public class ProfileController {
 
     /**
      * 猎头上传简历
+     * 转化为PDF
      * @param file 简历文件
      * @param request 请求数据
      * @return 解析结果
@@ -827,13 +834,11 @@ public class ProfileController {
         validateUtil.addIntTypeValidate("猎头Id", headhunterId, 1, null);
         validateUtil.addRequiredValidate("appid", params.getInt("appid"));
         logger.info("++++++++++++++++++file [ " + params.toString()+" ]_________________");
-        try {
-            logger.info( "++++++++++++++++++file_path [ " + file_path + " ] ========");
-          } catch (Exception e) {}
+        logger.info( "++++++++++++++++++file_path [ " + file_path + " ] ========");
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_path"))) {
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             /*if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {

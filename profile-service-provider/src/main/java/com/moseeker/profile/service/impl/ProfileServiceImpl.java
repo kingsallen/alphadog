@@ -111,6 +111,7 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
         }
     }
     @Override
+    @Deprecated
     public ProfileDocParseResult parseFileProfile(int id, String fileName, ByteBuffer fileData) throws ProfileException {
         return abstractResumeFileParser.parseResume(id,fileName,fileData);
     }
