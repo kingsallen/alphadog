@@ -92,15 +92,13 @@ public class ReferralController {
             }
 
             // 调用alphacloud接口
-            String url = ProfileEntity.CLOUD_PARSING_HOST + "v4/referral/file-parser";
+            String url = ProfileEntity.getParsingUrl("v4/referral/file-parser");
             Map<String, Object> parameter = new LinkedHashMap<>();
             //parameter.put("file", FILE);
             //parameter.put("file", new FileInputStream(FILE));
             parameter.put("file", file);
             parameter.put("filename", fileName);
             parameter.put("employeeId", employeeId);
-            parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
-            parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
 
             try{
                 Object jsonObject = HttpClient.postMultipartForm(url, parameter, fileName, Object.class);
@@ -116,6 +114,7 @@ public class ReferralController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
 
     /**
      * 员工推荐简历

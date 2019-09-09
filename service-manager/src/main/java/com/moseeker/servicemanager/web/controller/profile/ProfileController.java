@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -788,15 +787,13 @@ public class ProfileController {
             }
 
             // 调用alphacloud接口
-            String url = ProfileEntity.CLOUD_PARSING_HOST + "/v4/profile/file-parser";
+            String url = ProfileEntity.getParsingUrl("v4/profile/file-parser");
             Map<String, Object> parameter = new LinkedHashMap<>();
             //parameter.put("file", FILE);
             //parameter.put("file", new FileInputStream(FILE));
             parameter.put("file", file);
             parameter.put("fileName", filename);
             parameter.put("userId", userId);
-            parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
-            parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
             try{
                 Object jsonObject = HttpClient.postMultipartForm(url, parameter, filename, Object.class);
                 if ( jsonObject == null){
