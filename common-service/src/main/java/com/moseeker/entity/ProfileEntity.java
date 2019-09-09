@@ -101,7 +101,9 @@ public class ProfileEntity {
         Map<String, Object> paramMap = EmojiFilter.filterEmoji(profileParameter);
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
-
+    public static String getParsingUrl(String path){
+        return CLOUD_PARSING_HOST + path + String.format("?appid=%s&interfaceid=%s",Constant.APPID_PARSING,Constant.INTERFACEID_PARSING);
+    }
     /**
      * 简历解析
      *
@@ -135,12 +137,10 @@ public class ProfileEntity {
         }
 
         // 调用服务参数
-        String url = CLOUD_PARSING_HOST + "v4/parserProfile";
+        String url = getParsingUrl("v4/parserProfile");
         Map<String, Object> parameter = new LinkedHashMap<>();
         parameter.put("uid", userId);
         parameter.put("file", file);
-        parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
-        parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
         if (userId != null) {
             parameter.put("userId", userId);
         }
