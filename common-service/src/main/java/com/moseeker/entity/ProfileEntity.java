@@ -88,7 +88,7 @@ public class ProfileEntity {
             throw new RuntimeException("找不到配置文件common.properties");
         }
         String CLOUD_HOST = ConfigPropertiesUtil.getInstance().get("alphacloud_host", String.class);
-        CLOUD_PARSING_HOST = CLOUD_HOST + ":11027/";
+        CLOUD_PARSING_HOST = CLOUD_HOST + "/parsing/";
     }
 
     /**
@@ -139,6 +139,8 @@ public class ProfileEntity {
         Map<String, Object> parameter = new LinkedHashMap<>();
         parameter.put("uid", userId);
         parameter.put("file", file);
+        parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
+        parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
         if (userId != null) {
             parameter.put("userId", userId);
         }

@@ -32,9 +32,7 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -44,8 +42,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -103,7 +99,9 @@ public class ReferralController {
             parameter.put("file", file);
             parameter.put("filename", fileName);
             parameter.put("employeeId", employeeId);
-            parameter.put("appid",appid);
+            parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
+            parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
+
             try{
                 Object jsonObject = HttpClient.postMultipartForm(url, parameter, fileName, Object.class);
                 if ( jsonObject == null){

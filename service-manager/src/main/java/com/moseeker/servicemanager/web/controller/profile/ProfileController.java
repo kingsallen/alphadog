@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -41,7 +42,6 @@ import com.moseeker.thrift.gen.profile.struct.RequiredFieldInfo;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -795,7 +795,8 @@ public class ProfileController {
             parameter.put("file", file);
             parameter.put("fileName", filename);
             parameter.put("userId", userId);
-            parameter.put("appid",appid);
+            parameter.put(Constant.CONST_APPID,Constant.APPID_PARSING);
+            parameter.put(Constant.CONST_INTERFACEID,Constant.INTERFACEID_PARSING);
             try{
                 Object jsonObject = HttpClient.postMultipartForm(url, parameter, filename, Object.class);
                 if ( jsonObject == null){
