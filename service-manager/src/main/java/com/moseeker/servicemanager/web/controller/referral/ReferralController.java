@@ -75,7 +75,7 @@ public class ReferralController {
         int employeeId = params.getInt("employee", 0);
         Integer appid = params.getInt("appid");
         String fileName = params.getString("file_name");
-        logger.info("员工上传简历 employee:{},file:{}",employeeId,fileName);
+        logger.debug("员工上传简历 employee:{},file:{}",employeeId,fileName);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
         validateUtil.addRequiredStringValidate("简历名称", fileName);
@@ -86,6 +86,7 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
+                logger.error("员工上传简历 文件格式不支持 employee:{},file:{}",employeeId,fileName);
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
