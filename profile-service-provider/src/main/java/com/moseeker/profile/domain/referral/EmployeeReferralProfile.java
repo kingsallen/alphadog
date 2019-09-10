@@ -149,16 +149,14 @@ public abstract class EmployeeReferralProfile {
                         mobotReferralResultVO.setReason("重复推荐");
                         resultVOS.add(mobotReferralResultVO);
                     } else {
-                        logger.info("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}",JSONObject.toJSONString(attementVO));
+                        logger.debug("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}",JSONObject.toJSONString(attementVO));
                         int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
                                 ApplicationSource.EMPLOYEE_CHATBOT.getValue();
-                        for(JobPositionDO jobPositionDO : positions){
-                            try{
-                                handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), jobPositionDO,  origin,
-                                        resultVOS, attementVO.getAttachmentId());
-                            }catch(Exception e){
-                                logger.error(e.getMessage(),e);
-                            }
+                        try{
+                            handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), positionDOOptional.get(),  origin,
+                                    resultVOS, attementVO.getAttachmentId());
+                        }catch(Exception e){
+                            logger.error(e.getMessage(),e);
                         }
                         try {
                             tp1.startTast(()->{
