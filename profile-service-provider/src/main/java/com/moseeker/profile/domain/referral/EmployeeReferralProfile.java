@@ -199,7 +199,11 @@ public abstract class EmployeeReferralProfile {
                 userUserRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
                 flag = true;
             }
-            if (flag) {
+            Optional<MobotReferralResultVO> mobotReferralResultVOOptional = resultVOS
+                    .stream()
+                    .filter(mobotReferralResultVO -> mobotReferralResultVO.getSuccess() != null && mobotReferralResultVO.getSuccess())
+                    .findAny();
+            if (flag && mobotReferralResultVOOptional.isPresent()) {
                 userAccountEntity.updateUserRecord(userUserRecord);
                 Optional<MobotReferralResultVO> successReferralOption = resultVOS
                         .stream()
