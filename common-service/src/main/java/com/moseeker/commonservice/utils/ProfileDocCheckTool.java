@@ -3,6 +3,8 @@ package com.moseeker.commonservice.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +19,7 @@ import java.util.List;
  */
 public class ProfileDocCheckTool {
 
+    private final static Logger logger = LoggerFactory.getLogger(ProfileDocCheckTool.class);
     private static class MagicNumberMatcher {
 
         private final byte[] head ;
@@ -174,11 +177,32 @@ public class ProfileDocCheckTool {
             return false ;
         }
         if( !checkFileName(fileName)) return false;
-        return checkMagicNumber(fileContent) || isHtmlOrXml(fileContent);
+        boolean result = checkMagicNumber(fileContent) || isHtmlOrXml(fileContent);
+
+        if(!result){
+            logger.error("上传文件格式不允许，filename:{},body:{}",fileName, arrayToString(fileContent));
+        }
+        return result;
     }
 
+    private static String arrayToString(byte[] array){
+        if(array == null || array.length < 30){
+            return Arrays.toString(array);
+        }else{
+            StringBuilder b = new StringBuilder("[");
+            for (int i = 0; i < 10; i++) {
+                b.append(array[i]).append(", ");
+            }
+            b.append("...");
+            for (int i = array.length-10; i < array.length; i++) {
+                b.append(", ").append(array[i]);
+            }
+            b.append("]");
+            return b.toString();
+        }
+    }
     public static void main(String[] args) throws IOException {
-        File file = new File("/Users/huangxia/Desktop/郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");//"郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");
+        File file = new File("/Users/huangxia/Desktop/fileverify/郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");//"郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");
         String content = new String(IOUtils.toByteArray(new FileInputStream(file)));
         System.out.print(checkFileFormat(file.getName(), IOUtils.toByteArray(new FileInputStream(file))));
         /*Arrays.asList("   <!DOCTYPE html>"," \t \r \n <html> </html>","   <HTML> </HTML>","<?XML> <XML>").forEach(html->{
