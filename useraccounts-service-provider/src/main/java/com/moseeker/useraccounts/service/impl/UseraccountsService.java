@@ -720,7 +720,9 @@ public class UseraccountsService {
         result.put("user_id", userId);
         result.put("tableName","user_meassage");
         scheduledThread.startTast(()->{
+            logger.info("==========更新users===========ES_REALTIME_UPDATE_INDEX_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         },2000);
     }
@@ -1438,7 +1440,7 @@ public class UseraccountsService {
         }
 
         Map<Integer, String> positionIdTitleMap = getPositionIdTitleMap(referralLogs);
-        CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
+        //CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
         List<ClaimResult> claimResults = new ArrayList<>();
         // 更新申请记录的申请人
 
@@ -1452,22 +1454,17 @@ public class UseraccountsService {
                 try{
                     int appid = claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
                     claimResult.setApply_id(appid);
-                }catch(UserAccountException e){
+                } catch(UserAccountException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
                     logger.error("员工认领异常信息:{}", e.getMessage());
                     throw e;
-                }catch (RuntimeException e){
-                    claimResult.setSuccess(false);
-                    claimResult.setErrmsg(e.getMessage());
-                    logger.error("员工认领异常信息:{}", e.getMessage());
-                    //throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
-                    claimResult.setErrmsg("后台异常");
-                    logger.error("员工认领异常信息:{}", e.getMessage());
+                    claimResult.setErrmsg(e.getMessage());
+                    logger.error("员工认领异常信息");
                     //throw e;
-                }finally {
+                } finally {
                     claimResults.add(claimResult);
                     this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId,referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
@@ -1489,6 +1486,7 @@ public class UseraccountsService {
             JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
             if (application!=null) {
                 int app_id=application.getId();
+                logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING===");
                 redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
                 logger.info("====================redis==============application更新=============");
                 logger.info("================app_id={}=================", app_id);
@@ -1496,11 +1494,14 @@ public class UseraccountsService {
                 JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
                 if(application1!=null){
                     int app_id=application.getId();
+                    logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING===");
                     redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
                     logger.info("====================redis==============application更新=============");
                     logger.info("================app_id={}=================", app_id);
                 }
             }
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
         },3000);

@@ -48,22 +48,6 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
         logger.info("EmployeeReferralProfileApdate storeReferralUser userRecord:{}", userRecord);
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
-            UserUserRecord userUserRecord = new UserUserRecord();
-            userUserRecord.setId(userRecord.getId());
-            boolean flag = false;
-            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(profileNotice.getName())) {
-                userRecord.setName(profileNotice.getName());
-                userUserRecord.setName(profileNotice.getName());
-                flag = true;
-            }
-            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
-                userRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
-                userUserRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
-                flag = true;
-            }
-            if (flag) {
-                userAccountEntity.updateUserRecord(userUserRecord);
-            }
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             logger.info("EmployeeReferralProfileApdate storeReferralUser userName:{}", userRecord.getUsername());

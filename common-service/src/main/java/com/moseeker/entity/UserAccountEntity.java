@@ -180,12 +180,14 @@ public class UserAccountEntity {
             countryCode=phoneArray[0];
             phone=phoneArray[1];
         }
+
         List<UserUserRecord> list = userDao.getCompanyUserUser(phone, countryCode);
+
         if (list != null && list.size() > 0) {
 
             userUserRecord = findTalent(list, companyId);
             if (userUserRecord == null) {
-                userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.ChatBot);
+                userUserRecord = findEmployeeReferral(list, companyId);
             }
         }
         return userUserRecord;
@@ -207,7 +209,7 @@ public class UserAccountEntity {
         }
         List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode);
         if (list != null && list.size() > 0) {
-            userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.Referral);
+            userUserRecord = findEmployeeReferral(list, companyId);
         }
         return userUserRecord;
     }
@@ -227,13 +229,13 @@ public class UserAccountEntity {
             countryCode=phoneArray[0];
             phone=phoneArray[1];
         }
-        short source = (short) UserSource.EMPLOYEE_REFERRAL.getValue();
+       /* short source = (short) UserSource.EMPLOYEE_REFERRAL.getValue();
         if(referralScene.getScene() == ReferralScene.ChatBot.getScene()){
             source = (short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue();
-        }
-        List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode, source);
+        }*/
+        List<UserUserRecord> list = userDao.getAllReferralUser(phone, countryCode);
         if (list != null && list.size() > 0) {
-            userUserRecord = findEmployeeReferral(list, companyId, referralScene);
+            userUserRecord = findEmployeeReferral(list, companyId);
         }
         return userUserRecord;
     }
@@ -244,10 +246,10 @@ public class UserAccountEntity {
      * @param companyId 公司编号
      * @return 用户信息
      */
-    private UserUserRecord findEmployeeReferral(List<UserUserRecord> list, int companyId, ReferralScene referralScene) {
+    private UserUserRecord findEmployeeReferral(List<UserUserRecord> list, int companyId) {
         UserUserRecord userUserRecord = null;
         List<Integer> userIdList = list.stream().map(UserUserRecord::getId).collect(Collectors.toList());
-        List<UserReferralRecordRecord> referralRecords = referralRecordDao.getRecordsByUserIdListCompanyId(userIdList, companyId, referralScene);
+        List<UserReferralRecordRecord> referralRecords = referralRecordDao.getRecordsByUserIdListCompanyId(userIdList, companyId);
         if (referralRecords != null && referralRecords.size() > 0) {
 
             for (UserUserRecord userRecord : list) {

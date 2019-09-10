@@ -41,8 +41,6 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     @Autowired
     private ProfileEntity profileEntity;
 
-    @Autowired
-    private ResumeEntity resumeEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -85,17 +83,13 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
         profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
-        ResumeObj resumeObj;
+        ProfileObj profileObj;
         try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
-        } catch (TException | IOException e) {
+            profileObj = profileEntity.parseProfile(0,fileName, fileData);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        logger.info("AbstractResumeFileParser after profileParserAdaptor");
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
-        logger.info("AbstractResumeFileParser after handlerParseData");
-        profileDocParseResult = setProfileDocParseResult(profileDocParseResult,profileObj.getUser(),id);
+        }profileDocParseResult = setProfileDocParseResult(profileDocParseResult,profileObj.getUser(),id);
         profileObj.setResumeObj(null);
         JSONObject jsonObject = getProfileObject(profileObj,fileNameData,profileDocParseResult);
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());

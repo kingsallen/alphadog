@@ -230,4 +230,25 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         }
         return referralLogs;
     }
+
+    /**
+     * 根据职位和被推荐人查找内推记录
+     * 再次内推时，需要查找历史上被认领的推荐记录，避免重复推荐
+     * @param positionIds 职位信息
+     * @param userId 被推荐人
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByPositionIdListAndOldReferenceId(
+            List<Integer> positionIds,
+            int userId) {
+        Result<ReferralLogRecord> result = using(configuration())
+                .selectFrom(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.POSITION_ID.in(positionIds))
+                .and(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID.eq(userId))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
 }

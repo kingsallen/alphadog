@@ -704,7 +704,9 @@ public class PositionService {
         List<Integer> batchLiepinPositionDownShelf = new ArrayList<>();
 
         // 需要更新ES的jobpostionID
-        List<Integer> jobPositionIds = new ArrayList<>();
+        Set<Integer> jobPositionIds = new LinkedHashSet<>();
+        //记录需要更新的jobpostionID
+        Set<Integer> updatePostionIds = new LinkedHashSet<>();
         Integer deleteCounts = 0;
         Integer sourceId = jobPositionHandlerDates.get(0).getSource_id();
         // 删除操作,删除除了data以外的数据库中的数据
@@ -943,7 +945,11 @@ public class PositionService {
                     formRcord.setId(jobPositionRecord.getId());
                     // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
                     formData.setId(jobPositionRecord.getId());
-                    jobPositionIds.add(jobPositionRecord.getId());
+                    // TODO: 2019/9/6 job更新刷新Es规则
+                    if(isUpdatePosition(formData, jobPositionRecord)) {
+                        jobPositionIds.add(jobPositionRecord.getId());
+                        updatePostionIds.add(jobPositionRecord.getId());
+                    }
                 }
                 // 添加同步数据
                 addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
@@ -1158,6 +1164,10 @@ public class PositionService {
                     oldJobMap.put(jobPositionRecord.getId(), jobPositionRecord);
                 }
             }
+
+            if (updatePostionIds.size() > 0) {
+                logger.info("saveAndSync更新的updatePostionIds长度为：{}, 数据为：{}", updatePostionIds.size(), updatePostionIds);
+            }
             positionStateAsyncHelper.resync(batchHandlerCountDown,needReSyncData);
             positionStateAsyncHelper.edit(batchHandlerCountDown,jobPositionUpdateRecordList ,oldJobMap);
 
@@ -1173,15 +1183,17 @@ public class PositionService {
         jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
         jobPostionResponse.setSyncData(syncData);
         if (jobPositionIds.size() > 0) {
-            logger.info("插入和新增的jobPositionIds为:" + jobPositionIds.toString());
+            List<Integer> jobPositionIdsList = new ArrayList<>();
+            jobPositionIdsList.addAll(jobPositionIds);
+            logger.info("saveAndSync插入和新增的jobPositionIds size 为:{}, 数据为:{}", jobPositionIds.size(), jobPositionIds.toString());
             // 更新ES Search Engine
-            PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
+            PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIdsList);
             Thread thread = new Thread(updataESThread);
             thread.start();
             //此处使用硬编码，感觉十分不好
             String exchange="new_position_es_index_update_exchange";
             String routingKey="newpositionesindexupdate.#";
-            sender.sendMqRequest(jobPositionIds,routingKey,exchange);
+            sender.sendMqRequest(jobPositionIdsList,routingKey,exchange);
             return jobPostionResponse;
         }
         if(!StringUtils.isEmptyList(jobPositionAddRecordList)
@@ -1190,6 +1202,60 @@ public class PositionService {
         }
         logger.info("-------批量修改职位结束---------");
         return jobPostionResponse;
+    }
+
+    /**
+     * 判断传入的职位信息是否有更新
+     *
+     * @param  formData 传入的数据
+     * @param jobPositionRecord 数据库原有数据
+     * @return bool
+     * @Author lee
+     * @Date 2019/9/6 14:07
+     */
+    private boolean isUpdatePosition(JobPostrionObj formData, JobPositionRecord jobPositionRecord) {
+        //只要如下有任一属性发生变化，则认为该职位有更新
+        return notEquals(formData.getTitle(), jobPositionRecord.getTitle())
+                || notEquals(formData.getDepartment(), jobPositionRecord.getDepartment())
+                || notEquals(formData.getAccountabilities(), jobPositionRecord.getAccountabilities())
+                || notEquals(formData.getExperience(), jobPositionRecord.getExperience())
+                || notEquals(formData.getSalary(), jobPositionRecord.getSalary())
+                || notEquals(formData.getLanguage(), jobPositionRecord.getLanguage())
+                || notEquals(formData.getBusiness_group(), jobPositionRecord.getBusinessGroup())
+                || !Objects.equals(formData.getEmployment_type(), jobPositionRecord.getEmploymentType())
+                || notEquals(formData.getHr_email(), jobPositionRecord.getHrEmail())
+                || !Objects.equals(formData.getDegree(), jobPositionRecord.getDegree())
+                || notEquals(formData.getFeature(), jobPositionRecord.getFeature())
+                || !Objects.equals(formData.getEmail_notice(), jobPositionRecord.getEmailNotice())
+                || !Objects.equals(formData.getCandidate_source(), jobPositionRecord.getCandidateSource())
+                || notEquals(formData.getOccupation(), jobPositionRecord.getOccupation())
+                || notEquals(formData.getIndustry(), jobPositionRecord.getIndustry())
+                || !Objects.equals(formData.getEmail_resume_conf(), jobPositionRecord.getEmailResumeConf())
+                || notEquals(formData.getDistrict(), jobPositionRecord.getDistrict())
+                || !Objects.equals(formData.getCount(), jobPositionRecord.getCount())
+                || !Objects.equals(formData.getSalary_top(), jobPositionRecord.getSalaryTop())
+                || !Objects.equals(formData.getSalary_bottom(), jobPositionRecord.getSalaryBottom())
+                || !Objects.equals(formData.getExperience_above(), jobPositionRecord.getExperienceAbove())
+                || !Objects.equals(formData.getDegree_above(), jobPositionRecord.getDegreeAbove())
+                || !Objects.equals(formData.getManagement_experience(), jobPositionRecord.getManagementExperience())
+                || !Objects.equals(formData.getGender(), jobPositionRecord.getGender())
+                || !Objects.equals(formData.getPublisher(), jobPositionRecord.getPublisher())
+                || !Objects.equals(formData.getApp_cv_config_id(), jobPositionRecord.getAppCvConfigId())
+                || !Objects.equals(formData.getAge(), jobPositionRecord.getAge())
+                || notEquals(formData.getMajor_required(), jobPositionRecord.getMajorRequired())
+                || notEquals(formData.getWork_address() , jobPositionRecord.getWorkAddress())
+                || notEquals(formData.getKeyword(), jobPositionRecord.getKeyword())
+                || notEquals(formData.getReporting_to(), jobPositionRecord.getReportingTo())
+                || !Objects.equals(formData.getIs_hiring(), jobPositionRecord.getIsHiring())
+                || !Objects.equals(formData.getUnderlings(), jobPositionRecord.getUnderlings())
+                || !Objects.equals(formData.getLanguage_required(), jobPositionRecord.getLanguageRequired())
+                || !Objects.equals(formData.getPosition_code(), jobPositionRecord.getPositionCode())
+                || !Objects.equals(formData.getTeam_id(), jobPositionRecord.getTeamId());
+    }
+
+    //不相同的规则为传入值不能为null，并且和原始值不相同
+    private boolean notEquals(String value1, String value2) {
+        return StringUtils.isNotNullOrEmpty(value1) && !value1.equals(value2);
     }
 
     @Autowired
