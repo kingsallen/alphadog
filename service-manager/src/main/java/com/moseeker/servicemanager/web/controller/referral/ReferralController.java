@@ -75,6 +75,7 @@ public class ReferralController {
         int employeeId = params.getInt("employee", 0);
         Integer appid = params.getInt("appid");
         String fileName = params.getString("file_name");
+        logger.info("员工上传简历 employee:{},file:{}",employeeId,fileName);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
         validateUtil.addRequiredStringValidate("简历名称", fileName);
