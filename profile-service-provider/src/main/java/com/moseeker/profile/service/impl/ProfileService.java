@@ -593,6 +593,9 @@ public class ProfileService {
                     }
                 }
                 logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
+                if("null".equals(customResult)){
+                    customResult = "";
+                }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
