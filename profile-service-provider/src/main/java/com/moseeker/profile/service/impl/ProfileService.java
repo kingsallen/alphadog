@@ -551,7 +551,8 @@ public class ProfileService {
                 profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
                 logger.info("ProfileService checkProfileOther profileOtherJson:{}", profileOtherJson);
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0
+                        && (f.getIntValue("parent_id") == 0||belongToIdCard(f.getString("field_name")))).collect(Collectors.toList());
                 logger.info("ProfileService checkProfileOther appCvConfigJson:{}", appCvConfigJson);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -586,7 +587,7 @@ public class ProfileService {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
                         if(Constant.IDCARD_RECOG.equals(appCvConfig.getString("field_name"))){
-                            return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
+                            return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
                         }
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
@@ -598,6 +599,11 @@ public class ProfileService {
             }
         }
         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
+    }
+
+    private static boolean belongToIdCard(String fieldName){
+        return "gender".equals(fieldName)||"name".equals(fieldName)||"birth".equals(fieldName)||"idnumber".equals(fieldName)||
+                "id_card_address".equals(fieldName)||Constant.IDPHOTO_FRONT.equals(fieldName)||Constant.IDPHOTO_BACK.equals(fieldName);
     }
 
 

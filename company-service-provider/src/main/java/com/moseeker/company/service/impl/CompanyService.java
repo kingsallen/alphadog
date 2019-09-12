@@ -1615,7 +1615,7 @@ public class CompanyService {
 
     public CompanySwitchVO companySwitch(int companyId, String moduleNames) {
         if(companyId==0){
-            return null;
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
         companyId = hrCompanyDO.getId();
