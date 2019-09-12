@@ -81,6 +81,7 @@ public class PersonaRecomEntity {
                 campaignPersonaRecomRecord.setCompanyId(companyId);
                 campaignPersonaRecomRecord.setPositionId(Integer.parseInt(positionId));
                 campaignPersonaRecomRecord.setType((byte)type);
+                campaignPersonaRecomRecord.setSendTime(Timestamp.valueOf("1970-01-02 00:00:00"));
                 list.add(campaignPersonaRecomRecord);
             }
             if(!StringUtils.isEmptyList(list)){
