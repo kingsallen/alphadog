@@ -587,7 +587,7 @@ public class ProfileService {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
                         if(Constant.IDCARD_RECOG.equals(appCvConfig.getString("field_name"))){
-                            return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
+                            continue;
                         }
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
