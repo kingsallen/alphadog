@@ -593,7 +593,7 @@ public class ProfileService {
                     }
                 }
                 logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
-                if("null".equals(customResult)){
+                if(org.springframework.util.StringUtils.isEmpty(customResult)){
                     customResult = "";
                 }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
