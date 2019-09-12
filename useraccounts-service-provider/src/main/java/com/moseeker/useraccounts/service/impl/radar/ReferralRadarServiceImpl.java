@@ -158,7 +158,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public String getRadarCards(int companyId, ReferralCardInfo cardInfo) {
-        logger.info("ReferralCardInfo:{}", cardInfo);
+        logger.info("ReferralRadarServiceImpl getRadarCards ReferralCardInfo:{}", cardInfo);
         long start = System.currentTimeMillis();
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getUserId(), cardInfo.getTimestamp());
@@ -219,7 +219,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             card.put("chain", chain);
             cards.add(card);
         }
-        logger.info("getRadarCards:{}", JSON.toJSONString(cards));
+        logger.info("ReferralRadarServiceImpl getRadarCards cards:{}", JSON.toJSONString(cards));
         long end = System.currentTimeMillis();
         logger.info("=====getRadarCards:{}", end - start);
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
@@ -1401,7 +1401,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 break;
             }
         }
-        if(recomUser != 0){
+        if(recomUser != 0 && shareChainDOS.size() > 2){
             recomInfo.put("nickname", idWxUserMap.get(recomUser).getNickname());
         }
         recomInfo.put("from_wx_group", isFromWxGroup ? 1 : 0);
