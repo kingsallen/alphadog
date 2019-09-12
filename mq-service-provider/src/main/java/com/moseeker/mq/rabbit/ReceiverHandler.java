@@ -447,7 +447,11 @@ public class ReceiverHandler {
             int companyId=jsonObject.getIntValue("company_id");
             int type=jsonObject.getIntValue("type");
             if(userId!=0&&StringUtils.isNotEmpty(positionIds)){
-                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId,type);
+                int dataType=0;
+                if(type==3){
+                    dataType=1;
+                }
+                int result=personaRecomEntity.handlePersonaRecomData(userId,positionIds,companyId,dataType);
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"插入推荐职位数据失败");
