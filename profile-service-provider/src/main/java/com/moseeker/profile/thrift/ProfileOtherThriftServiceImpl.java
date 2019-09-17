@@ -205,7 +205,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
                 if(companyId!=0){
                     omsSwitch = companyServices.companySwitch(companyId, OmsSwitchEnum.instanceFromValue(15).getName());
                 }
-                companyServices.companySwitch(companyId, OmsSwitchEnum.instanceFromValue(15).getName());
                 if(omsSwitch==null||"0".equals(String.valueOf(omsSwitch.getValid()))){
                     //若该公司没有开关配置，默认为关闭
                     configSysCvTplRecordList = configSysCvTplRecordList.stream().filter(e->{
