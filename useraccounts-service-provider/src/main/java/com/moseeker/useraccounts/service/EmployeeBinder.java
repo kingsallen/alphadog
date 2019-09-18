@@ -15,7 +15,10 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterL
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.*;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.EmployeeOperationEntrance;
+import com.moseeker.common.constants.EmployeeOperationIsSuccess;
+import com.moseeker.common.constants.EmployeeOperationType;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.StringUtils;
@@ -25,7 +28,6 @@ import com.moseeker.entity.*;
 import com.moseeker.entity.pojos.SensorProperties;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -33,10 +35,8 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.UserAccountException;
-import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.kafka.KafkaSender;
-import java.util.*;
-
+import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.employee.BatchValidate;
 import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
@@ -53,6 +53,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
@@ -372,9 +373,12 @@ public abstract class EmployeeBinder {
         if(company!=null){
             companyName = company.getName();
         }
+
+        // thrift接口通过bindSource传入来源，restful接口通过BindingParams.source传入
+        int source = useremployee.getSource() > 0 ? (int)useremployee.getSource() : bindSource;
         SensorProperties properties = new SensorProperties(
                 true,company.getId(),companyName);
-        properties.put("employee_origin",bindSource);
+        properties.put("employee_origin",source);
 
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
         return response;
