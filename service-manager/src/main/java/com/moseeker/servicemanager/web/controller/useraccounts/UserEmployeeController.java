@@ -21,7 +21,6 @@ import com.moseeker.servicemanager.web.controller.useraccounts.form.CustomFieldV
 import com.moseeker.servicemanager.web.controller.useraccounts.form.EmployeeExtInfo;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.*;
-import com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -33,18 +32,22 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.EmployeeForwardViewPage;
+import com.moseeker.thrift.gen.useraccounts.struct.RadarInfo;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 
 import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
 
@@ -320,8 +323,14 @@ public class UserEmployeeController {
         }
 
         //获取来源
-        int bindSource = Integer.parseInt(param.get("appid").toString());
-        employeeService.retrySendVerificationMail(param.getInt("user_id"),param.getInt("company_id"), bindSource);
+        int source = 0 ;
+        if(param.get("source") != null && StringUtils.isNotNullOrEmpty(param.get("source").toString())){
+            source = Integer.parseInt(param.get("source").toString());
+        }
+        if(source == 0){
+            source = Integer.parseInt(param.get("appid").toString());
+        }
+        employeeService.retrySendVerificationMail(param.getInt("user_id"),param.getInt("company_id"), source);
         return ResponseLogNotification.successJson(request, "SUCCESS");
     }
 
