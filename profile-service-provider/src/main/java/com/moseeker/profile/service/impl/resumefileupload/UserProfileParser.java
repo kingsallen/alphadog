@@ -57,11 +57,11 @@ public class UserProfileParser extends AbstractResumeFileParser {
         return KeyIdentifier.WECHAT_UPLOAD_RESUME_FILE.toString();
     }
 
+
     @Override
     protected String getHunterRedisKey() {
         return KeyIdentifier.HEADHUNTER_REFERRAL_PROFILE.toString();
     }
-
     @Override
     protected void toPDF(String suffix, FileNameData fileNameData, Integer id) {
         if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {

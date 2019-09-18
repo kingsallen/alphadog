@@ -79,7 +79,6 @@ public class ProfileEntity {
     private SensorSend sensorSend;
 
     private static final ConfigPropertiesUtil PROPERTIES_READER = ConfigPropertiesUtil.getInstance();
-    public static final String CLOUD_PARSING_HOST; // "http://facade2.dqprism.com:11027/" ;
 
     static {
         try {
@@ -87,8 +86,6 @@ public class ProfileEntity {
         } catch (Exception e1) {
             throw new RuntimeException("找不到配置文件common.properties");
         }
-        String CLOUD_HOST = ConfigPropertiesUtil.getInstance().get("alphacloud_host", String.class);
-        CLOUD_PARSING_HOST = CLOUD_HOST + "/parsing/";
     }
 
     /**
@@ -102,7 +99,7 @@ public class ProfileEntity {
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
     public static String getParsingUrl(String path){
-        return CLOUD_PARSING_HOST + path + String.format("?appid=%s&interfaceid=%s",Constant.APPID_PARSING,Constant.INTERFACEID_PARSING);
+        return AlphaCloudProvider.Parsing.buildURL(path);
     }
     /**
      * 简历解析

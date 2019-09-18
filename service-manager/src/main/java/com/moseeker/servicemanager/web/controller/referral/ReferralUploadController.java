@@ -185,6 +185,10 @@ public class ReferralUploadController {
             parseResult.setMobile(profileParseResult.getMobile());
         }
         parseResult.setName(profileParseResult.getName());
+        parseResult.setEmail(profileParseResult.getEmail());
+        parseResult.setPinyinName(profileParseResult.getPinyinName());
+        parseResult.setPinyinSurname(profileParseResult.getPinyinSurname());
+
         logger.info("ReferralUploadController getCandidateInfo parseResult:{}", JSONObject.toJSONString(parseResult));
         logger.info("ReferralUploadController  Result.success.toJson{}", Result.success(parseResult).toJson() );
         return Result.success(parseResult).toJson();

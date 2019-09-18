@@ -1,48 +1,101 @@
 package com.moseeker.common.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Charsets;
 import com.moseeker.common.exception.CommonException;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
 public class HttpClient {
 
     private final static Logger logger = LoggerFactory.getLogger(HttpClient.class);
-    
-	public static String sendGet(String url, String param) {
+
+    public static <V extends Object> String sendGet(String url, Map<String,V> params) {
+        MultiValueMap<String,Object> multiValueMap = new LinkedMultiValueMap<>();
+        params.forEach((k,v)->multiValueMap.add(k,v));
+        return sendGet(url,multiValueMap);
+    }
+
+    public static <V extends Object> String sendGet(String url, String key,List<V> values) {
+        MultiValueMap<String,V> multiValueMap = new LinkedMultiValueMap<>();
+        values.forEach((v)->multiValueMap.add(key,v));
+        return sendGet(url,multiValueMap);
+    }
+
+    public static <V extends Object> String sendGet(String url, MultiValueMap<String,V> params) {
+        return sendGet(url,null,params);
+    }
+    public static <V extends Object> String sendGet(String url, MultiValueMap<String,String> headers,MultiValueMap<String,V> params) {
+        String param = null ;
+
+        if(params != null && !params.isEmpty()){
+            StringBuilder sb = new StringBuilder();
+            for(Map.Entry<String,List<V>> entry : params.entrySet()){
+                if(StringUtils.isNotNullOrEmpty(entry.getKey()) && entry.getValue() != null && !entry.getValue().isEmpty()){
+                    for (Object v : entry.getValue()) {
+                        if(v != null && !"".equals(v)){
+                            String value = null;
+                            try {
+                                value = URLEncoder.encode(v.toString().trim(),Charsets.UTF_8.displayName());
+                            } catch (UnsupportedEncodingException e) {
+                                throw new RuntimeException("不支持utf8编码",e);
+                            }
+                            sb.append("&").append(entry.getKey().trim()).append("=").append(value);
+                        }
+                    }
+                }
+            }
+
+            if(sb.length() > 1){
+                param = sb.toString().substring(1);
+            }
+        }
+        return sendGet(url,headers,param);
+    }
+    public static String sendGet(String url, String param) {
+        return sendGet(url,null,param);
+    }
+	public static String sendGet(String url, MultiValueMap<String,String> headers,String param) {
         String result = "";
         BufferedReader in = null;
         try {
-            String urlNameString = url + "?" + param;
+            String urlNameString = url ;
+            if( StringUtils.isNotNullOrEmpty(param) ){
+                urlNameString += (url.contains("?") ? "&" : "?") + param  ;
+            }
             URL realUrl = new URL(urlNameString);
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
             // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Keep-Alive");
+            if(headers == null || headers.isEmpty()){
+                connection.setRequestProperty("accept", "*/*");
+                connection.setRequestProperty("connection", "Keep-Alive");
+            }else{
+                headers.forEach((k,vs)->vs.forEach(v->connection.setRequestProperty(k,v)));
+            }
+
             // 建立实际的连接
             connection.setConnectTimeout(30000);
             connection.setReadTimeout(30000);
@@ -54,25 +107,13 @@ public class HttpClient {
                 logger.debug(key + "--->" + map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
+            //return IOUtils.toString(connection.getInputStream(),Charsets.UTF_8.name());
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream(),Charsets.UTF_8));
+            result = new String(IOUtils.toString(in).getBytes());
         } catch (Exception e) {
-            logger.debug("发送GET请求出现异常！" + e);
-            e.printStackTrace();
-        }
-        // 使用finally块来关闭输入流
-        finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
+            logger.debug("发送GET请求出现异常！" , e);
+        } finally {
+            IOUtils.closeQuietly(in);
         }
         return result;
     }
@@ -283,17 +324,17 @@ public class HttpClient {
         return getDataFromJsonString(resText,jsonClass);
     }
 
-    public static <T> T getDataFromJsonString(String restext, Class<T> tClass) {
-        if (StringUtils.isNullOrEmpty(restext)) return null;
-        Map<String, Object> resMap = JSONObject.parseObject(restext, Map.class);
+    public static <T> T getDataFromJsonString(String resText, Class<T> tClass) {
+        if (StringUtils.isNullOrEmpty(resText)) return null;
+        Map<String, Object> resMap = JSONObject.parseObject(resText, Map.class);
         if (resMap != null) {
-            String codeStr = Objects.toString(resMap.get("code"), "0");
-            int code = Integer.valueOf(codeStr.replaceAll("\\D+", ""));
+            Object codeStr = resMap.getOrDefault("code",resMap.getOrDefault("status","0"));
+            int code = codeStr == null ? 0 : Integer.valueOf(codeStr.toString().replaceAll("\\D+", ""));
             if (code != 0) {
                 throw new CommonException(code, Objects.toString(resMap.get("message")));
             }
             JSONObject data = (JSONObject) resMap.get("data");
-            if (data != null ) {
+            if (data != null && !"".equals(data) ) {
                 if( tClass.isAssignableFrom(data.getClass())){
                     return (T)data ;
                 }

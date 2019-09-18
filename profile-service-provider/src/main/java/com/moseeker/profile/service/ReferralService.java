@@ -4,7 +4,6 @@ import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
-import com.moseeker.profile.service.impl.vo.UploadFilesResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 
 import java.nio.ByteBuffer;
@@ -53,14 +52,14 @@ public interface ReferralService {
      * @param employeeId 员工编号
      * @param name 推荐者名称
      * @param mobile 手机号码
-     * @param referralReasons 推荐理由
+     * @param otherFields
+     *@param referralReasons 推荐理由
      * @param position 职位编号
-     * @param referralType 推荐方式 1 手机端上传 2 电脑端上传 3 推荐关键信息
-     * @return 推荐记录编号
+     * @param referralType 推荐方式 1 手机端上传 2 电脑端上传 3 推荐关键信息    @return 推荐记录编号
      * @throws ProfileException 业务异常
      */
-    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position,
-                                byte relationship, String referralText,  byte referralType)throws ProfileException, BIZException;
+    int employeeReferralProfile(int employeeId, String name, String mobile, Map<String, String> otherFields, List<String> referralReasons, int position,
+                                byte relationship, String referralText, byte referralType)throws ProfileException, BIZException;
 
     /**
      * 员工推荐简历(多职位推荐)
@@ -73,7 +72,7 @@ public interface ReferralService {
      * @return 推荐记录编号
      * @throws ProfileException 业务异常
      */
-    List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, List<Integer> positions,
+    List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,Map<String, String>  otherFields,List<String> referralReasons, List<Integer> positions,
                                                       byte relationship, String referralText, byte referralType)throws ProfileException, BIZException;
 
     /**

@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
@@ -22,6 +23,7 @@ import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.exception.EmployeeException;
+import com.moseeker.profile.domain.CompanyCustomize;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.domain.ProfileAttementVO;
 import com.moseeker.profile.exception.ProfileException;
@@ -32,12 +34,6 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-
-import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -50,6 +46,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.*;
+
+import static com.moseeker.common.constants.Constant.RETRY_UPPER_LIMIT;
 
 /**
  * Created by moseeker on 2018/11/22.
@@ -95,6 +94,59 @@ public abstract class EmployeeReferralProfile {
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
+    private boolean checkIsRepeatedRecommend(List<ReferralLog> referraledList, int positionId, int userid,
+                                             CompanyCustomize companyCustomize, String name,String mobile, String email){
+        // 检查仟寻人才库
+        Optional<ReferralLog> referralLogOptional = referraledList.stream()
+                .filter(referralLog -> referralLog.getPositionId() == positionId
+                        && referralLog.getOldReferenceId() == userid)
+                .findAny();
+        if(referralLogOptional.isPresent()){
+            logger.info("checkIsRepeatedRecommend重复推荐 positionId:{} userid:{}",positionId,userid);
+            return true ;
+        }
+
+        // 百济 workday查重(根据手机号或邮箱)
+        if(companyCustomize != null){
+            return companyCustomize.checkRepeatRecommend(name,mobile,email);
+        }
+        return false ;
+    }
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
+    /**
+     * 推荐查重加分布式锁
+     * @param profileNotice
+     * @param execute
+     */
+    private void lock(EmployeeReferralProfileNotice profileNotice,Runnable execute){
+        String uuid = UUID.randomUUID().toString();
+        String pattern = new String(profileNotice.getMobile());
+        int times = 0 ;
+        while (times++ <= RETRY_UPPER_LIMIT) {
+            try {
+                boolean getLock = client.tryGetLock(Constant.APPID_ALPHADOG, KeyIdentifier.REFERRAL_CHECK_REPEAT.toString(), pattern, uuid);
+                if (getLock) {
+                    // 执行特定步骤
+                    execute.run();
+                    break;
+                } else {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        logger.error(e.getMessage(), e);
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            } finally {
+                client.releaseLock(Constant.APPID_ALPHADOG, KeyIdentifier.REFERRAL_CHECK_REPEAT.toString(), pattern, uuid);
+            }
+        }
+    }
+
+
     /**
      * 存储
      * @param userRecord
@@ -125,54 +177,54 @@ public abstract class EmployeeReferralProfile {
         List<JobPositionDO> positions = getJobPositions(profileNotice.getPositionIds(), employeeDO.getCompanyId());
 
         List<MobotReferralResultVO> resultVOS = new ArrayList<>();
-
+        String email = profileNotice.getEmail() != null ?  profileNotice.getEmail() :
+                profileNotice.getOtherFields() != null ? profileNotice.getOtherFields().get("email") : null ;
         if (positions != null && positions.size() > 0) {
             List<ReferralLog> referraledList = referralEntity.fetchByPositionIdAndOldReferenceId(profileNotice.getPositionIds(), attementVO.getUserId());
-            for (int i=0; i<profileNotice.getPositionIds().size(); i++) {
-                int index = i;
-                Optional<JobPositionDO> positionDOOptional = positions
-                        .stream()
-                        .filter(jobPositionDO -> jobPositionDO.getId() == profileNotice.getPositionIds().get(index))
-                        .findAny();
-                if (positionDOOptional.isPresent()) {
-
-                    Optional<ReferralLog> referralLogOptional = referraledList
+            // 推荐查重加分布式锁
+            lock(profileNotice,()-> {
+                for (int i = 0; i < profileNotice.getPositionIds().size(); i++) {
+                    int index = i;
+                    Optional<JobPositionDO> positionDOOptional = positions
                             .stream()
-                            .filter(referralLog -> referralLog.getPositionId() == positionDOOptional.get().getId()
-                                    && referralLog.getOldReferenceId() == attementVO.getUserId())
+                            .filter(jobPositionDO -> jobPositionDO.getId() == profileNotice.getPositionIds().get(index))
                             .findAny();
-                    if (referralLogOptional.isPresent()) {
-                        MobotReferralResultVO mobotReferralResultVO = new MobotReferralResultVO();
-                        mobotReferralResultVO.setPosition_id(positionDOOptional.get().getId());
-                        mobotReferralResultVO.setTitle(positionDOOptional.get().getTitle());
-                        mobotReferralResultVO.setSuccess(false);
-                        mobotReferralResultVO.setReason("重复推荐");
-                        resultVOS.add(mobotReferralResultVO);
-                    } else {
-                        logger.debug("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}",JSONObject.toJSONString(attementVO));
-                        int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
-                                ApplicationSource.EMPLOYEE_CHATBOT.getValue();
-                        try{
-                            handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), positionDOOptional.get(),  origin,
-                                    resultVOS, attementVO.getAttachmentId());
-                        }catch(Exception e){
-                            logger.error(e.getMessage(),e);
-                        }
-                        try {
-                            tp1.startTast(()->{
-                                logger.info("============三秒后执行=============================");
-                                updateApplicationEsIndex(attementVO.getUserId());
-                            },3000);
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                            throw ProfileException.PROGRAM_EXCEPTION;
-                        }
-                    }
+                    if (positionDOOptional.isPresent()) {
 
-                } else {
-                    resultVOS.add(generateNotExistInfo(i));
+                        if (checkIsRepeatedRecommend(referraledList, positionDOOptional.get().getId(), attementVO.getUserId(),
+                                profileNotice.getCompanyCustomize(), profileNotice.getName(), profileNotice.getMobile(), email)) {
+                            MobotReferralResultVO mobotReferralResultVO = new MobotReferralResultVO();
+                            mobotReferralResultVO.setPosition_id(positionDOOptional.get().getId());
+                            mobotReferralResultVO.setTitle(positionDOOptional.get().getTitle());
+                            mobotReferralResultVO.setSuccess(false);
+                            mobotReferralResultVO.setReason(ProfileException.REFERRAL_REPEATE_REFERRAL.getMessage());
+                            resultVOS.add(mobotReferralResultVO);
+                        } else {
+                            logger.debug("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}", JSONObject.toJSONString(attementVO));
+                            int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
+                                    ApplicationSource.EMPLOYEE_CHATBOT.getValue();
+                            try {
+                                handleRecommend(profileNotice, employeeDO, attementVO.getUserId(), positionDOOptional.get(), origin,
+                                        resultVOS, attementVO.getAttachmentId());
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                            try {
+                                tp1.startTast(() -> {
+                                    logger.info("============三秒后执行=============================");
+                                    updateApplicationEsIndex(attementVO.getUserId());
+                                }, 3000);
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                                throw ProfileException.PROGRAM_EXCEPTION;
+                            }
+                        }
+
+                    } else {
+                        resultVOS.add(generateNotExistInfo(i));
+                    }
                 }
-            }
+            });
         } else {
             for (int i=0; i<profileNotice.getPositionIds().size(); i++) {
                 resultVOS.add(generateNotExistInfo(i));
@@ -190,6 +242,11 @@ public abstract class EmployeeReferralProfile {
             if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(profileNotice.getName())) {
                 userRecord.setName(profileNotice.getName());
                 userUserRecord.setName(profileNotice.getName());
+                flag = true;
+            }
+            if (StringUtils.isBlank(userRecord.getEmail()) || !userRecord.getEmail().equals(profileNotice.getEmail())) {
+                userRecord.setEmail(profileNotice.getEmail());
+                userUserRecord.setEmail(profileNotice.getEmail());
                 flag = true;
             }
             if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
