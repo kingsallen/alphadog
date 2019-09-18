@@ -7,10 +7,10 @@ import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.*;
-import com.moseeker.baseorm.db.hrdb.tables.daos.HrWxWechatQrcodeDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechatQrcode;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
@@ -70,7 +70,6 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,8 +77,6 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -100,6 +97,8 @@ public class UseraccountsService {
     WholeProfileServices.Iface profileService = ServiceManager.SERVICE_MANAGER
             .getService(WholeProfileServices.Iface.class);
 
+
+
     @Autowired
     protected UserWxUserDao wxuserdao;
 
@@ -108,6 +107,9 @@ public class UseraccountsService {
 
     @Autowired
     protected ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileOtherDao otherDao;
 
     @Autowired
     protected UserSettingsDao userSettingDao;
@@ -1457,12 +1459,12 @@ public class UseraccountsService {
                 } catch(UserAccountException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
-                    logger.error("员工认领异常信息:{}", e.getMessage());
+                    logger.error("员工认领异常信息", e);
                     throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
-                    logger.error("员工认领异常信息");
+                    logger.error("员工认领异常信息",e);
                     //throw e;
                 } finally {
                     claimResults.add(claimResult);
@@ -1533,6 +1535,16 @@ public class UseraccountsService {
         return positionMap;
     }
 
+    /**
+     * 认领
+     * @param referralLog 内推记录referraldb.referral_log （其中referenceId为虚拟用户id）
+     * @param userUserDO 认领人（真实用户）
+     * @param userId 认领人userId
+     * @param name 认领人名称
+     * @param mobile 认领人手机
+     * @param vcode
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     protected int claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
 

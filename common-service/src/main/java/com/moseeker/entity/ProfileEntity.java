@@ -244,7 +244,7 @@ public class ProfileEntity {
             improveEducation(profileRecord.getEducationRecords(), profileDB.getId());
             improveIntention(profileRecord.getIntentionRecords(), profileDB.getId());
             improveLanguage(profileRecord.getLanguageRecords(), profileDB.getId());
-            improveOther(profileRecord.getOtherRecord(), profileDB.getId());
+            mergeOther(profileRecord.getOtherRecord(), profileDB.getId());
             improveProjectexp(profileRecord.getProjectExps(), profileDB.getId());
             improveSkill(profileRecord.getSkillRecords(), profileDB.getId());
             improveWorkexpRecrds(profileRecord.getWorkexpRecords(), profileDB.getId());
@@ -328,7 +328,7 @@ public class ProfileEntity {
             improveEducation(profilePojo.getEducationRecords(), profileDB.getId());
             improveIntention(profilePojo.getIntentionRecords(), profileDB.getId());
             improveLanguage(profilePojo.getLanguageRecords(), profileDB.getId());
-            improveOther(profilePojo.getOtherRecord(), profileDB.getId());
+            mergeOther(profilePojo.getOtherRecord(), profileDB.getId());
             improveProjectexp(profilePojo.getProjectExps(), profileDB.getId());
             improveSkill(profilePojo.getSkillRecords(), profileDB.getId());
             improveWorkexp(profilePojo.getWorkexpRecords(), profileDB.getId());
@@ -578,8 +578,8 @@ public class ProfileEntity {
                 Map<String, Object> newOtherMap = JSONObject.parseObject(record.getOther(), Map.class);
                 oldOtherMap.entrySet().stream().filter(f -> (StringUtils.isNullOrEmpty(String.valueOf(f.getValue())) || "[]".equals(String.valueOf(f.getValue()))) && newOtherMap.containsKey(f.getKey())).forEach(e -> e.setValue(newOtherMap.get(e.getKey())));
                 newOtherMap.putAll(oldOtherMap);
-                otherRecord.setOther(JSONObject.toJSONString(newOtherMap));
-                otherDao.updateRecord(otherRecord);
+                record.setOther(JSONObject.toJSONString(newOtherMap));
+                otherDao.updateRecord(record);
             }
         }
     }
@@ -652,7 +652,7 @@ public class ProfileEntity {
             attachmentDao.delAttachmentsByProfileId(profileId);
             attachmentRecords.forEach(attachment -> {
                 attachment.setId(null);
-                attachment.setProfileId((int) (profileId));
+                attachment.setProfileId(profileId);
             });
             attachmentDao.addAllRecord(attachmentRecords);
         }
@@ -773,7 +773,7 @@ public class ProfileEntity {
         improveEducation(profilePojo.getEducationRecords(), profileId);
         improveIntention(profilePojo.getIntentionRecords(), profileId);
         improveLanguage(profilePojo.getLanguageRecords(), profileId);
-        improveOther(profilePojo.getOtherRecord(), profileId);
+        mergeOther(profilePojo.getOtherRecord(), profileId);
         improveProjectexp(profilePojo.getProjectExps(), profileId);
         improveSkill(profilePojo.getSkillRecords(), profileId);
         improveWorkexp(profilePojo.getWorkexpRecords(), profileId);

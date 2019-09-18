@@ -130,7 +130,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
     public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
-        logger.info("ReferralController referralProfile");
+        logger.info("ReferralController referralProfile id {} form: {}",id,referralForm);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -171,7 +171,7 @@ public class ReferralController {
     @ResponseBody
     public String referralProfiles(@RequestBody ReferralsForm referralForm) throws Exception {
 
-        logger.info("ReferralController referralProfile");
+        logger.info("ReferralController referralProfile : {}",referralForm );
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());

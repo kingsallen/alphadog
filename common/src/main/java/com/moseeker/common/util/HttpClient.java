@@ -5,32 +5,49 @@ import com.google.common.base.Charsets;
 import com.moseeker.common.exception.CommonException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.*;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+
+import static com.moseeker.common.constants.Constant.RETRY_UPPER_LIMIT;
 
 
 public class HttpClient {
 
     private final static Logger logger = LoggerFactory.getLogger(HttpClient.class);
+    private static final int TIMEOUT = 30000 ; // s
 
     public static <V extends Object> String sendGet(String url, Map<String,V> params) {
         MultiValueMap<String,Object> multiValueMap = new LinkedMultiValueMap<>();
@@ -48,19 +65,23 @@ public class HttpClient {
         return sendGet(url,null,params);
     }
     public static <V extends Object> String sendGet(String url, MultiValueMap<String,String> headers,MultiValueMap<String,V> params) {
+        return sendGet(concatUrl(url,params),headers,"");
+    }
+
+    private static  <V extends Object>  String concatUrl(String url, MultiValueMap<String,V> params){
         String param = null ;
 
-        if(params != null && !params.isEmpty()){
+        if(params != null && !params.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for(Map.Entry<String,List<V>> entry : params.entrySet()){
-                if(StringUtils.isNotNullOrEmpty(entry.getKey()) && entry.getValue() != null && !entry.getValue().isEmpty()){
+            for (Map.Entry<String, List<V>> entry : params.entrySet()) {
+                if (StringUtils.isNotNullOrEmpty(entry.getKey()) && entry.getValue() != null && !entry.getValue().isEmpty()) {
                     for (Object v : entry.getValue()) {
-                        if(v != null && !"".equals(v)){
+                        if (v != null && !"".equals(v)) {
                             String value = null;
                             try {
-                                value = URLEncoder.encode(v.toString().trim(),Charsets.UTF_8.displayName());
+                                value = URLEncoder.encode(v.toString().trim(), Charsets.UTF_8.displayName());
                             } catch (UnsupportedEncodingException e) {
-                                throw new RuntimeException("不支持utf8编码",e);
+                                throw new RuntimeException("不支持utf8编码", e);
                             }
                             sb.append("&").append(entry.getKey().trim()).append("=").append(value);
                         }
@@ -68,12 +89,108 @@ public class HttpClient {
                 }
             }
 
-            if(sb.length() > 1){
+            if (sb.length() > 1) {
                 param = sb.toString().substring(1);
             }
         }
-        return sendGet(url,headers,param);
+        String urlNameString = url ;
+        if( StringUtils.isNotNullOrEmpty(param) ){
+            urlNameString += (url.contains("?") ? "&" : "?") + param  ;
+        }
+        return urlNameString;
     }
+
+
+    /**
+     * htttps get 请求（忽略ssl证书）
+     * @param url
+     * @param headers
+     * @param params
+     * @param <V>
+     * @return
+     * @throws Exception
+     */
+    public static <V> String httpsTrustAllGet(String url, MultiValueMap<String,String> headers,MultiValueMap<String,V> params) throws Exception {
+        //trustAllHttpsCertificates();
+        url = concatUrl(url,params) ;
+        logger.info("https请求 url:{} headers:{}",url,headers);
+        try(DefaultHttpClient httpclient = new TrustAllSSLClient()) {
+            HttpGet httpGet = new HttpGet(url);
+            if(headers != null && headers.size() > 0){
+                headers.forEach((k,list)->list.forEach(v->{
+                    httpGet.setHeader(k,v);
+                }));
+            }
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(TIMEOUT).setConnectTimeout(TIMEOUT).build();//设置请求和传输超时时间
+
+            httpGet.setConfig(requestConfig);
+
+            // 超时重试
+            int times = 0 ;
+            while (times++ <= RETRY_UPPER_LIMIT) {
+                try {
+                    try(CloseableHttpResponse response = httpclient.execute(httpGet)) {
+                        //logger.debug("----------------------------------------");
+                        //logger.debug(response.getStatusLine());
+                        HttpEntity resEntity = response.getEntity();
+                        try(InputStream is = resEntity.getContent()){
+                            return IOUtils.toString(is,"UTF-8");
+                        }
+                    }
+                } catch (java.net.ConnectException e) {
+                    logger.error(String.format("https请求错误 url:%s params:%s headers:%s",url,params,headers),e);
+                }
+            }
+        }
+        return "" ;
+    }
+
+    /**
+     *  htttps post 请求（忽略ssl证书）
+     * @param url
+     * @param paramter
+     * @return
+     */
+    public static String httpsTrustAllPost(String url,String paramter){
+        Map<String,String> map =new HashMap<>();
+        String[] args=paramter.split("&");
+
+        for(String str: args){
+            String[] arg=str.split("=");
+            map.put(arg[0],arg[1]);
+        }
+        String charset="utf-8";
+        org.apache.http.client.HttpClient httpClient = null;
+        HttpPost httpPost = null;
+        String result = null;
+        try{
+            httpClient = new TrustAllSSLClient();
+            httpPost = new HttpPost(url);
+            //设置参数
+            List<NameValuePair> list = new ArrayList<NameValuePair>();
+            Iterator iterator = map.entrySet().iterator();
+            while(iterator.hasNext()){
+                Map.Entry<String,String> elem = (Map.Entry<String, String>) iterator.next();
+                list.add(new BasicNameValuePair(elem.getKey(),elem.getValue()));
+            }
+            if(list.size() > 0){
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list,charset);
+                httpPost.setEntity(entity);
+            }
+            HttpResponse response = httpClient.execute(httpPost);
+            if(response != null){
+                HttpEntity resEntity = response.getEntity();
+                if(resEntity != null){
+                    result = EntityUtils.toString(resEntity,charset);
+                }
+            }
+        }catch(Exception ex){
+            logger.error(String.format("https请求错误 url:%s param:%s",url,paramter),ex);
+        }
+        return result;
+    }
+
+
     public static String sendGet(String url, String param) {
         return sendGet(url,null,param);
     }
@@ -97,8 +214,8 @@ public class HttpClient {
             }
 
             // 建立实际的连接
-            connection.setConnectTimeout(30000);
-            connection.setReadTimeout(30000);
+            connection.setConnectTimeout(TIMEOUT);
+            connection.setReadTimeout(TIMEOUT);
             connection.connect();
             // 获取所有响应头字段
             Map<String, List<String>> map = connection.getHeaderFields();
@@ -110,10 +227,11 @@ public class HttpClient {
             //return IOUtils.toString(connection.getInputStream(),Charsets.UTF_8.name());
             in = new BufferedReader(new InputStreamReader(connection.getInputStream(),Charsets.UTF_8));
             result = new String(IOUtils.toString(in).getBytes());
-        } catch (Exception e) {
-            logger.debug("发送GET请求出现异常！" , e);
+        } catch (IOException e) {
+            logger.error("发送GET请求出现异常！" , e);
         } finally {
             IOUtils.closeQuietly(in);
+
         }
         return result;
     }
@@ -134,8 +252,8 @@ public class HttpClient {
             // 发送POST请求必须设置如下两行
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setConnectTimeout(25000);
-            conn.setReadTimeout(25000);
+            conn.setConnectTimeout(TIMEOUT);
+            conn.setReadTimeout(TIMEOUT);
             // 获取URLConnection对象对应的输出流
             out = new PrintWriter(conn.getOutputStream());
             // 发送请求参数
@@ -317,6 +435,8 @@ public class HttpClient {
         }
     }
 
+
+
     public static <T> T postMultipartForm(String url, Map<String,Object> parameter,String fileName, Class<T> jsonClass) throws IOException{
         logger.debug("postMultipartForm url: {}, parameter :{} ,fileName :{},jsonClass :{} ",url,parameter,fileName,jsonClass);
         String resText = postMultipartForm(url,parameter,null,fileName);
@@ -343,5 +463,69 @@ public class HttpClient {
         }
         return null;
     }
+
+
+    /**
+     * java在访问https资源时，忽略证书信任问题
+     * @throws Exception
+     */
+    public static void trustAllHttpsCertificates() throws Exception {
+        TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllTrustManager()};
+        javax.net.ssl.SSLContext sc = javax.net.ssl.SSLContext
+                .getInstance("SSL");
+        sc.init(null, trustAllCerts, null);
+        javax.net.ssl.HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+        HostnameVerifier hv = (urlHostName, session) ->{
+                System.out.println("Warning: URL Host: " + urlHostName + " vs. "
+                        + session.getPeerHost());
+                return true;
+        };
+        HttpsURLConnection.setDefaultHostnameVerifier(hv);
+    }
+
+    private static class TrustAllTrustManager implements javax.net.ssl.TrustManager,
+            javax.net.ssl.X509TrustManager {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return null;
+        }
+
+        public boolean isServerTrusted(
+                java.security.cert.X509Certificate[] certs) {
+            return true;
+        }
+
+        public boolean isClientTrusted(
+                java.security.cert.X509Certificate[] certs) {
+            return true;
+        }
+
+        public void checkServerTrusted(
+                java.security.cert.X509Certificate[] certs, String authType)
+                throws java.security.cert.CertificateException {
+            return;
+        }
+
+        public void checkClientTrusted(
+                java.security.cert.X509Certificate[] certs, String authType)
+                throws java.security.cert.CertificateException {
+            return;
+        }
+    }
+
+    private static class TrustAllSSLClient extends DefaultHttpClient {
+        public TrustAllSSLClient() throws Exception{
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllTrustManager()};
+            ctx.init(null,trustAllCerts, null);
+            SSLSocketFactory ssf = new SSLSocketFactory(ctx);
+            ssf.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+            ClientConnectionManager ccm = this.getConnectionManager();
+            SchemeRegistry sr = ccm.getSchemeRegistry();
+            sr.register(new Scheme("https", ssf,443));
+        }
+    }
+
+
 
 }

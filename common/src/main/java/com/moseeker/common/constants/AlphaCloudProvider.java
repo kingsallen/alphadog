@@ -7,11 +7,6 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
  */
 public enum AlphaCloudProvider {
 
-
-
-
-
-
     //alphacloud的所有服务的appid，interfaceid
     /*
     * A11001: provider-jooq
@@ -43,17 +38,16 @@ public enum AlphaCloudProvider {
     Position("position",11009,"A11009"),
     Parsing("parsing",11027,"A11027");
 
-    public static final String CLOUD_HOST;
-
+    public static ConfigPropertiesUtil SETTING_PROPERTIES = ConfigPropertiesUtil.getInstance();
     static {
-        ConfigPropertiesUtil PROPERTIES_READER = ConfigPropertiesUtil.getInstance();
         try {
-            PROPERTIES_READER.loadResource("setting.properties");
+            SETTING_PROPERTIES.loadResource("setting.properties");
         } catch (Exception e1) {
-            throw new RuntimeException("找不到配置文件common.properties");
+            throw new RuntimeException("找不到配置文件setting.properties");
         }
-        CLOUD_HOST = ConfigPropertiesUtil.getInstance().get("alphacloud_host", String.class);
     }
+    public static final String CLOUD_HOST = SETTING_PROPERTIES.getInstance().get("alphacloud_host", String.class);
+
 
     private String name ;
     private String appid ;
@@ -90,9 +84,4 @@ public enum AlphaCloudProvider {
         return buildURL(CLOUD_HOST,path);
     }
 
-    public static void main(String[] args){
-        System.out.println(Position.buildURL("http://localhost","/test"));;
-        System.out.println(Position.buildURL("http://localhost","/test?a=b"));
-        System.out.println(Position.buildURL("api2.dqprism.com","/test?a=b"));
-    }
 }

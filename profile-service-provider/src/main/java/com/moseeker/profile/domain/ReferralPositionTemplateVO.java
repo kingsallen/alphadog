@@ -18,7 +18,7 @@ public class ReferralPositionTemplateVO {
         //private String id   ;// 92
         private int required ; // 0:必填 1：选填
         //private int isBasic ; // 0
-        //private String validate_re ; //  "^[a-zA-Z]{1,30}$"
+        private String validateRe ; //  "^[a-zA-Z]{1,30}$"
 
         public String getFieldDescription() {
             return fieldDescription;
@@ -54,6 +54,14 @@ public class ReferralPositionTemplateVO {
 
         public boolean isRequired(){
             return required == 0 ;
+        }
+
+        public String getValidateRe() {
+            return validateRe;
+        }
+
+        public void setValidateRe(String validateRe) {
+            this.validateRe = validateRe;
         }
     }
 
