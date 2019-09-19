@@ -354,22 +354,10 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 						.from(
 								selectFrom(JOB_APPLICATION)
 								.where(JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
-								.and(JOB_APPLICATION.ID.eq(positionId))
+								.and(JOB_APPLICATION.POSITION_ID.eq(positionId))
 								.limit(1)
 						)
 				).execute();
-		if (execute == 0) {
-			JobApplicationRecord record = create.selectFrom(JOB_APPLICATION)
-					.where(JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
-					.and(JOB_APPLICATION.POSITION_ID.eq(positionId))
-					.limit(1)
-					.fetchOne();
-			if (record != null) {
-				record.setOrigin(record.getOrigin() | origin);
-				create.attach(record);
-				record.update();
-			}
-		}
 		return execute == 1;
 	}
 

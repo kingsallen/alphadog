@@ -301,6 +301,9 @@ public class ReferralEntity {
             logger.info("ReferralEntity claimReferralCard update:{}", update);
 
         }
+        if (!update) {
+            throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
+        }
 
         // 更新简历中的userId，计算简历完整度
         updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
@@ -322,20 +325,14 @@ public class ReferralEntity {
         if (postUserId > 0) {
             recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
         }
-        if (update) {
-            updateApplicationEsIndex(referralLog.getReferenceId());
-        }
+        updateApplicationEsIndex(referralLog.getReferenceId());
         updateApplicationEsIndex(userUserDO.getId());
         logger.info("ReferralEntity claimReferralCard end!");
-        if (application != null) {
-            return application.getId();
-        } else {
-            return 0;
-        }
+        return application.getId();
     }
 
-    public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
-        return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
+    public ReferralLog fetchReferralLogByPositionIdAndReferenceId(Integer positionId, int referenceId) {
+        return referralLogDao.fetchByReferenceIdUserId(referenceId, positionId);
     }
 
     public ReferralLog fetchReferralLog(Integer employeeId,  int referenceId) {

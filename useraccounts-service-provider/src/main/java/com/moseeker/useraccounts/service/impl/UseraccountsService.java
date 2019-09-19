@@ -1540,8 +1540,7 @@ public class UseraccountsService {
 
         logger.info("UseraccountsService claimReferral referralLog:{}, userUserDO:{}, userId:{}, name:{}, mobile:{}, vcode:{}",
                 JSONObject.toJSONString(referralLog), JSONObject.toJSONString(userUserDO), userId, name, mobile, vcode);
-        ReferralLog repeatReferralLog = referralEntity.fetchReferralLog(referralLog.getEmployeeId(),
-                referralLog.getPositionId(),userId);
+        ReferralLog repeatReferralLog = referralEntity.fetchReferralLogByPositionIdAndReferenceId(referralLog.getPositionId(),userId);
         logger.info("UseraccountsService claimReferral repeatReferralLog:{}",
                 JSONObject.toJSONString(repeatReferralLog));
         if (repeatReferralLog != null && repeatReferralLog.getClaim() != null
@@ -1555,6 +1554,7 @@ public class UseraccountsService {
         if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
+
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             logger.info("UseraccountsService claimReferral 修改手机号码");
@@ -1592,13 +1592,7 @@ public class UseraccountsService {
                 userdao.updateRecord(userUserRecord);
             }
         }
-        int appid = 0;
-        try{
-            appid = referralEntity.claimReferralCard(userUserDO, referralLog);
-        }catch (DuplicateKeyException e){
-            logger.error(e.getMessage(),e);
-            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
-        }
+        int appid = referralEntity.claimReferralCard(userUserDO, referralLog);
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
         logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
 
