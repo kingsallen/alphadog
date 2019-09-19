@@ -119,8 +119,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                         selectOne()
                         .from(
                                 selectFrom(ReferralLog.REFERRAL_LOG)
-                                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(referralLog.getEmployeeId()))
-                                .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(referralLog.getPositionId()))
+                                .where(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(referralLog.getPositionId()))
                                 .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(userId))
                         )
                 )
@@ -129,11 +128,10 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
     }
 
     public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog
-    fetchByEmployeeIdReferenceIdUserId(Integer employeeId, Integer referenceId, int positionId) {
+    fetchByReferenceIdUserId(Integer referenceId, int positionId) {
         ReferralLogRecord referralLogRecord = using(configuration())
                 .selectFrom(ReferralLog.REFERRAL_LOG)
-                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
-                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                .where(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
                 .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(positionId))
                 .fetchOne();
         if (referralLogRecord != null) {
