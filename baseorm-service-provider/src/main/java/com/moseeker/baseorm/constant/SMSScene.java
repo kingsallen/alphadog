@@ -71,7 +71,9 @@ public enum SMSScene {
         if(Constant.NO_VSCODE_CHECK.equals(verifyCode)){
             return true;
         }
+
         String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
+
         logger.info("SMSScene validateVerifyCode keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);
         String codeInRedis = redisClient.get(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
         if (verifyCode.equals(codeInRedis)) {
@@ -80,6 +82,21 @@ public enum SMSScene {
             return true;
         } else {
             logger.info("SMSScene validateVerifyCode code not equals!");
+            //添加新逻辑，验证码验证码不能连续超过五次
+            String countStrValue = redisClient.get(AppId.APPID_ALPHADOG.getValue(),"SMS_CODE_VERIFY_LIMIT",pattern);
+            Integer countIntValue = Integer.valueOf(countStrValue);
+            Integer count = 1;
+
+            if(!StringUtils.isBlank(countStrValue)){
+                if(countIntValue>=2){
+                    redisClient.del(AppId.APPID_ALPHADOG.getValue(),keyIdentifier.toString(),pattern);
+                }else{
+                    count=countIntValue+1;
+                }
+
+            }
+            redisClient.set(AppId.APPID_ALPHADOG.getValue(),"SMS_CODE_VERIFY_LIMIT",pattern,String.valueOf(count));
+
             return false;
         }
     }
