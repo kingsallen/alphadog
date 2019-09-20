@@ -574,6 +574,13 @@ public class ProfileService {
                 logger.info("ProfileService checkProfileOther appCvConfig:{}", appCvConfig);
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
                     logger.info("ProfileService checkProfileOther appCvConfig.getString(\"map\"):{}", appCvConfig.getString("map"));
+
+                    if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
+                            Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
+                            (switchVO==null||switchVO.getValid()==0)){
+                        logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                        continue;
+                    }
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains("&")) {
@@ -588,6 +595,13 @@ public class ProfileService {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                     } else {
+                        logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                        if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
+                                Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
+                                (switchVO==null||switchVO.getValid()==0)){
+                            logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                            continue;
+                        }
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 } else {
@@ -606,13 +620,7 @@ public class ProfileService {
                 if(org.springframework.util.StringUtils.isEmpty(customResult)){
                     customResult = "";
                 }
-                logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
-                if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
-                        Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
-                        (switchVO==null||switchVO.getValid()==0)){
-                    logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
-                    continue;
-                }
+
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
