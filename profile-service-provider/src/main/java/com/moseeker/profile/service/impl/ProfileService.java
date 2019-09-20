@@ -46,7 +46,10 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -79,6 +82,7 @@ public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     @Autowired
     protected UserHrAccountDao userHrAccountDao;
@@ -520,12 +524,18 @@ public class ProfileService {
      * @param positionId
      * @return
      */
-    public Response checkProfileOther(int userId, int positionId) {
+    public Response checkProfileOther(int userId, int positionId){
         logger.info("ProfileService checkProfileOther userId:{}, positionId:{}", userId, positionId);
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", appCvConfigId);
         HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        CompanySwitchVO switchVO = null;
+        try{
+            switchVO = companyServices.companySwitch(hrAppCvConfDO.getCompanyId(),OmsSwitchEnum.IDCARD_RECOGNITION.getName());
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }
         logger.info("ProfileService checkProfileOther hrAppCvConfDO:{}", hrAppCvConfDO);
         if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
             logger.info("ProfileService checkProfileOther hrAppCvConfDO is null or getFieldValue is empty");
@@ -595,6 +605,11 @@ public class ProfileService {
                 logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
                 if(org.springframework.util.StringUtils.isEmpty(customResult)){
                     customResult = "";
+                }
+                if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
+                        Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
+                        (switchVO==null||switchVO.getValid()==0)){
+                    continue;
                 }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
