@@ -606,9 +606,11 @@ public class ProfileService {
                 if(org.springframework.util.StringUtils.isEmpty(customResult)){
                     customResult = "";
                 }
+                logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
                 if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
                         Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
                         (switchVO==null||switchVO.getValid()==0)){
+                    logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
                     continue;
                 }
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
