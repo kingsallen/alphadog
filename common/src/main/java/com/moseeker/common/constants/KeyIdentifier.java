@@ -10,6 +10,7 @@ public enum KeyIdentifier {
     DICT_CITY,
     SMS_CHANGEMOBILE_CODE,
     SMS_RESETMOBILE_CODE,
+    SMS_CODE_VERIFY_LIMIT,
     DICT_COLLEGE,
     APPLICATION_COUNT_CHECK,
     // 限制同一职位，一个候选人只能申请一次
