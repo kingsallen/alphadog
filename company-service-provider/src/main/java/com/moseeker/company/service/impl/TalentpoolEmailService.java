@@ -60,9 +60,11 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 
@@ -140,6 +142,9 @@ public class TalentpoolEmailService {
 
     @Autowired
     MandrillMailListConsumer mandrillMailListConsumer;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
     /**
      * 获取公司邮件剩余额度
      * @param hr_id         HR编号
@@ -334,21 +339,40 @@ public class TalentpoolEmailService {
     发送转发简历邮件
      */
     @CounterIface
-    public int talentPoolSendResumeEmail(List<Integer> idList,Map<String,String> params,List<Integer> userIdList,int companyId,int hrId,int flag,List<String>emailList){
+    public int talentPoolSendResumeEmail(List<Integer> idList,Map<String,String> params,List<Integer> userIdList,int companyId,int hrId,int flag,List<String>emailList,List<Integer> appIdList){
         int sflag=validateCompanyAndOther(companyId,hrId);
         if(sflag<0){
             return sflag ;
         }
+        int result;
         if(flag==0){
             //校验gdpr
             userIdList=StringUtils.convertSetToList(talentPoolEntity.filterGRPD(companyId,StringUtils.convertListToSet(userIdList)));
             if(StringUtils.isEmptyList(userIdList)){
                 throw new CommonException(1,"该简历不可操作");
             }
-            return sendResumeEmail(idList, userIdList, companyId, hrId,emailList);
+            result=sendResumeEmail(idList, userIdList, companyId, hrId,emailList);
         }else{
-            return sendAllResumeEmail(idList,params,companyId,hrId,emailList);
+            result=sendAllResumeEmail(idList,params,companyId,hrId,emailList);
         }
+        if(!CollectionUtils.isEmpty(appIdList)){
+            this.addOperationLog(hrId,appIdList);
+        }
+        return result;
+    }
+
+    /**
+     * 转发简历时添加操作记录
+     * @param hrId
+     * @param appIdList
+     */
+    private void addOperationLog(int hrId, List<Integer> appIdList) {
+        Map map=new HashMap();
+        map.put("hrId",hrId);
+        map.put("logType", "TRANSMIT_CANDIDATE_INFORMATION");
+        map.put("candidateNum",appIdList.size());
+        map.put("appIds",appIdList);
+        amqpTemplate.convertAndSend("operation_log_exchange","operation_log_routekey", JSON.toJSONString(map));
     }
 
     /*

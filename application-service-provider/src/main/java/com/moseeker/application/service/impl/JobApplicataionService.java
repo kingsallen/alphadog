@@ -220,6 +220,9 @@ public class JobApplicataionService {
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
 
         if (jobApplicationId > 0) {
+            if(jobApplication.getOrigin() ==ApplicationOriginEnum.HR_RECOMMEND.getKey()){
+                this.addOperationLog(jobApplication,jobApplicationId);
+            }
             boolean isNewAtsStatus=validateNewAtsProcess((int)jobApplication.getCompany_id(),(int)jobApplication.getPosition_id());
             if(!isNewAtsStatus){
                 sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
@@ -248,6 +251,28 @@ public class JobApplicataionService {
 
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
+
+    /**
+     * hr推荐时需要操作记录
+     * @param jobApplication
+     */
+    private void addOperationLog(JobApplication jobApplication,Integer jobApplicationId) {
+        tp.startTast(()->{
+            Map map=new HashMap();
+            Integer hrId=jobApplication.getHr_id();
+            if(hrId!=null){
+                map.put("hrId",hrId);
+            }
+            map.put("logType", "RECOMMENT_TO_OTHER_POSITION");
+            long applierId=jobApplication.getApplier_id();
+            String userName = this.getUserName((int) applierId);
+            map.put("candidate",userName);
+            map.put("appIds",Arrays.asList(jobApplicationId));
+            amqpTemplate.convertAndSend("operation_log_exchange","operation_log_routekey", JSON.toJSONString(map));
+        });
+    }
+
+
     /*
     更新data/application索引
      */
