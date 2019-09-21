@@ -240,7 +240,6 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
-        logger.info("PositionServicesImpl saveAndSync");
         JobPostionResponse response=service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
 
         logger.info("PositionServicesImpl saveAndSync response:{}", JSONObject.toJSONString(response));
