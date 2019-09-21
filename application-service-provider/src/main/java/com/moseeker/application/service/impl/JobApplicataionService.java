@@ -269,6 +269,7 @@ public class JobApplicataionService {
             map.put("candidate",userName);
             map.put("appIds",Arrays.asList(jobApplicationId));
             amqpTemplate.convertAndSend("operation_log_exchange","operation_log_routekey", JSON.toJSONString(map));
+            return 0;
         });
     }
 

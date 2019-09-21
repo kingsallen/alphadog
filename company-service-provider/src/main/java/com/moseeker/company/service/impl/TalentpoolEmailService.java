@@ -367,12 +367,15 @@ public class TalentpoolEmailService {
      * @param appIdList
      */
     private void addOperationLog(int hrId, List<Integer> appIdList) {
-        Map map=new HashMap();
-        map.put("hrId",hrId);
-        map.put("logType", "TRANSMIT_CANDIDATE_INFORMATION");
-        map.put("candidateNum",appIdList.size());
-        map.put("appIds",appIdList);
-        amqpTemplate.convertAndSend("operation_log_exchange","operation_log_routekey", JSON.toJSONString(map));
+        tp.startTast(()->{
+            Map map=new HashMap();
+            map.put("hrId",hrId);
+            map.put("logType", "TRANSMIT_CANDIDATE_INFORMATION");
+            map.put("candidateNum",appIdList.size());
+            map.put("appIds",appIdList);
+            amqpTemplate.convertAndSend("operation_log_exchange","operation_log_routekey", JSON.toJSONString(map));
+            return 0;
+        });
     }
 
     /*
