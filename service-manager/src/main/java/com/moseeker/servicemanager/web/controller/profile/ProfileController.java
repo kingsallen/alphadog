@@ -918,12 +918,14 @@ public class ProfileController {
             throw new ProfileException(99999, "仅支持doc和docx类型文件");
         }
 
+        logger.info("wordToPdf fileName = {} ++++++++++++", file_name);
         String pdf_name = file_name.replace("." + file_type, Constant.WORD_PDF).trim();
         File pdf_file = new File(pdf_name);
-        if (pdf_file.exists()) {
-            return Result.success(pdf_file).toJson();
+        //pdf文件不存在时，生成pdf文件，并返回文件名称路径
+        if (!pdf_file.exists()) {
+            OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
+            logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
         }
-        OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-        return Result.success(pdf_file).toJson();
+        return Result.success(pdf_name).toJson();
     }
 }
