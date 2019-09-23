@@ -94,7 +94,7 @@ public enum SMSScene {
 
             if(!StringUtils.isBlank(countStrValue)){
                 Integer countIntValue = Integer.valueOf(countStrValue);
-                if(countIntValue>=2){
+                if(countIntValue>=4){
                     redisClient.del(AppId.APPID_ALPHADOG.getValue(),keyIdentifier.toString(),pattern);
                     redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern);
                 }else{
