@@ -96,6 +96,8 @@ public enum SMSScene {
                     redisClient.set(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(count));
                 }
 
+            }else{
+                redisClient.set(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(count));
             }
 
             return false;
