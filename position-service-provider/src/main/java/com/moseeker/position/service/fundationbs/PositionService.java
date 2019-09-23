@@ -686,9 +686,17 @@ public class PositionService {
         // 提交的数据
         List<JobPostrionObj> jobPositionHandlerDates = batchHandlerJobPosition.getData();
         List<String> jobNumbers = jobPositionHandlerDates.stream().map(r -> r.getJobnumber()).collect(Collectors.toList());
-        if (jobNumbers.size() < 100) {
-
+        String dateStr = DateUtils.dateToPattern(new Date(), "yyyy-MM-dd HH:mm:ss");
+        float pSize = 100;
+        int jSize = (int) Math.ceil(jobNumbers.size() / pSize);
+        for (int i = 0; i < jSize; i++) {
+            if (i == jSize -1) {
+                logger.info("batchJobNumbers-{},size:{}, index: {},jobNumbers:{}", dateStr,jobNumbers.size(), i, jobNumbers.subList((int) (i * pSize), jobNumbers.size()));
+            } else {
+                logger.info("batchJobNumbers-{},size:{}, index: {},jobNumbers:{}", dateStr,jobNumbers.size(), i, jobNumbers.subList((int) (i * pSize), (int) ((i + 1) * pSize)));
+            }
         }
+
         logger.info("PositionService batchHandlerJobPostion jobPositionHandlerDates:{}", JSONObject.toJSONString(jobPositionHandlerDates));
         //过滤职位信息中的emoji表情
         PositionUtil.refineEmoji(jobPositionHandlerDates);
