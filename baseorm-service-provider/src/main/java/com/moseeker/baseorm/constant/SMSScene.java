@@ -82,22 +82,27 @@ public enum SMSScene {
             return true;
         } else {
             logger.info("SMSScene validateVerifyCode code not equals!");
+
+            //若redis中已不存在该验证码
+            if(StringUtils.isBlank(codeInRedis)){
+                redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern);
+                return false;
+            }
+
             //添加新逻辑，验证码不能连续超过五次
             String countStrValue = redisClient.get(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern);
-            Integer count = 1;
 
             if(!StringUtils.isBlank(countStrValue)){
                 Integer countIntValue = Integer.valueOf(countStrValue);
                 if(countIntValue>=2){
                     redisClient.del(AppId.APPID_ALPHADOG.getValue(),keyIdentifier.toString(),pattern);
-                    redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(count));
+                    redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern);
                 }else{
-                    count=countIntValue+1;
-                    redisClient.set(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(count));
+                    redisClient.set(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(countIntValue+1));
                 }
 
             }else{
-                redisClient.set(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(count));
+                redisClient.set(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.SMS_CODE_VERIFY_LIMIT.toString(),pattern,String.valueOf(1));
             }
 
             return false;
