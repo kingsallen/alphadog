@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -1581532903;
+    private static final long serialVersionUID = 217938736;
 
     /**
      * Setter for <code>jobdb.job_position.id</code>.
@@ -953,6 +953,20 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
         return (Byte) get(65);
     }
 
+    /**
+     * Setter for <code>jobdb.job_position.first_pinyin</code>. 首字母拼音
+     */
+    public void setFirstPinyin(String value) {
+        set(66, value);
+    }
+
+    /**
+     * Getter for <code>jobdb.job_position.first_pinyin</code>. 首字母拼音
+     */
+    public String getFirstPinyin() {
+        return (String) get(66);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -979,7 +993,7 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
     /**
      * Create a detached, initialised JobPositionRecord
      */
-    public JobPositionRecord(Integer id, String jobnumber, Integer companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Integer shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, Integer positionCode, Integer teamId, Byte profileCcMailEnabled, Byte isReferral) {
+    public JobPositionRecord(Integer id, String jobnumber, Integer companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Integer shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, Integer positionCode, Integer teamId, Byte profileCcMailEnabled, Byte isReferral, String firstPinyin) {
         super(JobPosition.JOB_POSITION);
 
         set(0, id);
@@ -1048,5 +1062,6 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
         set(63, teamId);
         set(64, profileCcMailEnabled);
         set(65, isReferral);
+        set(66, firstPinyin);
     }
 }

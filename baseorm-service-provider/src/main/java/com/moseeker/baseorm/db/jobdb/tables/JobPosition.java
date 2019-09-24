@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = -566418130;
+    private static final long serialVersionUID = -562907997;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -380,6 +380,11 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
      * The column <code>jobdb.job_position.is_referral</code>. 是否是内推职位
      */
     public final TableField<JobPositionRecord, Byte> IS_REFERRAL = createField("is_referral", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是内推职位");
+
+    /**
+     * The column <code>jobdb.job_position.first_pinyin</code>. 首字母拼音
+     */
+    public final TableField<JobPositionRecord, String> FIRST_PINYIN = createField("first_pinyin", org.jooq.impl.SQLDataType.VARCHAR.length(8).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "首字母拼音");
 
     /**
      * Create a <code>jobdb.job_position</code> table reference
