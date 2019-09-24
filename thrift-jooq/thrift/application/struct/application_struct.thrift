@@ -37,6 +37,7 @@ struct JobApplication {
     28: optional i32 event,                  // 申请方的appid
     29: optional string ats_errmsg,          // ats同步错误信息
     30: optional i32 hr_id                   // 操作的hrid
+    31: optional i32 source_appid            // 推荐到其他职位时的源申请id
 }
 
 /*

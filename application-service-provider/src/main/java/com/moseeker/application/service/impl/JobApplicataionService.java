@@ -217,12 +217,12 @@ public class JobApplicataionService {
                 return responseCheck;
             }
         }
+        if(jobApplication.getOrigin() ==ApplicationOriginEnum.HR_RECOMMEND.getKey()){
+            this.addOperationLog(jobApplication,jobApplication.getSource_appid());
+        }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
 
         if (jobApplicationId > 0) {
-            if(jobApplication.getOrigin() ==ApplicationOriginEnum.HR_RECOMMEND.getKey()){
-                this.addOperationLog(jobApplication,jobApplicationId);
-            }
             boolean isNewAtsStatus=validateNewAtsProcess((int)jobApplication.getCompany_id(),(int)jobApplication.getPosition_id());
             if(!isNewAtsStatus){
                 sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
