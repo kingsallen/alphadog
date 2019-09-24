@@ -10,6 +10,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BonusTools;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.HttpClient;
+import com.moseeker.common.util.MapUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.ProfileEntity;
@@ -53,12 +54,13 @@ import java.util.stream.Collectors;
 @CounterIface
 public class ReferralController {
 
+
     private ProfileServices.Iface profileService =  ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
     private EmployeeService.Iface employeeService =  ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
     private ReferralService.Iface referralService =  ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER.getService(UserHrAccountService.Iface.class);
-    private Logger logger = LoggerFactory.getLogger(ReferralController.class);
+    private static Logger logger = LoggerFactory.getLogger(ReferralController.class);
 
     /**
      * 员工上传简历
@@ -75,7 +77,7 @@ public class ReferralController {
         int employeeId = params.getInt("employee", 0);
         Integer appid = params.getInt("appid");
         String fileName = params.getString("file_name");
-        logger.debug("员工上传简历 employee:{},file:{}",employeeId,fileName);
+        logger.info("员工上传简历 employee:{},file:{}",employeeId,fileName);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
         validateUtil.addRequiredStringValidate("简历名称", fileName);
@@ -128,7 +130,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
     public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
-        logger.info("ReferralController referralProfile");
+        logger.info("ReferralController referralProfile id {} form: {}",id,referralForm);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -137,14 +139,21 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        validateUtil.addRequiredValidate("职位编号",referralForm.getPosition());
         String result = validateUtil.validate();
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
-        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            Map fields = new HashMap<>(referralForm.getFields());
+            if(StringUtils.isNotBlank(referralForm.getEmail())){
+                fields.putIfAbsent("email",referralForm.getEmail());
+            }
+            // map参数中，value不能为空。否则出现空指针异常
+            fields = MapUtils.removeEmptyValue(fields);
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
-                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
+                    referralForm.getMobile(), fields,referralForm.getReferralReasons(), referralForm.getPosition(),
                     (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
             return Result.success(referralId).toJson();
         } else {
@@ -162,7 +171,7 @@ public class ReferralController {
     @ResponseBody
     public String referralProfiles(@RequestBody ReferralsForm referralForm) throws Exception {
 
-        logger.info("ReferralController referralProfile");
+        logger.info("ReferralController referralProfile : {}",referralForm );
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -171,15 +180,20 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("员工", referralForm.getEmployeeId(), 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        validateUtil.addRequiredOneValidate("职位编号",referralForm.getPids());
         String result = validateUtil.validate();
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getRecomTags()) &&
                 com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomText())){
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-
+            Map fields = new HashMap<>(referralForm.getFields());
+            if(StringUtils.isNotBlank(referralForm.getEmail())){
+                fields.putIfAbsent("email",referralForm.getEmail());
+            }
+            fields = MapUtils.removeEmptyValue(fields);
             List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
-                    referralForm.getRealname(),referralForm.getMobile(), referralForm.getRecomTags(),
+                    referralForm.getRealname(),referralForm.getMobile(),fields, referralForm.getRecomTags(),
                         referralForm.getPids(),(byte)referralForm.getRelation(),
                             referralForm.getRecomText(),(byte) referralForm.getReferralType());
             return Result.success(results).toJson();

@@ -19,7 +19,6 @@ import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
-import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.domain.referral.EmployeeReferralProfile;
@@ -38,10 +37,8 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -54,7 +51,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -74,6 +70,7 @@ import java.util.stream.Collectors;
 public class ReferralServiceImpl implements ReferralService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final String REFERRAL_TEMPLATE_FIELDS_URL_PATH = "/v4/position/referral/template/fields";
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -475,11 +472,12 @@ public class ReferralServiceImpl implements ReferralService {
     @Transactional
     @CounterIface
     @Override
-    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
+    public int employeeReferralProfile(int employeeId, String name, String mobile,Map<String,String> otherFields, List<String> referralReasons,
                                        int position, byte relationship, String referralText,   byte referralType) throws ProfileException, BIZException {
         logger.info("=======================开始执行上传操作======employeeReferralProfile===");
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
                 .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildOtherFields(otherFields)
                 .buildPosition(position)
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();
@@ -493,14 +491,23 @@ public class ReferralServiceImpl implements ReferralService {
         return referralIds.get(0);
     }
 
+
+
+    /*    public static void main(String[] args) {
+            ValidateUtil validateUtil = new ValidateUtil();
+            addValidateReferralByTemplate(validateUtil,"11.qq",new HashMap<>(),Arrays.asList(19499977,19500035,19501637));
+            System.out.println(validateUtil.validate());
+        }*/
+
     @Override
-    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,
+    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,Map<String,String> otherFields,
                                                                List<String> referralReasons, List<Integer> positions,
                                                                byte relationship, String referralText,
                                                                byte referralType) throws ProfileException, BIZException {
         logger.info("Multi positions recommendation start {}",positions);
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
                 .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildOtherFields(otherFields)
                 .buildPosition(positions)
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();

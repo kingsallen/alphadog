@@ -1,16 +1,14 @@
 package com.moseeker.common.util;
 
-import com.alibaba.fastjson.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * 配置文件读取帮助类。利用getResourceAsStream方法读取默认的配置文件，

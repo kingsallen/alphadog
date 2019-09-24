@@ -6,6 +6,9 @@ public class UploadFilesResult {
     private Integer companyId;
     private String name;
     private String mobile;
+    public String email;
+    public String pinyinName;
+    public String pinyinSurname;
     private Byte referralType;
     private Boolean employee;
     private Integer userId;
@@ -117,5 +120,29 @@ public class UploadFilesResult {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPinyinName() {
+        return pinyinName;
+    }
+
+    public void setPinyinName(String pinyinName) {
+        this.pinyinName = pinyinName;
+    }
+
+    public String getPinyinSurname() {
+        return pinyinSurname;
+    }
+
+    public void setPinyinSurname(String pinyinSurname) {
+        this.pinyinSurname = pinyinSurname;
     }
 }

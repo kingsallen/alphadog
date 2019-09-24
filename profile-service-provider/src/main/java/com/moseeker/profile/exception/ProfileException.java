@@ -35,7 +35,7 @@ public class ProfileException extends CommonException {
     public static final ProfileException PROFILE_EMPLOYEE_NOT_EXIST = new ProfileException(30034,"员工信息不存在！");
     public static final ProfileException PROFILE_FILE_SAVE_FAILED = new ProfileException(30035,"简历文件保存失败！");
     public static final ProfileException REFERRAL_PROFILE_NOT_EXIST = new ProfileException(30036,"简历数据不存在！");
-    public static final ProfileException REFERRAL_REPEATE_REFERRAL = new ProfileException(30037,"重复推荐！");
+    public static final ProfileException REFERRAL_REPEATE_REFERRAL = new ProfileException(30037,"感谢您的支持，此候选人已存在系统中，此次推荐不成功。期待您继续推荐其他候选人！");
     public static final ProfileException REFERRAL_FILE_TYPE_NOT_SUPPORT = new ProfileException(30038,"文件格式不支持！");
     public static final ProfileException REFERRAL_FILE_NOT_EXIST = new ProfileException(30039,"指定的简历文件不存在！");
 

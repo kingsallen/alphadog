@@ -18,9 +18,9 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.profile.constants.EmailVerifyState;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.vo.FileNameData;
-import java.util.Map;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -91,11 +91,26 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
      * 生成内推来源的profile_profile数据
      * @return profile_profile的json格式数据
      */
-    public static void createReferralProfileOtherData(ProfilePojo profilePojo, Map<String, Object> otherMap) {
-        ProfileOtherRecord otherRecord = new ProfileOtherRecord();
-        otherRecord.setOther(JSON.toJSONString(otherMap));
-        otherRecord.setProfileId(0);
-        profilePojo.setOtherRecord(otherRecord);
+    public static void createOrMergeReferralProfileOtherData(ProfilePojo profilePojo, Map<String, ?> otherMap) {
+    	if(otherMap != null && !otherMap.isEmpty()){
+			ProfileOtherRecord otherRecord = profilePojo.getOtherRecord();
+			JSONObject map = otherRecord != null ? JSONObject.parseObject(otherRecord.getOther()) : new JSONObject() ;
+			if(otherRecord != null){
+				map.putAll(otherMap);
+				profilePojo.getOtherRecord().setOther(JSONObject.toJSONString(map));
+			}else{
+				otherRecord = new ProfileOtherRecord();
+				otherRecord.setProfileId(0);
+				profilePojo.setOtherRecord(otherRecord);
+			}
+
+			otherMap.forEach((k,v)->{
+				if(v != null && !"".equals(v)){
+					map.put(k,v);
+				}
+			});
+			otherRecord.setOther(JSON.toJSONString(map));
+		}
     }
 
 

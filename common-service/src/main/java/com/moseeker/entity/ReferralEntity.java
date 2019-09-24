@@ -16,6 +16,7 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -31,6 +32,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
@@ -39,7 +41,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
@@ -50,7 +51,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
-import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojo.profile.ProfileRecord;
 import com.moseeker.entity.pojos.*;
@@ -66,7 +66,6 @@ import org.jooq.Record3;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -87,6 +86,9 @@ import java.util.stream.Collectors;
 @Service
 //@CounterIface
 public class ReferralEntity {
+
+    private final static List<String> PROFILE_OTHER_PINYIN_NAME_LIST = Arrays.asList("familynamepinyin","fullnamepinyin");
+
 
     @Autowired
     private HrHbConfigDao configDao;
@@ -126,6 +128,9 @@ public class ReferralEntity {
 
     @Autowired
     private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileOtherDao profileOtherDao;
 
     @Autowired
     private ProfileAttachmentDao attachmentDao;
@@ -308,6 +313,7 @@ public class ReferralEntity {
         // 更新简历中的userId，计算简历完整度
         updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
         logger.info("ReferralEntity claimReferralCard updateProfileUserIdAndCompleteness");
+        mergeNamePinyin(userUserDO.getId(), referralLog.getReferenceId());
 
         // 更新候选人推荐记录中的推荐人
         int postUserId = 0;
@@ -330,6 +336,7 @@ public class ReferralEntity {
         logger.info("ReferralEntity claimReferralCard end!");
         return application.getId();
     }
+
 
     public ReferralLog fetchReferralLogByPositionIdAndReferenceId(Integer positionId, int referenceId) {
         return referralLogDao.fetchByReferenceIdUserId(referenceId, positionId);
@@ -585,6 +592,56 @@ public class ReferralEntity {
             }*/
         }
     }
+
+    /**
+     * 推荐认领，由于百济迭代需要姓拼音和名拼音非空，
+     * 合并虚拟用户姓拼音和名拼音到真实用户
+     * @param referenceId 虚拟用户profile_other信息
+     * @param userId 真实用户profile id
+     */
+    public void mergeNamePinyin(int userId, Integer referenceId) {
+        ProfileProfileRecord referenceProfile  = profileDao.getProfileByUserId(referenceId);
+        ProfileProfileRecord userProfile = profileDao.getProfileOrderByActiveByUserId(userId);
+        if(referenceProfile != null ){
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("profile_id", String.valueOf(referenceProfile.getId()));
+            ProfileOtherRecord otherRecord = profileOtherDao.getRecord(query.buildQuery());
+
+            if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+                // 如果虚拟用户profile.other包含 姓拼音和名拼音，则合并到实际用户
+                Map<String, Object> otherMap = JSONObject.parseObject(otherRecord.getOther(), Map.class);
+                Map<String, Object> allowMap = new HashMap<>();
+                otherMap.forEach((k,v)->{
+                    if(PROFILE_OTHER_PINYIN_NAME_LIST.contains(k) && v != null && !"".equals(v)){
+                        allowMap.put(k,v);
+                    }
+                });
+
+                if(!allowMap.isEmpty()){
+                    query.clear();
+                    query.where("profile_id", String.valueOf(userProfile.getId()));
+                    ProfileOtherRecord other = profileOtherDao.getRecord(query.buildQuery());
+                    if (other == null ) {
+                        other = new ProfileOtherRecord();
+                        other.setProfileId(userProfile.getUserId());
+                        other.setOther(JSONObject.toJSONString(allowMap));
+                        profileOtherDao.addRecord(otherRecord);
+                    } else{
+                        /**
+                         * 合并
+                         */
+                        Map<String, Object> newOtherMap = StringUtils.isNotNullOrEmpty(other.getOther())? JSONObject.parseObject(other.getOther(), Map.class) : new HashMap<>();
+                        // 仅当字段不存在时更新
+                        allowMap.keySet().stream().filter(k->StringUtils.isEmptyObject(newOtherMap.get(k))).forEach(k->newOtherMap.putIfAbsent(k,allowMap.get(k)));
+                        other.setOther(JSONObject.toJSONString(newOtherMap));
+                        profileOtherDao.updateRecord(other);
+                    }
+                }
+            }
+        }
+
+    }
+
 
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
         logger.info("ReferralEntity fetchReferralLog userId:{}, companyIds:{}, hrId:{}", userId, companyIds, hrId);

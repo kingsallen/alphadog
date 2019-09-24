@@ -211,6 +211,9 @@ public class UploadFilesServiceImpl implements UploadFilesService {
             if ("0".equals( uploadFilesResult.getMobile() ) ){
                 uploadFilesResult.setMobile("");
             }
+            if(user.get("email") != null){
+                uploadFilesResult.setEmail(user.getString("email"));
+            }
         }
         if (jsonObject.get("attachments") != null){
             JSONArray attachments = jsonObject.getJSONArray("attachments");

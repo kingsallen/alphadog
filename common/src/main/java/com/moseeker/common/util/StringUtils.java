@@ -1,8 +1,5 @@
 package com.moseeker.common.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -584,4 +581,18 @@ public class StringUtils {
         return result;
     }
 
+    /**
+     * 忽略大小写判断一个字符是否以另一个字符串为开头
+     * 注意如果 prefix为null，返回false。prefix为空，返回true
+     * @param str
+     * @param prefix 前缀
+     */
+    public static boolean startsWithIgnoreCase(String str,String prefix){
+        if(str == null || prefix == null) return false;
+
+        // 如果prefix为空，返回true
+        if(str.startsWith(prefix)) return true ;
+
+        return str.substring(0,prefix.length()).equalsIgnoreCase(prefix);
+    }
 }

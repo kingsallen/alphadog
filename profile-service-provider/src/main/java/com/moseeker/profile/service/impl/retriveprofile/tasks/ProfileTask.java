@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * profile业务处理。
@@ -102,7 +100,7 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
         profileEntity.improveEducation(profilePojo.getEducationRecords(), profileId);
         profileEntity.improveIntention(profilePojo.getIntentionRecords(), profileId);
         profileEntity.improveLanguage(profilePojo.getLanguageRecords(), profileId);
-        profileEntity.improveOther(profilePojo.getOtherRecord(), profileId);
+        profileEntity.mergeOther(profilePojo.getOtherRecord(), profileId);
         profileEntity.improveProjectexp(profilePojo.getProjectExps(), profileId);
         profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
         profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);

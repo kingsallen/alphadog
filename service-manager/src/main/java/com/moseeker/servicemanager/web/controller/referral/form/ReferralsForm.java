@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral.form;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description TODO
@@ -13,7 +14,9 @@ public class ReferralsForm {
     private int appid;
     private String realname;
     private String mobile;
+    private String email;
     private List<Integer> pids;
+    private Map<String,String> fields ;
     private int referralType;
     private List<String> recomTags;
     private int relation;
@@ -98,6 +101,22 @@ public class ReferralsForm {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Map<String, String> getFields() {
+        return fields;
+    }
+
+    public void setFields(Map<String, String> fields) {
+        this.fields = fields;
     }
 }
 
