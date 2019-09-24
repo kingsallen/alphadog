@@ -908,6 +908,7 @@ public class ProfileController {
     }
 
     @RequestMapping(value = "/profile/word/topdf", method = RequestMethod.GET)
+    @ResponseBody
     public String wordToPdf(@RequestParam(value = "file_name") String file_name) throws Exception {
         File file = new File(file_name);
         if (!file.exists()) {
