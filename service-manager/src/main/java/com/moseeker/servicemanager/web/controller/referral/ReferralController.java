@@ -146,7 +146,10 @@ public class ReferralController {
         }
 
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            Map fields = new HashMap<>(referralForm.getFields());
+            Map fields = new HashMap<>();
+            if(referralForm.getFields() != null && !referralForm.getFields().isEmpty()){
+                fields.putAll(referralForm.getFields());
+            }
             if(StringUtils.isNotBlank(referralForm.getEmail())){
                 fields.putIfAbsent("email",referralForm.getEmail());
             }
@@ -187,7 +190,10 @@ public class ReferralController {
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            Map fields = new HashMap<>(referralForm.getFields());
+            Map fields = new HashMap<>();
+            if(referralForm.getFields() != null && !referralForm.getFields().isEmpty()){
+                fields.putAll(referralForm.getFields());
+            }
             if(StringUtils.isNotBlank(referralForm.getEmail())){
                 fields.putIfAbsent("email",referralForm.getEmail());
             }
