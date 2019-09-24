@@ -677,7 +677,7 @@ public class PositionService {
      * @return
      */
     @CounterIface
-    public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
+    public JobPostionResponse  batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
         // 提交的数据为空
         if (batchHandlerJobPosition == null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
             logger.info("PositionService batchHandlerJobPostion 数据不存在");
@@ -697,7 +697,6 @@ public class PositionService {
             }
         }
 
-        logger.info("PositionService batchHandlerJobPostion jobPositionHandlerDates:{}", JSONObject.toJSONString(jobPositionHandlerDates));
         //过滤职位信息中的emoji表情
         PositionUtil.refineEmoji(jobPositionHandlerDates);
 
@@ -822,8 +821,7 @@ public class PositionService {
         DBOperation dbOperation;
         // 处理数据
         for (JobPostrionObj formData : jobPositionHandlerDates) {
-            logger.info("提交的数据：" + formData.toString());
-            logger.info("提交的部门信息：" + formData.getDepartment());
+            logger.info("batchHandlerJobPostion提交的数据：" + formData.toString());
 
             // 基础校验
             if (!basicCheckBatchPostionData(formData, jobPositionFailMessPojos)) {
@@ -874,18 +872,13 @@ public class PositionService {
 
             int team_id = 0;
             if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formRcord.getDepartment())) {
-                logger.info(formRcord.getDepartment().trim());
                 String department = replaceBlank(formRcord.getDepartment());
                 HrTeamRecord hrTeamRecord = (HrTeamRecord) hashMapHrTeam.get(department);
                 if (hrTeamRecord != null) {
-                    logger.info("-----取到TeamId-------");
-                    logger.info("----部门ID为---:" + hrTeamRecord.getId());
                     team_id = hrTeamRecord.getId();
                 } else {
                     //部分公司在部门不存在时，直接插入新部门
                     if (batchHandlerJobPosition.isCreateDeparment) {
-                        logger.info("-----未取到TeamId,需要插入部门-------");
-
                         HrTeamRecord team = new HrTeamRecord();
                         team.setName(formRcord.getDepartment());
                         team.setCompanyId(formRcord.getCompanyId());
@@ -897,11 +890,7 @@ public class PositionService {
 
                         hashMapHrTeam.put(department, teamTemp);
                     } else {
-                        logger.info("-----未取到TeamId-------");
-                        logger.info("--部门名称为--:" + formRcord.getDepartment());
-                        logger.info("--company_id--:" + formRcord.getCompanyId());
-                        logger.info("--JobPositionRecord数据--:" + formRcord.toString());
-                        logger.info("--提交的数据--:" + formData.toString());
+                        logger.info("-----未取到TeamId-------部门名称为 ,{},company_id : {}",formRcord.getDepartment(),formRcord.getCompanyId());
                         handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, formData);
                         continue;
                     }
@@ -916,7 +905,6 @@ public class PositionService {
                 if (jobOccupationDO != null) {
                     jobOccupationId = jobOccupationDO.getId();
                 } else {
-                    logger.info("-----职位职能不存在,新建一条职能,职能信息为:" + formData.getOccupation());
                     // 职能错误的时候，自动添加一条职能新
                     JobOccupationDO jobOccupation = new JobOccupationDO();
                     jobOccupation.setCompanyId(companyId);
