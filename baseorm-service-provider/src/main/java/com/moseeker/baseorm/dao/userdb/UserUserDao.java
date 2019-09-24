@@ -448,6 +448,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         List<Short> sources = new ArrayList<>();
         sources.add((short) UserSource.TALENT_UPLOAD.getValue());
         sources.add((short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue());
+        sources.add((short) UserSource.EMPLOYEE_REFERRAL.getValue());
         return create
                 .selectFrom(UserUser.USER_USER)
                 .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
@@ -485,6 +486,25 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
                 .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
                 .and(UserUser.USER_USER.COUNTRY_CODE.eq(countryCode))
                 .and(UserUser.USER_USER.SOURCE.eq((short)UserSource.EMPLOYEE_REFERRAL.getValue()))
+                .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetch();
+    }
+
+    /**
+     * 根据手机号码查找内推用户
+     * @param phone 手机号码
+     * @param countryCode 国家代码
+     * @return 用户信息
+     */
+    public List<UserUserRecord> getAllReferralUser(String phone, String countryCode) {
+        List<Short> sources = new ArrayList<>(2);
+        sources.add((short) UserSource.EMPLOYEE_REFERRAL.getValue());
+        sources.add((short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue());
+        return create
+                .selectFrom(UserUser.USER_USER)
+                .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
+                .and(UserUser.USER_USER.COUNTRY_CODE.eq(countryCode))
+                .and(UserUser.USER_USER.SOURCE.in(sources))
                 .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .fetch();
     }

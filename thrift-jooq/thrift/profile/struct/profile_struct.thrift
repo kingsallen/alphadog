@@ -256,6 +256,9 @@ struct ProfileParseResult {
     2: optional string name,
     3: optional string mobile,
     4: optional bool mobileeditable
+    5: optional string email;
+    6: optional string pinyinName;
+    7: optional string pinyinSurname;
 }
 
 //候选人关键信息

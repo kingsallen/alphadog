@@ -16,12 +16,13 @@ import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantPojo;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by moseeker on 2018/11/22.
@@ -113,7 +114,10 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         if (StringUtils.isNotNullOrEmpty(profileNotice.getCurrentPosition())) {
             params.put("current_position", profileNotice.getCurrentPosition());
         }
-        ProfileExtUtils.createReferralProfileOtherData(profilePojo, params);
+        if(profileNotice.getOtherFields() != null && !profileNotice.getOtherFields().isEmpty()){
+            params.putAll(profileNotice.getOtherFields());
+        }
+        ProfileExtUtils.createOrMergeReferralProfileOtherData(profilePojo, params);
         if(profileNotice.getCity_code()>0){
             DictCityDO cityDO = cityDao.getCityDOByCode(profileNotice.getCity_code());
             String cityName = "";

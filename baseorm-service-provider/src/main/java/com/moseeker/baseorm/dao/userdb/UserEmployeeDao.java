@@ -385,6 +385,14 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .fetchOne();
     }
 
+    public UserEmployeeRecord getEmployeeIgnoreActivation(int sysuserId, int companyId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetchOne();
+    }
+
     public List<UserEmployeeDO> getActiveEmployee(List<Integer> sysuserIds, int companyId) {
         if(StringUtils.isEmptyList(sysuserIds)){
             return new ArrayList<>();

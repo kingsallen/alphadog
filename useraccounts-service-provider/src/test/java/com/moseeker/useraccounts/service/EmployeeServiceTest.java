@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
+
 public class EmployeeServiceTest {
 
 
@@ -42,7 +44,7 @@ public class EmployeeServiceTest {
     ////@Test
 	public void unbindTest(){
 		try {
-			Result unbind = service.unbind(6, 1, 1);
+			Result unbind = service.unbind(EMPLOYEE_ACTIVATION_UNEMPLOYEE, 1, 1);
 			System.out.println(unbind);
 		} catch (TException e) {
 			// TODO Auto-generated catch block

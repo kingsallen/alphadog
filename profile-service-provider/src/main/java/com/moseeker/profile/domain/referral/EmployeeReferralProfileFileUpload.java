@@ -8,10 +8,12 @@ import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.exception.ProfileException;
-import javax.annotation.Resource;
+import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 
 /**
  * Created by moseeker on 2018/11/22.
@@ -40,6 +42,13 @@ public class EmployeeReferralProfileFileUpload extends EmployeeReferralProfileAp
         ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
         profilePojo.getUserRecord().setName(profileNotice.getName());
         profilePojo.getUserRecord().setMobile(Long.parseLong(profileNotice.getMobile()));
+        if(StringUtils.isNotBlank(profileNotice.getEmail())){
+            profilePojo.getUserRecord().setEmail(profileNotice.getEmail());
+        }
+        if(profileNotice.getOtherFields() != null && !profileNotice.getOtherFields().isEmpty()){
+            ProfileExtUtils.createOrMergeReferralProfileOtherData(profilePojo, profileNotice.getOtherFields());
+        }
+
         return profilePojo;
     }
 

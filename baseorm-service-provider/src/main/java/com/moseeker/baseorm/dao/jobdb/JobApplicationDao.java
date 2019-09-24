@@ -208,7 +208,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				//logger.info("addIfNotExists origin:{}", origin);
 				create.update(JOB_APPLICATION)
 						.set(JOB_APPLICATION.ORIGIN, origin)
-                        .set(JOB_APPLICATION.UPDATE_TIME, new Timestamp(new Date().getTime()))
+                        .set(JOB_APPLICATION.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
 						.where(JOB_APPLICATION.ID.eq(application.getId()))
 						.execute();
 		}
@@ -338,18 +338,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	 * 修改申请的申请人
 	 * @param id 申请编号
 	 * @param newApplierId 新申请人
+	 * @param positionId 职位名称
 	 * @param applierName 新申请人姓名
 	 * @param origin 来源
-	 * @param timestamp 修改时间
-	 * @param positionId 职位名称
 	 * @return 是否修改申请  true 修改成功 false 修改失败
 	 */
-	public boolean updateIfNotExist(Integer id, int newApplierId, String applierName, int origin, Timestamp timestamp,
-									Integer positionId) {
+	public boolean updateIfNotExist(Integer id, Integer positionId, int newApplierId,
+									String applierName, int origin) {
 		int execute = create.update(JOB_APPLICATION)
 				.set(JOB_APPLICATION.APPLIER_ID, newApplierId)
 				.set(JOB_APPLICATION.APPLIER_NAME, applierName)
-				.set(JOB_APPLICATION.UPDATE_TIME, timestamp)
 				.where(JOB_APPLICATION.ID.eq(id))
 				.andNotExists(
 						selectOne()
@@ -360,19 +358,6 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 								.limit(1)
 						)
 				).execute();
-		if (execute == 0) {
-			JobApplicationRecord record = create.selectFrom(JOB_APPLICATION)
-					.where(JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
-					.and(JOB_APPLICATION.POSITION_ID.eq(positionId))
-					.limit(1)
-					.fetchOne();
-			if (record != null) {
-				record.setOrigin(record.getOrigin() | origin);
-				record.setUpdateTime(timestamp);
-				create.attach(record);
-				record.update();
-			}
-		}
 		return execute == 1;
 	}
 

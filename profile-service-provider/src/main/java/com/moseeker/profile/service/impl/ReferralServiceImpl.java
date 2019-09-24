@@ -19,7 +19,6 @@ import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
-import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.domain.referral.EmployeeReferralProfile;
@@ -38,10 +37,8 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -54,7 +51,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -74,6 +70,7 @@ import java.util.stream.Collectors;
 public class ReferralServiceImpl implements ReferralService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final String REFERRAL_TEMPLATE_FIELDS_URL_PATH = "/v4/position/referral/template/fields";
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -119,7 +116,6 @@ public class ReferralServiceImpl implements ReferralService {
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
                                UserAccountEntity userAccountEntity, ProfileParseUtil profileParseUtil,
                                PositionEntity positionEntity, ReferralEntity referralEntity,
-
                                Environment env ) {
         this.employeeEntity = employeeEntity;
         this.profileEntity = profileEntity;
@@ -150,46 +146,6 @@ public class ReferralServiceImpl implements ReferralService {
         long millis = duration.toMillis();//相差毫秒数
         logger.info("ReferralServiceImpl parseFileProfile 员工简历解析耗时：millis{}",millis);
         return profileDocParseResult;
-//        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
-//
-//        if (!ProfileDocCheckTool.checkFileName(fileName)) {
-//            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
-//        }
-//
-//        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
-//        if (employeeDO == null || employeeDO.getId() <= 0) {
-//            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
-//        }
-//
-//        byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
-//        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
-//        FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
-//        profileDocParseResult.setFile(fileNameData.getFileName());
-//        fileNameData.setOriginName(fileName);
-//
-//        return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
-
-        /*// 调用SDK得到结果
-        ResumeObj resumeObj;
-        try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, StreamUtils.byteArrayToBase64String(dataArray));
-        } catch (TException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
-        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
-        profileDocParseResult.setName(profileObj.getUser().getName());
-        profileObj.setResumeObj(null);
-        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
-        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
-        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
-
-        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", profilePojo.toJson(), 24*60*60);
-        return profileDocParseResult;*/
     }
 
     @Override
@@ -211,7 +167,6 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
         }
 
-        String data = new String(Base64.encodeBase64(fileData), Consts.UTF_8);
         FileNameData fileNameData = new FileNameData();
         fileNameData.setFileName(file.getName());
         fileNameData.setFileAbsoluteName(filePath);
@@ -222,7 +177,7 @@ public class ReferralServiceImpl implements ReferralService {
         Duration duration = Duration.between(parseFileStart,parseFileStartReadFile);
         long millis = duration.toMillis();//相差毫秒数
         logger.info("ReferralServiceImpl parseFileProfileByFilePath 读取文件时间差:millis{}",millis);
-        ProfileDocParseResult profileDocParseResult = parseResult(employeeDO.getId(), file.getName(), data, fileNameData);
+        ProfileDocParseResult profileDocParseResult = parseResult(employeeDO.getId(), file.getName(), file, fileNameData);
         LocalDateTime parseFileEnd = LocalDateTime.now();
         Duration parseTimeDiffer = Duration.between(parseFileStart,parseFileEnd);
         long parseTimeDifferMills = parseTimeDiffer.toMillis();//相差毫秒数
@@ -241,7 +196,7 @@ public class ReferralServiceImpl implements ReferralService {
         FileNameData fileNameData = StreamUtils.persistFile(fileDataArray, env.getProperty("profile.persist.url"), suffix);
         fileNameData.setOriginName(fileName);
 
-        return parseResult(employeeId, fileAbsoluteName, StreamUtils.byteArrayToBase64String(fileDataArray), fileNameData);
+        return parseResult(employeeId, fileAbsoluteName,new File(fileNameData.getFileAbsoluteName()), fileNameData);
     }
 
     @Override
@@ -517,11 +472,12 @@ public class ReferralServiceImpl implements ReferralService {
     @Transactional
     @CounterIface
     @Override
-    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
+    public int employeeReferralProfile(int employeeId, String name, String mobile,Map<String,String> otherFields, List<String> referralReasons,
                                        int position, byte relationship, String referralText,   byte referralType) throws ProfileException, BIZException {
         logger.info("=======================开始执行上传操作======employeeReferralProfile===");
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
                 .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildOtherFields(otherFields)
                 .buildPosition(position)
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();
@@ -535,14 +491,23 @@ public class ReferralServiceImpl implements ReferralService {
         return referralIds.get(0);
     }
 
+
+
+    /*    public static void main(String[] args) {
+            ValidateUtil validateUtil = new ValidateUtil();
+            addValidateReferralByTemplate(validateUtil,"11.qq",new HashMap<>(),Arrays.asList(19499977,19500035,19501637));
+            System.out.println(validateUtil.validate());
+        }*/
+
     @Override
-    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,
+    public List<MobotReferralResultVO> employeeReferralProfile(int employeeId, String name, String mobile,Map<String,String> otherFields,
                                                                List<String> referralReasons, List<Integer> positions,
                                                                byte relationship, String referralText,
                                                                byte referralType) throws ProfileException, BIZException {
         logger.info("Multi positions recommendation start {}",positions);
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
                 .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildOtherFields(otherFields)
                 .buildPosition(positions)
                 .buildRecomReason(relationship,referralText,referralType)
                 .buildEmployeeReferralProfileNotice();
@@ -926,19 +891,18 @@ public class ReferralServiceImpl implements ReferralService {
 //
 //    }
 
-    private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
+    private ProfileDocParseResult parseResult(int employeeId, String fileName, File file,
                                               FileNameData fileNameData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
         profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
-        ResumeObj resumeObj;
+        ProfileObj profileObj;
         try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
-        } catch (TException | IOException e) {
+            profileObj = profileEntity.parseProfile(0,fileName, file);
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
         profileDocParseResult.setMobile(profileObj.getUser().getMobile());
         profileDocParseResult.setName(profileObj.getUser().getName());
         profileObj.setResumeObj(null);

@@ -16,6 +16,7 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -31,6 +32,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
@@ -39,7 +41,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
@@ -50,7 +51,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
-import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojo.profile.ProfileRecord;
 import com.moseeker.entity.pojos.*;
@@ -66,7 +66,6 @@ import org.jooq.Record3;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -87,6 +86,9 @@ import java.util.stream.Collectors;
 @Service
 //@CounterIface
 public class ReferralEntity {
+
+    private final static List<String> PROFILE_OTHER_PINYIN_NAME_LIST = Arrays.asList("familynamepinyin","fullnamepinyin");
+
 
     @Autowired
     private HrHbConfigDao configDao;
@@ -126,6 +128,9 @@ public class ReferralEntity {
 
     @Autowired
     private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileOtherDao profileOtherDao;
 
     @Autowired
     private ProfileAttachmentDao attachmentDao;
@@ -292,23 +297,23 @@ public class ReferralEntity {
 
         logger.info("ReferralEntity claimReferralCard userUserDO:{}", JSONObject.toJSONString(application));
         logger.info("ReferralEntity claimReferralCard application:{}", JSONObject.toJSONString(userUserDO));
-        ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
+        boolean update = false;
         if (application != null) {
-            JobApplicationRecord record = new JobApplicationRecord();
-            BeanUtils.copyProperties(application, record);
-            record.setApplierId(userUserDO.getId());
-            record.setApplierName(userUserDO.getName());
-            record.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()));
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            record.setUpdateTime(updateTime);
-            resultVO = applicationDao.addIfNotExists(record);
+            update = applicationDao.updateIfNotExist(application.getId(), application.getPositionId(),
+                    userUserDO.getId(), userUserDO.getName(),
+                    ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()));
 
-            logger.info("ReferralEntity claimReferralCard");
+            logger.info("ReferralEntity claimReferralCard update:{}", update);
+
+        }
+        if (!update) {
+            throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
         }
 
         // 更新简历中的userId，计算简历完整度
         updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
         logger.info("ReferralEntity claimReferralCard updateProfileUserIdAndCompleteness");
+        mergeNamePinyin(userUserDO.getId(), referralLog.getReferenceId());
 
         // 更新候选人推荐记录中的推荐人
         int postUserId = 0;
@@ -326,15 +331,15 @@ public class ReferralEntity {
         if (postUserId > 0) {
             recomEvaluationDao.changePostUserId(postUserId, referralLog.getPositionId(), referralLog.getReferenceId(), userUserDO.getId());
         }
-        if (resultVO.isCreate()) {
-            updateApplicationEsIndex(userUserDO.getId());
-        }
+        updateApplicationEsIndex(referralLog.getReferenceId());
+        updateApplicationEsIndex(userUserDO.getId());
         logger.info("ReferralEntity claimReferralCard end!");
-        return resultVO.getApplicationId();
+        return application.getId();
     }
 
-    public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
-        return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
+
+    public ReferralLog fetchReferralLogByPositionIdAndReferenceId(Integer positionId, int referenceId) {
+        return referralLogDao.fetchByReferenceIdUserId(referenceId, positionId);
     }
 
     public ReferralLog fetchReferralLog(Integer employeeId,  int referenceId) {
@@ -588,7 +593,58 @@ public class ReferralEntity {
         }
     }
 
+    /**
+     * 推荐认领，由于百济迭代需要姓拼音和名拼音非空，
+     * 合并虚拟用户姓拼音和名拼音到真实用户
+     * @param referenceId 虚拟用户profile_other信息
+     * @param userId 真实用户profile id
+     */
+    public void mergeNamePinyin(int userId, Integer referenceId) {
+        ProfileProfileRecord referenceProfile  = profileDao.getProfileByUserId(referenceId);
+        ProfileProfileRecord userProfile = profileDao.getProfileOrderByActiveByUserId(userId);
+        if(referenceProfile != null ){
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.where("profile_id", String.valueOf(referenceProfile.getId()));
+            ProfileOtherRecord otherRecord = profileOtherDao.getRecord(query.buildQuery());
+
+            if (otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+                // 如果虚拟用户profile.other包含 姓拼音和名拼音，则合并到实际用户
+                Map<String, Object> otherMap = JSONObject.parseObject(otherRecord.getOther(), Map.class);
+                Map<String, Object> allowMap = new HashMap<>();
+                otherMap.forEach((k,v)->{
+                    if(PROFILE_OTHER_PINYIN_NAME_LIST.contains(k) && v != null && !"".equals(v)){
+                        allowMap.put(k,v);
+                    }
+                });
+
+                if(!allowMap.isEmpty()){
+                    query.clear();
+                    query.where("profile_id", String.valueOf(userProfile.getId()));
+                    ProfileOtherRecord other = profileOtherDao.getRecord(query.buildQuery());
+                    if (other == null ) {
+                        other = new ProfileOtherRecord();
+                        other.setProfileId(userProfile.getUserId());
+                        other.setOther(JSONObject.toJSONString(allowMap));
+                        profileOtherDao.addRecord(otherRecord);
+                    } else{
+                        /**
+                         * 合并
+                         */
+                        Map<String, Object> newOtherMap = StringUtils.isNotNullOrEmpty(other.getOther())? JSONObject.parseObject(other.getOther(), Map.class) : new HashMap<>();
+                        // 仅当字段不存在时更新
+                        allowMap.keySet().stream().filter(k->StringUtils.isEmptyObject(newOtherMap.get(k))).forEach(k->newOtherMap.putIfAbsent(k,allowMap.get(k)));
+                        other.setOther(JSONObject.toJSONString(newOtherMap));
+                        profileOtherDao.updateRecord(other);
+                    }
+                }
+            }
+        }
+
+    }
+
+
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
+        logger.info("ReferralEntity fetchReferralLog userId:{}, companyIds:{}, hrId:{}", userId, companyIds, hrId);
         ReferralProfileData data = new ReferralProfileData();
         long startTime = System.currentTimeMillis();
         Future<UserHrAccountDO> accountFuture = threadPool.startTast(
@@ -606,16 +662,19 @@ public class ReferralEntity {
             }
             long positionTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog positionTime:{}", positionTime- accountTime);
+            logger.info("ReferralEntity fetchReferralLog account:{}", JSONObject.toJSONString(account));
             if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
                 positionIds = positionDao.getPositionIdByPublisher(hrId);
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(userId, positionIds);
             }else {
                 logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(userId);
             }
+            logger.info("ReferralEntity fetchReferralLog logs:{}", JSONObject.toJSONString(logs));
             List<Integer> employeeIdList = new ArrayList<>();
             if(!StringUtils.isEmptyList(logs)){
                 employeeIdList = logs.stream().map(ReferralLog::getEmployeeId).collect(Collectors.toList());
             }
+            logger.info("ReferralEntity fetchReferralLog referralLog.employeeIdList:{}", JSONObject.toJSONString(employeeIdList));
             long employeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- positionTime);
             List<Integer> temp = employeeIdList;
@@ -625,20 +684,25 @@ public class ReferralEntity {
                     () -> historyUserEmployeeDao.getHistoryEmployeeByIds(temp));;
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
             if (!StringUtils.isEmptyList(employeeList)){
+                logger.info("ReferralEntity fetchReferralLog employeeList{}", JSONObject.toJSONString(employeeList));
                 List<Integer> employeeIds1 = employeeList.stream().filter(f -> companyIds.contains(f.getCompanyId()))
                         .map(m -> m.getId()).collect(Collectors.toList());
+                logger.info("ReferralEntity fetchReferralLog employeeIds1{}", JSONObject.toJSONString(employeeIds1));
                 employeeIds.addAll(employeeIds1);
             }
             long midTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- midTime);
             List<UserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
             if (!StringUtils.isEmptyList(historyUserEmployees)){
+                logger.info("ReferralEntity fetchReferralLog historyUserEmployees{}", JSONObject.toJSONString(historyUserEmployees));
                 List<Integer> employeeIds2 = historyUserEmployees.stream().filter(f -> companyIds.contains(f.getCompanyId()))
                         .map(m -> m.getId()).collect(Collectors.toList());
+                logger.info("ReferralEntity fetchReferralLog employeeIds2{}", JSONObject.toJSONString(employeeIds2));
                 employeeIds.addAll(employeeIds2);
             }
             long historyUserEmployeeTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralLog historyUserEmployeeTime:{}", historyUserEmployeeTime- employeeTime);
+            logger.info("ReferralEntity fetchReferralLog employeeIds:{}", JSONObject.toJSONString(employeeIds));
 
         }catch (Exception e){
             logger.error(e.getMessage(), e);
@@ -654,6 +718,7 @@ public class ReferralEntity {
                 }
             }
         }
+        logger.info("ReferralEntity fetchReferralLog logList:{}", JSONObject.toJSONString(logList));
         long endTime = System.currentTimeMillis();
         logger.info("profile tab fetchReferralLog endTime:{}", endTime- startTime);
         return logList;
@@ -662,6 +727,7 @@ public class ReferralEntity {
     public ReferralProfileData fetchReferralProfileData(List<ReferralLog> logs){
         ReferralProfileData data = new ReferralProfileData();
         if(StringUtils.isEmptyList(logs)){
+            logger.info("ReferralServiceImpl getReferralProfileTabList logs is null");
             return null;
         }
         long startTime = System.currentTimeMillis();List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
@@ -677,6 +743,7 @@ public class ReferralEntity {
                 () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
         try {
             List<JobPositionDO> positionList = positionListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList positionList:{}", JSONObject.toJSONString(positionList));
             if(!StringUtils.isEmptyList(positionList)){
                 Map<Integer, String> positionTitileMap = new HashMap<>();
                 positionList.forEach(position
@@ -689,6 +756,7 @@ public class ReferralEntity {
             logger.info("profile tab fetchReferralProfileData positionListTime:{}", positionListTime-startTime);
             Map<Integer, String> employeeNameMap = new HashMap<>();
             List<UserEmployeeDO> empList = empListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList empList:{}", JSONObject.toJSONString(empList));
             if(!StringUtils.isEmptyList(empList)){
                 empList.forEach( employee ->
                     employeeNameMap.put(employee.getId(), employee.getCname())
@@ -697,6 +765,7 @@ public class ReferralEntity {
             long empTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralProfileData empTime:{}", empTime- positionListTime);
             List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList historyEmpList:{}", JSONObject.toJSONString(historyEmpList));
             if(!StringUtils.isEmptyList(historyEmpList)){
                 historyEmpList.forEach(employee ->
                     employeeNameMap.put(employee.getId(), employee.getCname())
@@ -706,6 +775,7 @@ public class ReferralEntity {
             long hisEmpTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralProfileData empTime:{}", hisEmpTime - empTime);
             List<ProfileAttachmentDO> attachmentList = attachmentListFuture.get();
+            logger.info("ReferralServiceImpl getReferralProfileTabList attachmentList:{}", JSONObject.toJSONString(attachmentList));
             long attachmentTime = System.currentTimeMillis();
             logger.info("profile tab fetchReferralProfileData attachmentTime:{}", attachmentTime - empTime);
             if(StringUtils.isEmptyList(attachmentList)){
@@ -1075,7 +1145,9 @@ public class ReferralEntity {
                             break;
                         }
                     }
-                    if(status)records.add(recommendRecord);
+                    if (status) {
+                        records.add(recommendRecord);
+                    }
                 }
                 return records;
             }
@@ -1127,10 +1199,26 @@ public class ReferralEntity {
 
     private void updateApplicationEsIndex(int userId){
         scheduledThread.startTast(()->{
+            logger.info("==========更新data/application===========ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+            logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
             logger.info("====================redis==============application更新=============");
             logger.info("================userid={}=================",userId);
         },3000);
+    }
+
+    /**
+     * 根据职位和被推荐人查找内推记录
+     * 再次内推时，需要查找历史上被认领的推荐记录，避免重复推荐
+     * @param positionIds 职位信息
+     * @param userId 被推荐人
+     */
+    public List<ReferralLog> fetchByPositionIdAndOldReferenceId(List<Integer> positionIds, int userId) {
+        if (positionIds != null && positionIds.size() > 0 && userId > 0) {
+            return referralLogDao.fetchByPositionIdListAndOldReferenceId(positionIds, userId);
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 }

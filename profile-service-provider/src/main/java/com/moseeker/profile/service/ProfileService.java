@@ -31,6 +31,7 @@ public interface ProfileService {
      * @return  ProfileDocParseResult
      * @throws ProfileException 业务异常
      */
+    @Deprecated
     ProfileDocParseResult parseFileProfile(int id, String fileName, ByteBuffer fileData) throws ProfileException;
 
     /**

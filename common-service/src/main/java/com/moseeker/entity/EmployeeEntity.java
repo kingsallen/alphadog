@@ -27,7 +27,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
-import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -58,7 +57,6 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -73,27 +71,29 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -101,6 +101,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @CounterIface
 public class EmployeeEntity {
+
 
     @Autowired
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
@@ -179,6 +180,9 @@ public class EmployeeEntity {
     @Autowired
     RedpacketActivityPositionJOOQDao activityPositionJOOQDao;
 
+    @Autowired
+    private UserWorkwxDao workwxDao ;
+
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
@@ -229,7 +233,7 @@ public class EmployeeEntity {
     // 转发点击操作 前置
     @Transactional
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
-                               int applicationId) throws Exception {
+                               int applicationId) throws EmployeeException {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
@@ -360,32 +364,26 @@ public class EmployeeEntity {
     }
 
     @Transactional
-    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
+    public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws EmployeeException {
         // 获取积分点数
         if (companyId == 0 || templateId == 0) {
             throw EmployeeException.PROGRAM_PARAM_NOTEXIST;
         } else {
-            int award;
+            int award = 0;
             int awardConfigId = 0;
             Query.QueryBuilder query = new Query.QueryBuilder().where("company_id", companyId).and("template_id", templateId);
             HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
             if (hrPointsConfDO != null) {
-                if (hrPointsConfDO.getReward() == 0) {
-                    throw new Exception("添加积分点数不能为0");
-                } else {
-                    award = (int) hrPointsConfDO.getReward();
-                    reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
-                    awardConfigId = hrPointsConfDO.getId();
-                }
+                award = (int) hrPointsConfDO.getReward();
+                reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, hrPointsConfDO.getStatusName());
+                awardConfigId = hrPointsConfDO.getId();
             } else {
                 query.clear();
                 query.where("id", templateId);
                 ConfigSysPointsConfTplDO confTplDO = configSysPointsConfTplDao.getData(query.buildQuery());
-                if (confTplDO != null && confTplDO.getAward() != 0) {
+                if (confTplDO != null) {
                     award = confTplDO.getAward();
                     reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
-                } else {
-                    throw EmployeeException.EMPLOYEE_AWARD_ZERO;
                 }
             }
             UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
@@ -642,21 +640,26 @@ public class EmployeeEntity {
     }
 
 
+
+    public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
+        return unbind(employeeIds,EMPLOYEE_ACTIVATION_UNBIND);
+    }
     /**
      * 员工取消认证（支持批量）
      *
      * @param employeeIds
+     * @param activationChange
      * @return
      */
     @Transactional
-    public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
+    public boolean unbind(Collection<Integer> employeeIds,byte activationChange) throws CommonException {
         logger.info("EmployeeEntity unbind employeeIds:{}", JSONObject.toJSONString(employeeIds));
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
         employeeDOList.forEach(userEmployeeDO -> userEmployeeDO.setUnbindTime(LocalDateTime.now().format(sdf)));
-        boolean result = unbind(employeeDOList);
+        boolean result = unbind(employeeDOList,activationChange);
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         List<ReferralEmployeeRegisterLog> logs = employeeIds
                 .stream()
@@ -679,8 +682,8 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
-
-    public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
+    @Transactional
+    public boolean unbind(List<UserEmployeeDO> employees,byte activationChange) throws CommonException {
         logger.info("EmployeeEntity unbind employees:{}", JSONObject.toJSONString(employees));
         if (employees != null && employees.size() > 0) {
             String now = DateUtils.dateToShortTime(new Date());
@@ -688,7 +691,7 @@ public class EmployeeEntity {
                     .filter(f -> f.getActivation() == EmployeeType.AUTH_SUCCESS.getValue())
                     .map(employee ->employee.getSysuserId()).collect(Collectors.toList());
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
-                e.setActivation((byte) 1);
+                e.setActivation(activationChange);
                 e.setUnbindTime(now);
             });
             logger.info("EmployeeEntity unbind after change employees:{}", JSONObject.toJSONString(employees));
@@ -696,6 +699,14 @@ public class EmployeeEntity {
                 int userId = DO.getSysuserId();
                 int companyId = DO.getCompanyId();
                 convertCandidatePerson(userId, companyId);
+
+                // 如果企业微信关联了userid，解除关联(否则影响员工重新绑定)
+                if(activationChange == EMPLOYEE_ACTIVATION_UNEMPLOYEE){
+                    // 员工离职
+                    workwxDao.delete(userId,companyId);
+                }else{
+                    workwxDao.unbindSysUser(userId,companyId);
+                }
             }
             int[] rows = employeeDao.updateDatas(employees);
             logger.info("EmployeeEntity unbind rows:{}", rows.length);
@@ -753,6 +764,7 @@ public class EmployeeEntity {
                 int userId = DO.getSysuserId();
                 int companyId = DO.getCompanyId();
                 convertCandidatePerson(userId, companyId);
+                workwxDao.unbindSysUser(userId,companyId);
             }
             int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
@@ -1274,7 +1286,8 @@ public class EmployeeEntity {
 
     }
 
-    public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+    @Transactional
+    public int unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
         if(userId <= 0 || wechatId <= 0){
             throw EmployeeException.NODATA_EXCEPTION;
         }
@@ -1294,6 +1307,7 @@ public class EmployeeEntity {
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
         }}, false);
+        return employeeDO.getCompanyId();
     }
 
     /**

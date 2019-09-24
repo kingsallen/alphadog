@@ -655,7 +655,7 @@ public class WholeProfileService {
             profileEntity.improveEducation(profilePojo.getEducationRecords(), profileId);
             profileEntity.improveIntention(profilePojo.getIntentionRecords(), profileId);
             profileEntity.improveLanguage(profilePojo.getLanguageRecords(), profileId);
-            profileEntity.improveOther(profilePojo.getOtherRecord(), profileId);
+            profileEntity.mergeOther(profilePojo.getOtherRecord(), profileId);
             profileEntity.improveProjectexp(profilePojo.getProjectExps(), profileId);
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);

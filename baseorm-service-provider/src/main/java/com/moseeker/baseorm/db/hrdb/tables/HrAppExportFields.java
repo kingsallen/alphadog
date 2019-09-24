@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
 
-    private static final long serialVersionUID = -486547424;
+    private static final long serialVersionUID = -1757364472;
 
     /**
      * The reference instance of <code>hrdb.hr_app_export_fields</code>
@@ -61,9 +61,9 @@ public class HrAppExportFields extends TableImpl<HrAppExportFieldsRecord> {
     public final TableField<HrAppExportFieldsRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
 
     /**
-     * The column <code>hrdb.hr_app_export_fields.field_title</code>. 属性标题
+     * The column <code>hrdb.hr_app_export_fields.field_title</code>.
      */
-    public final TableField<HrAppExportFieldsRecord, String> FIELD_TITLE = createField("field_title", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性标题");
+    public final TableField<HrAppExportFieldsRecord, String> FIELD_TITLE = createField("field_title", org.jooq.impl.SQLDataType.VARCHAR.length(2000), this, "");
 
     /**
      * The column <code>hrdb.hr_app_export_fields.display_order</code>. 页面展示顺序

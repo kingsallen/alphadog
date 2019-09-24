@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat implements Serializable {
 
-    private static final long serialVersionUID = 260063648;
+    private static final long serialVersionUID = 434460903;
 
     private Integer   id;
     private Integer   chatlistId;
@@ -38,6 +38,7 @@ public class HrWxHrChat implements Serializable {
     private String    btnContent;
     private String    compoundContent;
     private String    stats;
+    private Integer   hrReplyQuestionChatId;
 
     public HrWxHrChat() {}
 
@@ -55,6 +56,7 @@ public class HrWxHrChat implements Serializable {
         this.btnContent = value.btnContent;
         this.compoundContent = value.compoundContent;
         this.stats = value.stats;
+        this.hrReplyQuestionChatId = value.hrReplyQuestionChatId;
     }
 
     public HrWxHrChat(
@@ -70,7 +72,8 @@ public class HrWxHrChat implements Serializable {
         String    picUrl,
         String    btnContent,
         String    compoundContent,
-        String    stats
+        String    stats,
+        Integer   hrReplyQuestionChatId
     ) {
         this.id = id;
         this.chatlistId = chatlistId;
@@ -85,6 +88,7 @@ public class HrWxHrChat implements Serializable {
         this.btnContent = btnContent;
         this.compoundContent = compoundContent;
         this.stats = stats;
+        this.hrReplyQuestionChatId = hrReplyQuestionChatId;
     }
 
     public Integer getId() {
@@ -191,6 +195,14 @@ public class HrWxHrChat implements Serializable {
         this.stats = stats;
     }
 
+    public Integer getHrReplyQuestionChatId() {
+        return this.hrReplyQuestionChatId;
+    }
+
+    public void setHrReplyQuestionChatId(Integer hrReplyQuestionChatId) {
+        this.hrReplyQuestionChatId = hrReplyQuestionChatId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxHrChat (");
@@ -208,6 +220,7 @@ public class HrWxHrChat implements Serializable {
         sb.append(", ").append(btnContent);
         sb.append(", ").append(compoundContent);
         sb.append(", ").append(stats);
+        sb.append(", ").append(hrReplyQuestionChatId);
 
         sb.append(")");
         return sb.toString();

@@ -3,17 +3,20 @@ package com.moseeker.baseorm.dao.employeedb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.employeedb.tables.pojos.EmployeeOptionValue;
 import com.moseeker.baseorm.db.employeedb.tables.records.EmployeeOptionValueRecord;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
+import com.moseeker.common.constants.AbleFlag;
 import org.jooq.Condition;
 import org.jooq.Result;
-import org.jooq.impl.TableImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 import static com.moseeker.baseorm.db.employeedb.tables.EmployeeOptionValue.EMPLOYEE_OPTION_VALUE;
 
 /**
@@ -128,4 +131,80 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
             return new ArrayList<>(0);
         }
     }
+
+    /**
+     * 查找系统字段选项
+     * @param companyId
+     * @param fieldType
+     * @return
+     */
+    public List<String> listSystemFieldOptions(int companyId, byte fieldType){
+        List<String> options = create.select(EMPLOYEE_OPTION_VALUE.NAME)
+                .from(HR_EMPLOYEE_CUSTOM_FIELDS)
+                .innerJoin(EMPLOYEE_OPTION_VALUE)
+                .on(HR_EMPLOYEE_CUSTOM_FIELDS.ID.eq(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID))
+                .where(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.COMPANY_ID.in(companyId))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.STATUS.eq(AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .and(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.FIELD_TYPE.eq(fieldType))
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetch().into(String.class);
+        return options;
+    }
+
+    /**
+     * 查找系统字段选项
+     * @param customId
+     * @return
+     */
+    public  Map<Integer,String> listFieldOptions(int customId){
+        Map<Integer,String> options = create.select(EMPLOYEE_OPTION_VALUE.ID,EMPLOYEE_OPTION_VALUE.NAME)
+                .from(EMPLOYEE_OPTION_VALUE)
+                .where(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customId))
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetch().intoMap(EMPLOYEE_OPTION_VALUE.ID,EMPLOYEE_OPTION_VALUE.NAME);
+        return options;
+    }
+
+    /*
+     * 添加下拉选项
+     * */
+    public void addCustomOption(List<String> options,int customFieldId){
+        List<EmployeeOptionValueRecord> hrEmployeeOptionValuePOS = new ArrayList<>();
+        options.stream().forEach(e->{
+            EmployeeOptionValueRecord hrEmployeeOptionValuePO = new EmployeeOptionValueRecord();
+            hrEmployeeOptionValuePO.setCustomFieldId(customFieldId);
+            hrEmployeeOptionValuePO.setName(e);
+            hrEmployeeOptionValuePO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            hrEmployeeOptionValuePOS.add(hrEmployeeOptionValuePO);
+        });
+        create.execute("set names utf8mb4");
+        create.attach(hrEmployeeOptionValuePOS);
+        create.batchInsert(hrEmployeeOptionValuePOS).execute();
+    }
+
+    public int addCustomOption(String option,int customFieldId){
+        EmployeeOptionValueRecord hrEmployeeOptionValuePO = new EmployeeOptionValueRecord();
+        hrEmployeeOptionValuePO.setCustomFieldId(customFieldId);
+        hrEmployeeOptionValuePO.setName(option);
+        hrEmployeeOptionValuePO.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        create.execute("set names utf8mb4");
+        create.executeInsert(hrEmployeeOptionValuePO);
+        return create.select(EMPLOYEE_OPTION_VALUE.ID).from(EMPLOYEE_OPTION_VALUE)
+                .where(EMPLOYEE_OPTION_VALUE.NAME.eq(option))
+                .and(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customFieldId))
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetchOneInto(Integer.class);
+    }
+
+   /*
+    public static void main(String[] args) throws SQLException {
+        String userName = "daqi";
+        String password = "7f1a45eac5985519829c929e7bbf0557";
+        String url = "jdbc:mysql://db1.dqprism.com:3306/userdb";
+
+        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+            DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
+            //Result<Record> result = create.select().from(EmployeeOptionValue.EMPLOYEE_OPTION_VALUE).fetch();
+
+            //getSystemFieldOption(create,4,(byte) 2);
+        }
+    }*/
 }

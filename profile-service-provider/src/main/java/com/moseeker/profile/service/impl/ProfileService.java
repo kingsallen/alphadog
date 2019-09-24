@@ -46,7 +46,10 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -79,6 +82,7 @@ public class ProfileService {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
     @Autowired
     protected UserHrAccountDao userHrAccountDao;
@@ -500,66 +504,18 @@ public class ProfileService {
     /**
      * 解析简历
      *
-     * @param uid
-     * @param fileName
-     * @param file
-     * @return
-     * @throws TException
-     */
-    public Response profileParser(int uid, String fileName, String file) throws TException {
-        String uuid = UUID.randomUUID().toString();
-        ProfileObj profileObj = parseByResumeSDK(fileName, file, uuid, uid);
-        // 查询
-        UserUserRecord userUser = userDao.getUserById(uid);
-        if (userUser != null) {
-            User user = new User();
-            user.setEmail(userUser.getEmail());
-            user.setMobile(String.valueOf(userUser.getMobile()));
-            user.setUid(String.valueOf(uid));
-            user.setName(userUser.getName());
-            profileObj.setUser(user);
-        }
-        logger.info("profileParser getUser:{}", JSON.toJSONString(profileObj.getUser()));
-        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
-        return ResponseUtils.success(profileObj);
-    }
-
-    /**
-     * 解析简历
-     *
      * @param fileName
      * @param file
      * @return
      * @throws TException
      */
     public Response profileParser(String fileName, String file) throws TException {
-        String uuid = UUID.randomUUID().toString();
-        ProfileObj profileObj = parseByResumeSDK(fileName, file, uuid, 0);
+        return profileParser(fileName,file);
+    }
+    public Response profileParser(int userid,String fileName, String file) throws TException {
+        ProfileObj profileObj = profileEntity.parseProfile(userid,fileName, file);
         logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return ResponseUtils.success(profileObj);
-    }
-    /**
-     * 通过resumeSDK服务商解析文本文件成一个我们可识别的简历数据
-     * @param fileName 文件名称
-     * @param file 文件
-     * @param uuid profile uuid
-     * @param uid 用户编号
-     * @return 简历数据
-     */
-    private ProfileObj parseByResumeSDK(String fileName, String file, String uuid, int uid) {
-        ProfileObj profileObj = new ProfileObj();
-        try {
-            // 调用SDK得到结果
-            ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, file);
-            logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
-            // 调用成功,开始转换对象,我把它单独独立出来
-            profileObj=resumeEntity.handlerParseData(resumeObj,uid,fileName);
-            resumeEntity.fillProfileObj(profileObj, resumeObj, uid, fileName, null);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-        logger.info("profileParser:{}", JSON.toJSONString(profileObj));
-        return profileObj;
     }
 
     /**
@@ -568,12 +524,18 @@ public class ProfileService {
      * @param positionId
      * @return
      */
-    public Response checkProfileOther(int userId, int positionId) {
+    public Response checkProfileOther(int userId, int positionId){
         logger.info("ProfileService checkProfileOther userId:{}, positionId:{}", userId, positionId);
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", appCvConfigId);
         HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        CompanySwitchVO switchVO = null;
+        try{
+            switchVO = companyServices.companySwitch(hrAppCvConfDO.getCompanyId(),OmsSwitchEnum.IDCARD_RECOGNITION.getName());
+        }catch (Exception e){
+            logger.error(e.getMessage(),e);
+        }
         logger.info("ProfileService checkProfileOther hrAppCvConfDO:{}", hrAppCvConfDO);
         if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
             logger.info("ProfileService checkProfileOther hrAppCvConfDO is null or getFieldValue is empty");
@@ -599,7 +561,8 @@ public class ProfileService {
                 profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
                 logger.info("ProfileService checkProfileOther profileOtherJson:{}", profileOtherJson);
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
+                        map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0
+                        && (f.getIntValue("parent_id") == 0||belongToIdCard(f.getString("field_name")))).collect(Collectors.toList());
                 logger.info("ProfileService checkProfileOther appCvConfigJson:{}", appCvConfigJson);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -611,6 +574,13 @@ public class ProfileService {
                 logger.info("ProfileService checkProfileOther appCvConfig:{}", appCvConfig);
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
                     logger.info("ProfileService checkProfileOther appCvConfig.getString(\"map\"):{}", appCvConfig.getString("map"));
+
+                    if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
+                            Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
+                            (switchVO==null||switchVO.getValid()==0)){
+                        logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                        continue;
+                    }
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains("&")) {
@@ -625,24 +595,51 @@ public class ProfileService {
                         String[] mappingStr = mappingFiled.split("\\.", 2);
                         customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
                     } else {
+                        logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                        if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
+                                Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
+                                (switchVO==null||switchVO.getValid()==0)){
+                            logger.info("ProfileService checkProfileOther field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                            continue;
+                        }
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 } else {
+
+                    logger.info("ProfileService checkProfileOther outer field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                    if((Constant.IDPHOTO_BACK.equals(appCvConfig.getString("field_name"))||
+                            Constant.IDPHOTO_FRONT.equals(appCvConfig.getString("field_name")))&&
+                            (switchVO==null||switchVO.getValid()==0)){
+                        logger.info("ProfileService checkProfileOther inner field_name:{} switch:{}",appCvConfig.getString("field_name"),switchVO);
+                        continue;
+                    }
                     // 普通字段校验
                     customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     if (!StringUtils.isJsonNullOrEmpty(customResult)) {
                         customResult = profileOtherJson.get(appCvConfig.getString("field_name"));
                     } else {
+                        if(Constant.IDCARD_RECOG.equals(appCvConfig.getString("field_name"))){
+                            continue;
+                        }
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 }
                 logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
+                if(org.springframework.util.StringUtils.isEmpty(customResult)){
+                    customResult = "";
+                }
+
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
             }
         }
         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
+    }
+
+    private static boolean belongToIdCard(String fieldName){
+        return "gender".equals(fieldName)||"name".equals(fieldName)||"birth".equals(fieldName)||"idnumber".equals(fieldName)||
+                "id_card_address".equals(fieldName)||Constant.IDPHOTO_FRONT.equals(fieldName)||Constant.IDPHOTO_BACK.equals(fieldName);
     }
 
 
@@ -966,26 +963,8 @@ public class ProfileService {
      */
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String, Object> result = new HashMap<>();
-        ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
-        logger.info(JSON.toJSONString(resumeObj));
-        result.put("resumeObj", resumeObj);
-        if (resumeObj.getStatus().getCode() == 200) {
-            String phone = resumeObj.getResult().getPhone();
-            int userId = 0;
-            if (StringUtils.isNotNullOrEmpty(phone)) {
-                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue(),null);
-                if (userRecord != null) {
-                    userId = userRecord.getId();
-                }
-
-            }
-            ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj, userId, fileName);
-            resumeEntity.fillProfileObj(profileObj, resumeObj, 0, fileName, null);
-            logger.info(JSON.toJSONString(profileObj));
-            result.put("profile", profileObj);
-        } else {
-            ResponseUtils.fail(1, "解析失败");
-        }
+        ProfileObj profileObj = profileEntity.parseProfile(null,companyId,fileName, fileData);
+        result.put("profile", profileObj);
         return ResponseUtils.success(result);
     }
 
@@ -1029,22 +1008,17 @@ public class ProfileService {
             }
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        String data = new String(org.apache.commons.codec.binary.Base64.encodeBase64(fileBytes), Consts.UTF_8);
 
-        // 调用SDK得到结果
-        ResumeObj resumeObj;
+        ProfileObj profileObj;
         try {
-            resumeObj = profileEntity.profileParserAdaptor(file.getName(), data);
-        } catch (TException | IOException e) {
+            profileObj = profileEntity.parseProfile(0,file.getName(), file);
+        } catch (Exception e) {
             //判断请求来源是否为我是员工
             if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
                 logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.FAIL.getKey(),employeeDO.getCompanyId(),null);
             }
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
-
-        ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
 
         logger.info("profileParser profileObj:{}", JSON.toJSONString(profileObj));
 
@@ -1055,9 +1029,6 @@ public class ProfileService {
             }
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
-        resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
-
-        logger.info("profileParser fillProfileObj profileObj:{}", JSON.toJSONString(profileObj));
 
         profileObj.setResumeObj(null);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);

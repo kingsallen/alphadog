@@ -251,11 +251,14 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId, int hrId) throws UserAccountException {
+        logger.info("ReferralServiceImpl getReferralProfileTabList userId:{}, companyId:{}, hrId:{}", userId, companyId, hrId);
         long startTime = System.currentTimeMillis();
         List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
         long logListTime = System.currentTimeMillis();
         logger.info("profile tab getReferralProfileTabList groupCompanyRelTime:{}", logListTime- startTime);
+        logger.info("ReferralServiceImpl getReferralProfileTabList logList:{}", JSONObject.toJSONString(logList));
         ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
+        logger.info("ReferralServiceImpl getReferralProfileTabList profileData:{}", JSONObject.toJSONString(profileData));
         long profileDataTime = System.currentTimeMillis();
         logger.info("profile tab getReferralProfileTabList profileDataTime:{}", profileDataTime- logListTime);
 
@@ -264,6 +267,8 @@ public class ReferralServiceImpl implements ReferralService {
             for(ReferralLog log : logList){
                 profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
             }
+            logger.info("ReferralServiceImpl getReferralProfileTabList profileTabs:{}", JSONObject.toJSONString(profileTabs));
+
             return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
                     .collect(Collectors.toList());
         }

@@ -3,6 +3,8 @@ package com.moseeker.common.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,6 +16,7 @@ import java.util.regex.Pattern;
  */
 public class EmojiFilter {
 
+    private static Logger logger = LoggerFactory.getLogger(EmojiFilter.class);
     /**
      * 检测是否有emoji字符
      * @param source
@@ -434,8 +437,7 @@ public class EmojiFilter {
                                 value = (value << 4) + 10 + aChar - 'A';
                                 break;
                             default:
-                                throw new IllegalArgumentException(
-                                        "Malformed   \\uxxxx   encoding.");
+                                logger.error("Malformed   \\uxxxx   encoding.");
                         }
                     }
                     outBuffer.append((char) value);

@@ -9,8 +9,12 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BonusTools;
 import com.moseeker.common.util.FormCheck;
+import com.moseeker.common.util.HttpClient;
+import com.moseeker.common.util.MapUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.exception.ProfileException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -39,11 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -54,12 +54,13 @@ import java.util.stream.Collectors;
 @CounterIface
 public class ReferralController {
 
+
     private ProfileServices.Iface profileService =  ServiceManager.SERVICE_MANAGER.getService(ProfileServices.Iface.class);
     private EmployeeService.Iface employeeService =  ServiceManager.SERVICE_MANAGER.getService(EmployeeService.Iface.class);
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
     private ReferralService.Iface referralService =  ServiceManager.SERVICE_MANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICE_MANAGER.getService(UserHrAccountService.Iface.class);
-    private Logger logger = LoggerFactory.getLogger(ReferralController.class);
+    private static Logger logger = LoggerFactory.getLogger(ReferralController.class);
 
     /**
      * 员工上传简历
@@ -74,32 +75,50 @@ public class ReferralController {
                                 HttpServletRequest request) throws Exception {
         Params<String, Object> params = ParamUtils.parseequestParameter(request);
         int employeeId = params.getInt("employee", 0);
+        Integer appid = params.getInt("appid");
+        String fileName = params.getString("file_name");
+        logger.info("员工上传简历 employee:{},file:{}",employeeId,fileName);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
-        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addRequiredStringValidate("简历名称", fileName);
         validateUtil.addIntTypeValidate("员工", employeeId, 1, null);
-        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        validateUtil.addRequiredValidate("appid", appid);
         String result = validateUtil.validate();
+
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+            if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
+                logger.error("员工上传简历 文件格式不支持 employee:{},file:{}",employeeId,fileName);
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
 
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-            logger.info("ReferralController parseFileProfile file_name:{}", params.getString("file_name"));
-            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileProfile(employeeId, params.getString("file_name"), byteBuffer);
-            ProfileDocParseResult parseResult = new ProfileDocParseResult();
-            BeanUtils.copyProperties(result1, parseResult);
-            return Result.success(parseResult).toJson();
+            // 调用alphacloud接口
+            String url = ProfileEntity.getParsingUrl("v4/referral/file-parser");
+            Map<String, Object> parameter = new LinkedHashMap<>();
+            //parameter.put("file", FILE);
+            //parameter.put("file", new FileInputStream(FILE));
+            parameter.put("file", file);
+            parameter.put("filename", fileName);
+            parameter.put("employeeId", employeeId);
+
+            try{
+                Object jsonObject = HttpClient.postMultipartForm(url, parameter, fileName, Object.class);
+                if ( jsonObject == null){
+                    throw ProfileException.PROFILE_PARSING_ERROR;
+                }
+                return com.moseeker.servicemanager.web.controller.Result.success(jsonObject).toJson();
+            }catch (CommonException e){
+                logger.error("调用简历解析服务错误",e);
+                return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
+            }
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
 
     /**
      * 员工推荐简历
@@ -111,7 +130,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
     public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
-        logger.info("ReferralController referralProfile");
+        logger.info("ReferralController referralProfile id {} form: {}",id,referralForm);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -120,14 +139,21 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        validateUtil.addRequiredValidate("职位编号",referralForm.getPosition());
         String result = validateUtil.validate();
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomReasonText())){
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
-        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            Map fields = new HashMap<>(referralForm.getFields());
+            if(StringUtils.isNotBlank(referralForm.getEmail())){
+                fields.putIfAbsent("email",referralForm.getEmail());
+            }
+            // map参数中，value不能为空。否则出现空指针异常
+            fields = MapUtils.removeEmptyValue(fields);
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
-                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
+                    referralForm.getMobile(), fields,referralForm.getReferralReasons(), referralForm.getPosition(),
                     (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
             return Result.success(referralId).toJson();
         } else {
@@ -145,7 +171,7 @@ public class ReferralController {
     @ResponseBody
     public String referralProfiles(@RequestBody ReferralsForm referralForm) throws Exception {
 
-        logger.info("ReferralController referralProfile");
+        logger.info("ReferralController referralProfile : {}",referralForm );
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -154,15 +180,20 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("员工", referralForm.getEmployeeId(), 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        validateUtil.addRequiredOneValidate("职位编号",referralForm.getPids());
         String result = validateUtil.validate();
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralForm.getRecomTags()) &&
                 com.moseeker.common.util.StringUtils.isNullOrEmpty(referralForm.getRecomText())){
             result =result+ "推荐理由标签和文本必填任一一个；";
         }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-
+            Map fields = new HashMap<>(referralForm.getFields());
+            if(StringUtils.isNotBlank(referralForm.getEmail())){
+                fields.putIfAbsent("email",referralForm.getEmail());
+            }
+            fields = MapUtils.removeEmptyValue(fields);
             List<MobotReferralResult> results = profileService.employeeReferralProfiles(referralForm.getEmployeeId(),
-                    referralForm.getRealname(),referralForm.getMobile(), referralForm.getRecomTags(),
+                    referralForm.getRealname(),referralForm.getMobile(),fields, referralForm.getRecomTags(),
                         referralForm.getPids(),(byte)referralForm.getRelation(),
                             referralForm.getRecomText(),(byte) referralForm.getReferralType());
             return Result.success(results).toJson();

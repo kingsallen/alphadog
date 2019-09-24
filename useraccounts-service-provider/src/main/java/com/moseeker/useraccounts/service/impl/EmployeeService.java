@@ -140,7 +140,6 @@ public class EmployeeService {
     @Autowired
     private HrCompanyDao companyDao;
 
-
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -272,7 +271,7 @@ public class EmployeeService {
         return response;
     }
 
-    public Result unbind(int employeeId, int companyId, int userId) {
+    public Result unbind(int employeeId, int companyId, int userId,byte activationChange) {
         log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
         Result response = new Result();
         response.setSuccess(true);
@@ -287,7 +286,7 @@ public class EmployeeService {
         }
 
         // 解绑
-        if (!employeeEntity.unbind(Arrays.asList(employeeId))) {
+        if (!employeeEntity.unbind(Arrays.asList(employeeId),activationChange)) {
             response.setSuccess(false);
             response.setMessage("fail");
         }
@@ -992,4 +991,5 @@ public class EmployeeService {
         EmployeeBindByEmail bindByEmail = (EmployeeBindByEmail)employeeBinder.get("auth_method_email");
         bindByEmail.retrySendVerificationMail(userId, companyId, source);
     }
+
 }

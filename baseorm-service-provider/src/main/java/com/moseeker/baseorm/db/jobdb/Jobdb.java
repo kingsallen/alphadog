@@ -31,7 +31,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 import com.moseeker.baseorm.db.jobdb.tables.TmpAppUser;
 import com.moseeker.baseorm.db.jobdb.tables.TmpMyData;
@@ -149,11 +148,6 @@ public class Jobdb extends SchemaImpl {
     public final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 
     /**
-     * The table <code>jobdb.job_position_58_mapping</code>.
-     */
-    public final JobPosition_58Mapping JOB_POSITION_58_MAPPING = com.moseeker.baseorm.db.jobdb.tables.JobPosition_58Mapping.JOB_POSITION_58_MAPPING;
-
-    /**
      * 职位招聘流程绑定表
      */
     public final JobPositionAtsProcess JOB_POSITION_ATS_PROCESS = com.moseeker.baseorm.db.jobdb.tables.JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS;
@@ -269,7 +263,6 @@ public class Jobdb extends SchemaImpl {
             JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
             JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
-            JobPosition_58Mapping.JOB_POSITION_58_MAPPING,
             JobPositionAtsProcess.JOB_POSITION_ATS_PROCESS,
             JobPositionCcmail.JOB_POSITION_CCMAIL,
             JobPositionCity.JOB_POSITION_CITY,

@@ -115,7 +115,10 @@ public class MessageTemplateEntity {
         }
         url = handlerURL(url, params.getType());
 
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName(), company.getAbbreviation(),params.getAiTemplateType());
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(), params.getWxId(),
+                params.getType(), params.getCompanyId(), DO.getId(), company.getName(), company.getAbbreviation(),
+                params.getAiTemplateType(), params.getPositionIds());
+
         log.info("元夕飞花令 MessageTemplateEntity MessageTemplateNoticeStruct colMap:{}", JSONObject.toJSONString(colMap));
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
@@ -182,14 +185,23 @@ public class MessageTemplateEntity {
         return messageTemplateNoticeStruct;
     }
 
-    private String getJobName(int userId,int companyId,int type) {
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).buildQuery();
-        CampaignPersonaRecomRecord record=campaignPersonaRecomDao.getRecord(query);
-        if(record==null){
-            return null;
+    private String getJobName(int userId,int companyId,int type, int recomMatchPositionId) {
+        int positionId = 0;
+
+        // 优先使用本次推荐最match的职位ID
+        if (recomMatchPositionId > 0) {
+            positionId = recomMatchPositionId;
+
+        } else {
+        // TODO 推荐的历史记录中随机捞一个
+            Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).buildQuery();
+            CampaignPersonaRecomRecord record=campaignPersonaRecomDao.getRecord(query);
+            if(record==null){
+                return null;
+            }
+            positionId=record.getPositionId();
         }
-        int positionId=record.getPositionId();
-        Query query1=new Query.QueryBuilder().where("id",positionId).buildQuery();
+        Query query1 = new Query.QueryBuilder().where("id", positionId).buildQuery();
         JobPositionDO jobPositionDO=jobPositionDao.getData(query1);
         if(jobPositionDO==null){
             return null;
@@ -200,6 +212,7 @@ public class MessageTemplateEntity {
         }
         return jobName;
     }
+
     public String getJobNameRecom(List<Integer> pid){
         Query query=new Query.QueryBuilder().where(new Condition("id",pid.toArray(),ValueOp.IN)).and("status",0).buildQuery();
         List<JobPositionDO> jobPositionDO=jobPositionDao.getDatas(query);
@@ -223,13 +236,16 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId, int wxId, int type, int companyId, int weChatId, String companyName, String companyAbbreviation, int aiTemplateType){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId, int wxId, int type, int companyId,
+                                                                     int weChatId, String companyName, String companyAbbreviation,
+                                                                     int aiTemplateType, String recomPositionIds){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId,wxId,weChatId);
         }else if(type==2||type==3){
-            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,companyName, companyAbbreviation,aiTemplateType);
+            colMap=this.handleDataRecommendTemplate(userId, companyId, type, weChatId, companyName,
+                    companyAbbreviation, aiTemplateType, recomPositionIds);
         }else if(type==4){
             colMap=this.handleDataProfileTemplate(userId,companyId,weChatId);
         }
@@ -284,24 +300,46 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId, int companyId, int type, int weChatId, String companyName, String companyAbbreviation, int aiTemplateType){
-        Map<String,MessageTplDataCol> colMap =new HashMap<>();
-        String jobName="";
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId, int companyId, int type, int weChatId,
+                                                                      String companyName, String companyAbbreviation,
+                                                                      int aiTemplateType, String recomPositionIds){
+        Map<String,MessageTplDataCol> colMap = new HashMap<>();
+
+        int recomMatchPositionId = 0;
+        String jobName = "";
+
+        if(StringUtils.isNotNullOrEmpty(recomPositionIds)){
+            String[] recomPositionIdArr = recomPositionIds.split(",");
+            if(recomPositionIdArr.length > 0){
+                recomMatchPositionId = Integer.valueOf(recomPositionIdArr[0]);
+            }
+        }
+
         if(type==2) {
-            jobName = this.getJobName(userId, companyId, 0);
-            /*String firstName = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
-            String remarkName = "点击查看推荐职位";*/
+            jobName = this.getJobName(userId, companyId, 0, recomMatchPositionId);
+
             String firstName = "#靠谱的工作机会来了~# 根据您的偏好，（公司简称）为您精选了些好机会！㊗️您发现新天地~\n\n";
-            String remarkName = "详情";
+            String remarkName = "";
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
             MessageTplDataCol first = colMap.get("first");
             first.setValue(first.getValue().replace("（公司简称）", companyAbbreviation));
         }
+
         if(type==3){
-            jobName = this.getJobName(userId,companyId,1);
-            String firstName="以下职位虚位以待，赶快转发起来吧~ ";
-            String remarkName="点击查看推荐职位。";
-            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.EMPLOYEE_RECOM_POSITION);
+            jobName = this.getJobName(userId, companyId,1, recomMatchPositionId);
+
+            // 设置趣味简笔画提升消息模板打开率,（微信消息模板中有表情字符出现，可能会导致表情字符之后的字体颜色显示不正确，
+            // 将对应的字体设置为黑色#000000可以视觉上避免这个问题）
+            StringBuffer firstName = new StringBuffer();
+            firstName.append("#肥水不流外人田~# 靠谱职位转起来！相信优秀的你身边也一定有很多优秀的人~👍\n");
+            firstName.append("\n");
+            firstName.append("   ● \n");
+            firstName.append("   █┳ 《 内~推~有~你~❤️》\n");
+            firstName.append("   ┛┗\n\n");
+
+            String remarkName = "";
+            colMap = this.handlerTemplateData(weChatId, firstName.toString(), remarkName, Constant.EMPLOYEE_RECOM_POSITION);
+
             //智能推荐职位列表的特殊处理,如果没有推荐的职位列表,文案变一下
             if(aiTemplateType == 2) {
                 MessageTplDataCol firstCol=  (MessageTplDataCol)colMap.get("first");
@@ -318,18 +356,18 @@ public class MessageTemplateEntity {
         }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
-        keyword1.setColor("#173177");
+        keyword1.setColor("#000000");
         keyword1.setValue(jobName);
-        colMap.put("keyword1",keyword1);
+        colMap.put("keyword1", keyword1);
         MessageTplDataCol keyword2=new MessageTplDataCol();
-        keyword2.setColor("#173177");
+        keyword2.setColor("#000000");
         keyword2.setValue(companyName);
-        colMap.put("keyword2",keyword2);
+        colMap.put("keyword2", keyword2);
         String data=sf.format(new Date());
         MessageTplDataCol keyword3=new MessageTplDataCol();
-        keyword3.setColor("#173177");
+        keyword3.setColor("#000000");
         keyword3.setValue(data);
-        colMap.put("keyword3",keyword3);
+        colMap.put("keyword3", keyword3);
 
         return colMap;
     }
@@ -340,7 +378,7 @@ public class MessageTemplateEntity {
         log.info("MessageTemplateEntity handlerTemplateData");
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         MessageTplDataCol first=new MessageTplDataCol();
-        first.setColor("#E75E48");
+        first.setColor("#67D7D6");
         HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,tempId);
         log.info("MessageTemplateEntity handlerTemplateData:{}", record);
         if(record != null && record.getStatus().byteValue()!=1){
@@ -351,9 +389,9 @@ public class MessageTemplateEntity {
         }else {
             first.setValue(firstName);
         }
-        colMap.put("first",first);
+        colMap.put("first", first);
         MessageTplDataCol remark=new MessageTplDataCol();
-        remark.setColor("#173177");
+        remark.setColor("#000000");
         if(record!=null&&StringUtils.isNotNullOrEmpty(record.getRemark())){
             remark.setValue(record.getRemark());
         }else {

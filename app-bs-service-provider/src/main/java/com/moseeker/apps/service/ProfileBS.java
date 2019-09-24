@@ -5,9 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -28,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +56,12 @@ public class ProfileBS {
 
     @Autowired
     private UserUserDao userUserDao;
+
+    private ScheduledThread scheduledThread=ScheduledThread.Instance;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
 
     @SuppressWarnings("unchecked")
 //    @CounterIface
@@ -128,8 +138,10 @@ public class ProfileBS {
                         Response response = applicationService.postApplication(application);
     //                        return response;
     //                    }
+                        this.updateDataProfileIndex(user.getId());
                         return ResultMessage.SUCCESS.toResponse(new JSONObject());
                     } else {
+                        this.updateDataProfileIndex(user.getId());
                         return improveProfile;
                     }
                 } else {
@@ -139,8 +151,11 @@ public class ProfileBS {
                     logger.info("ProfileBS retrieveProfile response:{}",response);
                     if (response.getStatus() == 0) {
                         applicationService.postApplication(application);
+                        this.updateDataProfileIndex(user.getId());
                         return ResultMessage.SUCCESS.toResponse(new JSONObject());
                     } else {
+                        this.updateDataProfileIndex(user.getId());
+
                         return response;
                     }
                 }
@@ -172,8 +187,10 @@ public class ProfileBS {
     //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
                         applicationService.postApplication(application);
     //                    }
+                        this.updateDataProfileIndex(userId);
                         return ResultMessage.SUCCESS.toResponse(new JSONObject());
                     } else {
+                        this.updateDataProfileIndex(userId);
                         return response;
                     }
                 }
@@ -181,9 +198,16 @@ public class ProfileBS {
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			//do nothing
 		}
         return ResponseUtils.success(new JSONObject());
+    }
+
+    private void updateDataProfileIndex(int userId){
+        scheduledThread.startTast(()->{
+            logger.info("================data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS======");
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            logger.info("================userid={}=================",userId);
+        },6000);
     }
 
 

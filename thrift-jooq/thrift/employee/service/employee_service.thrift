@@ -23,6 +23,7 @@ service EmployeeService {
 
     // 员工解绑操作
     employee_struct.Result unbind(1: i32 employeeId, 2: i32 companyId, 3: i32 userId);
+    employee_struct.Result unemploy(1: i32 employeeId, 2: i32 companyId, 3: i32 userId);
 
     // 获取员工认证自定义字段配置信息
     list<employee_struct.EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(1: i32 companyId);

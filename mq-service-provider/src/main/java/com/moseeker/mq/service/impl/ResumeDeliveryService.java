@@ -365,9 +365,9 @@ public class ResumeDeliveryService {
             HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.getName(),
                     qxChatDO.getId()).and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(), Constant.TEMPLATES_APPLY_NOTICE_TPL)
                     .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(),"0").buildQuery());
-            if( qx_userWxDO != null) {
+            if(hrChatDO != null) {
                 String link = handlerLink("applier").replace("{}", application_id + "");
-                link = link+"?wechat_signature="+ qxChatDO.getSignature()+"&from_template_message="+Constant.TEMPLATES_APPLY_NOTICE_TPL +"&send_time=" + new Date().getTime();;
+                link = link+"?wechat_signature="+ hrChatDO.getSignature()+"&from_template_message="+Constant.TEMPLATES_APPLY_NOTICE_TPL +"&send_time=" + new Date().getTime();;
                 response = msgHttp.handleApplierTemplate(positionDO, companyDO, qxChatDO, qx_userWxDO.getOpenid(), url, link, templateMessageDOQX);
             }
         }

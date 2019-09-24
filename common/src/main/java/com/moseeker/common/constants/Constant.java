@@ -19,12 +19,21 @@ public final class Constant {
     public static final String USER_PARSE_PROFILE_DOCUMENT = "用户简历数据";
     public static int MAX_SIZE = 60000;
 
+    //身份证识别组件
+    public static final String IDCARD_RECOG = "id_card";
+    public static final String IDPHOTO_FRONT = "id_card_front";
+    public static final String IDPHOTO_BACK = "id_card_back";
+
     private Constant() throws AssertionError {
         throw new AssertionError();
     };
 
+    public static final String CONST_APPID   = "appid";      // appid
+    public static final String CONST_INTERFACEID   = "interfaceid";      // interfaceid
+
     /** 系统appid 常量定义 && 共同常量定义 START **/
     public static final int APPID_ALPHADOG = 0;     // 基础服务本身
+    public static final int APPID_ALPHACLOUD = 301; // 基础服务
     public static final int APPID_C = 1;            // c端
     public static final int APPID_QX = 2;           // weixin端(聚合号)
     public static final int APPID_PLATFORM = 3;     // weixin端（企业号）
@@ -222,7 +231,12 @@ public final class Constant {
     public static final String EMPLOYEE_AUTH_INFO = "EMPLOYEE_AUTH_INFO"; // 员工认证（员工认证信息）
     public static final String EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE = "[]"; // user_employee.custom_field_value默认值
 
-	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
+    // 认证状态 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
+    // 5:取消关注公众号   6：员工离职取消认证
+    public static final byte EMPLOYEE_ACTIVATION_UNBIND = 1;
+    public static final byte EMPLOYEE_ACTIVATION_UNEMPLOYEE = 6;
+
+    public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	
 	public static final int READ_TIME_OUT = 300*1000;
 	public static final int CONNECTION_TIME_OUT = 300*1000;

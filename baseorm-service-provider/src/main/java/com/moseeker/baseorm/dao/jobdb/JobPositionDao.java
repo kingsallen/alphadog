@@ -29,6 +29,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -880,5 +881,75 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
        int result= create.selectCount().from(JobPosition.JOB_POSITION).where(JobPosition.JOB_POSITION.ID.in(pidList)).and(JobPosition.JOB_POSITION.STATUS.eq((byte)status))
                 .fetchOne().value1();
        return result;
+    }
+
+    /**
+     * 查找有效的职位
+     * @param companyId 公司编号
+     * @param pageNo 页码
+     * @param pageSize 每页数量
+     * @return 职位数据
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetch(int companyId, int pageNo, int pageSize) {
+        if (companyId > 0) {
+            Result<JobPositionRecord> records = create
+                    .selectFrom(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                    .and(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                    .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.desc())
+                    .limit((pageNo-1)*pageSize,pageSize)
+                    .fetch();
+            return convertToPojo(records);
+
+        } else {
+            Result<JobPositionRecord> records = create
+                    .selectFrom(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                    .orderBy(JobPosition.JOB_POSITION.UPDATE_TIME.desc())
+                    .limit((pageNo-1)*pageSize,pageSize)
+                    .fetch();
+            return convertToPojo(records);
+        }
+    }
+
+    /**
+     * 将record集合转成pojo集合
+     * @param records 数据库记录集合
+     * @return pojo集合
+     */
+    private List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> convertToPojo(Result<JobPositionRecord> records) {
+        if (records != null) {
+            return records.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+    public int count(int companyId) {
+        if (companyId > 0) {
+            return create
+                    .selectCount()
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                    .and(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                    .fetchOne()
+                    .value1();
+        } else {
+            return create
+                    .selectCount()
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                    .fetchOne()
+                    .value1();
+        }
+    }
+
+    public List<Record2<Integer, Integer>> countByCompanyIdList(List<Integer> companyIdList) {
+        return create
+                .select(JobPosition.JOB_POSITION.COMPANY_ID, DSL.count(JobPosition.JOB_POSITION.ID))
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
+                .and(JobPosition.JOB_POSITION.STATUS.eq((byte) PositionStatus.ACTIVED.getValue()))
+                .groupBy(JobPosition.JOB_POSITION.COMPANY_ID)
+                .fetch();
     }
 }
