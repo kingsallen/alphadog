@@ -81,9 +81,11 @@ public class EmployeeBizTool {
         EmployeeForwardViewPageVO result = new EmployeeForwardViewPageVO();
         int userId= record.getPresenteeUserId();
         result.setUserId(userId);
+/*
         UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+*/
         UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
-        if(wxUserRecord!=null){
+        if(userUserRecord!=null){
             result.setNickname(userUserRecord.getNickname());
             result.setHeadimgurl(userUserRecord.getHeadimg());
         }
@@ -151,12 +153,13 @@ public class EmployeeBizTool {
         int userId= record.getPresenteeId();
         result.setUserId(userId);
         result.setReferralId(record.getId());
-        UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+        /*UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
         if(wxUserRecord!=null){
             result.setHeadimgurl(wxUserRecord.getHeadimgurl());
-        }
+        }*/
         UserUserRecord userRecord = data.getUserRecordList().get(userId);
         if(userRecord!=null){
+            result.setHeadimgurl(userRecord.getHeadimg());
             result.setNickname(userRecord.getNickname());
         }
         JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
