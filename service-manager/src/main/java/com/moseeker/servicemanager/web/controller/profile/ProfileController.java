@@ -6,13 +6,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.FileUtil;
-import com.moseeker.common.util.FormCheck;
-import com.moseeker.common.util.HttpClient;
-import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.*;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.ProfileEntity;
@@ -907,5 +905,28 @@ public class ProfileController {
     public String moveProfile(@RequestParam int destId,@RequestParam int originId) throws Exception {
         profileService.moveProfile(destId, originId);
         return Result.SUCCESS;
+    }
+
+    @RequestMapping(value = "/profile/word/topdf", method = RequestMethod.GET)
+    @ResponseBody
+    public String wordToPdf(@RequestParam(value = "file_name") String file_name) throws Exception {
+        File file = new File(file_name);
+        if (!file.exists()) {
+            throw ProfileException.NODATA_EXCEPTION;
+        }
+        String file_type = file_name.substring(file_name.lastIndexOf(".") + 1).toLowerCase().trim();
+        if (!Constant.WORD_DOC.equals(file_type) && !Constant.WORD_DOCX.equals(file_type)) {
+            throw new ProfileException(99999, "仅支持doc和docx类型文件");
+        }
+
+        logger.info("wordToPdf fileName = {} ++++++++++++", file_name);
+        String pdf_name = file_name.replace("." + file_type, Constant.WORD_PDF).trim();
+        File pdf_file = new File(pdf_name);
+        //pdf文件不存在时，生成pdf文件，并返回文件名称路径
+        if (!pdf_file.exists()) {
+            OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
+            logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
+        }
+        return Result.success(pdf_name).toJson();
     }
 }
