@@ -82,9 +82,10 @@ public class EmployeeBizTool {
         int userId= record.getPresenteeUserId();
         result.setUserId(userId);
         UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+        UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
         if(wxUserRecord!=null){
-            result.setNickname(wxUserRecord.getNickname());
-            result.setHeadimgurl(wxUserRecord.getHeadimgurl());
+            result.setNickname(userUserRecord.getNickname());
+            result.setHeadimgurl(userUserRecord.getHeadimg());
         }
         JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
         if(position!=null){
