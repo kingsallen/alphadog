@@ -265,12 +265,28 @@ public class JobApplicataionService {
             }
             map.put("logType", "RECOMMENT_TO_OTHER_POSITION");
             long applierId=jobApplication.getApplier_id();
-            String userName = this.getUserName((int) applierId);
-            map.put("candidate",userName);
+            UserUserDO user = userUserDao.getUser((int) applierId);
+            if(user!=null){
+                String candidateName=this.getCandidateName(user);
+                map.put("candidate",candidateName);
+            }
             map.put("appIds",Arrays.asList(jobApplicationId));
             amqpTemplate.convertAndSend("operation_log_exchange","operation_log_routekey", JSON.toJSONString(map));
             return 0;
         });
+    }
+
+    private String getCandidateName(UserUserDO user) {
+        if(user.getName()!=null){
+            return user.getName();
+        }
+        if(user.getNickname()!=null){
+            return user.getNickname();
+        }
+        if(user.getUsername()!=null){
+            return user.getUsername();
+        }
+        return null;
     }
 
 
