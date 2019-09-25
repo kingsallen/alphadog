@@ -33,13 +33,16 @@ public class EmployeeBizTool {
         UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
         if(userUserRecord == null){
             return radar;
+        }else{
+            radar.setNickname(userUserRecord.getNickname());
+            radar.setHeadimgurl(userUserRecord.getHeadimg());
         }
         radar.setUserId(userUserRecord.getId());
-        UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+        /*UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
         if(wxUserRecord != null){
             radar.setNickname(wxUserRecord.getNickname());
             radar.setHeadimgurl(wxUserRecord.getHeadimgurl());
-        }
+        }*/
         radar.setSeekRecommend(false);
         if(data.getRecommendUserSet().contains(userId)){
             radar.setSeekRecommend(true);
