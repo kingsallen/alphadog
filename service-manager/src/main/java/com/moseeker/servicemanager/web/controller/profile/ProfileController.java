@@ -912,6 +912,7 @@ public class ProfileController {
     public String wordToPdf(@RequestParam(value = "file_name") String file_name) throws Exception {
         File file = new File(file_name);
         if (!file.exists()) {
+            logger.info("wordToPdf file not exists path:{}", file_name);
             throw ProfileException.NODATA_EXCEPTION;
         }
         String file_type = file_name.substring(file_name.lastIndexOf(".") + 1).toLowerCase().trim();
