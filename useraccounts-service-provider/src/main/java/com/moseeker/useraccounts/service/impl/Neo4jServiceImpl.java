@@ -90,18 +90,25 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
-        UserNode firstUserStatus = addUserNode(startUserId);
-        UserNode secordUserStatus = addUserNode(endUserId);
+        /**
+         * 不允许建立自己和自己的关系
+         */
+        if (startUserId == endUserId) {
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+
+        List<UserNode> userNodes = insertIfNotExistNode(startUserId, endUserId);
+        UserNode firstUserStatus;
+        UserNode secordUserStatus;
+        if (userNodes != null && userNodes.size() == 2) {
+            firstUserStatus = userNodes.get(0);
+            secordUserStatus = userNodes.get(1);
+        } else {
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+
         CandidateShareChainDO chain = candidateShareChainDao.getCandidateShareChainById(shareChainId);
-        if (firstUserStatus != null && secordUserStatus != null && startUserId != endUserId) {
-            Forward forward = new Forward();
-            forward.setShare_chain_id(shareChainId);
-            forward.setStartNode(firstUserStatus);
-            forward.setEndNode(secordUserStatus);
-            forward.setPosition_id(chain.getPositionId());
-            forward.setParent_id(chain.getParentId());
-            forward.setRoot_user_id(chain.getRootRecomUserId());
-            forward.setCreate_time(chain.getClickTime());
+        if (chain != null && firstUserStatus != null && secordUserStatus != null) {
             logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserFriend  startUserId:{}, endUserId:{}, positionId:{}", startUserId, endUserId, chain.getPositionId());
             LocalDateTime beforeGetTwoUserFriend = LocalDateTime.now();
             logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserFriend  datetime:{}", beforeGetTwoUserFriend.toString());
@@ -116,6 +123,14 @@ public class Neo4jServiceImpl implements Neo4jService {
             LocalDateTime afterGetTwoUserFriend = LocalDateTime.now();
             logger.info("neo4j 调用日志 after forwardNeo4jDao.getTwoUserFriend  datetime:{} and time:{}", afterGetTwoUserFriend.toString(), Duration.between(beforeGetTwoUserFriend, afterGetTwoUserFriend).toMillis());
             if (StringUtils.isEmptyList(forwards)) {
+                Forward forward = new Forward();
+                forward.setShare_chain_id(shareChainId);
+                forward.setStartNode(firstUserStatus);
+                forward.setEndNode(secordUserStatus);
+                forward.setPosition_id(chain.getPositionId());
+                forward.setParent_id(chain.getParentId());
+                forward.setRoot_user_id(chain.getRootRecomUserId());
+                forward.setCreate_time(chain.getClickTime());
                 LocalDateTime beforeSave = LocalDateTime.now();
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.save datetime:{}", beforeSave.toString());
                 Future<Forward> sigleForwardFuture = tp.startTast(() -> forwardNeo4jDao.save(forward));
@@ -366,6 +381,94 @@ public class Neo4jServiceImpl implements Neo4jService {
             }
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * 添加节点。
+     * 不存在则添加节点，存在则直接返回
+     * @param userId1 用户1
+     * @param userId2 用户2
+     * @return 用户节点数据
+     */
+    private List<UserNode> insertIfNotExistNode(int userId1, int userId2){
+        if(userId1>0 && userId2 > 0) {
+            List<UserNode> userNodes = userNeo4jDao.listUserNodeById(userId1, userId2);
+            if (userNodes != null && userNodes.size() == 2) {
+                /**
+                 * 如果数据库中已经存在直接返回
+                 */
+                return userNodes;
+            } else if (userNodes == null || userNodes.size() == 0) {
+                /**
+                 * 如果数据库中不存在，则新增元素
+                 */
+                List<UserNode> list = new ArrayList<>(2);
+                UserNode userNode1 = generateUserNode(userId1);
+                if (userNode1 != null) {
+                    list.add(userNode1);
+                }
+                UserNode userNode2 = generateUserNode(userId2);
+                if (userNode2 != null) {
+                    list.add(userNode2);
+                }
+                if (list.size() > 0) {
+                    userNeo4jDao.save(list);
+                }
+                return list;
+            } else {
+                /**
+                 * 如果只存在一个，则新增不存在的数据，并按照参数顺序返回节点的集合
+                 */
+                List<UserNode> result = new ArrayList<>(2);
+                UserNode userNode;
+                if (userNodes.get(0).getUser_id() == userId1) {
+                    result.add(userNodes.get(0));
+                    userNode = generateUserNode(userId2);
+                    userNode = userNeo4jDao.save(userNode);
+                    result.add(userNode);
+                } else {
+                    userNode = generateUserNode(userId1);
+                    userNode = userNeo4jDao.save(userNode);
+                    result.add(userNode);
+                    result.add(userNodes.get(0));
+                }
+                return result;
+            }
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+    /**
+     * 构建用户节点数据
+     * @param userId 用户编号
+     * @return
+     */
+    private UserNode generateUserNode(int userId) {
+        if(userId>0) {
+            UserUserRecord record1 = userUserDao.getUserById(userId);
+
+
+            if (record1 != null) {
+                UserNode node = new UserNode();
+                node.setUser_id(userId);
+                node.setNickname(record1.getNickname());
+                node.setHeadimgurl(record1.getHeadimg());
+
+                UserWxUserRecord wxUser = wxUserDao.getWXUserByUserId(userId);
+                if (wxUser != null) {
+                    node.setWxuser_id(wxUser.getId().intValue());
+                }
+                UserEmployeeRecord employee = employeeDao.getActiveEmployeeByUserId(userId);
+                if (employee != null) {
+                    node.setEmployee_id(employee.getId());
+                    node.setEmployee_company(employee.getCompanyId());
+                }
+                return node;
+            }
+
+        }
+        return null;
     }
 
     private UserNode addUserNode(int userId){

@@ -62,4 +62,11 @@ public enum Neo4jThreadPool {
                 new LinkedBlockingQueue<>(20000), threadFactory,
                 new ThreadPoolExecutor.AbortPolicy());
     }
+
+    public void getPoolInfo() {
+        ((ThreadPoolExecutor)service).getActiveCount();
+        ((ThreadPoolExecutor)service).getCompletedTaskCount();
+        ((ThreadPoolExecutor)service).getPoolSize();
+        ((ThreadPoolExecutor)service).getQueue().size();
+    }
 }
