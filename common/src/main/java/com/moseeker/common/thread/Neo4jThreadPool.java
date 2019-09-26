@@ -1,6 +1,8 @@
 package com.moseeker.common.thread;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.util.concurrent.*;
@@ -63,10 +65,19 @@ public enum Neo4jThreadPool {
                 new ThreadPoolExecutor.AbortPolicy());
     }
 
-    public void getPoolInfo() {
-        ((ThreadPoolExecutor)service).getActiveCount();
-        ((ThreadPoolExecutor)service).getCompletedTaskCount();
-        ((ThreadPoolExecutor)service).getPoolSize();
-        ((ThreadPoolExecutor)service).getQueue().size();
+    public String getPoolInfo() {
+        JSONObject jsonObject = new JSONObject();
+        ThreadPoolExecutor threadPoolExecutor = ((ThreadPoolExecutor)service);
+        jsonObject.put("activeCount", threadPoolExecutor.getActiveCount());
+        jsonObject.put("completedTaskCount", threadPoolExecutor.getCompletedTaskCount());
+        jsonObject.put("poolSize", threadPoolExecutor.getPoolSize());
+        jsonObject.put("coolPoolSize", threadPoolExecutor.getCorePoolSize());
+        jsonObject.put("taskCount", threadPoolExecutor.getTaskCount());
+        jsonObject.put("queueSize", threadPoolExecutor.getQueue().size());
+        return jsonObject.toJSONString();
+    }
+
+    class PoolStatistics {
+
     }
 }
