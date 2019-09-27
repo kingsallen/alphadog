@@ -134,9 +134,9 @@ public abstract class EmployeeReferralProfile {
      * @param profileNotice
      * @param execute
      */
-    private void lock(EmployeeReferralProfileNotice profileNotice,Runnable execute){
+    private void lock(int companyId,EmployeeReferralProfileNotice profileNotice,Runnable execute){
         String uuid = UUID.randomUUID().toString();
-        String pattern = new String(profileNotice.getMobile());
+        String pattern = companyId + "-" + profileNotice.getMobile(); // 编译器自动转换为StringBuild方式实现，不用担心性能
         int times = 0 ;
         while (times++ <= RETRY_UPPER_LIMIT) {
             try {
@@ -195,8 +195,10 @@ public abstract class EmployeeReferralProfile {
                 profileNotice.getOtherFields() != null ? profileNotice.getOtherFields().get("email") : null ;
         if (positions != null && positions.size() > 0) {
             List<ReferralLog> referraledList = referralEntity.fetchByPositionIdAndOldReferenceId(profileNotice.getPositionIds(), attementVO.getUserId());
-            // 推荐查重加分布式锁
-            lock(profileNotice,()-> {
+            // 推荐查重加分布式锁,根据被推荐人手机号和companyId加锁
+            // 一旦某一被推荐人被推荐，redis写入一条记录，推荐成功或失败后删除记录。如果在测过程中发生出现重复推荐请求，发生所等待，
+            // 要么等待锁超时，页面提示用户重试，要么等待若干时间获得锁，接下来进入人才库查重，抛出重复推荐错误提示，
+            lock(employeeDO.getCompanyId(),profileNotice,()-> {
                 for (int i = 0; i < profileNotice.getPositionIds().size(); i++) {
                     int index = i;
                     Optional<JobPositionDO> positionDOOptional = positions
