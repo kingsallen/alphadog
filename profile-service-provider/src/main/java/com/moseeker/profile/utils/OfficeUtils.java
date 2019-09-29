@@ -8,15 +8,7 @@ import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConv
 import com.aspose.words.Document;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
-
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.*;
-import java.util.function.BooleanSupplier;
-
+import com.moseeker.common.constants.Constant;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,6 +20,19 @@ import org.artofsolving.jodconverter.process.LinuxProcessManager;
 import org.artofsolving.jodconverter.process.ProcessQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.net.ConnectException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -55,6 +60,57 @@ public class OfficeUtils {
         } catch (IOException|InterruptedException e) {
             logger.error("OfficeUtils 初始化启动libreoffice服务失败",e);
         }
+    }
+
+
+    /**
+     * 获取文件后缀名
+     * @param fileName 文件名，不可为空
+     * @return
+     */
+    public static String getSuffix(String fileName){
+        if(StringUtils.isBlank(fileName)){
+            throw new IllegalArgumentException("文件名为空");
+        }
+        return fileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
+    }
+
+    public static boolean isWordFile(String suffix){
+        return Constant.WORD_DOC.equalsIgnoreCase(suffix) || Constant.WORD_DOCX.equalsIgnoreCase(suffix) ;
+    }
+
+    /**
+     * word转化为其同名pdf文件名
+     * @param wordFileName
+     * @return
+     */
+    public static String getPdfName(String wordFileName){
+        String pdfName = wordFileName.substring(0,wordFileName.lastIndexOf("."))
+                + Constant.WORD_PDF;
+        return pdfName;
+    }
+
+    /**
+     * 获取转化前文件名，如果是pdf，且同名word文件存在，则获取其word文件。如果是其他后缀名，返回原文件名
+     * @param fileAbsoluteName
+     * @return
+     */
+    public static String getOriginFile(String fileAbsoluteName){
+        if(StringUtils.isBlank(fileAbsoluteName)){
+            throw new IllegalArgumentException("文件名为空");
+        }
+        int idx = fileAbsoluteName.lastIndexOf(".");
+        if(Constant.WORD_PDF.equalsIgnoreCase(fileAbsoluteName.substring(idx).toLowerCase())){
+            String wordFileName = fileAbsoluteName.substring(0,idx+1) + Constant.WORD_DOC ;
+            if(new File(wordFileName).exists()){
+                return wordFileName;
+            }
+            wordFileName += "x" ;
+            if(new File(wordFileName).exists()){
+                return wordFileName;
+            }
+        }
+        return fileAbsoluteName;
     }
 
     /**
@@ -438,7 +494,11 @@ public class OfficeUtils {
     public static void main(String[] args) throws IOException {
         String dir = "/Users/huangxia/Downloads/docx";
 
-        ExecutorService pool = Executors.newCachedThreadPool();
+        System.out.println(getOriginFile("/mnt/nfs/attachment/profile_attachement/20199/261411d2-6e12-4f98-9ed8-0aa098fa8c1a.pdf"));
+        System.out.println(getOriginFile("/mnt/nfs/attachment/profile_attachement/20199/261411d2-6e12-4f98-9ed8-0aa098fa8c1a.PDF"));
+        System.out.println(getOriginFile("/mnt/nfs/attachment/profile_attachement/20199/261411d2-6e12-4f98-9ed8-0aa098fa8c1a.doc"));
+        System.out.println(getOriginFile("/mnt/nfs/attachment/profile_attachement/20199/261411d2-6e12-4f98-9ed8-0aa098fa8c19.PDF"));
+        /*ExecutorService pool = Executors.newCachedThreadPool();
         System.out.println(checkOfficeUnoListened());
         new File(dir).listFiles((f)->{if(f.getName().endsWith(".pdf")) f.delete();return true ;});
         new File(dir).listFiles((f)->{
@@ -448,7 +508,7 @@ public class OfficeUtils {
             }
             return true ;
         });
-        System.in.read();
+        System.in.read();*/
     }
 
 }
