@@ -299,7 +299,7 @@ public class JobApplicataionService {
             redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
             logger.info("====================redis==============application更新=============");
             logger.info("================userid={}=================",userId);
-        },60000);
+        },6000);
     }
 
     private boolean  validateNewAtsProcess(int companyId,int positionId){
