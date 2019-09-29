@@ -126,10 +126,11 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 	 * @param name 姓名
 	 * @param mobile 手机号码
 	 */
-	public static void createReferralUser(JSONObject jsonObject, String name, String mobile) {
+	public static void createReferralUser(JSONObject jsonObject, String name, String mobile,String email) {
 		JSONObject user = new JSONObject();
 		user.put("name", name);
 		user.put("mobile", mobile);
+		user.put("email", email);
 		user.put("source", UserSource.EMPLOYEE_REFERRAL.getValue());
 		jsonObject.put("user", user);
 	}

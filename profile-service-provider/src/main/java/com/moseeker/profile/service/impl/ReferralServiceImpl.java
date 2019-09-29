@@ -158,7 +158,7 @@ public class ReferralServiceImpl implements ReferralService {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
         LocalDateTime parseFileStart = LocalDateTime.now();
-        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFileStart{}",parseFileStart);
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFile Start{}",parseFileStart);
         File file = new File(filePath);
         if (!file.exists()) {
             throw ProfileException.REFERRAL_FILE_NOT_EXIST;
@@ -176,7 +176,7 @@ public class ReferralServiceImpl implements ReferralService {
         fileNameData.setOriginName(file.getName());
 
         LocalDateTime parseFileStartReadFile = LocalDateTime.now();
-        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFileStartReadFile{}",parseFileStartReadFile);
+        logger.info("ReferralServiceImpl parseFileProfileByFilePath parseFile StartReadFile{}",parseFileStartReadFile);
         Duration duration = Duration.between(parseFileStart,parseFileStartReadFile);
         long millis = duration.toMillis();//相差毫秒数
         logger.info("ReferralServiceImpl parseFileProfileByFilePath 读取文件时间差:millis{}",millis);
@@ -896,12 +896,16 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
-        profileDocParseResult.setName(profileObj.getUser().getName());
+        if(profileObj.getUser() != null){
+            profileDocParseResult.setMobile(profileObj.getUser().getMobile());
+            profileDocParseResult.setName(profileObj.getUser().getName());
+            profileDocParseResult.setEmail(profileObj.getUser().getEmail());
+        }
+
         profileObj.setResumeObj(null);
         JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
         ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
-        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
+        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile(),profileDocParseResult.getEmail());
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
