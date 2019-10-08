@@ -64,7 +64,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
      */
     @Override
     public UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException {
-        logger.info("上传文件参数：fileName: {} ,fileData: {}",fileName,fileData);
+        logger.info("上传文件参数：fileName: {} ",fileName);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
 
         if(!ProfileDocCheckTool.checkFileName(fileName)){
@@ -75,7 +75,7 @@ public class UploadFilesServiceImpl implements UploadFilesService {
         //保存文件到磁盘
         try {
             FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
-            logger.info("保存文件到磁盘返回的文件名称{}",fileNameData);
+            logger.debug("保存文件到磁盘返回的文件名称{}",fileNameData);
             fileNameData.setSaveUrl(env.getProperty("profile.persist.url"));
             fileNameData.setOriginName(fileName);
             if(OfficeUtils.isWordFile(suffix)) {
@@ -94,7 +94,6 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 long millis = duration.toMillis();//相差毫秒数
                 logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：millis{}",millis);
             }
-            logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
 
             Date date = new Date();
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
