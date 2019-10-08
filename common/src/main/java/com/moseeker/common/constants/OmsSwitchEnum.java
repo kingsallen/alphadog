@@ -22,7 +22,8 @@ public enum OmsSwitchEnum {
     ATS_RECRUIT_PROCESS_UPGRADE(12,"ATS招聘流程升级"),
     HUNTER_MANAGE(13,"猎头管理"),
     WORK_WEICHAT(14,"企业微信版"),// 允许使用企业微信进行员工认证
-    IDCARD_RECOGNITION(15,"身份证识别");//身份证识别
+    IDCARD_RECOGNITION(15,"身份证识别"),//身份证识别
+    LBS_POSITION_LIST(16,"LBS职位列表");//LBS职位列表
 
     private int value;
     private String name;
