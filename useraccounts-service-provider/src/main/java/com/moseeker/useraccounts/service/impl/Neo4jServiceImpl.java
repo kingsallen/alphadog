@@ -35,8 +35,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -86,107 +85,44 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     Neo4jThreadPool tp = Neo4jThreadPool.Instance;
 
+    /**
+     * 超时时间
+     */
     private static final long TIMEOUT = 5L;
+    /**
+     * 节点的数量
+     */
+    private static final int NODE_NUM = 2;
 
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
-        /**
-         * 不允许建立自己和自己的关系
-         */
-        if (startUserId == endUserId) {
-            throw CommonException.PROGRAM_EXCEPTION;
-        }
-
-        List<UserNode> userNodes = insertIfNotExistNode(startUserId, endUserId);
-        UserNode firstUserStatus;
-        UserNode secordUserStatus;
-        if (userNodes != null && userNodes.size() == 2) {
-            firstUserStatus = userNodes.get(0);
-            secordUserStatus = userNodes.get(1);
-        } else {
-            throw CommonException.PROGRAM_EXCEPTION;
-        }
-
-        CandidateShareChainDO chain = candidateShareChainDao.getCandidateShareChainById(shareChainId);
-        if (chain != null && firstUserStatus != null && secordUserStatus != null) {
-            logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserFriend  startUserId:{}, endUserId:{}, positionId:{}", startUserId, endUserId, chain.getPositionId());
-            LocalDateTime beforeGetTwoUserFriend = LocalDateTime.now();
-            logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserFriend  datetime:{}", beforeGetTwoUserFriend.toString());
-            Future<List<Forward>> forwardFuture = tp.startTast(() -> forwardNeo4jDao.getTwoUserFriend(startUserId, endUserId, chain.getPositionId()));
-            List<Forward> forwards;
-            try {
-                forwards = forwardFuture.get(TIMEOUT, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                throw CommonException.PROGRAM_EXCEPTION;
-            }
-            LocalDateTime afterGetTwoUserFriend = LocalDateTime.now();
-            logger.info("neo4j 调用日志 after forwardNeo4jDao.getTwoUserFriend  datetime:{} and time:{}", afterGetTwoUserFriend.toString(), Duration.between(beforeGetTwoUserFriend, afterGetTwoUserFriend).toMillis());
-            if (StringUtils.isEmptyList(forwards)) {
-                Forward forward = new Forward();
-                forward.setShare_chain_id(shareChainId);
-                forward.setStartNode(firstUserStatus);
-                forward.setEndNode(secordUserStatus);
-                forward.setPosition_id(chain.getPositionId());
-                forward.setParent_id(chain.getParentId());
-                forward.setRoot_user_id(chain.getRootRecomUserId());
-                forward.setCreate_time(chain.getClickTime());
-                LocalDateTime beforeSave = LocalDateTime.now();
-                logger.info("neo4j 调用日志 before forwardNeo4jDao.save datetime:{}", beforeSave.toString());
-                Future<Forward> sigleForwardFuture = tp.startTast(() -> forwardNeo4jDao.save(forward));
-                Forward forwar;
+        try {
+            handlerFutureTask("addFriendRelation", () -> {
                 try {
-                    forwar = sigleForwardFuture.get();
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                    throw CommonException.PROGRAM_EXCEPTION;
+                    addFriendRelationInternal(startUserId, endUserId, shareChainId);
+                    return true;
+                } catch (CommonException e) {
+                    return false;
                 }
-                LocalDateTime afterSave = LocalDateTime.now();
-                logger.info("neo4j 调用日志 after forwardNeo4jDao.save datetime:{}, time:{}", afterSave.toString(), Duration.between(beforeSave, afterSave).toMillis());
-                kafkaSender.sendForwardView(chain);
-                logger.info("proceed friend:" + JSON.toJSONString(forwar));
-            }
+            });
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
     @Override
     public void addConnRelation(int startUserId, int endUserId, int connChainId, int positionId) throws CommonException {
-        UserNode firstUserStatus = addUserNode(startUserId);
-        UserNode secordUserStatus = addUserNode(endUserId);
-        if (firstUserStatus != null && secordUserStatus != null && startUserId != endUserId) {
-            Connection conn = new Connection();
-            conn.setConn_chain_id(connChainId);
-            conn.setStartNode(firstUserStatus);
-            conn.setEndNode(secordUserStatus);
-            conn.setPosition_id(positionId);
-            LocalDateTime beforeGetTwoUserConn = LocalDateTime.now();
-            logger.info("neo4j 调用日志 before connNeo4jDao.getTwoUserConn datetime:{}", beforeGetTwoUserConn.toString());
-            Future<List<Connection>> connFuture = tp.startTast(() -> connNeo4jDao.getTwoUserConn(startUserId, endUserId, positionId));
-            List<Connection> conns;
-            try {
-                conns = connFuture.get(TIMEOUT, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                throw CommonException.PROGRAM_EXCEPTION;
-            }
-            LocalDateTime afterGetTwoUserConn = LocalDateTime.now();
-            logger.info("neo4j 调用日志 after connNeo4jDao.getTwoUserConn datetime:{}, time:{}", afterGetTwoUserConn.toString(), Duration.between(beforeGetTwoUserConn, afterGetTwoUserConn).toMillis());
-            if (StringUtils.isEmptyList(conns)) {
-                LocalDateTime beforeSave = LocalDateTime.now();
-                logger.info("neo4j 调用日志 before connNeo4jDao.save datetime:{}", beforeSave.toString());
-                Future<Connection> connectionFuture = tp.startTast(() -> connNeo4jDao.save(conn));
-                Connection connection;
+        try {
+            handlerFutureTask("addConnRelation", () -> {
                 try {
-                    connection = connectionFuture.get(TIMEOUT, TimeUnit.SECONDS);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                    throw CommonException.PROGRAM_EXCEPTION;
+                    addConnRelationInternal(startUserId, endUserId, connChainId, positionId);
+                    return true;
+                } catch (CommonException e) {
+                    return false;
                 }
-                LocalDateTime afterSave = LocalDateTime.now();
-                logger.info("neo4j 调用日志 after connNeo4jDao.save datetime:{}, time:{}", afterSave.toString(), Duration.between(beforeSave, afterSave).toMillis());
-                kafkaSender.sendConnectionLink(conn, endUserId);
-                logger.info("proceed forward:" + JSON.toJSONString(connection));
-            }
+            });
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -195,7 +131,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserShortFriend startUserId:{}, endUserId:{}, companyId:{}", startUserId, endUserId, companyId);
         LocalDateTime beforeGetTwoUserShortFriend = LocalDateTime.now();
         logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserShortFriend datetime:{}", beforeGetTwoUserShortFriend.toString());
-        Future<List<Relation>> relationFuture = tp.startTast(() -> forwardNeo4jDao.getTwoUserShortFriend(startUserId, endUserId, companyId));
+        Future<List<Relation>> relationFuture = tp.startSubmit(() -> forwardNeo4jDao.getTwoUserShortFriend(startUserId, endUserId, companyId));
         List<Relation> relationList;
         try {
             relationList = relationFuture.get(TIMEOUT, TimeUnit.SECONDS);
@@ -249,7 +185,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         UserNode node;
         LocalDateTime beforeUpdateUserEmployeeCompany = LocalDateTime.now();
         logger.info("neo4j 调用日志 before userNeo4jDao.updateUserEmployeeCompany datetime:{}", beforeUpdateUserEmployeeCompany.toString());
-        Future<UserNode> nodeFuture = tp.startTast(() -> userNeo4jDao.updateUserEmployeeCompany(userId, companyId));
+        Future<UserNode> nodeFuture = tp.startSubmit(() -> userNeo4jDao.updateUserEmployeeCompany(userId, companyId));
         try {
             node = nodeFuture.get(TIMEOUT, TimeUnit.SECONDS);
         } catch (Exception e) {
@@ -270,7 +206,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         if(StringUtils.isEmptyList(userIds) || companyId<0){
             return;
         }
-        tp.startTast(() -> {
+        tp.startSubmit(() -> {
             logger.info("neo4j 调用日志 before forwardNeo4jDao.updateUserEmployeeCompanyList userIds:{}, companyId:{}", JSONObject.toJSONString(userIds), companyId);
             LocalDateTime beforeUpdateUserEmployeeCompanyList = LocalDateTime.now();
             logger.info("neo4j 调用日志 before forwardNeo4jDao.updateUserEmployeeCompanyList datetime:{}", beforeUpdateUserEmployeeCompanyList.toString());
@@ -283,7 +219,7 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
-        Future<List<ConfigOmsSwitchManagementDO>>  managementDOListFuture = tp.startTast(
+        Future<List<ConfigOmsSwitchManagementDO>>  managementDOListFuture = tp.startSubmit(
                 ()-> managementDao.fetchRadarStatus(7, 1));
         List<Integer> rootUserList = candidateShareChainDao.fetchRootIdByPresentee(userId);
         if(StringUtils.isEmptyList(rootUserList)){
@@ -305,7 +241,7 @@ public class Neo4jServiceImpl implements Neo4jService {
                 List<EmployeeCompanyVO> postUserIdList;
                 LocalDateTime beforeFetchUserThreeDepthEmployee = LocalDateTime.now();
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}", beforeFetchUserThreeDepthEmployee.toString());
-                Future<List<EmployeeCompanyVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserIdList));
+                Future<List<EmployeeCompanyVO>> listFuture = tp.startSubmit(() -> userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserIdList));
                 postUserIdList = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 LocalDateTime afterFetchUserThreeDepthEmployee = LocalDateTime.now();
                 logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}, time:{}", LocalDateTime.now().toString(), Duration.between(beforeFetchUserThreeDepthEmployee, afterFetchUserThreeDepthEmployee).toMillis());
@@ -347,7 +283,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchEmployeeThreeDepthUser userId:{}, peresentUserIdList:{}, companyId:{}", userId, JSONObject.toJSONString(peresentUserIdList), employee.getCompanyId());
             List<UserDepthVO> depthUser;
             logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}", beforeFetchEmployeeThreeDepthUser.toString());
-            Future<List<UserDepthVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId()));
+            Future<List<UserDepthVO>> listFuture = tp.startSubmit(() -> userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId()));
             depthUser = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
             LocalDateTime afterFetchEmployeeThreeDepthUser = LocalDateTime.now();
             logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}, time:{}", afterFetchEmployeeThreeDepthUser.toString(), Duration.between(beforeFetchEmployeeThreeDepthUser, afterFetchEmployeeThreeDepthUser).toMillis());
@@ -368,7 +304,7 @@ public class Neo4jServiceImpl implements Neo4jService {
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList userId:{}, companyId:{}, userIdList:{}", userId, companyId, JSONObject.toJSON(userIdList));
                 logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList datetime:{}", beforeFetchDepthUserList.toString());
                 List<UserDepthVO> list;
-                Future<List<UserDepthVO>> listFuture = tp.startTast(() -> userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId));
+                Future<List<UserDepthVO>> listFuture = tp.startSubmit(() -> userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId));
                 list = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 LocalDateTime afterFetchDepthUserList = LocalDateTime.now();
                 logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchDepthUserList datetime:{}, time:{}", afterFetchDepthUserList.toString(), Duration.between(beforeFetchDepthUserList, afterFetchDepthUserList).toMillis());
@@ -494,7 +430,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             LocalDateTime beforeSave = LocalDateTime.now();
             logger.info("neo4j 调用日志 before userNeo4jDao.save datetime:{}", beforeSave.toString());
             UserNode nodes;
-            Future<UserNode> userNodeFuture = tp.startTast(() -> userNeo4jDao.save(node));
+            Future<UserNode> userNodeFuture = tp.startSubmit(() -> userNeo4jDao.save(node));
             try {
                 nodes = userNodeFuture.get(TIMEOUT, TimeUnit.SECONDS);
                 LocalDateTime afterSave = LocalDateTime.now();
@@ -509,5 +445,147 @@ public class Neo4jServiceImpl implements Neo4jService {
             return node;
         }
         return null;
+    }
+
+    /**
+     * 添加节点的朋友关系
+     * @param startUserId 起始节点
+     * @param endUserId 结束节点
+     * @param shareChainId 分享链路的编号
+     * @throws CommonException 业务异常
+     */
+    private void addFriendRelationInternal(int startUserId, int endUserId, int shareChainId) throws CommonException {
+        /**
+         * 不允许建立自己和自己的关系
+         */
+        if (startUserId == endUserId) {
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        LocalDateTime beforeInsertIfNotExistNode = LocalDateTime.now();
+        logger.info("neo4j addFriendRelationInternal before insertIfNotExistNode datetime:{}", beforeInsertIfNotExistNode);
+        List<UserNode> userNodes = insertIfNotExistNode(startUserId, endUserId);
+        LocalDateTime afterInsertIfNotExistNode = LocalDateTime.now();
+        logger.info("neo4j addFriendRelationInternal after insertIfNotExistNode datetime:{}", afterInsertIfNotExistNode);
+        UserNode firstUserStatus;
+        UserNode secordUserStatus;
+        if (userNodes != null && userNodes.size() == NODE_NUM) {
+            firstUserStatus = userNodes.get(0);
+            secordUserStatus = userNodes.get(1);
+        } else {
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+
+        CandidateShareChainDO chain = candidateShareChainDao.getCandidateShareChainById(shareChainId);
+        if (chain != null && firstUserStatus != null && secordUserStatus != null) {
+            LocalDateTime beforeGetTwoUserFriend = LocalDateTime.now();
+            logger.info("neo4j addFriendRelationInternal before forwardNeo4jDao.getTwoUserFriend  datetime:{}", beforeGetTwoUserFriend);
+            List<Forward> forwards = forwardNeo4jDao.getTwoUserFriend(startUserId, endUserId, chain.getPositionId());
+            LocalDateTime afterGetTwoUserFriend = LocalDateTime.now();
+            logger.info("neo4j addFriendRelationInternal after forwardNeo4jDao.getTwoUserFriend  datetime:{}", afterGetTwoUserFriend);
+            if (StringUtils.isEmptyList(forwards)) {
+                Forward forward = new Forward();
+                forward.setShare_chain_id(shareChainId);
+                forward.setStartNode(firstUserStatus);
+                forward.setEndNode(secordUserStatus);
+                forward.setPosition_id(chain.getPositionId());
+                forward.setParent_id(chain.getParentId());
+                forward.setRoot_user_id(chain.getRootRecomUserId());
+                forward.setCreate_time(chain.getClickTime());
+                LocalDateTime beforeSave = LocalDateTime.now();
+                logger.info("neo4j addFriendRelationInternal before forwardNeo4jDao.save datetime:{}", beforeSave);
+                Forward forwardConnection = forwardNeo4jDao.save(forward);
+                LocalDateTime afterSave = LocalDateTime.now();
+                logger.info("neo4j addFriendRelationInternal after forwardNeo4jDao.save datetime:{}", afterSave);
+                kafkaSender.sendForwardView(chain);
+                logger.debug("proceed friend:" + JSON.toJSONString(forwardConnection));
+            }
+        }
+    }
+
+    /**
+     *
+     * @param startUserId
+     * @param endUserId
+     * @param connChainId
+     * @param positionId
+     */
+    private void addConnRelationInternal(int startUserId, int endUserId, int connChainId, int positionId) {
+        /**
+         * 不允许建立自己和自己的关系
+         */
+        if (startUserId == endUserId) {
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        LocalDateTime beforeInsertIfNotExistNode = LocalDateTime.now();
+        logger.info("neo4j addConnRelationInternal before insertIfNotExistNode datetime:{}", beforeInsertIfNotExistNode);
+        List<UserNode> userNodes = insertIfNotExistNode(startUserId, endUserId);
+        LocalDateTime afterInsertIfNotExistNode = LocalDateTime.now();
+        logger.info("neo4j addConnRelationInternal after insertIfNotExistNode datetime:{}", afterInsertIfNotExistNode);
+        UserNode firstUserStatus;
+        UserNode secordUserStatus;
+        if (userNodes != null && userNodes.size() == NODE_NUM) {
+            firstUserStatus = userNodes.get(0);
+            secordUserStatus = userNodes.get(1);
+        } else {
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        if (firstUserStatus != null && secordUserStatus != null) {
+            Connection conn = new Connection();
+            conn.setConn_chain_id(connChainId);
+            conn.setStartNode(firstUserStatus);
+            conn.setEndNode(secordUserStatus);
+            conn.setPosition_id(positionId);
+            LocalDateTime beforeGetTwoUserConn = LocalDateTime.now();
+            logger.info("neo4j addConnRelationInternal before connNeo4jDao.getTwoUserConn datetime:{}", beforeGetTwoUserConn);
+            List<Connection> conns = connNeo4jDao.getTwoUserConn(startUserId, endUserId, positionId);
+            LocalDateTime afterGetTwoUserConn = LocalDateTime.now();
+            logger.info("neo4j addConnRelationInternal after connNeo4jDao.getTwoUserConn datetime:{}", afterGetTwoUserConn);
+            if (StringUtils.isEmptyList(conns)) {
+                LocalDateTime beforeSave = LocalDateTime.now();
+                logger.info("neo4j addConnRelationInternal before connNeo4jDao.save datetime:{}", beforeSave);
+                Connection connection = connNeo4jDao.save(conn);
+                LocalDateTime afterSave = LocalDateTime.now();
+                logger.info("neo4j addConnRelationInternal after connNeo4jDao.save datetime:{}", afterSave);
+                kafkaSender.sendConnectionLink(conn, endUserId);
+                logger.debug("proceed connection:" + JSON.toJSONString(connection));
+            }
+        }
+    }
+
+    /**
+     * 处理Future相关错误和记录任务的执行时间
+     * @param method 方法名称
+     * @param callable 线程任务
+     * @param <T> 返回值类型
+     * @return 任务执行结果
+     * @throws InterruptedException 业务异常
+     * @throws ExecutionException 线程池异常
+     * @throws TimeoutException 超时
+     */
+    private <T> T handlerFutureTask(String method, Callable<T> callable)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        LocalDateTime startTime = LocalDateTime.now();
+        logger.info("neo4j {} start:{}", method, startTime);
+        Future<T> future = tp.startSubmit(callable);
+        T t;
+        try {
+            t = future.get(TIMEOUT, TimeUnit.SECONDS);
+            return t;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error(e.getMessage(), e);
+            throw e;
+        } catch (ExecutionException e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        } catch (TimeoutException e) {
+            future.cancel(true);
+            String poolInfo = tp.getPoolInfo();
+            logger.info("neo4j {} timeout! poolInfo:{}", method, poolInfo);
+            throw e;
+        } finally {
+            LocalDateTime endTime = LocalDateTime.now();
+            logger.info("neo4j {} end:{}", method, endTime);
+        }
     }
 }

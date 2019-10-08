@@ -37,7 +37,7 @@ public enum Neo4jThreadPool {
      * @param <T> 返回类型
      * @return future
      */
-    public <T> Future<T> startTast(Callable<T> task) {
+    public <T> Future<T> startSubmit(Callable<T> task) {
         return this.service.submit(task);
     }
 
