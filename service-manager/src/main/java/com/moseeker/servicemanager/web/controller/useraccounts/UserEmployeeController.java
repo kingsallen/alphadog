@@ -16,16 +16,14 @@ import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.CustomFieldValuesForm;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.EmployeeExtInfo;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.*;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
@@ -43,6 +41,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -773,6 +773,39 @@ public class UserEmployeeController {
             return com.moseeker.servicemanager.web.controller.Result.success(viewVO).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
+    }
+
+
+    /**
+     * 中骏员工信息导入
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/sftp/employee/import", method = RequestMethod.POST)
+    @ResponseBody
+    public String atsEmployeeImport(HttpServletRequest request, @RequestBody  EmployeeBatchImportForm form) {
+        logger.info("中骏员工信息导入 initDateTime");
+        ValidateUtil validateUtil = new ValidateUtil();
+        List<UserEmployeeDO> employeeDOS = form.getEmployees();
+        validateUtil.addRequiredValidate("公司编号", employeeDOS);
+        validateUtil.addRequiredOneValidate("员工信息列表",form.getEmployees());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
+        LocalDateTime initDateTime = LocalDateTime.now();
+        try {
+            Response res = employeeService.employeeSftpImport(form.getCompanyId(),employeeDOS);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            logger.error("中骏员工信息导入 异常",e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            logger.info("中骏员工信息导入 Duration:{}", Duration.between(initDateTime, LocalDateTime.now()).toMillis());
         }
     }
 

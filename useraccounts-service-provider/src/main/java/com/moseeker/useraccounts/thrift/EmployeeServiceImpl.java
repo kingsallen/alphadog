@@ -13,10 +13,13 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
 import com.moseeker.thrift.gen.employee.struct.*;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
+import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralPositionInfo;
 import com.moseeker.useraccounts.service.impl.vo.EmployeeInfoVO;
 import org.apache.thrift.TException;
@@ -47,6 +50,8 @@ public class EmployeeServiceImpl implements Iface {
 	@Autowired
 	private EmployeeService service;
 
+	@Autowired
+	private UserHrAccountService userHrAccountService;
 	@Autowired
     private EmployeeBindByEmail employeeBindByEmail;
 
@@ -477,6 +482,23 @@ public class EmployeeServiceImpl implements Iface {
 	public void retrySendVerificationMail(int userId, int companyId, int source) throws BIZException, TException {
 		try {
 			service.retrySendVerificationMail(userId, companyId, source);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public Response employeeSftpImport(int companyId, List<UserEmployeeDO> userEmployeeDOS) throws BIZException, TException {
+		try {
+			// 判断是否有重复数据
+			if (companyId == 0) {
+				throw UserAccountException.COMPANYID_ENPTY;
+			}
+			if (userEmployeeDOS == null || userEmployeeDOS.size() == 0) {
+				throw UserAccountException.IMPORT_DATA_EMPTY;
+			}
+			userEmployeeDOS.forEach(UserHrAccountServiceImpl::trimUserEmployeeDO);
+			return userHrAccountService.apiEmployeeImport(companyId,userEmployeeDOS);
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}

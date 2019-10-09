@@ -84,6 +84,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -2380,6 +2382,147 @@ public class UserHrAccountService {
             }
         }
         return bonusVOPageVO;
+    }
+
+
+    /**
+     * 中骏员工信息导入
+     * 只导入新员工数据
+     * @param userEmployees 员工信息列表
+     * @param companyId       公司ID
+     */
+    @Transactional
+    public Response apiEmployeeImport(Integer companyId, List<UserEmployeeDO> userEmployees) throws CommonException {
+        logger.info("中骏员工信息导入");
+
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
+        // 公司ID设置错误
+        if (company == null) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+
+        // 查找已经存在的数据
+        queryBuilder.clear();
+        queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId)
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+        // 数据库中取出来的数据
+        List<UserEmployeeDO> dbEmployeeDOList = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+
+
+        // 通过工号自定义字段去重
+        Map<String,UserEmployeeDO> nameMap = new HashMap<>(); // key为name
+        Map<String,UserEmployeeDO> workNoMap = new HashMap<>(); // key为工号
+        for(UserEmployeeDO ue : dbEmployeeDOList){
+            if(StringUtils.isNotNullOrEmpty(ue.getCname())){
+                nameMap.put(ue.getCname(),ue);
+            }
+            if(StringUtils.isNotNullOrEmpty(ue.getCustomField())){
+                workNoMap.put(ue.getCustomField(),ue);
+            }
+        }
+
+        // 通过手机号查询那些员工数据是更新，那些数据是新增
+        List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        userEmployees.stream().filter(v->{
+            if(StringUtils.isNotNullOrEmpty(v.getCustomField())){
+                if(workNoMap.containsKey(v.getCustomField().trim())){
+                    return false;
+                }
+            }else{
+                if(nameMap.containsKey(v.getCname().trim())){
+                    return false;
+                }
+            }
+            return true ;
+        }).forEach((v) -> {
+            v.setCompanyId(companyId);
+            v.setImportTime(now.format(dateTimeFormatter));
+            v.setActivation(EmployeeActiveState.Actived.getState());
+            v.setAuthMethod((byte) EmployeeAuthMethod.CUSTOM_AUTH.getCode());
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCname())) {
+                v.setCname(v.getCname().trim());
+            }
+            if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCustomField())) {
+                v.setCustomField(v.getCustomField().trim());
+            }
+            v.setSource(14);
+            userEmployeeList.add(v);
+        });
+
+        // 新增数据
+        if (!StringUtils.isEmptyList(userEmployeeList)) {
+            parseCustomFieldValues(companyId,userEmployeeList);
+            employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
+        }
+        Response response = ResultMessage.SUCCESS.toResponse(userEmployeeList);
+        logger.info("中骏员工信息导入结束");
+        return response;
+    }
+
+
+    protected void parseCustomFieldValues(int companyId,List<UserEmployeeDO> employees){
+        Map<Byte,HrEmployeeCustomFields> fieldsMap = customFieldsDao.listSystemCustomFieldByCompanyIdList(Arrays.asList(
+                companyId)).stream().collect(Collectors.toMap(HrEmployeeCustomFields::getFieldType, f->f));
+        Map<String,Integer> filedNameIdMap = new HashMap<>();
+        fieldsMap.forEach((k,v)-> {
+            filedNameIdMap.put(v.getFname(),v.getId());
+        });
+/*        List<Integer> fieldIds = new ArrayList<>();
+        fieldsMap.values().forEach(f->fieldIds.add(f.getId()));*/
+
+        employees.forEach(v->v.getCustomFieldValues());
+
+        Map<Integer,String>[] mapList = new Map[employees.size()];
+        MultiValueMap<Integer,String> valuesAll = new LinkedMultiValueMap<>();
+        for(int i=0;i<employees.size();i++){
+            UserEmployeeDO ue = employees.get(i);
+            if(StringUtils.isNotNullOrEmpty(ue.getCustomFieldValues()) ){
+                JSONObject json = JSONObject.parseObject(ue.getCustomFieldValues());
+                Map<Integer,String> idStrValMap = new HashMap<>(); // 如 {21:"研发部"}
+                json.forEach((k,v)->{
+                    if(k != null || v != null || StringUtils.isNotNullOrEmpty(v.toString().trim())){
+                        Integer fid = filedNameIdMap.get(k.trim());
+                        String val = v.toString().trim();
+                        if( fid != null){
+                            idStrValMap.put(fid,val);
+                            valuesAll.add(fid,val); // 待转化
+                        }
+                    }
+                });
+                mapList[i]=idStrValMap;
+            }
+        }
+
+        Map<Integer,Map<String,Integer>> fidOptionValueOptionIdMap = new HashMap<>();
+        valuesAll.forEach((fid,valueStrings)->{
+            Map<String,Integer> positionOptions = customOptionJooqDao.getFieldOptions(fid,valueStrings);
+            fidOptionValueOptionIdMap.put(fid,positionOptions);
+        });
+
+        for(int i=0;i<mapList.length;i++){
+            Map<Integer,String> map = mapList[i];
+            List<Map<String,String>> rstList = new ArrayList<>(3);
+            String customFieldValues = "[]" ;
+            if( map != null && !map.isEmpty()){
+                map.forEach((fid,valueStr)->{
+                    Map<String,Integer> map1 = fidOptionValueOptionIdMap.get(fid);
+                    if(map1 != null){
+                        Integer optionId = map1.get(valueStr);
+                        if( optionId != null){
+                            Map<String,String> m1 = new HashMap<>();
+                            m1.put(fid.toString(),optionId.toString());
+                            rstList.add(m1);
+                        }
+                    }
+                });
+                customFieldValues = JSONArray.toJSONString(rstList);
+            }
+            employees.get(i).setCustomFieldValues(customFieldValues);
+        }
     }
 
 }

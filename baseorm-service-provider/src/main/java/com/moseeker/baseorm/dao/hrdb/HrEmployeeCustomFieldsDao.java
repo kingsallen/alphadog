@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class HrEmployeeCustomFieldsDao extends JooqCrudImpl<HrEmployeeCustomFieldsDO, HrEmployeeCustomFieldsRecord> {
 
     // 0:部门，1:职位，2:城市，3:自定义字段
+    public static final byte FIELD_TYPE_DEPARTMENT = 0 ;
     public static final byte FIELD_TYPE_POSITION = 1 ;
     public static final byte FIELD_TYPE_CITY = 2 ;
 
