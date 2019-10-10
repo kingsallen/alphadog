@@ -83,6 +83,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException USER_NEO4J_TASK_INTERRUPTED = new UserAccountException(42071, "任务执行失败！");
     public static final UserAccountException USER_NEO4J_TASK_EXECUTION_FAILED = new UserAccountException(42072, "任务执行失败！");
     public static final UserAccountException USER_NEO4J_TASK_EXECUTION_TIMEOUT = new UserAccountException(42073, "任务执行失败！");
+    public static final UserAccountException USER_NEO4J_TASK_CONNECTION_EXCEPTION = new UserAccountException(42074, "任务执行失败！");
 
     private final int code;
 

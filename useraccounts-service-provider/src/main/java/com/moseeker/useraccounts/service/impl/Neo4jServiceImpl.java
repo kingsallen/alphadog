@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.Neo4jThreadPool;
 import com.moseeker.common.util.StringUtils;
@@ -27,8 +28,13 @@ import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
+import org.neo4j.ogm.exception.ConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,6 +89,9 @@ public class Neo4jServiceImpl implements Neo4jService {
     @Autowired
     PositionEntity positionEntity;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     Neo4jThreadPool tp = Neo4jThreadPool.Instance;
 
     /**
@@ -94,104 +103,68 @@ public class Neo4jServiceImpl implements Neo4jService {
      */
     private static final int NODE_NUM = 2;
 
+    /**
+     * 两分钟的毫秒数
+     */
+    private static final int TWO_MINIUTE = 2*60*1000;
+
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
-        handlerFutureTask("addFriendRelation", () -> {
-            try {
-                addFriendRelationInternal(startUserId, endUserId, shareChainId);
-                return true;
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
+        handlerTimeoutRetry("addFriendRelation", () -> {
+            addFriendRelationInternal(startUserId, endUserId, shareChainId);
+            return true;
         }, startUserId, endUserId, shareChainId);
     }
 
     @Override
     public void addConnRelation(int startUserId, int endUserId, int connChainId, int positionId) throws CommonException {
-        handlerFutureTask("addConnRelation", () -> {
-            try {
-                addConnRelationInternal(startUserId, endUserId, connChainId, positionId);
-                return true;
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
+        handlerTimeoutRetry("addConnRelation", () -> {
+            addConnRelationInternal(startUserId, endUserId, connChainId, positionId);
+            return true;
         }, startUserId, endUserId, connChainId, positionId);
     }
 
     @Override
     public List<Integer> fetchShortestPath(int startUserId, int endUserId, int companyId) throws CommonException {
-        return handlerFutureTask("fetchShortestPath", () -> {
-            try {
-                return fetchShortestPathInternal(startUserId, endUserId, companyId);
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
-        }, startUserId, endUserId, companyId);
+        return handlerFutureTask("fetchShortestPath",
+                () -> fetchShortestPathInternal(startUserId, endUserId, companyId),
+                startUserId, endUserId, companyId);
     }
 
     @Override
     public boolean updateUserEmployeeCompany(int userId, int companyId) throws CommonException {
         return handlerFutureTask("updateUserEmployeeCompany", () -> {
-            try {
-                List<Integer> userIds = new ArrayList<>(1);
-                userIds.add(userId);
-                return updateUserEmployeeCompanyInternal(userIds, companyId);
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
+            List<Integer> userIds = new ArrayList<>(1);
+            userIds.add(userId);
+            return updateUserEmployeeCompanyInternal(userIds, companyId);
         }, userId, companyId);
     }
 
     @Override
     public void updateUserEmployeeCompany(List<Integer> userIds, int companyId) throws CommonException {
-        handlerFutureTask("updateUserEmployeeCompanyBatch", () -> {
-            try {
-                return updateUserEmployeeCompanyInternal(userIds, companyId);
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
-        }, userIds, companyId);
+        handlerFutureTask("updateUserEmployeeCompanyBatch",
+                () -> updateUserEmployeeCompanyInternal(userIds, companyId),
+                userIds, companyId);
     }
 
     @Override
     public List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
-        return handlerFutureTask("fetchUserThreeDepthEmployee", () -> {
-            try {
-                return fetchUserThreeDepthEmployeeInternal(userId, companyId);
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
-        }, userId, companyId);
+        return handlerFutureTask("fetchUserThreeDepthEmployee",
+                () -> fetchUserThreeDepthEmployeeInternal(userId, companyId),
+                userId, companyId);
     }
 
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
-        return handlerFutureTask("fetchEmployeeThreeDepthUser", () -> {
-            try {
-                return fetchEmployeeThreeDepthUserInternal(userId);
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
-        }, userId);
+        return handlerFutureTask("fetchEmployeeThreeDepthUser",
+                () -> fetchEmployeeThreeDepthUserInternal(userId), userId);
     }
 
     @Override
     public List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException {
-        return handlerFutureTask("fetchDepthUserList", () -> {
-            try {
-                return fetchDepthUserListInternal(userId, companyId, userIdList);
-            } catch (CommonException e) {
-                Thread.currentThread().interrupt();
-                throw e;
-            }
-        }, userId, companyId, userIdList);
+        return handlerFutureTask("fetchDepthUserList",
+                () -> fetchDepthUserListInternal(userId, companyId, userIdList),
+                userId, companyId, userIdList);
     }
 
     /**
@@ -598,6 +571,48 @@ public class Neo4jServiceImpl implements Neo4jService {
     }
 
     /**
+     * 处理超时重试
+     * @param method 方法名称
+     * @param callable 任务
+     * @param params 参数
+     * @param <T> 返回值类型
+     */
+    private <T> void handlerTimeoutRetry(String method, Callable<T> callable, Object... params) {
+        try {
+            handlerFutureTask(method, callable, params);
+        } catch (CommonException e) {
+            /**
+             * 由于有重试机制，所以触发重试的操作不抛出相关异常。
+             */
+            if (e.getCode() == UserAccountException.USER_NEO4J_TASK_EXECUTION_TIMEOUT.getCode()
+                    || e.getCode() == UserAccountException.USER_NEO4J_TASK_CONNECTION_EXCEPTION.getCode()) {
+                sendRetryEvent(method, params);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    /**
+     * 发送重试事件
+     * @param method 方法名称
+     * @param params 参数
+     */
+    private void sendRetryEvent(String method, Object... params) {
+        JSONObject data  = new JSONObject();
+        data.put("method", method);
+        data.put("params", JSONObject.toJSONString(params));
+        Message message = MessageBuilder.withBody(data.toJSONString().getBytes())
+                .setContentType(MessageProperties.CONTENT_TYPE_JSON).setContentEncoding("utf-8")
+                .setMessageId(UUID.randomUUID() + "")
+                .setHeaderIfAbsent("x-delay", TWO_MINIUTE)
+                .build();
+        amqpTemplate.convertAndSend(Constant.NEO4J_SHUTDOWN_TASK_DELAY_EXCHANGE, Constant.NEO4J_SHUTDOWN_TASK_DELAY_ROUTING_KEY, message);
+        LocalDateTime startTime = LocalDateTime.now();
+        logger.info("neo4j sendRetryEvent start. method:{}, startTime:{}", method, startTime);
+    }
+
+    /**
      * 异步处理业务
      * 1. 记录执行时间
      * 2. 如果超时，记录超时时的参数
@@ -627,8 +642,11 @@ public class Neo4jServiceImpl implements Neo4jService {
         } catch (TimeoutException e) {
             future.cancel(true);
             String poolInfo = tp.getPoolInfo();
-            logger.info("neo4j handlerFutureTask timeout! method:{} poolInfo:{}, params:{}", method, poolInfo, JSONObject.toJSONString(params));
+            logger.info("neo4j handlerFutureTask timeout! method:{}, poolInfo:{}, params:{}", method, poolInfo, JSONObject.toJSONString(params));
             throw UserAccountException.USER_NEO4J_TASK_EXECUTION_TIMEOUT;
+        }catch (ConnectionException e) {
+            logger.info("neo4j handlerFutureTask connection exception! method:{}, params:{}", method, JSONObject.toJSONString(params));
+            throw UserAccountException.USER_NEO4J_TASK_CONNECTION_EXCEPTION;
         } catch (CommonException e) {
             throw e;
         } catch (Exception e) {
