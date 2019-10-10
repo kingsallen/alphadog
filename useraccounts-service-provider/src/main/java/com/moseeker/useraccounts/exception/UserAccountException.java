@@ -80,6 +80,9 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException USEREMPLOYEES_EMPTY_OR_NO_NEED_UPDATE = new UserAccountException(42068, "员工数据不存在或无需修改！");
     public static final UserAccountException ERROR_REDIS_LIVE_TIME = new UserAccountException(42069, "错误的redis过期时间！");
     public static final UserAccountException USER_WORKWX_NOT_EXIST = new UserAccountException(42070, "企业微信用户信息不存在！");
+    public static final UserAccountException USER_NEO4J_TASK_INTERRUPTED = new UserAccountException(42071, "任务执行失败！");
+    public static final UserAccountException USER_NEO4J_TASK_EXECUTION_FAILED = new UserAccountException(42072, "任务执行失败！");
+    public static final UserAccountException USER_NEO4J_TASK_EXECUTION_TIMEOUT = new UserAccountException(42073, "任务执行失败！");
 
     private final int code;
 

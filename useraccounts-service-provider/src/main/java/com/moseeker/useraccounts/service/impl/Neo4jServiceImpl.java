@@ -88,7 +88,7 @@ public class Neo4jServiceImpl implements Neo4jService {
     /**
      * 超时时间
      */
-    private static final long TIMEOUT = 5L;
+    private static final long TIMEOUT = 10L;
     /**
      * 节点的数量
      */
@@ -96,227 +96,102 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
-        try {
-            handlerFutureTask("addFriendRelation", () -> {
-                try {
-                    addFriendRelationInternal(startUserId, endUserId, shareChainId);
-                    return true;
-                } catch (CommonException e) {
-                    return false;
-                }
-            });
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        handlerFutureTask("addFriendRelation", () -> {
+            try {
+                addFriendRelationInternal(startUserId, endUserId, shareChainId);
+                return true;
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+        }, startUserId, endUserId, shareChainId);
     }
 
     @Override
     public void addConnRelation(int startUserId, int endUserId, int connChainId, int positionId) throws CommonException {
-        try {
-            handlerFutureTask("addConnRelation", () -> {
-                try {
-                    addConnRelationInternal(startUserId, endUserId, connChainId, positionId);
-                    return true;
-                } catch (CommonException e) {
-                    return false;
-                }
-            });
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
+        handlerFutureTask("addConnRelation", () -> {
+            try {
+                addConnRelationInternal(startUserId, endUserId, connChainId, positionId);
+                return true;
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+        }, startUserId, endUserId, connChainId, positionId);
     }
 
     @Override
     public List<Integer> fetchShortestPath(int startUserId, int endUserId, int companyId) throws CommonException {
-        logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserShortFriend startUserId:{}, endUserId:{}, companyId:{}", startUserId, endUserId, companyId);
-        LocalDateTime beforeGetTwoUserShortFriend = LocalDateTime.now();
-        logger.info("neo4j 调用日志 before forwardNeo4jDao.getTwoUserShortFriend datetime:{}", beforeGetTwoUserShortFriend.toString());
-        Future<List<Relation>> relationFuture = tp.startSubmit(() -> forwardNeo4jDao.getTwoUserShortFriend(startUserId, endUserId, companyId));
-        List<Relation> relationList;
-        try {
-            relationList = relationFuture.get(TIMEOUT, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw CommonException.PROGRAM_EXCEPTION;
-        }
-        LocalDateTime afteGetTwoUserShortFriend = LocalDateTime.now();
-        logger.info("neo4j 调用日志 after forwardNeo4jDao.getTwoUserShortFriend datetime:{}, time:{}", afteGetTwoUserShortFriend.toString(), Duration.between(beforeGetTwoUserShortFriend, afteGetTwoUserShortFriend).toMillis());
-        if(!StringUtils.isEmptyList(relationList)){
-            List<Integer> idList = new ArrayList<>();
-            Map<Integer, Integer> keyMap = new IdentityHashMap<>();
-            Map<Integer, Integer> valueMap = new IdentityHashMap<>();
-            for(Relation relation: relationList){
-                keyMap.put(relation.getStartNode().getUser_id(), relation.getEndNode().getUser_id());
-                valueMap.put(relation.getEndNode().getUser_id(), relation.getStartNode().getUser_id());
+        return handlerFutureTask("fetchShortestPath", () -> {
+            try {
+                return fetchShortestPathInternal(startUserId, endUserId, companyId);
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
             }
-            idList.add(startUserId);
-            int tempId=startUserId;
-            for(int i =0; i< relationList.size(); i++){
-                int id = 0;
-                for(Map.Entry<Integer, Integer> entry : keyMap.entrySet()){
-                    if(entry.getKey().intValue() == tempId) {
-                        id = entry.getValue();
-                        if (!idList.contains(id)) {
-                            idList.add(id);
-                            tempId = id;
-                            continue;
-                        }
-                    }
-                }
-                for(Map.Entry<Integer, Integer> entry : valueMap.entrySet()) {
-                    if (entry.getKey().intValue() == tempId) {
-                        id = entry.getValue();
-                        if (!idList.contains(id)) {
-                            idList.add(id);
-                            tempId = id;
-                            continue;
-                        }
-                    }
-                }
-            }
-            return idList;
-        }
-        return new ArrayList<>();
+        }, startUserId, endUserId, companyId);
     }
 
     @Override
     public boolean updateUserEmployeeCompany(int userId, int companyId) throws CommonException {
-        logger.info("nupdateUserEmployeeCompany userId:{}, companyId:{}", userId, companyId);
-        UserNode node;
-        LocalDateTime beforeUpdateUserEmployeeCompany = LocalDateTime.now();
-        logger.info("neo4j 调用日志 before userNeo4jDao.updateUserEmployeeCompany datetime:{}", beforeUpdateUserEmployeeCompany.toString());
-        Future<UserNode> nodeFuture = tp.startSubmit(() -> userNeo4jDao.updateUserEmployeeCompany(userId, companyId));
-        try {
-            node = nodeFuture.get(TIMEOUT, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            logger.info("neo4j 调用日志 after userNeo4jDao.updateUserEmployeeCompany datetime:{}", LocalDateTime.now().toString());
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        LocalDateTime afterUpdateUserEmployeeCompany = LocalDateTime.now();
-        logger.info("neo4j 调用日志 after userNeo4jDao.updateUserEmployeeCompany datetime:{}, time:{}", afterUpdateUserEmployeeCompany.toString(), Duration.between(beforeUpdateUserEmployeeCompany, afterUpdateUserEmployeeCompany).toMillis());
-        if(node != null && node.getEmployee_company() == companyId){
-            return true;
-        }
-        return false;
+        return handlerFutureTask("updateUserEmployeeCompany", () -> {
+            try {
+                List<Integer> userIds = new ArrayList<>(1);
+                userIds.add(userId);
+                return updateUserEmployeeCompanyInternal(userIds, companyId);
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+        }, userId, companyId);
     }
 
     @Override
     public void updateUserEmployeeCompany(List<Integer> userIds, int companyId) throws CommonException {
-        if(StringUtils.isEmptyList(userIds) || companyId<0){
-            return;
-        }
-        tp.startSubmit(() -> {
-            logger.info("neo4j 调用日志 before forwardNeo4jDao.updateUserEmployeeCompanyList userIds:{}, companyId:{}", JSONObject.toJSONString(userIds), companyId);
-            LocalDateTime beforeUpdateUserEmployeeCompanyList = LocalDateTime.now();
-            logger.info("neo4j 调用日志 before forwardNeo4jDao.updateUserEmployeeCompanyList datetime:{}", beforeUpdateUserEmployeeCompanyList.toString());
-            userNeo4jDao.updateUserEmployeeCompanyList(userIds, companyId);
-            LocalDateTime afterUpdateUserEmployeeCompanyList = LocalDateTime.now();
-            logger.info("neo4j 调用日志 after forwardNeo4jDao.updateUserEmployeeCompanyList datetime:{}, time:{}", afterUpdateUserEmployeeCompanyList.toString(), Duration.between(beforeUpdateUserEmployeeCompanyList, afterUpdateUserEmployeeCompanyList).toMillis());
-            return true;
-        });
+        handlerFutureTask("updateUserEmployeeCompanyBatch", () -> {
+            try {
+                return updateUserEmployeeCompanyInternal(userIds, companyId);
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+        }, userIds, companyId);
     }
 
     @Override
     public List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
-        Future<List<ConfigOmsSwitchManagementDO>>  managementDOListFuture = tp.startSubmit(
-                ()-> managementDao.fetchRadarStatus(7, 1));
-        List<Integer> rootUserList = candidateShareChainDao.fetchRootIdByPresentee(userId);
-        if(StringUtils.isEmptyList(rootUserList)){
-            return new ArrayList<>();
-        }
-        try {
-            if(StringUtils.isEmptyList(managementDOListFuture.get())){
-                return new ArrayList<>();
+        return handlerFutureTask("fetchUserThreeDepthEmployee", () -> {
+            try {
+                return fetchUserThreeDepthEmployeeInternal(userId, companyId);
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
             }
-            Set<Integer> companyIdSet = managementDOListFuture.get().stream().map(m -> m.getCompanyId()).collect(Collectors.toSet());
-            if(companyId >0 && companyIdSet.contains(companyId)) {
-                List<UserEmployeeDO> employeeList = employeeDao.getActiveEmployee(rootUserList, companyId);
-                rootUserList.clear();
-                if(StringUtils.isEmptyList(employeeList)){
-                    return new ArrayList<>();
-                }
-                List<Integer> rootUserIdList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
-                logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchUserThreeDepthEmployee userId:{}, rootUserList:{}", userId, JSONObject.toJSONString(rootUserList));
-                List<EmployeeCompanyVO> postUserIdList;
-                LocalDateTime beforeFetchUserThreeDepthEmployee = LocalDateTime.now();
-                logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}", beforeFetchUserThreeDepthEmployee.toString());
-                Future<List<EmployeeCompanyVO>> listFuture = tp.startSubmit(() -> userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserIdList));
-                postUserIdList = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
-                LocalDateTime afterFetchUserThreeDepthEmployee = LocalDateTime.now();
-                logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}, time:{}", LocalDateTime.now().toString(), Duration.between(beforeFetchUserThreeDepthEmployee, afterFetchUserThreeDepthEmployee).toMillis());
-
-                return postUserIdList;
-            }
-
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw UserAccountException.NEO4J_STATUS_ERROR;
-        }
-        return new ArrayList<>();
+        }, userId, companyId);
     }
 
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
-        List<ConfigOmsSwitchManagementDO>  managementDOList =  managementDao.fetchRadarStatus(7, 1);
-        logger.info("fetchEmployeeThreeDepthUser managementDOList:{}",managementDOList);
-        if(StringUtils.isEmptyList(managementDOList)){
-            return new ArrayList<>();
-        }
-        Set<Integer> companyIdSet = managementDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toSet());
-        UserEmployeeRecord employee = employeeDao.getEmployeeByIdAndCompanyIds(userId, companyIdSet);
-        logger.info("fetchEmployeeThreeDepthUser employee:{}",employee);
-        if(employee == null ){
-            return new ArrayList<>();
-        }
-        List<Integer> list = new ArrayList<>();
-        list.add(employee.getCompanyId());
-        List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
-        List<Integer> positionIds = positionEntity.getPositionIdListByCompanyIdListAndStatus(companyIds);
-        List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId, positionIds);
-        logger.info("fetchEmployeeThreeDepthUser peresentUserIdList:{}",peresentUserIdList);
-        if(StringUtils.isEmptyList(peresentUserIdList)){
-            return new ArrayList<>();
-        }
-        LocalDateTime beforeFetchEmployeeThreeDepthUser = LocalDateTime.now();
-        try {
-            logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchEmployeeThreeDepthUser userId:{}, peresentUserIdList:{}, companyId:{}", userId, JSONObject.toJSONString(peresentUserIdList), employee.getCompanyId());
-            List<UserDepthVO> depthUser;
-            logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}", beforeFetchEmployeeThreeDepthUser.toString());
-            Future<List<UserDepthVO>> listFuture = tp.startSubmit(() -> userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId()));
-            depthUser = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
-            LocalDateTime afterFetchEmployeeThreeDepthUser = LocalDateTime.now();
-            logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}, time:{}", afterFetchEmployeeThreeDepthUser.toString(), Duration.between(beforeFetchEmployeeThreeDepthUser, afterFetchEmployeeThreeDepthUser).toMillis());
-            return depthUser;
-        }catch (Exception e){
-            LocalDateTime afterFetchEmployeeThreeDepthUser = LocalDateTime.now();
-            logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}, time:{}", afterFetchEmployeeThreeDepthUser.toString(), Duration.between(beforeFetchEmployeeThreeDepthUser, afterFetchEmployeeThreeDepthUser).toMillis());
-            throw UserAccountException.NEO4J_STATUS_ERROR;
-        }
-
+        return handlerFutureTask("fetchEmployeeThreeDepthUser", () -> {
+            try {
+                return fetchEmployeeThreeDepthUserInternal(userId);
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
+            }
+        }, userId);
     }
 
     @Override
     public List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException {
-        if(userId >0 && companyId >0 && !StringUtils.isEmptyList(userIdList)){
-            LocalDateTime beforeFetchDepthUserList = LocalDateTime.now();
+        return handlerFutureTask("fetchDepthUserList", () -> {
             try {
-                logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList userId:{}, companyId:{}, userIdList:{}", userId, companyId, JSONObject.toJSON(userIdList));
-                logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList datetime:{}", beforeFetchDepthUserList.toString());
-                List<UserDepthVO> list;
-                Future<List<UserDepthVO>> listFuture = tp.startSubmit(() -> userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId));
-                list = listFuture.get(TIMEOUT, TimeUnit.SECONDS);
-                LocalDateTime afterFetchDepthUserList = LocalDateTime.now();
-                logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchDepthUserList datetime:{}, time:{}", afterFetchDepthUserList.toString(), Duration.between(beforeFetchDepthUserList, afterFetchDepthUserList).toMillis());
-                return list;
-            }catch (Exception e){
-                LocalDateTime afterFetchDepthUserList = LocalDateTime.now();
-                logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchDepthUserList datetime:{}, time:{}", afterFetchDepthUserList.toString(), Duration.between(beforeFetchDepthUserList, afterFetchDepthUserList).toMillis());
-                logger.error(e.getMessage()+"userid:{}, userIdList:{}, companyId:{}", userId, userIdList, companyId);
-
+                return fetchDepthUserListInternal(userId, companyId, userIdList);
+            } catch (CommonException e) {
+                Thread.currentThread().interrupt();
+                throw e;
             }
-        }
-        return new ArrayList<>();
+        }, userId, companyId, userIdList);
     }
 
     /**
@@ -342,10 +217,14 @@ public class Neo4jServiceImpl implements Neo4jService {
                 UserNode userNode1 = generateUserNode(userId1);
                 if (userNode1 != null) {
                     list.add(userNode1);
+                } else {
+                    throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
                 }
                 UserNode userNode2 = generateUserNode(userId2);
                 if (userNode2 != null) {
                     list.add(userNode2);
+                } else {
+                    throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
                 }
                 if (list.size() > 0) {
                     userNeo4jDao.save(list);
@@ -360,11 +239,17 @@ public class Neo4jServiceImpl implements Neo4jService {
                 if (userNodes.get(0).getUser_id() == userId1) {
                     result.add(userNodes.get(0));
                     userNode = generateUserNode(userId2);
+                    if (userNode == null) {
+                        throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+                    }
                     userNode = userNeo4jDao.save(userNode);
                     result.add(userNode);
                 } else {
                     userNode = generateUserNode(userId1);
                     userNode = userNeo4jDao.save(userNode);
+                    if (userNode == null) {
+                        throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+                    }
                     result.add(userNode);
                     result.add(userNodes.get(0));
                 }
@@ -383,7 +268,6 @@ public class Neo4jServiceImpl implements Neo4jService {
     private UserNode generateUserNode(int userId) {
         if(userId>0) {
             UserUserRecord record1 = userUserDao.getUserById(userId);
-
 
             if (record1 != null) {
                 UserNode node = new UserNode();
@@ -448,6 +332,167 @@ public class Neo4jServiceImpl implements Neo4jService {
     }
 
     /**
+     * 查找给定用户和用户集之间的关系度数
+     * 最多查找三层（3度）关系。
+     * @param userId 用户编号
+     * @param companyId 公司编号
+     * @param userIdList 用户集编号
+     * @return 有度数关系的
+     * @throws CommonException
+     */
+    private List<UserDepthVO> fetchDepthUserListInternal(int userId, int companyId, List<Integer> userIdList) throws CommonException {
+        LocalDateTime beforeFetchDepthUserList = LocalDateTime.now();
+        logger.info("neo4j 调用日志 before forwardNeo4jDao.fetchDepthUserList datetime:{}", beforeFetchDepthUserList.toString());
+        List<UserDepthVO> list = userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId);
+        LocalDateTime afterFetchDepthUserList = LocalDateTime.now();
+        logger.info("neo4j 调用日志 after forwardNeo4jDao.fetchDepthUserList datetime:{}, time:{}", afterFetchDepthUserList.toString(), Duration.between(beforeFetchDepthUserList, afterFetchDepthUserList).toMillis());
+        return list;
+    }
+
+    /**
+     * 查找最近三度的人脉关系
+     * @param userId 用户编号
+     * @return 最近三度的人脉关系
+     * @throws CommonException 业务异常
+     */
+    private List<UserDepthVO> fetchEmployeeThreeDepthUserInternal(int userId) throws CommonException {
+        //TODO: 调整成枚举常量
+        List<ConfigOmsSwitchManagementDO>  managementDOList =  managementDao.fetchRadarStatus(7, 1);
+        if(StringUtils.isEmptyList(managementDOList)){
+            return new ArrayList<>();
+        }
+        Set<Integer> companyIdSet = managementDOList.stream().map(ConfigOmsSwitchManagementDO::getCompanyId).collect(Collectors.toSet());
+        UserEmployeeRecord employee = employeeDao.getEmployeeByIdAndCompanyIds(userId, companyIdSet);
+        if(employee == null ){
+            return new ArrayList<>();
+        }
+        List<Integer> list = new ArrayList<>();
+        list.add(employee.getCompanyId());
+        List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
+        List<Integer> positionIds = positionEntity.getPositionIdListByCompanyIdListAndStatus(companyIds);
+        List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId, positionIds);
+        if(StringUtils.isEmptyList(peresentUserIdList)){
+            return new ArrayList<>();
+        }
+        LocalDateTime beforeFetchEmployeeThreeDepthUser = LocalDateTime.now();
+        logger.info("neo4j fetchEmployeeThreeDepthUserInternal before forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}", beforeFetchEmployeeThreeDepthUser.toString());
+        List<UserDepthVO> depthUser = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
+        LocalDateTime afterFetchEmployeeThreeDepthUser = LocalDateTime.now();
+        logger.info("neo4j fetchEmployeeThreeDepthUserInternal after forwardNeo4jDao.fetchEmployeeThreeDepthUser datetime:{}, time:{}", afterFetchEmployeeThreeDepthUser.toString(), Duration.between(beforeFetchEmployeeThreeDepthUser, afterFetchEmployeeThreeDepthUser).toMillis());
+        return depthUser;
+    }
+
+    /**
+     * 查找用户在一家公司下有关联关系的员工
+     * @param userId 用户编号
+     * @param companyId 公司编号
+     * @return 有关联关系的员工数据
+     * @throws CommonException
+     */
+    private List<EmployeeCompanyVO> fetchUserThreeDepthEmployeeInternal(int userId, int companyId) throws CommonException {
+        List<ConfigOmsSwitchManagementDO>  managementDOList = managementDao.fetchRadarStatus(7, 1);
+        List<Integer> rootUserList = candidateShareChainDao.fetchRootIdByPresentee(userId);
+        if(StringUtils.isEmptyList(rootUserList)){
+            return new ArrayList<>(0);
+        }
+        if(StringUtils.isEmptyList(managementDOList)){
+            return new ArrayList<>(0);
+        }
+        Optional<ConfigOmsSwitchManagementDO> companyIdExists = managementDOList
+                .stream()
+                .filter(configOmsSwitchManagementDO -> configOmsSwitchManagementDO.getCompanyId() == companyId)
+                .findAny();
+        if (companyIdExists.isPresent()) {
+            List<UserEmployeeDO> employeeList = employeeDao.getActiveEmployee(rootUserList, companyId);
+            rootUserList.clear();
+            if(StringUtils.isEmptyList(employeeList)){
+                return new ArrayList<>();
+            }
+            List<Integer> rootUserIdList = employeeList
+                    .stream()
+                    .filter(userEmployeeDO -> userEmployeeDO.getSysuserId() != userId)
+                    .map(UserEmployeeDO::getSysuserId)
+                    .collect(Collectors.toList());
+            LocalDateTime beforeFetchUserThreeDepthEmployee = LocalDateTime.now();
+            logger.info("neo4j fetchUserThreeDepthEmployeeInternal before forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}", beforeFetchUserThreeDepthEmployee.toString());
+            List<EmployeeCompanyVO> postUserIdList = userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserIdList);
+            LocalDateTime afterFetchUserThreeDepthEmployee = LocalDateTime.now();
+            logger.info("neo4j fetchUserThreeDepthEmployeeInternal after forwardNeo4jDao.fetchUserThreeDepthEmployee datetime:{}, time:{}", LocalDateTime.now().toString(), Duration.between(beforeFetchUserThreeDepthEmployee, afterFetchUserThreeDepthEmployee).toMillis());
+
+            return postUserIdList;
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+    private boolean updateUserEmployeeCompanyInternal(List<Integer> userIds, int companyId) throws CommonException {
+        if(StringUtils.isEmptyList(userIds) || companyId<0){
+            return false;
+        }
+        LocalDateTime beforeUpdateUserEmployeeCompanyList = LocalDateTime.now();
+        logger.info("neo4j updateUserEmployeeCompanyInternal before forwardNeo4jDao.updateUserEmployeeCompanyList datetime:{}", beforeUpdateUserEmployeeCompanyList);
+        userNeo4jDao.updateUserEmployeeCompanyList(userIds, companyId);
+        LocalDateTime afterUpdateUserEmployeeCompanyList = LocalDateTime.now();
+        logger.info("neo4j updateUserEmployeeCompanyInternal after forwardNeo4jDao.updateUserEmployeeCompanyList datetime:{}, time:{}", afterUpdateUserEmployeeCompanyList, Duration.between(beforeUpdateUserEmployeeCompanyList, afterUpdateUserEmployeeCompanyList).toMillis());
+        return true;
+
+    }
+
+    /**
+     * 查找两个节点间的最短路径
+     * @param startUserId 开始节点
+     * @param endUserId 结束节点
+     * @param companyId 公司编号，用于关系的类型过滤
+     * @return 最短路径
+     * @throws CommonException
+     */
+    private List<Integer> fetchShortestPathInternal(int startUserId, int endUserId, int companyId) throws CommonException {
+        LocalDateTime startFetchShortestPathInternal = LocalDateTime.now();
+        logger.info("neo4j addFriendRelationInternal before getTwoUserShortFriend datetime:{}", startFetchShortestPathInternal);
+        List<Relation> relationList = forwardNeo4jDao.getTwoUserShortFriend(startUserId, endUserId, companyId);
+        LocalDateTime endFetchShortestPathInternal = LocalDateTime.now();
+        logger.info("neo4j addFriendRelationInternal after getTwoUserShortFriend datetime:{}, time:{}",
+                endFetchShortestPathInternal,
+                Duration.between(startFetchShortestPathInternal, endFetchShortestPathInternal).toMillis());
+        if(!StringUtils.isEmptyList(relationList)){
+            List<Integer> idList = new ArrayList<>();
+            Map<Integer, Integer> keyMap = new IdentityHashMap<>();
+            Map<Integer, Integer> valueMap = new IdentityHashMap<>();
+            for(Relation relation: relationList){
+                keyMap.put(relation.getStartNode().getUser_id(), relation.getEndNode().getUser_id());
+                valueMap.put(relation.getEndNode().getUser_id(), relation.getStartNode().getUser_id());
+            }
+            idList.add(startUserId);
+            int tempId=startUserId;
+            for(int i =0; i< relationList.size(); i++){
+                int id = 0;
+                for(Map.Entry<Integer, Integer> entry : keyMap.entrySet()){
+                    if(entry.getKey().intValue() == tempId) {
+                        id = entry.getValue();
+                        if (!idList.contains(id)) {
+                            idList.add(id);
+                            tempId = id;
+                            continue;
+                        }
+                    }
+                }
+                for(Map.Entry<Integer, Integer> entry : valueMap.entrySet()) {
+                    if (entry.getKey().intValue() == tempId) {
+                        id = entry.getValue();
+                        if (!idList.contains(id)) {
+                            idList.add(id);
+                            tempId = id;
+                            continue;
+                        }
+                    }
+                }
+            }
+            return idList;
+        }
+        return new ArrayList<>();
+    }
+
+    /**
      * 添加节点的朋友关系
      * @param startUserId 起始节点
      * @param endUserId 结束节点
@@ -503,11 +548,11 @@ public class Neo4jServiceImpl implements Neo4jService {
     }
 
     /**
-     *
-     * @param startUserId
-     * @param endUserId
-     * @param connChainId
-     * @param positionId
+     * 添加节点关联关系
+     * @param startUserId 开始节点
+     * @param endUserId 结束节点
+     * @param connChainId 链路关系编号
+     * @param positionId 职位编号
      */
     private void addConnRelationInternal(int startUserId, int endUserId, int connChainId, int positionId) {
         /**
@@ -553,19 +598,20 @@ public class Neo4jServiceImpl implements Neo4jService {
     }
 
     /**
-     * 处理Future相关错误和记录任务的执行时间
+     * 异步处理业务
+     * 1. 记录执行时间
+     * 2. 如果超时，记录超时时的参数
+     * 3. 如果发生其他异常，
      * @param method 方法名称
      * @param callable 线程任务
      * @param <T> 返回值类型
      * @return 任务执行结果
-     * @throws InterruptedException 业务异常
-     * @throws ExecutionException 线程池异常
-     * @throws TimeoutException 超时
+     * @throws CommonException 业务异常
      */
-    private <T> T handlerFutureTask(String method, Callable<T> callable)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    private <T> T handlerFutureTask(String method, Callable<T> callable, Object... params)
+            throws CommonException {
         LocalDateTime startTime = LocalDateTime.now();
-        logger.info("neo4j {} start:{}", method, startTime);
+        logger.info("neo4j handlerFutureTask start. method:{}, startTime:{}", method, startTime);
         Future<T> future = tp.startSubmit(callable);
         T t;
         try {
@@ -574,18 +620,24 @@ public class Neo4jServiceImpl implements Neo4jService {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             logger.error(e.getMessage(), e);
-            throw e;
+            throw UserAccountException.USER_NEO4J_TASK_INTERRUPTED;
         } catch (ExecutionException e) {
             logger.error(e.getMessage(), e);
-            throw e;
+            throw UserAccountException.USER_NEO4J_TASK_EXECUTION_FAILED;
         } catch (TimeoutException e) {
             future.cancel(true);
             String poolInfo = tp.getPoolInfo();
-            logger.info("neo4j {} timeout! poolInfo:{}", method, poolInfo);
+            logger.info("neo4j handlerFutureTask timeout! method:{} poolInfo:{}, params:{}", method, poolInfo, JSONObject.toJSONString(params));
+            throw UserAccountException.USER_NEO4J_TASK_EXECUTION_TIMEOUT;
+        } catch (CommonException e) {
             throw e;
+        } catch (Exception e) {
+            logger.info("neo4j handlerFutureTask Exception! method:{} params:{}", method, JSONObject.toJSONString(params));
+            logger.error(e.getMessage(), e);
+            throw UserAccountException.PROGRAM_EXCEPTION;
         } finally {
             LocalDateTime endTime = LocalDateTime.now();
-            logger.info("neo4j {} end:{}", method, endTime);
+            logger.info("neo4j handlerFutureTask end. method:{}, endTime:{}. duration:{}", method, endTime, Duration.between(startTime, endTime).toMillis());
         }
     }
 }
