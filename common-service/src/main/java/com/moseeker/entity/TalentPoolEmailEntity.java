@@ -122,11 +122,7 @@ public class TalentPoolEmailEntity {
         if(StringUtils.isNotNullOrEmpty(context)){
             ValidateUtil vu = new ValidateUtil();
             vu.addSensitiveValidate("正文内容", context, null, null);
-            if(type != 71) {
-                vu.addStringLengthValidate("正文内容", context, null, null, 0, 1001);
-            }else{
-                vu.addStringLengthValidate("正文内容", context, null, null, 0, 501);
-            }
+            vu.addStringLengthValidate("正文内容", context, null, null, 0, 3001);
             String message = vu.validate();
             if(StringUtils.isNotNullOrEmpty(message)){
                 return message;
