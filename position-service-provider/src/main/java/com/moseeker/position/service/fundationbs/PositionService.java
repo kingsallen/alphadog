@@ -730,6 +730,11 @@ public class PositionService {
                 List<JobPositionRecord> noDeleJobPostionRecords = new ArrayList<>();
                 // 提交的数据处理
                 for (JobPositionRecord jobPositionRecord : dbOnlineList) {
+                    //处理拼音问题
+                    if(StringUtils.isNotNullOrEmpty(jobPositionRecord.getTitle())){
+                        String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
+                        jobPositionRecord.setFirstPinyin(pinYin);
+                    }
                     boolean existed = false;
                     for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
                         // 当ID相同，数据不需要删除
@@ -1051,6 +1056,11 @@ public class PositionService {
                 if (city != null) {
                     formRcord.setCity(city);
                 }
+                if(StringUtils.isNotNullOrEmpty(formRcord.getTitle())){
+                    String pinYin=PinyinUtil.getFirstLetter(formRcord.getTitle());
+                    formRcord.setFirstPinyin(pinYin);
+                }
+                logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + formRcord.toString() + "--");
                 Integer pid = jobPositionDao.addRecord(formRcord).getId();
                 if (pid != null) {
                     jobPositionIds.add(pid);
@@ -1093,6 +1103,13 @@ public class PositionService {
         try {
             // 更新jobPostion数据
             if (jobPositionUpdateRecordList.size() > 0) {
+                logger.info("-------------更新jobPostion数据开始------------------");
+                for(JobPositionRecord jobPositionRecord: jobPositionUpdateRecordList){
+                    if(StringUtils.isNotNullOrEmpty(jobPositionRecord.getTitle())){
+                        String pinYin=PinyinUtil.getFirstLetter(jobPositionRecord.getTitle());
+                        jobPositionRecord.setFirstPinyin(pinYin);
+                    }
+                }
                 jobPositionDao.updateRecords(jobPositionUpdateRecordList);
             }
             // 更新jobPostionExt数据

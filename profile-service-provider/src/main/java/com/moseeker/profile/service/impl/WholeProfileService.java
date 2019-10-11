@@ -205,7 +205,7 @@ public class WholeProfileService {
     }
 
     public Response getResource(int userId, int profileId, String uuid) throws Exception {
-        //logger.info("WholeProfileService getResource start : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+        //logger.debug("WholeProfileService getResource start : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
         Response response = new Response();
         HashMap<String, Object> profile = new HashMap<String, Object>();
 
@@ -322,7 +322,7 @@ public class WholeProfileService {
             profileParseUtil.handerSortOtherList(otherRecords);
             List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
-            //logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             profile.put("others", others);
 
@@ -485,7 +485,7 @@ public class WholeProfileService {
                     }}.toJSONString(), statisticsForChannelmportVO);
                     String distinctId = profileRecord.getUserId().toString();
                     String property=String.valueOf(profileRecord.getCompleteness());
-                    logger.info("WholeProfileService.postResource483  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                    logger.debug("WholeProfileService.postResource483  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
                     sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
@@ -502,9 +502,9 @@ public class WholeProfileService {
     @Transactional
     public Response importCV(String profile, int userId) throws TException {
 
-        logger.info("importCV profile:" + profile);
+        logger.debug("importCV profile:" + profile);
         Map<String, Object> resume = JSON.parseObject(profile);
-        logger.info("resume:" + resume);
+        logger.debug("resume:" + resume);
         ProfileProfileRecord profileRecord = profileUtils
                 .mapToProfileRecord((Map<String, Object>) resume.get("profile"));
         if (profileRecord == null) {
@@ -514,21 +514,21 @@ public class WholeProfileService {
         if (userRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
         }
-        logger.info("importCV user_id:" + userRecord.getId());
+        logger.debug("importCV user_id:" + userRecord.getId());
         // ProfileProfileRecord profileRecord =
         // profileUtils.mapToProfileRecord((Map<String, Object>)
         // resume.get("user_user"));
         List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 
         if (oldProfile != null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
-            logger.info("importCV oldProfile:" + oldProfile.get(0).getId());
+            logger.debug("importCV oldProfile:" + oldProfile.get(0).getId());
             profileRecord.setUuid(oldProfile.get(0).getUuid());
         } else {
             profileRecord.setUuid(UUID.randomUUID().toString());
         }
         ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord, profileParseUtil.initParseProfileParam());
 
-        logger.info("开始 importCV");
+        logger.debug("开始 importCV");
         int id=0;
         try {
             ProfileSaveResult result = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
@@ -544,7 +544,7 @@ public class WholeProfileService {
           logger.error(e.getMessage(),e);
         }
         if (id > 0) {
-            logger.info("importCV 添加成功");
+            logger.debug("importCV 添加成功");
             try {
                 StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id, userId, (byte) 1,
                         profilePojo.getImportRecords());
@@ -554,7 +554,7 @@ public class WholeProfileService {
                 }}.toJSONString(), statisticsForChannelmportVO);
                 String distinctId = profilePojo.getUserRecord().getId().toString();
                 String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-                logger.info("WholeProfileService.importCV543  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                logger.debug("WholeProfileService.importCV543  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -615,7 +615,7 @@ public class WholeProfileService {
                 }}.toJSONString(), statisticsForChannelmportVO);
                 String distinctId = profilePojo.getUserRecord().getId().toString();
                 String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-                logger.info("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                logger.debug("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -655,7 +655,7 @@ public class WholeProfileService {
             profileEntity.improveEducation(profilePojo.getEducationRecords(), profileId);
             profileEntity.improveIntention(profilePojo.getIntentionRecords(), profileId);
             profileEntity.improveLanguage(profilePojo.getLanguageRecords(), profileId);
-            profileEntity.improveOther(profilePojo.getOtherRecord(), profileId);
+            profileEntity.mergeOther(profilePojo.getOtherRecord(), profileId);
             profileEntity.improveProjectexp(profilePojo.getProjectExps(), profileId);
             profileEntity.improveSkill(profilePojo.getSkillRecords(), profileId);
             profileEntity.improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
@@ -1070,7 +1070,7 @@ public class WholeProfileService {
     private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, Query query,
                                            List<DictConstantRecord> constantRecords) throws Exception {
         LocalDateTime startBuildBasic = LocalDateTime.now();
-        logger.info("WholeProfileService buildBasic start task! time:{}", startBuildBasic.toString());
+        logger.debug("WholeProfileService buildBasic start task! time:{}", startBuildBasic.toString());
         Map<String, Object> map = new HashMap<>(64);
 
         Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getRecord(query));
@@ -1084,7 +1084,7 @@ public class WholeProfileService {
         UserSettingsRecord userSettingsRecord = userSettingsRecordFuture.get(ONE_HUNDRED, TimeUnit.MILLISECONDS);
 
         LocalDateTime afterFetchDBData = LocalDateTime.now();
-        logger.info("WholeProfileService buildBasic afterFetchDBData:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, afterFetchDBData));
+        logger.debug("WholeProfileService buildBasic afterFetchDBData:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, afterFetchDBData));
 
         HrCompanyRecord company = null;
         if (lastWorkExp != null) {
@@ -1112,7 +1112,7 @@ public class WholeProfileService {
             map.put("nickname",userRecord.getNickname());
         }
         LocalDateTime afterFetchUserAndCompany = LocalDateTime.now();
-        logger.info("WholeProfileService buildBasic afterFetchUserAndCompany:{}, duration:{}", afterFetchUserAndCompany.toString(), Duration.between(afterFetchDBData, afterFetchUserAndCompany));
+        logger.debug("WholeProfileService buildBasic afterFetchUserAndCompany:{}, duration:{}", afterFetchUserAndCompany.toString(), Duration.between(afterFetchDBData, afterFetchUserAndCompany));
         if (lastWorkExp != null) {
             if (company != null) {
                 map.put("company_id", company.getId().intValue());
@@ -1161,10 +1161,10 @@ public class WholeProfileService {
         }
 
         LocalDateTime afterPackageData = LocalDateTime.now();
-        logger.info("WholeProfileService buildBasic afterPackageData:{}, duration:{}", afterPackageData.toString(), Duration.between(afterFetchUserAndCompany, afterPackageData));
+        logger.debug("WholeProfileService buildBasic afterPackageData:{}, duration:{}", afterPackageData.toString(), Duration.between(afterFetchUserAndCompany, afterPackageData));
 
         LocalDateTime endBuildBasic = LocalDateTime.now();
-        logger.info("WholeProfileService buildBasic end task! time:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, endBuildBasic));
+        logger.debug("WholeProfileService buildBasic end task! time:{}, duration:{}", startBuildBasic.toString(), Duration.between(startBuildBasic, endBuildBasic));
         return map;
     }
 
@@ -1441,10 +1441,10 @@ public class WholeProfileService {
     @Transactional(rollbackFor = Exception.class)
     protected int saveNewProfile(Map<String, Object> resume,Map<String, Object> map,int source) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
-        logger.info("talentpool upload new  user:{}", user1);
+        logger.debug("talentpool upload new  user:{}", user1);
         user1.setSource((byte) source);
         int userId = useraccountsServices.createRetrieveProfileUser(user1);
-        logger.info("talentpool userId:{}", userId);
+        logger.debug("talentpool userId:{}", userId);
         if (userId > 0) {
             map.put("id", userId);
             HashMap<String, Object> profileProfile = new HashMap<String, Object>();

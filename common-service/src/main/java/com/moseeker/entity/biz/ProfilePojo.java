@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 简历工具类
@@ -71,8 +70,10 @@ public class ProfilePojo {
                 }
 				if (userMap.get("email") != null) {
 					String email = String.valueOf(userMap.get("email"));
-					if (!FormCheck.isEmail(email)) {
-						userMap.remove("email");
+					if(!email.trim().equals("")){
+						if (!FormCheck.isEmail(email)) {
+							userMap.remove("email");
+						}
 					}
 				}
                 crawlerUser = profileUtils.mapToUserUserRecord(userMap);

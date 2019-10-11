@@ -15,6 +15,7 @@ import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
 import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -157,6 +158,9 @@ public class ProfileServicesImpl implements Iface {
     public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId, String syncId) throws BIZException, TException {
         logger.info("ProfileServicesImpl parseFileProfileByFilePath");
         logger.info("ProfileServicesImpl parseFileProfileByFilePath filePath:{}, userId:{}, syncId:{}", filePath, userId, syncId);
+        // 如果是从word转化而得的pdf，获得转化为pdf前的word文件。如果是用户直接上传的pdf，获取pdf文件名。其他格式，文件名不变。
+        filePath = OfficeUtils.getOriginFile(filePath);
+        logger.info("ProfileServicesImpl origin filePath:{}",filePath);
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
                     referralService.parseFileProfileByFilePath(filePath, userId);
@@ -203,11 +207,13 @@ public class ProfileServicesImpl implements Iface {
         }
     }
 
+
+
     @Override
-    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
+    public int employeeReferralProfile(int employeeId, String name, String mobile,Map<String,String> otherFields, List<String> referralReasons,
                                        int position, byte relationship, String referralText, byte referralType) throws BIZException, TException {
         try {
-            return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
+            return referralService.employeeReferralProfile(employeeId, name, mobile, otherFields,referralReasons, position,
                     relationship,  referralText, referralType);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -215,14 +221,14 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public List<MobotReferralResult> employeeReferralProfiles(int employeeId, String name, String mobile,
+    public List<MobotReferralResult> employeeReferralProfiles(int employeeId, String name, String mobile,Map<String,String> otherFields,
                                                               List<String> referralReasons, List<Integer> positions,
                                                               byte relationship, String recomReasonText,
                                                               byte referralType) throws BIZException, TException {
         try {
             logger.info("调用profile服务多职位推荐");
             List<MobotReferralResultVO> referralResultVOS =
-                    referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, positions,
+                    referralService.employeeReferralProfile(employeeId, name, mobile, otherFields,referralReasons, positions,
                         relationship,  recomReasonText, referralType);
 
             List<MobotReferralResult> mobotReferralResults = new ArrayList<>(10);
@@ -412,6 +418,9 @@ public class ProfileServicesImpl implements Iface {
             profileParseResult.setMobile(uploadFilesResult.getMobile());
             profileParseResult.setFile(uploadFilesResult.getFileName());
             profileParseResult.setName(uploadFilesResult.getName());
+            profileParseResult.setEmail(uploadFilesResult.getEmail());
+            profileParseResult.setPinyinName(uploadFilesResult.getPinyinName());
+            profileParseResult.setPinyinSurname(uploadFilesResult.getPinyinSurname());
             logger.info("checkResult profileParseResult:{}",JSONObject.toJSONString(profileParseResult));
         }catch (Exception e){
             logger.error(e.getMessage(),e);

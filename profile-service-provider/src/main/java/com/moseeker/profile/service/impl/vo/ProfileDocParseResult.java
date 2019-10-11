@@ -9,6 +9,9 @@ public class ProfileDocParseResult {
     private String name;
     private String mobile;
     private boolean mobileeditable = true;
+    private String email;
+    private String pinyinName;
+    private String pinyinSurname;
 
     public String getFile() {
         return file;
@@ -40,5 +43,29 @@ public class ProfileDocParseResult {
 
     public void setMobileeditable(boolean mobileeditable) {
         this.mobileeditable = mobileeditable;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPinyinName() {
+        return pinyinName;
+    }
+
+    public void setPinyinName(String pinyinName) {
+        this.pinyinName = pinyinName;
+    }
+
+    public String getPinyinSurname() {
+        return pinyinSurname;
+    }
+
+    public void setPinyinSurname(String pinyinSurname) {
+        this.pinyinSurname = pinyinSurname;
     }
 }

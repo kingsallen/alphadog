@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral.form;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 员工推荐简历的表单信息
@@ -12,6 +13,8 @@ public class ReferralForm {
     private int appid;
     private String name;
     private String mobile;
+    private String email;
+    private Map<String,String> fields ;
     private int position;
     private int referralType;
     private List<String> referralReasons;
@@ -90,4 +93,22 @@ public class ReferralForm {
     public void setRecomReasonText(String recomReasonText) {
         this.recomReasonText = recomReasonText;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Map<String, String> getFields() {
+        return fields;
+    }
+
+    public void setFields(Map<String, String> fields) {
+        this.fields = fields;
+    }
 }
+
+

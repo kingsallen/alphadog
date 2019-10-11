@@ -42,6 +42,7 @@ dependencies {
     compile fileTree(dir:'../libs',include:'taobao-sdk-java.jar')
     compile fileTree(dir:'../libs',include:'aspose-words-15.8.0-jdk16.jar')
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
+    compile group: 'org.jsoup',name: 'jsoup' ,version: '1.11.2'
     compile deps["zxing-core"]
     compile deps["SensorsAnalyticsSDK"]
 }

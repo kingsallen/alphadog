@@ -3,17 +3,24 @@ package com.moseeker.profile.domain;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.constant.ReferralType;
+import com.moseeker.common.constants.AlphaCloudProvider;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.profile.exception.ProfileException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.moseeker.profile.service.impl.ReferralServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -22,6 +29,8 @@ import org.slf4j.LoggerFactory;
  * Created by jack on 23/01/2018.
  */
 public class EmployeeReferralProfileNotice {
+
+    private static ThreadPool threadPool = ThreadPool.Instance;
 
     private int employeeId;
     private String name;
@@ -38,11 +47,14 @@ public class EmployeeReferralProfileNotice {
     private int degree;
     private String companyBrand;
     private ReferralScene referralScene;
+    private Map<String, String> otherFields ;
+    //private CompanyCustomize companyCustomize ;
+    private Future<Boolean> checkRepeateFuture ;
 
     private EmployeeReferralProfileNotice(int employeeId, String name, String mobile, List<String> referralReasons,
                                          List<Integer> positionIds, byte relationship, String referralText, ReferralType referralType,
                                          byte gender, String email, int city_code, String currentPosition, int degree, String companyBrand,
-                                          ReferralScene referralScene) {
+                                          ReferralScene referralScene,Map<String, String> otherFields,Future<Boolean> checkRepeateFuture ) {
         this.employeeId = employeeId;
         this.name = name;
         this.mobile = mobile;
@@ -58,7 +70,8 @@ public class EmployeeReferralProfileNotice {
         this.degree = degree;
         this.companyBrand = companyBrand;
         this.referralScene = referralScene;
-
+        this.otherFields = otherFields;
+        this.checkRepeateFuture = checkRepeateFuture;
     }
 
 
@@ -69,6 +82,8 @@ public class EmployeeReferralProfileNotice {
         private int employeeId;
         private String name;
         private String mobile;
+        private Map<String, String> otherFields ;
+        private boolean checkPositionTemplate ;
         private List<String> referralReasons;
         private List<Integer> positionIds;
         private byte relationship;
@@ -81,9 +96,12 @@ public class EmployeeReferralProfileNotice {
         private int degree;
         private String companyBrand;
         private ReferralScene referralScene;
+        private CompanyCustomize companyCustomize ;
+        // 百济定制化workday人才库查询
+        private Future<Boolean> checkRepeateFuture ;
 
         public EmployeeReferralProfileBuilder (int employeeId, String name, String mobile, List<String> referralReasons,
-                ReferralScene referralScene) {
+                                               ReferralScene referralScene) {
             this.employeeId = employeeId;
             this.name= name;
             this.mobile = mobile;
@@ -122,6 +140,15 @@ public class EmployeeReferralProfileNotice {
             this.positionIds = positionIds;
             return this;
         }
+        public EmployeeReferralProfileBuilder buildOtherFields(Map<String,String> otherFields) {
+            this.otherFields = otherFields;
+            this.checkPositionTemplate = true ;
+            if(otherFields != null && otherFields.containsKey("email")){
+                this.email = otherFields.remove("email");
+            }
+            return this;
+        }
+
 
         public EmployeeReferralProfileNotice buildEmployeeReferralProfileNotice() throws CommonException {
 
@@ -135,6 +162,9 @@ public class EmployeeReferralProfileNotice {
             validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
             validateUtil.addRequiredStringValidate("手机号码", mobile);
             validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
+            if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(email)){
+                validateUtil.addRegExpressValidate("邮箱", email, FormCheck.getEmailExp());
+            }
             validateUtil.addIntTypeValidate("推荐方式", referralType.getValue(), 1, 4);
             validateUtil.addRequiredValidate("推荐人与被推荐人关系", relationship);
             validateUtil.addStringLengthValidate("推荐理由文本", referralText, "推荐理由文本长度过长", "推荐理由文本长度过长",null, 201);
@@ -143,17 +173,54 @@ public class EmployeeReferralProfileNotice {
             if(com.moseeker.common.util.StringUtils.isEmptyList(referralReasons) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralText)){
                 validateResult =validateResult+ "推荐理由标签和文本必填任一一个；";
             }
+            if(checkPositionTemplate){
+                companyCustomize = addValidateReferralByTemplate(validateUtil);
+                // 百济定制化workday人才库查询
+                if(companyCustomize != null){
+                    this.checkRepeateFuture = threadPool.startTast(()->companyCustomize.checkRepeatRecommend(name,mobile,email));
+                }
+            }
             if (StringUtils.isNotBlank(validateResult)) {
                 throw ProfileException.validateFailed(validateResult);
             }
 
             EmployeeReferralProfileNotice profileNotice = new EmployeeReferralProfileNotice(employeeId, name, mobile,
                     referralReasons, positionIds, relationship, referralText, referralType,gender, email,  city_code,
-                    currentPosition, degree, companyBrand, referralScene);
+                    currentPosition, degree, companyBrand, referralScene,otherFields,checkRepeateFuture);
             logger.info("EmployeeReferralProfileNotice:{}", JSON.toJSONString(profileNotice));
             return profileNotice;
         }
+
+        /**
+         * 根据职位模板进行必填项校验
+         */
+        private CompanyCustomize addValidateReferralByTemplate(ValidateUtil validateUtil) {
+            String url = AlphaCloudProvider.Position.buildURL(ReferralServiceImpl.REFERRAL_TEMPLATE_FIELDS_URL_PATH);
+            logger.debug("validateReferralByTemplate 获取职位模板 url : {},postionIdList:{}",url,this.positionIds);
+            String resText = HttpClient.sendGet(url,"positionIds",positionIds);
+            logger.debug("validateReferralByTemplate 获取职位模板 resText: {}",resText);
+            ReferralPositionTemplateVO vo = HttpClient.getDataFromJsonString(resText,ReferralPositionTemplateVO.class);
+            if(vo != null && vo.getFields() != null) {
+                vo.getFields().stream().filter(ReferralPositionTemplateVO.Config::isRequired)
+                        .forEach(config -> {
+                            String title = StringUtils.isBlank(config.getFieldTitle().trim())?config.getFieldName(): config.getFieldTitle();
+                            String value = getOtherField(config.getFieldName());
+                            validateUtil.addRequiredValidate(title, value);
+                            if(config.getRequired() == 0 && StringUtils.isNotBlank(config.getValidateRe()) && StringUtils.isNotBlank(value)){
+                                validateUtil.addRegExpressValidate(title,value,config.getValidateRe());
+                            }
+                        });
+                return vo.getCompanyCustomize();
+            }
+            return null;
+        }
+
+        private String getOtherField(String fieldName){
+            return "email".equals(fieldName) ? email : otherFields.get(fieldName);
+        }
     }
+
+
 
     public int getEmployeeId() {
         return employeeId;
@@ -273,5 +340,17 @@ public class EmployeeReferralProfileNotice {
 
     public void setReferralScene(ReferralScene referralScene) {
         this.referralScene = referralScene;
+    }
+
+    public Map<String, String> getOtherFields() {
+        return otherFields;
+    }
+
+    public void setOtherFields(Map<String, String> otherFields) {
+        this.otherFields = otherFields;
+    }
+
+    public Future<Boolean> getCheckRepeateFuture() {
+        return checkRepeateFuture;
     }
 }

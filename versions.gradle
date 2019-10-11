@@ -59,5 +59,6 @@ ext {
             "zxing-core"                :'com.google.zxing:core:3.3.3',
             "SensorsAnalyticsSDK"     :'com.sensorsdata.analytics.javasdk:SensorsAnalyticsSDK:3.1.10-standalone',
             "pdfbox"              : 'org.apache.pdfbox:pdfbox:1.8.16'
+            
     ]
 }

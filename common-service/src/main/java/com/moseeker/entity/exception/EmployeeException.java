@@ -14,7 +14,7 @@ public class EmployeeException extends CommonException {
     public static final EmployeeException EMPLOYEE_AWARD_NOT_ENOUGH= new EmployeeException(42503, "用户积分不足!");
     public static final EmployeeException EMPLOYEE_AWARD_ADD_FAILED= new EmployeeException(42504, "积分添加失败!");
     public static final EmployeeException EMPLOYEE_AWARD_REPEAT_PLUS= new EmployeeException(42505, "重复添加积分!");
-    public static final EmployeeException EMPLOYEE_REPEAT_RECOMMEND= new EmployeeException(42506, "重复推荐!");
+    public static final EmployeeException EMPLOYEE_REPEAT_RECOMMEND= new EmployeeException(42506, "感谢您的支持，此候选人已存在系统中，此次推荐不成功。期待您继续推荐其他候选人！");
     public static final EmployeeException EMPLOYEE_REPEAT_CLAIM= new EmployeeException(42507, "重复认领!");
     public static final EmployeeException EMPLOYEE_AWARD_ZERO= new EmployeeException(42508, "添加积分点数不能为0");
 

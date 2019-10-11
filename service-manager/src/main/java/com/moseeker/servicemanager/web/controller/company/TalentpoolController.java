@@ -1064,6 +1064,7 @@ public class TalentpoolController {
             }
             List<Integer> idList=( List<Integer>)params.get("employee");
             List<Integer> userIdList=( List<Integer>)params.get("user_ids");
+            List<Integer> appIdList=( List<Integer>)params.get("app_ids");
             List<String>  emailList=(List<String>)params.get("emails");
             if(StringUtils.isEmptyList(userIdList)&&StringUtils.isEmptyList(emailList)){
                 return ResponseLogNotification.fail(request,"接收邮件的人不能为空");
@@ -1071,10 +1072,13 @@ public class TalentpoolController {
             if(StringUtils.isEmptyList(userIdList)){
                 userIdList=new ArrayList<>();
             }
+            if(StringUtils.isEmptyList(appIdList)){
+                appIdList=new ArrayList<>();
+            }
             if(StringUtils.isEmptyList(emailList)){
                 emailList=new ArrayList<>();
             }
-            Response result=service.sendResumeEmail(condition,userIdList,idList,companyId,hrId,flag,emailList);
+            Response result=service.sendResumeEmail(condition,userIdList,idList,companyId,hrId,flag,emailList,appIdList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

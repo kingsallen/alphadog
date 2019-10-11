@@ -11,13 +11,13 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.UploadFilesService;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +28,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -63,24 +64,23 @@ public class UploadFilesServiceImpl implements UploadFilesService {
      */
     @Override
     public UploadFilesResult uploadFiles(String fileName, ByteBuffer fileData) throws ProfileException {
-        logger.info("上传文件参数："+"fileName"+fileName+"fileData"+fileData);
+        logger.info("上传文件参数：fileName: {} ",fileName);
         UploadFilesResult uploadFilesResult = new UploadFilesResult();
-        LocalDateTime anylisisStart = LocalDateTime.now();
-        logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：anylisisStart{}",anylisisStart);
+
         if(!ProfileDocCheckTool.checkFileName(fileName)){
             throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
         }
         byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
-        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+        String suffix = OfficeUtils.getSuffix(fileName);
         //保存文件到磁盘
         try {
             FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
-            logger.info("保存文件到磁盘返回的文件名称"+fileNameData.toString());
+            logger.debug("保存文件到磁盘返回的文件名称{}",fileNameData);
             fileNameData.setSaveUrl(env.getProperty("profile.persist.url"));
             fileNameData.setOriginName(fileName);
-            if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
-                String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
-                        + Constant.WORD_PDF;
+            if(OfficeUtils.isWordFile(suffix)) {
+                LocalDateTime anylisisStart = LocalDateTime.now();
+                String pdfName = OfficeUtils.getPdfName(fileNameData.getFileName());
                 int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
                         fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
                 if(status == 1) {
@@ -89,15 +89,13 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                     fileNameData.setOriginName(fileNameData.getOriginName().replace(".docx", Constant.WORD_PDF)
                             .replace(".doc", Constant.WORD_PDF));
                 }
+                LocalDateTime anylisisEnd = LocalDateTime.now();
+                Duration duration = Duration.between(anylisisStart,anylisisEnd);
+                long millis = duration.toMillis();//相差毫秒数
+                logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：millis{}",millis);
             }
-            logger.info("UploadFilesServiceImpl uploadFiles fileNameData:{}", JSONObject.toJSONString(fileNameData));
-            LocalDateTime anylisisEnd = LocalDateTime.now();
-            logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：anylisisEnd{}",anylisisEnd);
-            Duration duration = Duration.between(anylisisStart,anylisisEnd);
-            long millis = duration.toMillis();//相差毫秒数
-            logger.info("UploadFilesServiceImpl uploadFiles 上传文件转化为pdf耗时：millis{}",millis);
+
             Date date = new Date();
-            //Timestamp timestamp = new Timestamp(date.getTime());
             SimpleDateFormat sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             //后台生成文件名称
             uploadFilesResult.setFileName(fileNameData.getFileName());
@@ -208,15 +206,17 @@ public class UploadFilesServiceImpl implements UploadFilesService {
                 String mobile = user.get("mobile").toString();
                 uploadFilesResult.setMobile(mobile.trim().equals("0")?"":mobile);
             }
-            if ("0".equals( uploadFilesResult.getMobile() ) ){
-                uploadFilesResult.setMobile("");
+
+            if(user.get("email") != null){
+                uploadFilesResult.setEmail(StringUtils.trimToEmpty(user.getString("email")));
             }
         }
         if (jsonObject.get("attachments") != null){
             JSONArray attachments = jsonObject.getJSONArray("attachments");
             if (attachments != null && attachments.size() > 0) {
                 String url = ((JSONObject)attachments.get(0)).getString("path");
-                ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByUrl(url);
+                File pdfFile = new File(OfficeUtils.getPdfName(url));
+                ReferralUploadFilesRecord referralUploadFilesRecord = referralUploadFilesDao.fetchByUrl(pdfFile.exists()?pdfFile.getAbsolutePath():url);
                 String fileName = referralUploadFilesRecord.getFilename();
                 logger.info("UploadFilesServiceImpl  checkResult  fileName{}",fileName);
                 //String fileName = ((JSONObject)attachments.get(0)).getString("name");

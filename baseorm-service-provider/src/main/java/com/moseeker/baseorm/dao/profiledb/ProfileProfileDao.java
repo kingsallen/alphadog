@@ -517,7 +517,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         if (profileRecord != null) {
             Timestamp now = new Timestamp(System.currentTimeMillis());
             profileRecord.setCreateTime(now);
-            logger.info("saveProfile userId:{},   uuid:{},  source:{} ", profileRecord.getUserId(),  profileRecord.getUuid(), profileRecord.getSource());
+            logger.debug("saveProfile userId:{},   uuid:{},  source:{} ", profileRecord.getUserId(),  profileRecord.getUuid(), profileRecord.getSource());
             create.attach(profileRecord);
             profileRecord.insert();
             profileSaveResult.setProfileRecord(profileRecord);
@@ -1224,7 +1224,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
 
     public List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>  getResourceByApplication(String downloadApi, String password, ProfileApplicationForm profileApplicationForm) {
-        logger.info("getResourceByApplication:=============={}:{}", "start", 0);
+        logger.debug("getResourceByApplication:=============={}:{}", "start", 0);
         long startTime = System.currentTimeMillis();
 
         int page = getProfilePage(profileApplicationForm.getConditions());
@@ -1260,7 +1260,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             });
         }
 
-        logger.info("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
+        logger.debug("getResourceByApplication:=============={}:{}", "end", System.currentTimeMillis() - startTime);
         return positionApplications;
     }
 
@@ -1299,10 +1299,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         applierIds.remove(Integer.valueOf(0));
         recommenderIds.remove(Integer.valueOf(0));
 
-        logger.info("getResourceByApplication:==============:positionIds:{}", positionIds);
-        logger.info("getResourceByApplication:==============:applicationIds:{}", applicationIds);
-        logger.info("getResourceByApplication:==============:applierIds:{}", applierIds);
-        logger.info("getResourceByApplication:==============:recommenderIds:{}", recommenderIds);
+        logger.debug("getResourceByApplication:==============:positionIds:{}", positionIds);
+        logger.debug("getResourceByApplication:==============:applicationIds:{}", applicationIds);
+        logger.debug("getResourceByApplication:==============:applierIds:{}", applierIds);
+        logger.debug("getResourceByApplication:==============:recommenderIds:{}", recommenderIds);
 
         //所有的positionExt
         List<Map<String, Object>> allPositionExt = new ArrayList<>();
@@ -1408,7 +1408,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     .collect(Collectors.toList());
         }
         profileIds.remove(Integer.valueOf(0));
-        logger.info("getResourceByApplication:==============:profileIds:{}", profileIds);
+        logger.debug("getResourceByApplication:==============:profileIds:{}", profileIds);
 
         logger.debug("getResourceByApplication:=============={}:{}", "allProfile耗时", System.currentTimeMillis() - startTime);
         startTime = System.currentTimeMillis();

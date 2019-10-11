@@ -42,8 +42,6 @@ public final class Constant {
     public static final int APPID_SYSPLAT = 21;     // sysplat
     public static final int APPID_CRONJOB = 22;     // cronjob
     public static final int APPID_ANALYTICS = 101;  // 统计
-    public static final String APPID_PARSING = "A11027";
-    public static final String INTERFACEID_PARSING = APPID_PARSING + "001";
 
     public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
 
