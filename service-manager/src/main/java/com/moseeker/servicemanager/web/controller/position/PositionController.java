@@ -316,10 +316,8 @@ public class PositionController {
     @ResponseBody
     public String saveAndSyncPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            logger.info("-----------saveAndSyncPosition------------");
             BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseSyncBatchHandlerJobPostionParam(request);
             Response res = positonServices.saveAndSync(batchHandlerJobPostion);
-            logger.info("saveAndSyncPosition result:" + JSON.toJSONString(res));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
