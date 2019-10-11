@@ -789,8 +789,13 @@ public class UserEmployeeController {
         logger.info("中骏员工信息导入 initDateTime");
         ValidateUtil validateUtil = new ValidateUtil();
         List<UserEmployeeDO> employeeDOS = form.getEmployees();
-        validateUtil.addRequiredValidate("公司编号", employeeDOS);
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
         validateUtil.addRequiredOneValidate("员工信息列表",form.getEmployees());
+        for(int i=0;i<employeeDOS.size();i++){
+            UserEmployeeDO uedo = employeeDOS.get(i);
+            validateUtil.addRequiredStringValidate("第"+i+"行员工姓名",uedo.getCname());
+            validateUtil.addRequiredStringValidate("第"+i+"行自定义字段",uedo.getCustomField());
+        }
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();

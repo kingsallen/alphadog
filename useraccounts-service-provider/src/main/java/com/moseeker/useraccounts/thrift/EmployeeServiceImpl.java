@@ -9,6 +9,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
@@ -16,6 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
 import com.moseeker.thrift.gen.employee.struct.*;
+import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNBIND;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_ACTIVATION_UNEMPLOYEE;
+import static com.moseeker.useraccounts.exception.UserAccountException.IMPORT_DATA_PART_EMPTY;
 
 /**
  * @author ltf
@@ -489,18 +492,35 @@ public class EmployeeServiceImpl implements Iface {
 
 	@Override
 	public Response employeeSftpImport(int companyId, List<UserEmployeeDO> userEmployeeDOS) throws BIZException, TException {
+
+		// 判断是否有重复数据
+		if (companyId == 0) {
+			throw UserAccountException.COMPANYID_ENPTY;
+		}
+		if (userEmployeeDOS == null || userEmployeeDOS.size() == 0) {
+			throw UserAccountException.IMPORT_DATA_EMPTY;
+		}
+		ValidateUtil validateUtil = new ValidateUtil();
+		for(int i=0;i<userEmployeeDOS.size();i++){
+			UserEmployeeDO uedo = userEmployeeDOS.get(i);
+			validateUtil.addRequiredStringValidate("第"+i+"行员工姓名",uedo.getCname());
+			validateUtil.addRequiredStringValidate("第"+i+"行自定义字段",uedo.getCustomField());
+		}
+		if (!StringUtils.isNullOrEmpty(validateUtil.validate())) {
+			throw IMPORT_DATA_PART_EMPTY;
+		}
+		// 监控日志
+		logger.info("中骏员工信息导入 start");
 		try {
-			// 判断是否有重复数据
-			if (companyId == 0) {
-				throw UserAccountException.COMPANYID_ENPTY;
-			}
-			if (userEmployeeDOS == null || userEmployeeDOS.size() == 0) {
-				throw UserAccountException.IMPORT_DATA_EMPTY;
-			}
 			userEmployeeDOS.forEach(UserHrAccountServiceImpl::trimUserEmployeeDO);
-			return userHrAccountService.apiEmployeeImport(companyId,userEmployeeDOS);
+			List<UserEmployeeDO> userEmployeeDOSList= userHrAccountService.apiEmployeeImport(companyId,userEmployeeDOS);
+			logger.info("中骏员工信息导入 success 导入{} 条数据",userEmployeeDOSList.size());
+			return  ResultMessage.SUCCESS.toResponse(userEmployeeDOSList);
 		} catch (Exception e) {
+			logger.info("中骏员工信息导入 error",e);
 			throw ExceptionUtils.convertException(e);
+		}finally {
+			logger.info("中骏员工信息导入 finish");
 		}
 	}
 

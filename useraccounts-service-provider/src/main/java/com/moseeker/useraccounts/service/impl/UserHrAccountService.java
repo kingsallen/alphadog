@@ -2392,9 +2392,7 @@ public class UserHrAccountService {
      * @param companyId       公司ID
      */
     @Transactional
-    public Response apiEmployeeImport(Integer companyId, List<UserEmployeeDO> userEmployees) throws CommonException {
-        logger.info("中骏员工信息导入");
-
+    public List<UserEmployeeDO> apiEmployeeImport(int companyId, List<UserEmployeeDO> userEmployees) throws CommonException {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
         HrCompanyDO company = hrCompanyDao.getData(queryBuilder.buildQuery());
@@ -2428,13 +2426,10 @@ public class UserHrAccountService {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         userEmployees.stream().filter(v->{
-            if(StringUtils.isNotNullOrEmpty(v.getCustomField())){
-                if(workNoMap.containsKey(v.getCustomField().trim())){
-                    return false;
-                }
-            }else{
-                if(nameMap.containsKey(v.getCname().trim())){
-                    return false;
+            if(StringUtils.isNotNullOrEmpty(v.getCustomField()) && StringUtils.isNotNullOrEmpty(v.getCname())){
+                UserEmployeeDO userEmployeeDO = workNoMap.get(v.getCustomField().trim());
+                if( userEmployeeDO != null && Objects.equals(userEmployeeDO.getCname(),v.getCname().trim())){
+                    return false ;
                 }
             }
             return true ;
@@ -2458,9 +2453,7 @@ public class UserHrAccountService {
             parseCustomFieldValues(companyId,userEmployeeList);
             employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
         }
-        Response response = ResultMessage.SUCCESS.toResponse(userEmployeeList);
-        logger.info("中骏员工信息导入结束");
-        return response;
+        return userEmployeeList;
     }
 
 
