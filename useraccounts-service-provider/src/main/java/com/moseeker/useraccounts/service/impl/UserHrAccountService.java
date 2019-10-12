@@ -2436,7 +2436,8 @@ public class UserHrAccountService {
         }).forEach((v) -> {
             v.setCompanyId(companyId);
             v.setImportTime(now.format(dateTimeFormatter));
-            v.setActivation(EmployeeActiveState.Actived.getState());
+            // 导入的数据为待认证状态
+            v.setActivation(EmployeeActiveState.Init.getState());
             v.setAuthMethod((byte) EmployeeAuthMethod.CUSTOM_AUTH.getCode());
             if (org.apache.commons.lang3.StringUtils.isNotBlank(v.getCname())) {
                 v.setCname(v.getCname().trim());
