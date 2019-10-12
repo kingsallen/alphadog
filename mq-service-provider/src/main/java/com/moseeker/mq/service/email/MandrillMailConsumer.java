@@ -19,11 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.security.x509.IPAddressName;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -181,7 +183,15 @@ public class MandrillMailConsumer {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					logger.error(e.getMessage());
+					try {
+						InetAddress ia = InetAddress.getLocalHost();
+						String host = ia.getHostName();//获取计算机主机名
+						String ip= ia.getHostAddress();//获取计算机IP
+						logger.error("MandrillMailConsumer sendmail failed server hostname {} ip {} error {}", host,ip , e.getMessage());
+					}catch (Exception e1){
+						logger.error("MandrillMailConsumer sendmail failed ",  e1.getMessage());
+					}
+
 				}
 			});
 		}
