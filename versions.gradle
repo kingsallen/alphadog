@@ -50,7 +50,7 @@ ext {
             "thrift-gradle-plugin": 'gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.1',
             "jetty-support"       : 'org.eclipse.jetty:jetty-maven-plugin:9.3.0.M2',
             "httpclient"          : 'commons-httpclient:commons-httpclient:3.1',
-            "mandrill"            : 'com.mandrillapp.wrapper.lutung:lutung:0.0.7',
+            "mandrill"            : 'com.mandrillapp.wrapper.lutung:lutung:0.0.8',
             "spring-rabbit"       : 'org.springframework.amqp:spring-rabbit:1.7.1.RELEASE',
             "spring-elasticsearch" : 'org.springframework.data:spring-data-elasticsearch:2.0.0.RELEASE',
             "elasticsearch"       : 'org.elasticsearch:elasticsearch:2.2.1',
@@ -59,6 +59,6 @@ ext {
             "zxing-core"                :'com.google.zxing:core:3.3.3',
             "SensorsAnalyticsSDK"     :'com.sensorsdata.analytics.javasdk:SensorsAnalyticsSDK:3.1.10-standalone',
             "pdfbox"              : 'org.apache.pdfbox:pdfbox:1.8.16'
-            
+
     ]
 }
