@@ -371,4 +371,7 @@ public final class Constant {
 
     //简历上传小程序推荐来源的认领不需要校验手机号
     public static final String NO_VSCODE_CHECK = "no_vscode_check";
+
+    //最新的隐私协议版本号
+    public static final byte PRIVACY_POLICY_RELEASE_VERSION = 1;
 }

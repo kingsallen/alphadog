@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPrivacyRecord implements Serializable {
 
-    private static final long serialVersionUID = 1977251762;
+    private static final long serialVersionUID = 1606581138;
 
     private Integer   id;
     private Integer   userId;
     private Integer   status;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Byte      version;
 
     public UserPrivacyRecord() {}
 
@@ -39,6 +40,7 @@ public class UserPrivacyRecord implements Serializable {
         this.status = value.status;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.version = value.version;
     }
 
     public UserPrivacyRecord(
@@ -46,13 +48,15 @@ public class UserPrivacyRecord implements Serializable {
         Integer   userId,
         Integer   status,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      version
     ) {
         this.id = id;
         this.userId = userId;
         this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.version = version;
     }
 
     public Integer getId() {
@@ -95,6 +99,14 @@ public class UserPrivacyRecord implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(Byte version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserPrivacyRecord (");
@@ -104,6 +116,7 @@ public class UserPrivacyRecord implements Serializable {
         sb.append(", ").append(status);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(version);
 
         sb.append(")");
         return sb.toString();
