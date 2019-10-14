@@ -19,6 +19,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -78,6 +79,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.PRIVACY_POLICY_RELEASE_VERSION;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -1665,7 +1668,17 @@ public class UseraccountsService {
      * @throws TException
      */
     public int ifViewPrivacyProtocol(int userId) throws Exception {
-        return userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+        Optional<UserPrivacyRecord> optional = userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+        //有记录，说明未阅读协议，弹窗
+        if (optional.isPresent()) {
+            if (optional.get().getVersion() < PRIVACY_POLICY_RELEASE_VERSION) {
+                return 2;
+            } else {
+                return 1;
+            }
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -1686,6 +1699,6 @@ public class UseraccountsService {
      * @throws TException
      */
     public void insertPrivacyRecord(int userId) throws Exception {
-        userPrivacyRecordDao.insertPrivacyRecord(userId);
+        userPrivacyRecordDao.insertPrivacyRecord(userId, PRIVACY_POLICY_RELEASE_VERSION);
     }
 }

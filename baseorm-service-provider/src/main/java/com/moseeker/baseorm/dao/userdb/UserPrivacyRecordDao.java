@@ -10,6 +10,8 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * 用户隐私协议记录Dao
  *
@@ -32,15 +34,15 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
      * @return 1:未读，弹窗， 0：已读，不弹窗
      * @throws Exception
      */
-    public int ifViewPrivacyProtocol(int userId) throws Exception {
-        UserPrivacyRecordRecord record = null;
-        record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).fetchOne();
-        //有记录，说明未阅读协议，弹窗
+    public Optional<com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord> ifViewPrivacyProtocol(int userId) throws Exception {
+        UserPrivacyRecordRecord record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId))
+                .fetchOne();
         if (record != null) {
-            return 1;
+            return Optional.of(record.into(com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord.class));
+        } else {
+            return Optional.empty();
         }
-        return 0;
     }
 
     /**
@@ -56,12 +58,18 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
 
     /**
      * 新用户插入隐私协议未阅读记录
-     *
-     * @param userId
+     * 如果添加时触发唯一索引，那么更新成最新的版本号
+     * @param userId 用户编号
+     * @param version 版本号
      * @throws Exception
      */
-    public void insertPrivacyRecord(int userId) throws Exception {
-        create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD).set(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, userId).execute();
+    public void insertPrivacyRecord(int userId, byte version) throws Exception {
+
+        create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .columns(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, UserPrivacyRecord.USER_PRIVACY_RECORD.VERSION)
+                .values(userId,version)
+                .onDuplicateKeyIgnore()
+                .execute();
     }
 
 }
