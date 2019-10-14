@@ -161,12 +161,10 @@ public class MandrillMailConsumer {
 					message.setTrackClicks(true);
 					message.setTrackOpens(true);
 					message.setViewContentLink(true);
-					logger.info(" MandrillMailConsumer sendMail message body is: {} ",JSON.toJSONString(message));
 
 					MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailStruct.getTemplateName(),
 							null,message, false);
 					LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
-					logger.info(" MandrillMailConsumer sendMail messageStatus is: {} ",JSON.toJSONString(messageStatus));
 
 					if (messageStatus.length == 0){
 						logger.error("mandrill send failed: " + mandrillEmailStruct.getTo_email());
@@ -183,15 +181,7 @@ public class MandrillMailConsumer {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					try {
-						InetAddress ia = InetAddress.getLocalHost();
-						String host = ia.getHostName();//获取计算机主机名
-						String ip= ia.getHostAddress();//获取计算机IP
-						logger.error("MandrillMailConsumer sendmail failed server hostname {} ip {} error {}", host,ip , e.getMessage());
-					}catch (Exception e1){
-						logger.error("MandrillMailConsumer sendmail failed ",  e1.getMessage());
-					}
-
+					logger.error(e.getClass().getName(),e);
 				}
 			});
 		}
@@ -212,9 +202,6 @@ public class MandrillMailConsumer {
 			try {
 				while (true) {
 					String redisMsg = fetchConstantlyMessage();
-					if(StringUtils.isNotNullOrEmpty(redisMsg)) {
-						logger.info("MandrillMailConsumer redisMsg is {}",redisMsg);
-					}
 					sendMail(redisMsg);
 				}
 			} catch (Exception e) {
