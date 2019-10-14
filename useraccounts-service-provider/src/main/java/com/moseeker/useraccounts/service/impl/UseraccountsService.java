@@ -80,6 +80,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.moseeker.common.constants.Constant.PRIVACY_POLICY_DISAGREE_VERSION;
 import static com.moseeker.common.constants.Constant.PRIVACY_POLICY_RELEASE_VERSION;
 
 /**
@@ -1663,21 +1664,26 @@ public class UseraccountsService {
     /**
      * 是否查看隐私协议
      * @param userId user_user.id
-     * @return  是否查看标识 0：未查看，1：已查看
+     * @return  0 都同意 1 未同意过隐私协议 2 同意老版本的隐私协议
      * @throws BIZException
      * @throws TException
      */
     public int ifViewPrivacyProtocol(int userId) throws Exception {
         Optional<UserPrivacyRecord> optional = userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
-        //有记录，说明未阅读协议，弹窗
-        if (optional.isPresent()) {
-            if (optional.get().getVersion() < PRIVACY_POLICY_RELEASE_VERSION) {
+        /**
+         * 兼容老版本代码：如果不存在则表示同意了隐私协议。
+         */
+        if (!optional.isPresent()) {
+            return 2;
+        } else {
+            byte version = optional.get().getVersion();
+            if (version == 0) {
+                return 1;
+            } else if (version < PRIVACY_POLICY_RELEASE_VERSION) {
                 return 2;
             } else {
-                return 1;
+                return 0;
             }
-        } else {
-            return 0;
         }
     }
 
@@ -1687,18 +1693,18 @@ public class UseraccountsService {
      * @throws BIZException
      * @throws TException
      */
-    public void deletePrivacyRecordByUserId(int userId) throws Exception {
-        userPrivacyRecordDao.deletePrivacyRecordByUserId(userId);
+    public void agreeReleasePrivacy(int userId) throws Exception {
+        userPrivacyRecordDao.agreeReleasePrivacy(userId, PRIVACY_POLICY_RELEASE_VERSION);
     }
 
     /**
-     * 插入隐私协议未查看记录
+     * 添加未查看隐私协议
      *
-     * @param userId
+     * @param userId 用户编号
      * @throws BIZException
      * @throws TException
      */
     public void insertPrivacyRecord(int userId) throws Exception {
-        userPrivacyRecordDao.insertPrivacyRecord(userId, PRIVACY_POLICY_RELEASE_VERSION);
+        userPrivacyRecordDao.insertPrivacyRecord(userId, PRIVACY_POLICY_DISAGREE_VERSION);
     }
 }
