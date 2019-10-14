@@ -375,4 +375,5 @@ public final class Constant {
 
     //最新的隐私协议版本号
     public static final byte PRIVACY_POLICY_RELEASE_VERSION = 1;
+    public static final byte PRIVACY_POLICY_DISAGREE_VERSION = 0;
 }
