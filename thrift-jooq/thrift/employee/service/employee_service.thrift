@@ -3,6 +3,7 @@ namespace java com.moseeker.thrift.gen.employee.service
 include "../../common/struct/common_struct.thrift"
 include "../../dao/struct/hrdb/hr_company_referral_conf_struct.thrift"
 include "../struct/employee_struct.thrift"
+include "../../dao/struct/userdb/user_employee_struct.thrift"
 
 /*
 *  员工服务接口
@@ -87,4 +88,8 @@ service EmployeeService {
     employee_struct.EmployeeInfo getEmployeeInfo(1: i32 userId)throws (1: common_struct.BIZException e)
     //重新发送邮件
     void retrySendVerificationMail(1: i32 userId, 2: i32 companyId, 3: i32 source)throws (1: common_struct.BIZException e)
+
+    // 员工信息导入
+    common_struct.Response employeeSftpImport(1:i32 companyId,2:list<user_employee_struct.UserEmployeeDO> userEmployeeDOS) throws (1: common_struct.BIZException e)
+
 }
