@@ -835,7 +835,7 @@ public class PositionService {
                 continue;
             }
             //默认设置20分钟超时时长
-            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), String.valueOf(company_id), jobnumber, String.valueOf(1), 60 * 20);
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), String.valueOf(company_id), jobnumber, jobnumber, 60 * 20);
             logger.info("batchHandlerJobPostion提交的数据：" + formData.toString());
 
             // 基础校验
