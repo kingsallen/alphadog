@@ -97,7 +97,7 @@ public class SensorSend {
                 sa.profileSet(distinctId, true, properties);
                 logger.info("SensorSend profileSet :{}", properties);
             }catch (Exception e){
-                logger.error("SensorSend profileSet error: {}", e.getMessage(), e);
+                logger.error("SensorSend profileSet error: {},errorDetail:{}", e.getMessage(), e);
             }
             return 0;
         });
