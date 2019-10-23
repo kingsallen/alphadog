@@ -111,6 +111,9 @@ public class ProfileCompletenessImpl {
                     if (totalComplementness != profileRecord.getCompleteness().intValue()) {
                         profileRecord.setCompleteness((byte) (totalComplementness));
                         profileDao.updateRecord(profileRecord);
+                        String distinctId = profileRecord.getUserId().toString();
+                        logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness(int) [ distinctId:{}, ProfileCompleteness:{} ]", distinctId, totalComplementness);
+                        sensorSend.profileSet(distinctId,"ProfileCompleteness", totalComplementness);
                     }
                 } else {
                     totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
