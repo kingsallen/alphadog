@@ -212,11 +212,21 @@ public class EmployeeEntity {
      * @redpacket_exchange
      */
     public boolean isEmployee(int userId, int companyId) {
-        UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
-        if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
-            return true;
+        //默认取缓存中的结果
+        String isEmployee = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                String.valueOf(companyId), String.valueOf(userId));
+        if (isEmployee == null) {
+            isEmployee = "0";
+            UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
+            if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                isEmployee = "1";
+//                return true;
+            }
+//            return false;
         }
-        return false;
+        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                String.valueOf(companyId), String.valueOf(userId), isEmployee);
+        return isEmployee.equals("1");
     }
 
     public UserEmployeeDO getCompanyEmployee(int userId, int companyId) {
