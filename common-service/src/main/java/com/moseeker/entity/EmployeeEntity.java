@@ -213,6 +213,7 @@ public class EmployeeEntity {
      */
     public boolean isEmployee(int userId, int companyId) {
         //默认取缓存中的结果
+        // TODO: 2019/10/23 数据库表记录未插入 USER_EMPLOYEE_ISEMPLOYEE
         String isEmployee = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
                 String.valueOf(companyId), String.valueOf(userId));
         if (isEmployee == null) {
