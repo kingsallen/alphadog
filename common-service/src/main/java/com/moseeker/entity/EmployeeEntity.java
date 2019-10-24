@@ -213,7 +213,13 @@ public class EmployeeEntity {
      */
     public boolean isEmployee(int userId, int companyId) {
         //默认取缓存中的结果
-        // TODO: 2019/10/23 数据库表记录未插入 USER_EMPLOYEE_ISEMPLOYEE
+        /**
+         * TODO: 2019/10/23 数据库表记录未插入 USER_EMPLOYEE_ISEMPLOYEE
+         * INSERT INTO configdb.config_cacheconfig_rediskey
+         * (project_appid, key_identifier, `type`, pattern, json_extraparams, ttl, `desc`)
+         * VALUES(0, 'USER_EMPLOYEE_ISEMPLOYEE', 1, 'USER_EMPLOYEE_ISEMPLOYEE_%s_%s', NULL, 0, '用户是否是认证员工');
+         *
+         */
         String isEmployee = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
                 String.valueOf(companyId), String.valueOf(userId));
         if (isEmployee == null) {
