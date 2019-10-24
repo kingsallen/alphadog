@@ -824,18 +824,22 @@ public class PositionService {
         Map<Integer, UserHrAccountDO> userHrAccountMap = userHrAccountGroupByID(companyId);
         // 职位数据是更新还是插入操作
         DBOperation dbOperation;
+        Set<String> lockJobNumberSet = new HashSet<>();
         // 处理数据
         for (JobPostrionObj formData : jobPositionHandlerDates) {
             int company_id = formData.getCompany_id();
             String jobnumber = formData.getJobnumber();
-            //同步数据之前，添加校验，防止重发职位
-            String job_flag = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), String.valueOf(company_id) ,jobnumber);
-            if (job_flag != null) {
-                logger.info("batchHandlerJobPostion，重复提交职位， company_id：{}, jobnumber:{}", company_id, jobnumber);
-                continue;
+            if(!lockJobNumberSet.contains(jobnumber)) {
+                //同步数据之前，添加校验，防止重发职位
+                String job_flag = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), String.valueOf(company_id) ,jobnumber);
+                if (job_flag != null) {
+                    logger.info("batchHandlerJobPostion，重复提交职位， company_id：{}, jobnumber:{}", company_id, jobnumber);
+                    continue;
+                }
+                //默认设置20分钟超时时长
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), String.valueOf(company_id), jobnumber, jobnumber, 60 * 20);
+                lockJobNumberSet.add(jobnumber);
             }
-            //默认设置20分钟超时时长
-            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), String.valueOf(company_id), jobnumber, jobnumber, 60 * 20);
             logger.info("batchHandlerJobPostion提交的数据：" + formData.toString());
 
             // 基础校验
