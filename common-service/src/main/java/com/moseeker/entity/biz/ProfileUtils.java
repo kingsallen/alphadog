@@ -130,7 +130,6 @@ public class ProfileUtils {
 								if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
 									hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
 								}
-
 							} else if (company.get("companyName") != null) {
 								String companyName=BeanUtils.converToString(company.get("companyName"));
 								hrCompany.setName(companyName);
@@ -138,6 +137,12 @@ public class ProfileUtils {
 									hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
 								}
 //                                hrCompany.setName(BeanUtils.converToString(company.get("companyName")));
+							} else if (company.get("name") != null) {
+								String companyName=BeanUtils.converToString(company.get("name"));
+								hrCompany.setName(companyName);
+								if(StringUtils.isNotBlank(companyName)&&companyName.length()>ProfileAttributeLengthLimit.CompanyName.getLengthLimit()){
+									hrCompany.setName(this.handlerOutLimitString(companyName,ProfileAttributeLengthLimit.CompanyName.getLengthLimit(),DEFAULT_FLAG));
+								}
 							}
 							if (company.get("company_industry") != null) {
 								String companyIndustry=BeanUtils.converToString(company.get("company_industry"));
@@ -153,6 +158,12 @@ public class ProfileUtils {
 									hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
 								}
 //                                hrCompany.setIndustry(BeanUtils.converToString(company.get("companyIndustry")));
+							} else if (company.get("industry") != null) {
+								String companyIndustry=BeanUtils.converToString(company.get("industry"));
+								hrCompany.setIndustry(companyIndustry);
+								if(StringUtils.isNotBlank(companyIndustry)&&companyIndustry.length()>ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit()){
+									hrCompany.setIndustry(this.handlerOutLimitString(companyIndustry,ProfileAttributeLengthLimit.CompanyIndustry.getLengthLimit(),DEFAULT_FLAG));
+								}
 							}
 							if (company.get("company_introduction") != null) {
 								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
@@ -171,6 +182,8 @@ public class ProfileUtils {
 								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));
 							} else if (company.get("companyProperty") != null) {
 								hrCompany.setProperty(BeanUtils.converToByte(company.get("companyProperty")));
+							} else if (company.get("property") != null) {
+								hrCompany.setProperty(BeanUtils.converToByte(company.get("property")));
 							}
 							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {
