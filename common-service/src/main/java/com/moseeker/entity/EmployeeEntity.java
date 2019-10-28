@@ -221,6 +221,7 @@ public class EmployeeEntity {
          */
         String isEmployee = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
                 String.valueOf(companyId), String.valueOf(userId));
+        logger.info("EmployeeEntity.isEmployee redis get: [ companyId:{}, userId:{}, value:{} ]", companyId, userId, isEmployee);
         if (isEmployee == null) {
             isEmployee = "0";
             UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
@@ -232,6 +233,7 @@ public class EmployeeEntity {
         }
         client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
                 String.valueOf(companyId), String.valueOf(userId), isEmployee);
+        logger.info("EmployeeEntity.isEmployee redis set: [ companyId:{}, userId:{}, value:{} ]", companyId, userId, isEmployee);
         return isEmployee.equals("1");
     }
 
