@@ -214,7 +214,6 @@ public class EmployeeEntity {
     public boolean isEmployee(int userId, int companyId) {
         //默认取缓存中的结果
         /**
-         * TODO: 2019/10/23 数据库表记录未插入 USER_EMPLOYEE_ISEMPLOYEE
          * INSERT INTO configdb.config_cacheconfig_rediskey
          * (project_appid, key_identifier, `type`, pattern, json_extraparams, ttl, `desc`)
          * VALUES(0, 'USER_EMPLOYEE_ISEMPLOYEE', 1, 'USER_EMPLOYEE_ISEMPLOYEE_%s_%s', NULL, 0, '用户是否是认证员工');
@@ -756,6 +755,17 @@ public class EmployeeEntity {
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
 
+                //员工取消认证
+                try {
+                    employees.forEach(employee -> {
+                        if (employee.getActivation() >0) {
+                            client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                                    String.valueOf(employee.getCompanyId()), String.valueOf(employee.getSysuserId()), "0");
+                        }
+                    });
+                } catch (Exception e) {
+                    logger.error("EmployeeEntity.unbind set USER_EMPLOYEE_ISEMPLOYEE error : {}", e.getMessage());
+                }
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
@@ -815,6 +825,18 @@ public class EmployeeEntity {
                         client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(),
                                 String.valueOf(companyId),  JSON.toJSONString(list));
                     }
+                }
+
+                //员工取消认证
+                try {
+                    userEmployeeDOList.forEach(employee -> {
+                        if (employee.getActivation() >0) {
+                            client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                                    String.valueOf(employee.getCompanyId()), String.valueOf(employee.getSysuserId()), "0");
+                        }
+                    });
+                } catch (Exception e) {
+                    logger.error("EmployeeEntity.removeEmployee set USER_EMPLOYEE_ISEMPLOYEE error : {}", e.getMessage());
                 }
                 return true;
             } else {
