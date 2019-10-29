@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.interceptor;
 
+import com.alibaba.fastjson.JSON;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -38,9 +39,11 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
         try {
             MDC.put("url", request.getRequestURI());
             MDC.put("method", request.getMethod());
+            MDC.put("ipAddr", request.getRemoteAddr());
+
             long consumerTime = System.currentTimeMillis() - startTime;
             MDC.put("runTime", String.valueOf(consumerTime));
-            logger.info("接口运行时间：{}", consumerTime);
+            logger.info("接口运行时间：{}, param: {}", consumerTime + "ms", JSON.toJSONString(MDC.getCopyOfContextMap()));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             logger.error("TimeStatisticsInterceptor.afterCompletion error:{}", e.getMessage());
