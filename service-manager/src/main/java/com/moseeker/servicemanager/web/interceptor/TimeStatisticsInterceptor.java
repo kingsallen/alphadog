@@ -48,9 +48,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             e.printStackTrace();
             logger.error("TimeStatisticsInterceptor.afterCompletion error:{}", e.getMessage());
         }finally {
-            MDC.remove("url");
-            MDC.remove("method");
-            MDC.remove("runTime");
+            MDC.clear();
         }
     }
 }
