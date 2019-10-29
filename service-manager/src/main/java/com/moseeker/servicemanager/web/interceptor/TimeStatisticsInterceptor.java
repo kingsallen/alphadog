@@ -21,11 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 public class TimeStatisticsInterceptor implements HandlerInterceptor {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-    private long startTime = 0;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
+        request.setAttribute("startTime", startTime);
         return true;
     }
 
@@ -41,8 +41,9 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             MDC.put("method", request.getMethod());
             MDC.put("ipAddr", request.getRemoteAddr());
 
+            long startTime = (long) request.getAttribute("startTime");
             long consumerTime = System.currentTimeMillis() - startTime;
-            MDC.put("runTime", String.valueOf(consumerTime));
+            MDC.put("runTime", consumerTime + "ms");
             logger.info("接口运行时间：{}, param: {}", consumerTime + "ms", JSON.toJSONString(MDC.getCopyOfContextMap()));
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
