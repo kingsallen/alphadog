@@ -324,6 +324,7 @@ public class OrderService {
             orderForm.setUserId(userEmployeeDO.getSysuserId());
         }
         MallMailAddress address = inserMailAddr(orderForm);
+        logger.info("OrderService handleOrderDbUpdate address:{}",address);
         // 插入订单记录
         MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm,address);
         // 乐观锁减库存
