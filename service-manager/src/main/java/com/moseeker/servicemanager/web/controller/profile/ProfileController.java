@@ -912,6 +912,7 @@ public class ProfileController {
     public String wordToPdf(@RequestParam(value = "file_name") String file_name) throws Exception {
         File file = new File(file_name);
         if (!file.exists()) {
+            logger.info("wordToPdf file not exists path:{}", file_name);
             throw ProfileException.NODATA_EXCEPTION;
         }
         String file_type = file_name.substring(file_name.lastIndexOf(".") + 1).toLowerCase().trim();
@@ -922,11 +923,13 @@ public class ProfileController {
         logger.info("wordToPdf fileName = {} ++++++++++++", file_name);
         String pdf_name = file_name.replace("." + file_type, Constant.WORD_PDF).trim();
         File pdf_file = new File(pdf_name);
-        //pdf文件不存在时，生成pdf文件，并返回文件名称路径
+        //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
         if (!pdf_file.exists()) {
             OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
             logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
         }
+
+        logger.info("wordToPdf return file : {}", pdf_name);
         return Result.success(pdf_name).toJson();
     }
 }

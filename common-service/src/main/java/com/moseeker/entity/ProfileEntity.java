@@ -792,8 +792,8 @@ public class ProfileEntity {
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userUserRecord, null);
         String distinctId = profilePojo.getProfileRecord().getUserId().toString();
-        String property = String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-        logger.info("ProfileEntity.createProfile661  distinctId{}" + distinctId + "eventName{}" + "ProfileCompleteness" + property);
+        int property = profilePojo.getProfileRecord().getCompleteness();
+        logger.info("ProfileEntity.createProfile distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
         return result.getProfileRecord().getId();
     }
@@ -816,8 +816,8 @@ public class ProfileEntity {
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 profilePojo.getUserRecord(), null);
         String distinctId = profilePojo.getUserRecord().getId().toString();
-        String property = String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-        logger.info("ProfileEntity.storeProfile684  distinctId{}" + distinctId + "eventName{}" + "ProfileCompleteness" + property);
+        int property = profilePojo.getProfileRecord().getCompleteness();
+        logger.info("ProfileEntity.storeProfile profilePojo distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
         return result.getProfileRecord().getId();
     }
@@ -853,8 +853,8 @@ public class ProfileEntity {
                 profileRecord.getSkillRecords(), workexpEntities, profileRecord.getWorksRecords(),
                 profileRecord.getUserRecord(), null);
         String distinctId = profileRecord.getUserRecord().getId().toString();
-        String property = String.valueOf(profileRecord.getProfileRecord().getCompleteness());
-        logger.info("ProfileEntity.storeProfile684  distinctId{}" + distinctId + "eventName{}" + "ProfileCompleteness" + property);
+        int property = profileRecord.getProfileRecord().getCompleteness();
+        logger.info("ProfileEntity.storeProfile profileRecord distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
         return result.getProfileRecord().getId();
     }
@@ -1046,8 +1046,9 @@ public class ProfileEntity {
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 profilePojo.getUserRecord(), null);
         String distinctId = profilePojo.getUserRecord().getId().toString();
-        String property = String.valueOf(result.getProfileRecord() != null ? result.getProfileRecord().getCompleteness().intValue() : 0);
+        int property = result.getProfileRecord() != null ? result.getProfileRecord().getCompleteness().intValue() : 0;
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
+        logger.info("ProfileEntity.storeUserRecordForReferral distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         if (appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
             logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId, appid,
                     EmployeeOperationType.RESUMERECOMMEND.getKey(),

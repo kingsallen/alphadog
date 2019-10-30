@@ -16,10 +16,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
-import com.moseeker.position.pojo.JobPostionResponse;
-import com.moseeker.position.pojo.PositionMiniBean;
-import com.moseeker.position.pojo.PositionSyncResultPojo;
-import com.moseeker.position.pojo.SyncFailMessPojo;
+import com.moseeker.position.pojo.*;
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.appbs.PositionBS;
 import com.moseeker.position.service.fundationbs.*;
@@ -240,10 +237,8 @@ public class PositionServicesImpl implements Iface {
 
     @Override
     public Response saveAndSync(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
-        logger.info("PositionServicesImpl saveAndSync");
         JobPostionResponse response=service.batchHandlerJobPostionAdapter(batchHandlerJobPostion);
-
-        logger.info("PositionServicesImpl saveAndSync response:{}", JSONObject.toJSONString(response));
+        logger.info("PositionServicesImpl saveAndSync failMessList:{}", JSONObject.toJSONString(response.getJobPositionFailMessPojolist()));
         List<SyncFailMessPojo> syncFailMessPojolistList=new ArrayList<>();
         int syncingCounts=0;
 
@@ -259,7 +254,6 @@ public class PositionServicesImpl implements Iface {
         }
 
         logger.info("PositionServicesImpl saveAndSync syncDatas:{}", JSONObject.toJSONString(syncDatas));
-        logger.info("syncDatas: "+JSON.toJSONString(syncDatas));
 
         try {
             List<PositionSyncResultPojo> syncResults = positionBS.syncPositionToThirdParty(syncDatas);
@@ -280,7 +274,7 @@ public class PositionServicesImpl implements Iface {
         response.setSyncingCounts(syncingCounts);
         response.setSyncData(null);
 
-        logger.info("PositionServicesImpl saveAndSync response:{}", JSONObject.toJSONString(response));
+        logger.info("PositionServicesImpl saveAndSync SyncFailMessPojolist:{}", JSONObject.toJSONString(response.getSyncFailMessPojolist()));
         return ResponseUtils.success(response);
     }
 
