@@ -6,7 +6,8 @@ import com.moseeker.baseorm.db.malldb.tables.records.MallMailAddressRecord;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import static com.moseeker.baseorm.db.malldb.Tables.MALL_MAIL_ADDRESS;
+import static com.moseeker.baseorm.db.malldb.tables.MallMailAddress.MALL_MAIL_ADDRESS;
+
 
 /**
  * @Description TODO
