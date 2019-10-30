@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
+import com.moseeker.baseorm.dao.malldb.MallMailAddressDao;
 import com.moseeker.baseorm.dao.malldb.MallOrderOperationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
+import com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -73,6 +75,8 @@ public class OrderService {
 
     private final HrCompanyDao hrCompanyDao;
 
+    private final MallMailAddressDao addressDao;
+
     private final TemplateService templateService;
 
     private final Environment environment;
@@ -88,9 +92,7 @@ public class OrderService {
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
     @Autowired
-    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao,
-                        GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao,
-                        HrCompanyDao hrCompanyDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
+    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao, GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao, HrCompanyDao hrCompanyDao, MallMailAddressDao addressDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
         this.orderDao = orderDao;
         this.userEmployeeDao = userEmployeeDao;
         this.historyUserEmployeeDao = historyUserEmployeeDao;
@@ -98,6 +100,7 @@ public class OrderService {
         this.orderOperationDao = orderOperationDao;
         this.userEmployeePointsDao = userEmployeePointsDao;
         this.hrCompanyDao = hrCompanyDao;
+        this.addressDao = addressDao;
         this.templateService = templateService;
         this.environment = environment;
         this.searchengineEntity = searchengineEntity;
@@ -316,8 +319,13 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     protected UserEmployeePointsRecordDO handleOrderDbUpdate(OrderForm orderForm, UserEmployeeDO userEmployeeDO, MallGoodsInfoDO mallGoodsInfoDO, int payCredit) throws BIZException {
+        //TODO  插入地址信息 Rays
+        if(orderForm.getUserId()==0&&!orderForm.isSetUserId()){
+            orderForm.setUserId(userEmployeeDO.getSysuserId());
+        }
+        MallMailAddress address = inserMailAddr(orderForm);
         // 插入订单记录
-        MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
+        MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm,address);
         // 乐观锁减库存
         minusStockByLock(mallGoodsInfoDO, orderForm);
         // 乐观锁减积分
@@ -329,6 +337,18 @@ public class OrderService {
         // 发送消息模板
         sendAwardTemplate(orderForm.getCompany_id(), mallOrderDO.getCount() * mallOrderDO.getCredit(), userEmployeeDO.getSysuserId(), mallGoodsInfoDO.getTitle());
         return userEmployeePointsDO;
+    }
+
+    private MallMailAddress inserMailAddr(OrderForm orderForm) {
+        MallMailAddress address = new MallMailAddress();
+        address.setAddress(orderForm.getAddress());
+        address.setAddressee(orderForm.getAddressee());
+        address.setCity(orderForm.getCity());
+        address.setMobile(orderForm.getMobile());
+        address.setProvince(orderForm.getProvince());
+        address.setRegion(orderForm.getRegion());
+        address.setUserId(orderForm.getUserId());
+        return addressDao.addData(address);
     }
 
     private void sendAwardTemplate(int companyId, int credit, int sysUserId, String goodTitle) {
@@ -474,12 +494,14 @@ public class OrderService {
         goodsService.updateStockAndExchangeNumByLock(mallGoodsInfoDO, -orderForm.getCount(), GoodsEnum.UPSHELF.getState(), 1);
     }
 
-    private MallOrderDO insertOrder(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm) {
-        MallOrderDO mallOrderDO = initOrderDO(mallGoodsInfoDO, userEmployeeDO, orderForm);
+    private MallOrderDO insertOrder(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm,
+                                    MallMailAddress address) {
+        MallOrderDO mallOrderDO = initOrderDO(mallGoodsInfoDO, userEmployeeDO, orderForm,address);
         return orderDao.addData(mallOrderDO);
     }
 
-    private MallOrderDO initOrderDO(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm) {
+    private MallOrderDO initOrderDO(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm,
+                                    MallMailAddress address) {
         MallOrderDO mallOrderDO = new MallOrderDO();
         String orderId = createOrderId();
         mallOrderDO.setOrder_id(orderId);
@@ -491,6 +513,7 @@ public class OrderService {
         mallOrderDO.setTitle(mallGoodsInfoDO.getTitle());
         mallOrderDO.setPic_url(mallGoodsInfoDO.getPic_url());
         mallOrderDO.setCount(orderForm.getCount());
+        mallOrderDO.setMallId(address.getId());
         logger.info("mallOrderDO:{}", mallOrderDO);
         return mallOrderDO;
     }
