@@ -101,6 +101,7 @@ public class BasicController {
 				return ResponseLogNotification.fail(request, "不能超过50个字符！");
 			}
 			Response result = basicService.putResource(basic);
+			logger.info("BasicController.put basic:{}", basic);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			if (e instanceof DataIntegrityViolationException) {
