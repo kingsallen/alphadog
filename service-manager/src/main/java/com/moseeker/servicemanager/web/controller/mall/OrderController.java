@@ -98,6 +98,7 @@ public class OrderController {
     public String confirmOrder(HttpServletRequest request) {
         try {
             OrderForm orderForm = ParamUtils.initModelForm(request, OrderForm.class);
+            logger.info("/api/mall/visit/order orderForm:{}",orderForm);
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("company_id", orderForm.getCompany_id());
             vu.addRequiredValidate("employeeId", orderForm.getEmployee_id());
@@ -115,13 +116,17 @@ public class OrderController {
             vu.addIntTypeValidate("商品兑换数量", orderForm.getCount(), null, null, 1, 99999);
             vu.addIntTypeValidate("商城id", orderForm.getGoods_id(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
+            logger.info("/api/mall/visit/order message:{}",message);
             if (StringUtils.isNullOrEmpty(message)) {
                 orderService.confirmOrder(orderForm);
+                logger.info("/api/mall/visit/order result:{}",ResponseLogNotification.successJson(request, null));
                 return ResponseLogNotification.successJson(request, null);
             } else {
+                logger.info("/api/mall/visit/order result:{}",ResponseLogNotification.fail(request, message));
                 return ResponseLogNotification.fail(request, message);
             }
         }catch (BIZException e){
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
