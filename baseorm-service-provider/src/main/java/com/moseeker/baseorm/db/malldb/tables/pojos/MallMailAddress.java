@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.malldb.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,16 +23,18 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallMailAddress implements Serializable {
 
-    private static final long serialVersionUID = 1913361733;
+    private static final long serialVersionUID = 1570146774;
 
-    private Integer id;
-    private Integer userId;
-    private String  addressee;
-    private String  mobile;
-    private Integer province;
-    private Integer city;
-    private Integer region;
-    private String  address;
+    private Integer   id;
+    private Integer   userId;
+    private String    addressee;
+    private String    mobile;
+    private Integer   province;
+    private Integer   city;
+    private Integer   region;
+    private String    address;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public MallMailAddress() {}
 
@@ -44,17 +47,21 @@ public class MallMailAddress implements Serializable {
         this.city = value.city;
         this.region = value.region;
         this.address = value.address;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public MallMailAddress(
-        Integer id,
-        Integer userId,
-        String  addressee,
-        String  mobile,
-        Integer province,
-        Integer city,
-        Integer region,
-        String  address
+        Integer   id,
+        Integer   userId,
+        String    addressee,
+        String    mobile,
+        Integer   province,
+        Integer   city,
+        Integer   region,
+        String    address,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -64,6 +71,8 @@ public class MallMailAddress implements Serializable {
         this.city = city;
         this.region = region;
         this.address = address;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -130,6 +139,22 @@ public class MallMailAddress implements Serializable {
         this.address = address;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("MallMailAddress (");
@@ -142,6 +167,8 @@ public class MallMailAddress implements Serializable {
         sb.append(", ").append(city);
         sb.append(", ").append(region);
         sb.append(", ").append(address);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

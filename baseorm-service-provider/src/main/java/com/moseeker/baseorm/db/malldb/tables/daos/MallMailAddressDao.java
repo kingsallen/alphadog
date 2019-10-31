@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.malldb.tables.daos;
 import com.moseeker.baseorm.db.malldb.tables.MallMailAddress;
 import com.moseeker.baseorm.db.malldb.tables.records.MallMailAddressRecord;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -111,5 +112,19 @@ public class MallMailAddressDao extends DAOImpl<MallMailAddressRecord, com.mosee
      */
     public List<com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress> fetchByAddress(String... values) {
         return fetch(MallMailAddress.MALL_MAIL_ADDRESS.ADDRESS, values);
+    }
+
+    /**
+     * Fetch records that have <code>create_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress> fetchByCreateTime(Timestamp... values) {
+        return fetch(MallMailAddress.MALL_MAIL_ADDRESS.CREATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress> fetchByUpdateTime(Timestamp... values) {
+        return fetch(MallMailAddress.MALL_MAIL_ADDRESS.UPDATE_TIME, values);
     }
 }

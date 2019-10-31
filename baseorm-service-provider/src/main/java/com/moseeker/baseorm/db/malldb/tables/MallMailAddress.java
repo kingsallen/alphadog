@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.malldb.Keys;
 import com.moseeker.baseorm.db.malldb.Malldb;
 import com.moseeker.baseorm.db.malldb.tables.records.MallMailAddressRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallMailAddress extends TableImpl<MallMailAddressRecord> {
 
-    private static final long serialVersionUID = -276267123;
+    private static final long serialVersionUID = 702742790;
 
     /**
      * The reference instance of <code>malldb.mall_mail_address</code>
@@ -89,6 +90,16 @@ public class MallMailAddress extends TableImpl<MallMailAddressRecord> {
      * The column <code>malldb.mall_mail_address.address</code>. 收件详细地址
      */
     public final TableField<MallMailAddressRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false), this, "收件详细地址");
+
+    /**
+     * The column <code>malldb.mall_mail_address.create_time</code>.
+     */
+    public final TableField<MallMailAddressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>malldb.mall_mail_address.update_time</code>.
+     */
+    public final TableField<MallMailAddressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>malldb.mall_mail_address</code> table reference
