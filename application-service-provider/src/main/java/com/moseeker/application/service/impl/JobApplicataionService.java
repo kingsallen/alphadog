@@ -521,7 +521,7 @@ public class JobApplicataionService {
         //发送模板消息，短信，邮件
         tp.startTast(() -> {
             try {
-                Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
+                Response resppnse = mqServer.sendMessageAndEmailToDeliveryNew(messageEmailStruct);
                 logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
                 return resppnse;
             }catch (TException e){
@@ -1375,6 +1375,9 @@ public class JobApplicataionService {
                                     0, referenceId, resultVO.getApplierId(),
                                     ApplicationSource.EMPLOYEE_CHATBOT.getValue());
                         }else{
+                            sendMessageAndEmailThreadNew(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
+                                    0, referenceId, resultVO.getApplierId(),
+                                    ApplicationSource.EMPLOYEE_CHATBOT.getValue());
                             //todo 这一段要注意
                             this.sendNewAtsProcess(resultVO.getPositionId(),positionPublisher.get(resultVO.getPositionId()),resultVO.getApplicationId(),employeeDO.getCompanyId());
                         }

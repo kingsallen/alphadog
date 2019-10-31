@@ -158,6 +158,16 @@ public class ThriftService implements Iface {
     }
 
 	@Override
+	public Response sendMessageAndEmailToDeliveryNew(MessageEmailStruct messageEmailStruct) throws TException {
+		try {
+			return deliveryService.sendMessageAndEmailNew(messageEmailStruct);
+		}catch (Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
 	public List<MessageBody> listMessages(int wechatId) throws BIZException, TException {
 		try {
 			List<com.moseeker.mq.service.message.MessageBody> messageBodys = finder.listTemplateMsg(wechatId);
