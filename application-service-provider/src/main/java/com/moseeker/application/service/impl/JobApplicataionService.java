@@ -230,6 +230,10 @@ public class JobApplicataionService {
                         (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
                         jobApplication.getOrigin());
             }else{
+                sendMessageAndEmailThreadNew(jobApplicationId, (int) jobApplication.getPosition_id(),
+                        jobApplication.getApply_type(), jobApplication.getEmail_status(),
+                        (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
+                        jobApplication.getOrigin());
                 this.sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
             }
             // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
@@ -503,6 +507,29 @@ public class JobApplicataionService {
             }
         });
     }
+
+    private void sendMessageAndEmailThreadNew (int jobApplicationId, int positionId, int applyType, int emailStatus,
+                                            int recommenderUserId, int applierId, int origin) {
+        MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
+        messageEmailStruct.setApplication_id(jobApplicationId);
+        messageEmailStruct.setPosition_id(positionId);
+        messageEmailStruct.setApply_type(applyType);
+        messageEmailStruct.setEmail_status(emailStatus);
+        messageEmailStruct.setRecommender_user_id(recommenderUserId);
+        messageEmailStruct.setApplier_id(applierId);
+        messageEmailStruct.setOrigin(origin);
+        //发送模板消息，短信，邮件
+        tp.startTast(() -> {
+            try {
+                Response resppnse = mqServer.sendMessageAndEmailToDelivery(messageEmailStruct);
+                logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+                return resppnse;
+            }catch (TException e){
+                return ResponseUtils.fail(e.getMessage());
+            }
+        });
+    }
+
 
     private void handleReferralState(int jobApplicationId) {
         // todo 2019-01-15 需要迁到新服务
