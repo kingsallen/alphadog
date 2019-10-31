@@ -514,7 +514,7 @@ public class OrderService {
         mallOrderDO.setTitle(mallGoodsInfoDO.getTitle());
         mallOrderDO.setPic_url(mallGoodsInfoDO.getPic_url());
         mallOrderDO.setCount(orderForm.getCount());
-        mallOrderDO.setMallId(address.getId());
+        mallOrderDO.setMailId(address.getId());
         logger.info("mallOrderDO:{}", mallOrderDO);
         return mallOrderDO;
     }
