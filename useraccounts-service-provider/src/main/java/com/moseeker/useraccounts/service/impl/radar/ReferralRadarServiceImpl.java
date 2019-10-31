@@ -406,11 +406,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         if(recomUser == null){
             result.put("employee", 0);
+            result.put("employee_id", 0);
             logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
             return JSON.toJSONString(result);
         }
         UserUserDO userUserDO = userUserDao.getUser(recomUser.getSysuserId());
         result.put("employee", 1);
+        result.put("employee_id", recomUser.get("id"));
         RadarUserInfo userInfo = new RadarUserInfo();
         userInfo.setUid(recomUserId);
         userInfo.setName(recomUser.getCname());

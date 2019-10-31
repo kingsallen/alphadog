@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 591195282;
+    private static final long serialVersionUID = 68664842;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -437,14 +437,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.activation</code>. 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证  5:取消关注公众号
+     * Setter for <code>userdb.user_employee.activation</code>. 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证  5:取消关注公众号   6：员工离职取消认证
      */
     public void setActivation(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.activation</code>. 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证  5:取消关注公众号
+     * Getter for <code>userdb.user_employee.activation</code>. 0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证  5:取消关注公众号   6：员工离职取消认证
      */
     public Byte getActivation() {
         return (Byte) get(29);
@@ -591,14 +591,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接
+     * Setter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接  13:企业微信
      */
     public void setSource(Byte value) {
         set(40, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接
+     * Getter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接  13:企业微信
      */
     public Byte getSource() {
         return (Byte) get(40);
@@ -717,14 +717,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
+     * Setter for <code>userdb.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证 3：企业微信认证
      */
     public void setAuthMethod(Byte value) {
         set(49, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
+     * Getter for <code>userdb.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证 3：企业微信认证
      */
     public Byte getAuthMethod() {
         return (Byte) get(49);

@@ -90,10 +90,30 @@ public class UserQxServiceImpl implements com.moseeker.thrift.gen.useraccounts.s
         }
     }
 
+    /**
+     *
+     * @param userId
+     * @param employeeId
+     * @param positionId
+     * @return
+     * @throws TException
+     */
+    @Override
+    public UserCollectPositionVO postUserCollectReferredPosition(int userId,int employeeId,int positionId,int parentShareChainId) throws TException {
+        try {
+            return service.putUserCollectPosition(userId, positionId, employeeId, parentShareChainId,0);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
     @Override
     public UserCollectPositionVO postUserCollectPosition(int userId, int positionId) throws TException {
         try {
-            return service.putUserCollectPosition(userId, positionId, 0);
+            return service.putUserCollectPosition(userId, positionId,0, 0,0);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
@@ -105,7 +125,7 @@ public class UserQxServiceImpl implements com.moseeker.thrift.gen.useraccounts.s
     @Override
     public UserCollectPositionVO delUserCollectPosition(int userId, int positionId) throws TException {
         try {
-            return service.putUserCollectPosition(userId, positionId, 1);
+            return service.putUserCollectPosition(userId, positionId,0, 0,1);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

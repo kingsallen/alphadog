@@ -16,9 +16,10 @@ import com.moseeker.useraccounts.constant.ForwardSourceType;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewPageVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * @Author: jack
@@ -98,8 +99,11 @@ public class EmployeeBizTool {
             result.setPositionTitle(position.getTitle());
             result.setStatus((int)position.getStatus());
         }
-        String time = DateUtils.dateToMinuteDate(record.getClickTime());
-        result.setClickTime(time);
+        if(record.getClickTime() != null){
+            String time = DateUtils.dateToMinuteDate(record.getClickTime());
+            result.setClickTime(time);
+        }
+
         if(!StringUtils.isEmptyList(data.getShareChainList())){
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
                 if(shareChain.getPositionId() == record.getPositionId().intValue() && shareChain.getPresenteeUserId() == userId){
