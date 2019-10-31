@@ -7,15 +7,16 @@ import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
 import com.moseeker.thrift.gen.neo4j.struct.EmployeeCompany;
 import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
 import com.moseeker.useraccounts.pojo.neo4j.EmployeeCompanyVO;
-import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.moseeker.useraccounts.service.Neo4jService;
 import org.apache.thrift.TException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by moseeker on 2018/12/18.
@@ -61,5 +62,10 @@ public class Neo4jServicesImpl implements Neo4jServices.Iface {
             }).collect(Collectors.toList());
         }
         return list;
+    }
+
+    @Override
+    public List<Integer> fetchShortestPath(int startUserId, int endUserId, int companyId) throws BIZException, TException {
+        return service.fetchShortestPath(startUserId,  endUserId,  companyId);
     }
 }

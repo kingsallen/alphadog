@@ -9,7 +9,11 @@ import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSearchConditionDao;
 import com.moseeker.baseorm.dao.userdb.UserViewedPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.common.constants.AlphaCloudProvider;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -20,7 +24,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-
+import com.moseeker.useraccounts.kafka.KafkaSender;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaUserImDto;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -58,6 +63,9 @@ public class UserQxService {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+
+    @Autowired
+    private KafkaSender sender ;
 
     /**
      * 用户获取筛选条件列表
@@ -260,17 +268,19 @@ public class UserQxService {
         return result;
     }
 
+
     /**
-     * 用户收藏职位
-     *
+     * 收藏或取消收藏职位
      * @param userId
      * @param positionId
-     * @param status
+     * @param employeeId 分享该职位的员工iD
+     * @param status 0:收藏 1:取消收藏
      * @return
      * @throws TException
      */
-    public UserCollectPositionVO putUserCollectPosition(int userId, int positionId, int status) throws TException {
+    public UserCollectPositionVO putUserCollectPosition(int userId, int positionId, Integer employeeId,Integer parentShareChainId,int status) throws TException {
         logger.info("putUserCollectPosition params: userId={}, positionId={}, status={}", userId, positionId, status);
+
         UserCollectPositionVO result = new UserCollectPositionVO();
         result.setUserCollectPosition(new UserCollectPositionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
@@ -279,6 +289,26 @@ public class UserQxService {
                 logger.error("putUserCollectPosition 请求参数为空，请检查相关参数, userId={}, positionId={}, status={}", userId, positionId, status);
                 jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
+                if(status == 0 && ( employeeId != null && employeeId > 0)){
+                    // 系统主动推送员工、候选人消息 职位邀请通知
+                    ThreadPool.Instance.startTast(()->{
+                        KafkaUserImDto dto = new KafkaUserImDto();
+                        dto.setUserId(userId);
+                        dto.setEmployeeId(employeeId);
+                        dto.setPositionId(positionId);
+                        dto.setTime(DateUtils.dateToShortTime(new Date()));
+                        dto.setPsc(parentShareChainId);
+                        try{
+                            sender.sendUserImKafkaMsg(dto);
+                        }catch (Exception e){
+                            logger.error("系统主动推送员工、候选人 职位邀请通知消息失败 使用http发送",e);
+                            String url = AlphaCloudProvider.User.buildURL("v4/chat/user/sendImInviteMsg");
+                            String response = HttpClient.postWithJson(url,JSONObject.toJSONString(dto));
+                            logger.info("user/v4/chat/user/sendImInviteMsg response {}",response);
+                        }
+                        return true ;
+                    });
+                }
                 Query.QueryBuilder query = new Query.QueryBuilder();
                 query.where("user_id", String.valueOf(userId));
                 query.and("position_id", String.valueOf(positionId));
@@ -314,6 +344,7 @@ public class UserQxService {
         logger.info("putUserCollectPosition response: {}", result);
         return result;
     }
+
 
     /**
      * 批量获取用户与职位的状态<br/>

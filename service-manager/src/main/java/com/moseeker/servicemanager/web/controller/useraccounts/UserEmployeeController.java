@@ -66,7 +66,7 @@ public class UserEmployeeController {
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public UserEmployeeController(){
-        serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+        serializeCoQuery.QueryBuildernfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
 
     @RequestMapping(value = "/user/employee", method = RequestMethod.DELETE)

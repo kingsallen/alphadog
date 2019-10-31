@@ -11,14 +11,15 @@ import com.moseeker.servicemanager.web.controller.neo4j.form.UserDepthPO;
 import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
 import com.moseeker.thrift.gen.neo4j.struct.EmployeeCompany;
 import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -102,5 +103,34 @@ public class Neo4jController {
         }
     }
 
+
+    /**
+     * 获取人脉度数
+     * @param appid
+     * @param startUserId
+     * @param endUserId
+     * @param companyId
+     * @return
+     * @throws TException
+     */
+    @RequestMapping(value = "/v1/neo4j/depth", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchEmployeeThreeDepthUser(@RequestParam("appid") int appid,
+                                              @RequestParam("startUserId") int startUserId,
+                                              @RequestParam("endUserId") int endUserId,
+                                              @RequestParam("companyId") int companyId) throws TException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", appid, 0, null);
+        validateUtil.addIntTypeValidate("startUserId编号", startUserId, 1, null);
+        validateUtil.addIntTypeValidate("endUserId编号", endUserId, 1, null);
+        validateUtil.addIntTypeValidate("公司编号", companyId, 1, null);
+        String message = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(message)) {
+            List<Integer> result = service.fetchShortestPath(startUserId,endUserId,companyId);
+            return Result.success(result.size() > 1 ? result.size() - 1 : 0 ).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(message).toJson();
+        }
+    }
 
 }
