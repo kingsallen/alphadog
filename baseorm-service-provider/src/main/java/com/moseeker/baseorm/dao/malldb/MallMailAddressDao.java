@@ -3,10 +3,15 @@ package com.moseeker.baseorm.dao.malldb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress;
 import com.moseeker.baseorm.db.malldb.tables.records.MallMailAddressRecord;
+import org.jooq.Configuration;
+import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import static com.moseeker.baseorm.db.malldb.tables.MallMailAddress.MALL_MAIL_ADDRESS;
+import static org.jooq.impl.DSL.using;
 
 
 /**
@@ -15,14 +20,21 @@ import static com.moseeker.baseorm.db.malldb.tables.MallMailAddress.MALL_MAIL_AD
  * @DATE 2019-10-30
  **/
 @Repository
-public class MallMailAddressDao extends JooqCrudImpl<MallMailAddress, MallMailAddressRecord> {
+public class MallMailAddressDao extends com.moseeker.baseorm.db.malldb.tables.daos.MallMailAddressDao {
 
+    @Autowired
+    private DSLContext create;
 
-    public MallMailAddressDao(TableImpl<MallMailAddressRecord> table, Class<MallMailAddress> mallMailAddressClass) {
-        super(table, mallMailAddressClass);
+    public MallMailAddressDao(Configuration configuration) {
+        super(configuration);
     }
 
-    public MallMailAddressDao() {
-        super(MALL_MAIL_ADDRESS,MallMailAddress.class);
+    public MallMailAddress save(MallMailAddress address){
+        MallMailAddressRecord record = new MallMailAddressRecord();
+        BeanUtils.copyProperties(address,record);
+        create.execute("set names utf8mb4");
+        create.attach(record);
+        record.insert();
+        return record.into(MallMailAddress.class);
     }
 }

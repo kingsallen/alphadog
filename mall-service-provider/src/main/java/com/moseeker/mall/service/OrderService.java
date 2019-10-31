@@ -349,7 +349,7 @@ public class OrderService {
         address.setProvince(orderForm.getProvince());
         address.setRegion(orderForm.getRegion());
         address.setUserId(orderForm.getUserId());
-        return addressDao.addData(address);
+        return addressDao.save(address);
     }
 
     private void sendAwardTemplate(int companyId, int credit, int sysUserId, String goodTitle) {
