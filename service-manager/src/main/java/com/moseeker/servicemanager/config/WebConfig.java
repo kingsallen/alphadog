@@ -3,11 +3,13 @@ package com.moseeker.servicemanager.config;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
+import com.moseeker.servicemanager.web.interceptor.TimeStatisticsInterceptor;
 import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.io.IOException;
@@ -47,4 +49,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         super.configureMessageConverters(converters);
     }
 
+    @Bean
+    public TimeStatisticsInterceptor getTimeStatisticsInterceptor() {
+        return new TimeStatisticsInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(getTimeStatisticsInterceptor()).addPathPatterns("/**");
+    }
 }
