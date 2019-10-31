@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 68664842;
+    private static final long serialVersionUID = -1692565512;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -591,14 +591,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     }
 
     /**
-     * Setter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接  13:企业微信
+     * Setter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接  13:企业微信 14：小程序登录15：中骏员工信息对接
      */
     public void setSource(Byte value) {
         set(40, value);
     }
 
     /**
-     * Getter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接  13:企业微信
+     * Getter for <code>userdb.user_employee.source</code>. 来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工 10:年度总结引导认证 12: Joywork对接  13:企业微信 14：小程序登录15：中骏员工信息对接
      */
     public Byte getSource() {
         return (Byte) get(40);

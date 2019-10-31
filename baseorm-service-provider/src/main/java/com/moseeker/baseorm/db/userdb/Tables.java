@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.userdb;
 
 
+import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.baseorm.db.userdb.tables.UserAccountTypeRoleMap;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserApp;
@@ -63,6 +64,11 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * VIEW
+     */
+    public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
      * 账号类型-角色映射表
      */
     public static final UserAccountTypeRoleMap USER_ACCOUNT_TYPE_ROLE_MAP = com.moseeker.baseorm.db.userdb.tables.UserAccountTypeRoleMap.USER_ACCOUNT_TYPE_ROLE_MAP;
@@ -88,22 +94,22 @@ public class Tables {
     public static final UserBdUser USER_BD_USER = com.moseeker.baseorm.db.userdb.tables.UserBdUser.USER_BD_USER;
 
     /**
-     * IM聊天消息
+     * 员工和候选人的聊天消息
      */
     public static final UserChatMsg USER_CHAT_MSG = com.moseeker.baseorm.db.userdb.tables.UserChatMsg.USER_CHAT_MSG;
 
     /**
-     * 聊天室职位卡片显示记录
+     * 员工和候选人聊天室的职位卡片显示记录
      */
     public static final UserChatPositionCardRecord USER_CHAT_POSITION_CARD_RECORD = com.moseeker.baseorm.db.userdb.tables.UserChatPositionCardRecord.USER_CHAT_POSITION_CARD_RECORD;
 
     /**
-     * IM聊天室
+     * 员工和候选人的聊天室
      */
     public static final UserChatRoom USER_CHAT_ROOM = com.moseeker.baseorm.db.userdb.tables.UserChatRoom.USER_CHAT_ROOM;
 
     /**
-     * 模板消息
+     * 员工和候选人聊天的通知配置
      */
     public static final UserChatTemplateMsg USER_CHAT_TEMPLATE_MSG = com.moseeker.baseorm.db.userdb.tables.UserChatTemplateMsg.USER_CHAT_TEMPLATE_MSG;
 
