@@ -4,57 +4,15 @@
 package com.moseeker.baseorm.db.userdb;
 
 
-import com.moseeker.baseorm.db.userdb.tables.UserAccountTypeRoleMap;
-import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
-import com.moseeker.baseorm.db.userdb.tables.UserApp;
-import com.moseeker.baseorm.db.userdb.tables.UserAppMenu;
-import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
-import com.moseeker.baseorm.db.userdb.tables.UserChatMsg;
-import com.moseeker.baseorm.db.userdb.tables.UserChatPositionCardRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserChatRoom;
-import com.moseeker.baseorm.db.userdb.tables.UserChatTemplateMsg;
-import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
-import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
-import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
-import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
-import com.moseeker.baseorm.db.userdb.tables.UserFormerEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.UserHrPerm;
-import com.moseeker.baseorm.db.userdb.tables.UserHrRole;
-import com.moseeker.baseorm.db.userdb.tables.UserHrRoleApp;
-import com.moseeker.baseorm.db.userdb.tables.UserHrRolePerm;
-import com.moseeker.baseorm.db.userdb.tables.UserHrUserRole;
-import com.moseeker.baseorm.db.userdb.tables.UserIntention;
-import com.moseeker.baseorm.db.userdb.tables.UserMenu;
-import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
-import com.moseeker.baseorm.db.userdb.tables.UserPrivacyRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
-import com.moseeker.baseorm.db.userdb.tables.UserReferralRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
-import com.moseeker.baseorm.db.userdb.tables.UserSettings;
-import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
-import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
-import com.moseeker.baseorm.db.userdb.tables.UserUploadFiles;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
-import com.moseeker.baseorm.db.userdb.tables.UserWorkwx;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
+import com.moseeker.baseorm.db.userdb.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -70,12 +28,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1673910718;
+    private static final long serialVersionUID = 826265791;
 
     /**
      * The reference instance of <code>userdb</code>
      */
     public static final Userdb USERDB = new Userdb();
+
+    /**
+     * VIEW
+     */
+    public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
     /**
      * 账号类型-角色映射表
@@ -103,22 +66,22 @@ public class Userdb extends SchemaImpl {
     public final UserBdUser USER_BD_USER = com.moseeker.baseorm.db.userdb.tables.UserBdUser.USER_BD_USER;
 
     /**
-     * IM聊天消息
+     * 员工和候选人的聊天消息
      */
     public final UserChatMsg USER_CHAT_MSG = com.moseeker.baseorm.db.userdb.tables.UserChatMsg.USER_CHAT_MSG;
 
     /**
-     * 聊天室职位卡片显示记录
+     * 员工和候选人聊天室的职位卡片显示记录
      */
     public final UserChatPositionCardRecord USER_CHAT_POSITION_CARD_RECORD = com.moseeker.baseorm.db.userdb.tables.UserChatPositionCardRecord.USER_CHAT_POSITION_CARD_RECORD;
 
     /**
-     * IM聊天室
+     * 员工和候选人的聊天室
      */
     public final UserChatRoom USER_CHAT_ROOM = com.moseeker.baseorm.db.userdb.tables.UserChatRoom.USER_CHAT_ROOM;
 
     /**
-     * 模板消息
+     * 员工和候选人聊天的通知配置
      */
     public final UserChatTemplateMsg USER_CHAT_TEMPLATE_MSG = com.moseeker.baseorm.db.userdb.tables.UserChatTemplateMsg.USER_CHAT_TEMPLATE_MSG;
 
@@ -307,6 +270,7 @@ public class Userdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
             UserAccountTypeRoleMap.USER_ACCOUNT_TYPE_ROLE_MAP,
             UserAliUser.USER_ALI_USER,
             UserApp.USER_APP,
