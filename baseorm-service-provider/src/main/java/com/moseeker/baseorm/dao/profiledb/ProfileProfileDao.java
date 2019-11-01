@@ -2061,6 +2061,16 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
     }
 
+    /**
+     * filter为全量时调用
+     *
+     * "filter" : {"profile_language":["*"],"user_user":["*"],"profile_intention_position":["*"],"profile_intention":["*"],"profile_skills":["*"],"profile_basic":["*"],"user_thirdparty_user":["*"],"profile_credentials":["*"],"profile_workexp":["*"],"profile_award":["*"],"job_resume_other":["*"],"profile_projectexp":["*"],"job_position_ext":["*"],"profile_profile":["*"],"profile_attachment":["*"],"profile_other":["*"],"profile_intention_industry":["*"],"profile_intention_city":["*"],"profile_educations":["*"],"profile_import":["*"]}
+     * @param  positonApplicatons
+     * @param recommender
+     * @return List
+     * @Author lee
+     * @Date 2019/11/1 11:00
+     */
     public List<Map<String, Object>> getRelatedDataByJobApplicationFullFilter(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positonApplicatons,
                                                                               boolean recommender) {
         Set<Integer> positionIds = new HashSet<>();
@@ -2189,6 +2199,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         }
         return result;
     }
+
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
