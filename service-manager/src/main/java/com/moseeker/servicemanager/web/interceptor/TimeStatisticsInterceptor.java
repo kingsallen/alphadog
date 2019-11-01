@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Date: 2019/10/29
  */
 @Component
+@CounterIface
 public class TimeStatisticsInterceptor implements HandlerInterceptor {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
