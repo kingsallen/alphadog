@@ -1630,8 +1630,9 @@ public class CompanyService {
         if(configOmsSwitchManagementDO==null&&companyId!=0){
             ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
             configOmsSwitchManagement.setCompanyId(companyId);
-            configOmsSwitchManagement.setModuleName(toOmsSwitchValue(moduleNames));
-            configOmsSwitchManagement.setIsValid((byte)0);
+            OmsSwitchEnum omsSwitchEnum = instanceFromModule(moduleNames);
+            configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
+            configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
             configOmsSwitchManagementDao.add(configOmsSwitchManagement);
             configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
         }
@@ -1653,6 +1654,15 @@ public class CompanyService {
         }
         return omsSwitchEnum.getValue();
     }
+
+    private static OmsSwitchEnum instanceFromModule(String moduleNames){
+        OmsSwitchEnum omsSwitchEnum = OmsSwitchEnum.instanceFromName(moduleNames);
+        if(omsSwitchEnum == null){
+            throw CompanySwitchException.MODULE_NAME_NOT_EXISTS;
+        }
+        return omsSwitchEnum;
+    }
+
     private static OmsSwitchEnum getOmsSwitch(Integer value){
         if (value == null){
             throw CompanySwitchException.SWITCH_NOT_EXISTS;
