@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
  * @Date: 2019/10/29
  */
 @Component
-@CounterIface
 public class TimeStatisticsInterceptor implements HandlerInterceptor {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -37,6 +36,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
     }
 
     @Override
+    @CounterIface
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         try {
             MDC.put("url", request.getRequestURI());
