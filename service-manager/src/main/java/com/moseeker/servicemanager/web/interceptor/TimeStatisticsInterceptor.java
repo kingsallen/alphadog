@@ -13,6 +13,7 @@ import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -34,7 +35,6 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
     JedisPool jedisPool;
     // 线程池
     private static ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-    ThreadLocal<Map<String, Object>> mapThreadLocal;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -60,7 +60,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
                 jedisPool = new JedisPool(host, port);
             }
 
-            Map<String, Object> logMap = mapThreadLocal.get();
+            Map<String, Object> logMap = new HashMap<>();
             logMap.put("url", request.getRequestURI());
             logMap.put("method", request.getMethod());
             logMap.put("ipAddr", request.getRemoteAddr());
