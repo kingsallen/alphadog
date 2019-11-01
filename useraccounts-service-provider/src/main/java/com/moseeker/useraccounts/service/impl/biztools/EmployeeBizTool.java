@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.EmployeeCardViewData;
 import com.moseeker.entity.pojos.EmployeeRadarData;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
@@ -19,6 +20,7 @@ import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,9 +31,11 @@ public class EmployeeBizTool {
 
     private static Logger logger = LoggerFactory.getLogger(EmployeeBizTool.class);
 
+    private static ReferralEntity referralEntity = new ReferralEntity();
+
     public static RadarUserVO packageRadarUser(EmployeeRadarData data, List<UserDepthVO> depthList, Integer userId){
         RadarUserVO radar = new RadarUserVO();
-        UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
+        UserUserRecord userUserRecord = data.getUserRecordList().get(turnToValidUserId(userId));
         if(userUserRecord == null){
             return radar;
         }else{
@@ -83,12 +87,13 @@ public class EmployeeBizTool {
 
     public static EmployeeForwardViewPageVO packageEmployeeForwardViewVO(EmployeeCardViewData data, CandidateRecomRecordRecord record, List<UserDepthVO> depthList){
         EmployeeForwardViewPageVO result = new EmployeeForwardViewPageVO();
-        int userId= record.getPresenteeUserId();
+
+        int userId = record.getPresenteeUserId();
         result.setUserId(userId);
 /*
         UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
 */
-        UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
+        UserUserRecord userUserRecord = data.getUserRecordList().get(turnToValidUserId(userId));
         if(userUserRecord!=null){
             result.setNickname(userUserRecord.getNickname());
             result.setHeadimgurl(userUserRecord.getHeadimg());
@@ -164,7 +169,7 @@ public class EmployeeBizTool {
         if(wxUserRecord!=null){
             result.setHeadimgurl(wxUserRecord.getHeadimgurl());
         }*/
-        UserUserRecord userRecord = data.getUserRecordList().get(userId);
+        UserUserRecord userRecord = data.getUserRecordList().get(turnToValidUserId(userId));
         if(userRecord!=null){
             result.setHeadimgurl(userRecord.getHeadimg());
             result.setNickname(userRecord.getNickname());
@@ -206,6 +211,14 @@ public class EmployeeBizTool {
             }
         }
         return result;
+    }
+
+    public static int turnToValidUserId(int origin){
+        List<UserUserRecord> userUserRecords = referralEntity.fetchValidUserUser(Collections.singletonList(origin));
+        if(userUserRecords==null||userUserRecords.size()==0){
+            return origin;
+        }
+        return userUserRecords.get(0).getId();
     }
 
 

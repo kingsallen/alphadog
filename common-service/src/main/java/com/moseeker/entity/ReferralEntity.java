@@ -180,6 +180,9 @@ public class ReferralEntity {
     @Autowired
     private  ProfileEntity profileEntity;
 
+    @Autowired
+    private ReferralEntity referralEntity;
+
     //redis的客户端
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -812,8 +815,10 @@ public class ReferralEntity {
                     () -> wxEntity.getUserWxUserData(userIdList));
             Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
                     () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
+//            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+//                    () -> userDao.fetchByIdList(userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
-                    () -> userDao.fetchByIdList(userIdList));
+                    () -> this.fetchValidUserUser(userIdList));
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchViewedByUserIdsAndPidList(userIdList, positionIdList));
 
@@ -964,8 +969,10 @@ public class ReferralEntity {
                     () -> connectionLogDao.fetchChainLogRecordByList(postUserId, userIdList, positionIdList));
             Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
                     () -> wxEntity.getUserWxUserData(userIdList));
+//            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+//                    () -> userDao.fetchByIdList(userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
-                    () -> userDao.fetchByIdList(userIdList));
+                    () -> referralEntity.fetchValidUserUser(userIdList));
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
@@ -1068,8 +1075,10 @@ public class ReferralEntity {
                     () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
             Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
                     () -> wxEntity.getUserWxUserData(userIdList));
+//            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+//                    () -> userDao.fetchByIdList(userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
-                    () -> userDao.fetchByIdList(userIdList));
+                    () -> referralEntity.fetchValidUserUser(userIdList));
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
@@ -1220,5 +1229,26 @@ public class ReferralEntity {
         } else {
             return new ArrayList<>(0);
         }
+    }
+
+    /**
+     * @Description: 根据当前用户id获取有效的用户id（账户合并导致某些账户失效）
+     * @param ids 当前的用户id列表
+     * @returns java.util.List<com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord> 有效用户
+     * @author Rays
+     * @date 2019-11-01 14:41
+     */
+    public List<UserUserRecord> fetchValidUserUser(List<Integer> ids){
+        List<UserUserRecord> userRecords = userDao.fetchByIdList(ids);
+        List<Integer> validUserId = userRecords.stream()
+                                                .filter(userUserRecord -> {
+                                                    return userUserRecord.getParentid()!=0;
+                                                }).map(UserUserRecord::getParentid)
+                                                .collect(Collectors.toList());
+        if(validUserId!=null&&validUserId.size()>0){
+            List<UserUserRecord> userRecords1 = userDao.fetchByIdList(validUserId);
+            userRecords.addAll(userRecords1);
+        }
+        return userRecords;
     }
 }
