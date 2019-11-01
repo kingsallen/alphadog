@@ -1240,10 +1240,7 @@ public class ReferralEntity {
      */
     public List<UserUserRecord> fetchValidUserUser(List<Integer> ids){
         List<UserUserRecord> userRecords = userDao.fetchByIdList(ids);
-        //过滤无效用户
-        userRecords = userRecords.stream().filter(userUserRecord -> {
-            return userUserRecord.getParentid()==0;
-        }).collect(Collectors.toList());
+
         //key : 有效用户id value : 失效用户id
         List<UserUserRecord> invalidUser = userRecords.stream()
                                                 .filter(userUserRecord -> {
@@ -1253,6 +1250,10 @@ public class ReferralEntity {
         Map<Integer,Integer> invalidUserMap =
                 invalidUser.stream().collect(Collectors.toMap(UserUserRecord::getParentid,UserUserRecord::getId));
 
+        //过滤无效用户
+        userRecords = userRecords.stream().filter(userUserRecord -> {
+            return userUserRecord.getParentid()==0;
+        }).collect(Collectors.toList());
 
         if(invalidUser!=null&&invalidUser.size()>0){
             List<Integer> validUserId =
