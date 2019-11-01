@@ -928,12 +928,13 @@ public class ProfileController {
         String pdf_name = file_name.replace("." + file_type, Constant.WORD_PDF).trim();
         File pdf_file = new File(pdf_name);
         //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
-        if (!pdf_file.exists()) {
+        if (!pdf_file.exists() || pdf_file.length() == 0) {
             OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
             logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
         }
 
-        logger.info("wordToPdf return file : {}", pdf_name);
+        pdf_file = new File(pdf_name);
+        logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
         return Result.success(pdf_name).toJson();
     }
 }
