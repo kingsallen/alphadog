@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.google.common.collect.Lists;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
@@ -185,8 +184,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<UserWxUserDO> userWxUserDOS = wxUserDao.getWXUsersByUserIds(allUsers, hrWxWechatDO.getId());
         Map<Integer, UserWxUserDO> idWxUserMap = userWxUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
 //        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(allUsers));
-//        List<UserUserRecord> userRecords = referralEntity.fetchValidUserUser(new ArrayList<>(allUsers));
-//        Map<Integer, UserUserRecord> idUserMap = userRecords.stream().collect(Collectors.toMap(UserUserRecord::getId, userRecord->userRecord));
+        List<UserUserRecord> userRecords = referralEntity.fetchValidUserUser(new ArrayList<>(allUsers));
+        Map<Integer, UserUserRecord> idUserMap = userRecords.stream().collect(Collectors.toMap(UserUserRecord::getId, userRecord->userRecord));
         // 获取十分钟内转发的职位
         List<Integer> positionIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(positionIds);
@@ -208,12 +207,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
             int endUserId = candidatePositionDO.getUserId();
             int positionId = candidatePositionDO.getPositionId();
-            //获取有效用户
-            UserUserRecord userRecord = referralEntity.fetchValidUserUser(Collections.singletonList(endUserId)).get(0);
             // 构造单个职位浏览人的卡片
             JSONObject card = new JSONObject();
             // 候选人信息
-            RadarUserInfo user = doInitUser(idWxUserMap.get(endUserId), userRecord, endUserId, userDepthVOS);
+            RadarUserInfo user = doInitUser(idWxUserMap.get(endUserId), idUserMap.get(endUserId), endUserId, userDepthVOS);
             // 转发链路
             List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
             // 候选人浏览职位信息

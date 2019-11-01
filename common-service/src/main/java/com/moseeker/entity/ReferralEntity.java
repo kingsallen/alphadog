@@ -1232,22 +1232,37 @@ public class ReferralEntity {
     }
 
     /**
-     * @Description: 根据当前用户id获取有效的用户id（账户合并导致某些账户失效）
+     * @Description: 根据当前用户id获取有效的用户数据（账户合并导致某些账户失效）
      * @param ids 当前的用户id列表
-     * @returns java.util.List<com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord> 有效用户
+     * @returns java.util.List<com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord> 有效用户数据 id仍为无效用户id
      * @author Rays
      * @date 2019-11-01 14:41
      */
     public List<UserUserRecord> fetchValidUserUser(List<Integer> ids){
         List<UserUserRecord> userRecords = userDao.fetchByIdList(ids);
-        List<Integer> validUserId = userRecords.stream()
+        //过滤无效用户
+        userRecords = userRecords.stream().filter(userUserRecord -> {
+            return userUserRecord.getParentid()==0;
+        }).collect(Collectors.toList());
+        //key : 有效用户id value : 失效用户id
+        List<UserUserRecord> invalidUser = userRecords.stream()
                                                 .filter(userUserRecord -> {
                                                     return userUserRecord.getParentid()!=0;
-                                                }).map(UserUserRecord::getParentid)
+                                                })
                                                 .collect(Collectors.toList());
-        if(validUserId!=null&&validUserId.size()>0){
-            List<UserUserRecord> userRecords1 = userDao.fetchByIdList(validUserId);
-            userRecords.addAll(userRecords1);
+        Map<Integer,Integer> invalidUserMap =
+                invalidUser.stream().collect(Collectors.toMap(UserUserRecord::getParentid,UserUserRecord::getId));
+
+
+        if(invalidUser!=null&&invalidUser.size()>0){
+            List<Integer> validUserId =
+                    invalidUser.stream().map(UserUserRecord::getParentid).collect(Collectors.toList());
+            List<UserUserRecord> validUserRecord = userDao.fetchByIdList(validUserId);
+            validUserRecord = validUserRecord.stream().map(userUserRecord -> {
+                userUserRecord.setId(invalidUserMap.get(userUserRecord.getId()));
+                return userUserRecord;
+            }).collect(Collectors.toList());
+            userRecords.addAll(validUserRecord);
         }
         return userRecords;
     }
