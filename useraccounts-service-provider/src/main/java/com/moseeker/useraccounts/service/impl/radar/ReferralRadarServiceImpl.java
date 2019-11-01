@@ -70,7 +70,6 @@ import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -212,7 +211,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 候选人信息
             RadarUserInfo user = doInitUser(idWxUserMap.get(endUserId), idUserMap.get(endUserId), endUserId, userDepthVOS);
             // 转发链路
-            List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
+            List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS,
+                    idUserMap);
             // 候选人浏览职位信息
             JSONObject position = doInitPosition(idPositionMap.get(positionId), candidatePositionDO);
             // 卡片类型相关信息
@@ -760,23 +760,26 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return jobApplicationDOS;
     }
 
-    private List<RadarUserInfo> doInitRadarCardChains(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo,
+    private List<RadarUserInfo> doInitRadarCardChains(Map<Integer, UserWxUserDO> idWxUserMap, ReferralCardInfo cardInfo,
                                                       CandidatePositionDO candidatePositionDO, RadarUserInfo user,
-                                                      List<CandidateTemplateShareChainDO> shareChainDOS) {
+                                                      List<CandidateTemplateShareChainDO> shareChainDOS,
+                                                      Map<Integer,UserUserRecord> idUserMap) {
         List<RadarUserInfo> chain = new ArrayList<>();
         // 链路第一个放员工信息
         chain.add(doInitEmployee(idUserMap, cardInfo));
         // 递归找到转发链路的所有被推荐人id
         List<Integer> chainBeRecomIds = getChainIdsByRecurrence(shareChainDOS, cardInfo, candidatePositionDO);
         for(Integer beRecomId : chainBeRecomIds){
-            UserWxUserDO userWxUserDO = idUserMap.get(beRecomId);
+//            UserWxUserDO userWxUserDO = idWxUserMap.get(beRecomId);
+            UserUserRecord userUserRecord = idUserMap.get(beRecomId);
             if(chain.size() == (CHAIN_LIMIT+1)){
                 chain.add(user);
                 break;
             }
             // 链路中的用户信息
             RadarUserInfo userInfo = new RadarUserInfo();
-            chain.add(userInfo.initFromUserWxUser(userWxUserDO));
+//            chain.add(userInfo.initFromUserWxUser(userWxUserDO));
+            chain.add(userInfo.initFromUserUser(userUserRecord));
             // 如果链路人数不到限制时，已经触及到邀请的粉丝，则退出循环
             if(beRecomId == candidatePositionDO.getUserId()){
                 break;
@@ -1463,10 +1466,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return chainIds;
     }
 
-    private RadarUserInfo doInitEmployee(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo) {
+    private RadarUserInfo doInitEmployee(Map<Integer, UserUserRecord> idUserMap, ReferralCardInfo cardInfo) {
         RadarUserInfo employee = new RadarUserInfo();
-        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUserId());
-        return employee.initFromUserWxUser(wxUserDO);
+        UserUserRecord userUserRecord = idUserMap.get(cardInfo.getUserId());
+//        return employee.initFromUserWxUser(wxUserDO);
+        return employee.initFromUserUser(userUserRecord);
     }
 
     /**
