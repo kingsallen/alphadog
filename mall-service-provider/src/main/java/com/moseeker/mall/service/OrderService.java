@@ -222,6 +222,12 @@ public class OrderService {
     @OnlySuperAccount
     public String exportOrder(BaseMallForm baseMallForm) {
         List<MallOrderDO> orderList = orderDao.getAllOrderByCompanyId(baseMallForm.getCompany_id());
+        //获取所有的邮寄地址id
+        List<Integer> mailIdList = orderList.stream().map(MallOrderDO::getMailId).collect(Collectors.toList());
+        //再根据地址id获取所有邮寄信息
+        List<MallMailAddress> addresses = addressDao.getAddressByIdList(mailIdList);
+        Map<Integer,MallMailAddress> addressMap = addresses.stream().collect(Collectors.toMap(MallMailAddress::getId,address->address));
+
         Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
         List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
@@ -231,6 +237,11 @@ public class OrderService {
         }
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds, sdf);
+
+        //将邮寄地址信息插入到导出列表中
+        mallOrderInfoVOS.stream().forEach(mallOrderInfoVO -> {
+            mallOrderInfoVO.setAddress(addressMap.get(mallOrderInfoVO.getMailId()));
+        });
         return JSON.toJSONString(mallOrderInfoVOS);
     }
 

@@ -10,6 +10,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static com.moseeker.baseorm.db.malldb.tables.MallMailAddress.MALL_MAIL_ADDRESS;
 import static org.jooq.impl.DSL.using;
 
@@ -36,5 +38,11 @@ public class MallMailAddressDao extends com.moseeker.baseorm.db.malldb.tables.da
         create.attach(record);
         record.insert();
         return record.into(MallMailAddress.class);
+    }
+
+    public List<MallMailAddress> getAddressByIdList(List<Integer> ids){
+        return create.selectFrom(MALL_MAIL_ADDRESS)
+                .where(MALL_MAIL_ADDRESS.ID.in(ids))
+                .fetchInto(MallMailAddress.class);
     }
 }

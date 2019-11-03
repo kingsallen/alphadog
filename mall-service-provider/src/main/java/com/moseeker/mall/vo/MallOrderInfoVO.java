@@ -1,5 +1,6 @@
 package com.moseeker.mall.vo;
 
+import com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.mall.constant.OrderUserEmployeeEnum;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
@@ -29,7 +30,16 @@ public class MallOrderInfoVO{
     private Byte employee_state;
     private String assign_time;
     private Integer mailId;
+    private MallMailAddress address;
     private String create_time;
+
+    public MallMailAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(MallMailAddress address) {
+        this.address = address;
+    }
 
     public Integer getMailId() {
         return mailId;
