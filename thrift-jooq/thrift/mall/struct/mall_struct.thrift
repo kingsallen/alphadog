@@ -101,3 +101,14 @@ struct MallGoodsOrderUpdateForm {
     3:  optional list<i32> ids,
     4:  optional i32 state
 }
+
+struct MallMailAddressForm{
+    1: optional i32 id,
+    2: optional i32 userId;
+    3: optional string addressee,
+    4: optional string mobile,
+    5: optional i32 province,
+    6: optional i32 city,
+    7: optional i32 region,
+    8: optional string address
+}

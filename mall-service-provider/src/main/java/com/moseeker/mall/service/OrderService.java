@@ -32,15 +32,13 @@ import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderOperationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
-import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
-import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
-import com.moseeker.thrift.gen.mall.struct.OrderForm;
-import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import com.moseeker.thrift.gen.mall.struct.*;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -723,6 +721,13 @@ public class OrderService {
             }
         }
         return userEmployeeDO;
+    }
+
+    public MallMailAddressForm getAddressById(Integer id){
+        MallMailAddress address = addressDao.fetchOneById(id);
+        MallMailAddressForm form = new MallMailAddressForm();
+        BeanUtils.copyProperties(address,form);
+        return form;
     }
 
 }

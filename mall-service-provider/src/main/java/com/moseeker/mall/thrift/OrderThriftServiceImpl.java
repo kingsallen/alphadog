@@ -3,10 +3,7 @@ package com.moseeker.mall.thrift;
 import com.moseeker.mall.service.OrderService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.mall.service.OrderService.Iface;
-import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
-import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
-import com.moseeker.thrift.gen.mall.struct.OrderForm;
-import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import com.moseeker.thrift.gen.mall.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,4 +78,14 @@ public class OrderThriftServiceImpl implements Iface{
             throw e;
         }
     }
+
+    @Override
+    public MallMailAddressForm getAddressById(int mailId) throws BIZException, TException {
+        try{
+            return orderService.getAddressById(mailId);
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
 }

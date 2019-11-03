@@ -17,9 +17,7 @@ import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -197,4 +195,23 @@ public class OrderController {
     }
 
 
+    @GetMapping(value = "/address/preview")
+    @ResponseBody
+    public String previewMailAddress(HttpServletRequest request){
+        try {
+            Map<String,Object> params = ParamUtils.parseRequestParam(request);
+            Integer mailId = (int)params.get("mailId");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("mailId", mailId);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                return ResponseLogNotification.successJson(request, orderService.getAddressById(mailId));
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

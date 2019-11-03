@@ -28,7 +28,16 @@ public class MallOrderInfoVO{
     private Byte order_state;
     private Byte employee_state;
     private String assign_time;
+    private Integer mailId;
     private String create_time;
+
+    public Integer getMailId() {
+        return mailId;
+    }
+
+    public void setMailId(Integer mailId) {
+        this.mailId = mailId;
+    }
 
     public Integer getId() {
         return id;
@@ -211,6 +220,7 @@ public class MallOrderInfoVO{
                 ", order_id='" + order_id + '\'' +
                 ", good_id=" + good_id +
                 ", credit=" + credit +
+                ", name='" + name + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", email='" + email + '\'' +
                 ", custom='" + custom + '\'' +
@@ -220,6 +230,7 @@ public class MallOrderInfoVO{
                 ", order_state=" + order_state +
                 ", employee_state=" + employee_state +
                 ", assign_time='" + assign_time + '\'' +
+                ", mailId=" + mailId +
                 ", create_time='" + create_time + '\'' +
                 '}';
     }
