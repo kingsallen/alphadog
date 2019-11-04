@@ -832,10 +832,9 @@ public class ProfileCompletenessImpl {
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileDao.updateRecord(profileRecord);
             String distinctId = profileRecord.getUserId().toString();
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
-            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(totalComplementness));
             logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness distinctId:{}, ProfileCompleteness : {}", distinctId, totalComplementness);
             sensorSend.profileSet(distinctId,"ProfileCompleteness", totalComplementness);
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(totalComplementness));
         }
     }
 }
