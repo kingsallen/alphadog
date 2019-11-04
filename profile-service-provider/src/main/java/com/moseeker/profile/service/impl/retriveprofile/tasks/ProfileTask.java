@@ -74,8 +74,8 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
             }
             logForStatistics(profileId, userId, createTime, channelType, profilePojo);
             String distinctId = String.valueOf(userId);
-            String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-            logger.info("ProfileTask.handler73  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+            int property=profilePojo.getProfileRecord().getCompleteness();
+            logger.info("ProfileTask.handler distinctId:{}, ProfileCompleteness:{}", distinctId, property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
             return profileProfileRecord.getId();

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRecordRecord> implements Record7<Integer, Integer, Integer, Integer, Timestamp, Timestamp, Byte> {
 
-    private static final long serialVersionUID = 1132560302;
+    private static final long serialVersionUID = 1946341886;
 
     /**
      * Setter for <code>userdb.user_referral_record.id</code>. 主key
@@ -117,14 +117,14 @@ public class UserReferralRecordRecord extends UpdatableRecordImpl<UserReferralRe
     }
 
     /**
-     * Setter for <code>userdb.user_referral_record.scene</code>. 内推的场景 2. ChatBot 上传 1. 内推
+     * Setter for <code>userdb.user_referral_record.scene</code>. 内推的场景 1. 内推 2. ChatBot 上传 
      */
     public void setScene(Byte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>userdb.user_referral_record.scene</code>. 内推的场景 2. ChatBot 上传 1. 内推
+     * Getter for <code>userdb.user_referral_record.scene</code>. 内推的场景 1. 内推 2. ChatBot 上传 
      */
     public Byte getScene() {
         return (Byte) get(6);

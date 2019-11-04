@@ -117,6 +117,9 @@ public class ProfileCompletenessImpl {
                     if (totalComplementness != profileRecord.getCompleteness().intValue()) {
                         profileRecord.setCompleteness((byte) (totalComplementness));
                         profileDao.updateRecord(profileRecord);
+                        String distinctId = profileRecord.getUserId().toString();
+                        logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness(int) [ distinctId:{}, ProfileCompleteness:{} ]", distinctId, totalComplementness);
+                        sensorSend.profileSet(distinctId,"ProfileCompleteness", totalComplementness);
                     }
                 } else {
                     totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
@@ -215,10 +218,9 @@ public class ProfileCompletenessImpl {
                         result = 1;
                     }
                     String distinctId = profileRecord.getUserId().toString();
-                    String property=String.valueOf(useruserCompleteness);
-                    logger.info("ProfileCompletenessImpl.reCalculateUserUserByUserIdOrMobile213  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
-                    sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
-                    redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
+                    logger.info("ProfileCompletenessImpl.reCalculateUserUserByUserIdOrMobile213  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+useruserCompleteness);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",useruserCompleteness);
+                    redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(useruserCompleteness));
                 }
             }
         }
@@ -810,10 +812,9 @@ public class ProfileCompletenessImpl {
                 logger.error(e.getMessage(), e);
             }
             String distinctId = profileRecord.getUserId().toString();
-            String property=String.valueOf(completeness);
-            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness807  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
-            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(completeness));
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness distinctId:{}, ProfileCompleteness:{}", distinctId, completeness);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness", completeness);
         }
         return completeness;
     }
@@ -831,10 +832,10 @@ public class ProfileCompletenessImpl {
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileDao.updateRecord(profileRecord);
             String distinctId = profileRecord.getUserId().toString();
-            String property=String.valueOf(totalComplementness);
-            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness835  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
-            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(totalComplementness));
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness distinctId:{}, ProfileCompleteness : {}", distinctId, totalComplementness);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness", totalComplementness);
         }
     }
 }

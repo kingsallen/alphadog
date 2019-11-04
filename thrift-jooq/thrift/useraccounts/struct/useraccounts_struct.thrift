@@ -600,7 +600,8 @@ struct EmployeeForwardView {
     12:optional i32 invitationStatus,
     13:optional list<Connection> chain,
     14:optional i32 status,
-    15:optional i32 chainStatus
+    15:optional i32 chainStatus,
+    16:optional bool canChat // 是否聊天可触达(即被推荐人是否关注公众号)
 }
 
 struct Connection{

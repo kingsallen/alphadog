@@ -213,6 +213,7 @@ public class ProfileController {
                     form.getInt("channel"),
                     JSON.toJSONString(form.get("profile")));
 
+            logger.info("/profile/retrieve basic form:{}", form);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -463,6 +464,7 @@ public class ProfileController {
             int userId = params.getInt("userId",0);
             String profile = params.getString("profile");
             int profileId = service.upsertProfile(userId, profile);
+            logger.info("v2/profile basic profile: {}", profile);
             return ResponseLogNotification.successJson(request, profileId);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -603,6 +605,7 @@ public class ProfileController {
             Map<String,Object> profile= (Map<String, Object>) params.get("profile");
             int companyId=(int)params.get("company_id");
             Response res = profileService.combinationProfile(JSON.toJSONString(profile),companyId);
+            logger.info("/api/profile/upload/combine basic profile:{}", JSON.toJSONString(profile));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -622,6 +625,7 @@ public class ProfileController {
             int companyId=(int)params.get("company_id");
             String fileName=(String)params.get("file_name");
             Response res = profileService.preserveProfile(JSON.toJSONString(profile),hrId,companyId,fileName,userId);
+            logger.info("/api/profile/talent/preserve basic profile:{}", JSON.toJSONString(profile));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));

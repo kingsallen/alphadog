@@ -486,9 +486,9 @@ public class WholeProfileService {
                         this.put("userId", userId);
                     }}.toJSONString(), statisticsForChannelmportVO);
                     String distinctId = profileRecord.getUserId().toString();
-                    String property=String.valueOf(profileRecord.getCompleteness());
-                    logger.debug("WholeProfileService.postResource483  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
-                    sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+                    int property = profileRecord.getCompleteness();
+                    logger.info("WholeProfileService.postResource distinctId:{}, ProfileCompleteness:{}", distinctId, property);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness", property);
                     redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
@@ -556,8 +556,8 @@ public class WholeProfileService {
                     this.put("userId", userId);
                 }}.toJSONString(), statisticsForChannelmportVO);
                 String distinctId = profilePojo.getUserRecord().getId().toString();
-                String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-                logger.debug("WholeProfileService.importCV543  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                int property=profilePojo.getProfileRecord().getCompleteness();
+                logger.info("WholeProfileService.importCV distinctId:{}, ProfileCompleteness:{}", distinctId, property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
             } catch (Exception e) {
@@ -618,8 +618,8 @@ public class WholeProfileService {
                     this.put("profile", profile);
                 }}.toJSONString(), statisticsForChannelmportVO);
                 String distinctId = profilePojo.getUserRecord().getId().toString();
-                String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-                logger.debug("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                int property = profilePojo.getProfileRecord().getCompleteness();
+                logger.info("WholeProfileService.createProfileItem distinctId:{}, ProfileCompleteness:{}", distinctId, property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
             } catch (Exception e) {
