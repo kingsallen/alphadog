@@ -332,7 +332,10 @@ public class OrderService {
         if(orderForm.getUserId()==0&&!orderForm.isSetUserId()){
             orderForm.setUserId(userEmployeeDO.getSysuserId());
         }
-        MallMailAddress address = inserMailAddr(orderForm);
+        MallMailAddress address = null;
+        if(orderForm.getDeliverType()==2){
+            address = inserMailAddr(orderForm);
+        }
         logger.info("OrderService handleOrderDbUpdate address:{}",address);
         // 插入订单记录
         MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm,address);
@@ -523,7 +526,9 @@ public class OrderService {
         mallOrderDO.setTitle(mallGoodsInfoDO.getTitle());
         mallOrderDO.setPic_url(mallGoodsInfoDO.getPic_url());
         mallOrderDO.setCount(orderForm.getCount());
-        mallOrderDO.setMailId(address.getId());
+        if(address!=null&&address.getId()!=null){
+            mallOrderDO.setMailId(address.getId());
+        }
         logger.info("mallOrderDO:{}", mallOrderDO);
         return mallOrderDO;
     }

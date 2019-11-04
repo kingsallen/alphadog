@@ -102,13 +102,15 @@ public class OrderController {
             vu.addRequiredValidate("employeeId", orderForm.getEmployee_id());
             vu.addRequiredValidate("商城id", orderForm.getGoods_id());
             vu.addRequiredValidate("商品兑换数量", orderForm.getCount());
-            vu.addRequiredValidate("收件人", orderForm.getAddressee());
-            vu.addRequiredValidate("province", orderForm.getProvince());
-            vu.addRequiredValidate("city", orderForm.getCity());
-            vu.addRequiredValidate("region", orderForm.getRegion());
-            vu.addRequiredValidate("详细地址", orderForm.getAddress());
-            vu.addRequiredValidate("用户编号", orderForm.getUserId());
-            vu.addRequiredValidate("手机号", orderForm.getMobile());
+            if(2==orderForm.getDeliverType()){
+                vu.addRequiredValidate("收件人", orderForm.getAddressee());
+                vu.addRequiredValidate("province", orderForm.getProvince());
+                vu.addRequiredValidate("city", orderForm.getCity());
+                vu.addRequiredValidate("region", orderForm.getRegion());
+                vu.addRequiredValidate("详细地址", orderForm.getAddress());
+                vu.addRequiredValidate("用户编号", orderForm.getUserId());
+                vu.addRequiredValidate("手机号", orderForm.getMobile());
+            }
             vu.addIntTypeValidate("company_id", orderForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
             vu.addIntTypeValidate("employeeId", orderForm.getEmployee_id(), null, null, 1, Integer.MAX_VALUE);
             vu.addIntTypeValidate("商品兑换数量", orderForm.getCount(), null, null, 1, 99999);

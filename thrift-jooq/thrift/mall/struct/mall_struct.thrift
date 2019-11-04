@@ -29,7 +29,8 @@ struct OrderForm {
     8:  optional i32 city,
     9:  optional i32 region,
     10: optional string address,
-    11: optional i32 userId
+    11: optional i32 userId,
+    12: optional i32 deliverType
 }
 
 struct MallSwitchForm {
