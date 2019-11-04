@@ -100,6 +100,11 @@ public class BasicController {
 					||(StringUtils.isNotNullOrEmpty(weixin)&&weixin.length()>50)) {
 				return ResponseLogNotification.fail(request, "不能超过50个字符！");
 			}
+
+			String city_name = basic.getCity_name();
+			if(StringUtils.isNotNullOrEmpty(city_name) && city_name.matches("^\\d+$")) {
+				return ResponseLogNotification.fail(request, "请输入正确的居住地！");
+			}
 			Response result = basicService.putResource(basic);
 			logger.info("BasicController.put basic:{}", basic);
 			return ResponseLogNotification.success(request, result);
