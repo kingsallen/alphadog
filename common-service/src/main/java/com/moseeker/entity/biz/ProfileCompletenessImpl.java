@@ -10,7 +10,10 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.QueryUtil;
 
 import com.moseeker.common.util.StringUtils;
@@ -21,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
+import javax.annotation.Resource;
 import java.util.*;
 
 @Service
@@ -86,6 +89,9 @@ public class ProfileCompletenessImpl {
 
     @Autowired
     private SensorSend sensorSend;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     public int getCompleteness(int userId, String uuid, int profileId) {
         int totalComplementness = 0;
@@ -211,6 +217,10 @@ public class ProfileCompletenessImpl {
                     } else {
                         result = 1;
                     }
+                    String distinctId = profileRecord.getUserId().toString();
+                    logger.info("ProfileCompletenessImpl.reCalculateUserUserByUserIdOrMobile213  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+useruserCompleteness);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",useruserCompleteness);
+                    redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(useruserCompleteness));
                 }
             }
         }
@@ -802,6 +812,7 @@ public class ProfileCompletenessImpl {
                 logger.error(e.getMessage(), e);
             }
             String distinctId = profileRecord.getUserId().toString();
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(completeness));
             logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness distinctId:{}, ProfileCompleteness:{}", distinctId, completeness);
             sensorSend.profileSet(distinctId,"ProfileCompleteness", completeness);
         }
@@ -821,6 +832,8 @@ public class ProfileCompletenessImpl {
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileDao.updateRecord(profileRecord);
             String distinctId = profileRecord.getUserId().toString();
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(totalComplementness));
             logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness distinctId:{}, ProfileCompleteness : {}", distinctId, totalComplementness);
             sensorSend.profileSet(distinctId,"ProfileCompleteness", totalComplementness);
         }

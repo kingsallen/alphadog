@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -77,6 +79,9 @@ public class ProfileEntity {
 
     @Autowired
     private SensorSend sensorSend;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     private static final ConfigPropertiesUtil PROPERTIES_READER = ConfigPropertiesUtil.getInstance();
 
@@ -795,6 +800,7 @@ public class ProfileEntity {
         int property = profilePojo.getProfileRecord().getCompleteness();
         logger.info("ProfileEntity.createProfile distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
+        redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
         return result.getProfileRecord().getId();
     }
 
@@ -819,6 +825,7 @@ public class ProfileEntity {
         int property = profilePojo.getProfileRecord().getCompleteness();
         logger.info("ProfileEntity.storeProfile profilePojo distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
+        redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
         return result.getProfileRecord().getId();
     }
 
@@ -856,6 +863,7 @@ public class ProfileEntity {
         int property = profileRecord.getProfileRecord().getCompleteness();
         logger.info("ProfileEntity.storeProfile profileRecord distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
+        redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
         return result.getProfileRecord().getId();
     }
 
@@ -1048,6 +1056,7 @@ public class ProfileEntity {
         String distinctId = profilePojo.getUserRecord().getId().toString();
         int property = result.getProfileRecord() != null ? result.getProfileRecord().getCompleteness().intValue() : 0;
         sensorSend.profileSet(distinctId, "ProfileCompleteness", property);
+        redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
         logger.info("ProfileEntity.storeUserRecordForReferral distinctId:{},ProfileCompleteness:{}", distinctId,  property);
         if (appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
             logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId, appid,

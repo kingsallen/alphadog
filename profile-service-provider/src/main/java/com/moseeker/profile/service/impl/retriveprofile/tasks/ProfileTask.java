@@ -2,6 +2,9 @@ package com.moseeker.profile.service.impl.retriveprofile.tasks;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.SensorSend;
@@ -14,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 
 /**
@@ -36,6 +40,9 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
 
     @Autowired
     private SensorSend sensorSend;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     public Integer handler(ProfilePojo profilePojo) throws CommonException {
         if (profilePojo != null && profilePojo.getUserRecord() != null) {
@@ -70,6 +77,7 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
             int property=profilePojo.getProfileRecord().getCompleteness();
             logger.info("ProfileTask.handler distinctId:{}, ProfileCompleteness:{}", distinctId, property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+            redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
             return profileProfileRecord.getId();
         }
         return null;
