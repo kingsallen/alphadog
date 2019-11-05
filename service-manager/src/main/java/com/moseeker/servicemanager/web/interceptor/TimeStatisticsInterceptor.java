@@ -64,6 +64,16 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             Map<String, Object> logMap = new HashMap<>();
             logMap.put("url", request.getRequestURI());
             logMap.put("method", request.getMethod());
+            StringBuffer requestURL = request.getRequestURL();
+            String localAddr = request.getLocalAddr();
+            String remoteAddr = request.getRemoteAddr();
+            String remoteHost = request.getRemoteHost();
+            String localName = request.getLocalName();
+            logMap.put("requestURL", requestURL);
+            logMap.put("localAddr", localAddr);
+            logMap.put("remoteAddr", remoteAddr);
+            logMap.put("remoteHost", remoteHost);
+            logMap.put("localName", localName);
             logMap.put("ipAddr", InetAddress.getLocalHost().getHostAddress());
 
             long startTime = (long) request.getAttribute("StatisticsStartTime");
