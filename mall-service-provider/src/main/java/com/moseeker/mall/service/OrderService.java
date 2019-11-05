@@ -332,12 +332,13 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     protected UserEmployeePointsRecordDO handleOrderDbUpdate(OrderForm orderForm, UserEmployeeDO userEmployeeDO, MallGoodsInfoDO mallGoodsInfoDO, int payCredit) throws BIZException {
-        //TODO  插入地址信息 Rays
+        //插入地址信息
         if(orderForm.getUserId()==0&&!orderForm.isSetUserId()){
             orderForm.setUserId(userEmployeeDO.getSysuserId());
         }
         MallMailAddress address = null;
         if(orderForm.getDeliverType()==2){
+            logger.info("OrderService handleOrderDbUpdate inserMailAddr:{}",orderForm);
             address = inserMailAddr(orderForm);
         }
         logger.info("OrderService handleOrderDbUpdate address:{}",address);
