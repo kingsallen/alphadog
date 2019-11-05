@@ -111,5 +111,8 @@ struct MallMailAddressForm{
     5: optional i32 province,
     6: optional i32 city,
     7: optional i32 region,
-    8: optional string address
+    8: optional string provinceName,
+    9: optional string cityName,
+    10: optional string regionName,
+    11: optional string address
 }

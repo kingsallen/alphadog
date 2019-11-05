@@ -1,6 +1,8 @@
 package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
@@ -8,6 +10,7 @@ import com.moseeker.baseorm.dao.malldb.MallMailAddressDao;
 import com.moseeker.baseorm.dao.malldb.MallOrderOperationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
@@ -39,7 +42,6 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +77,8 @@ public class OrderService {
 
     private final MallMailAddressDao addressDao;
 
+    private final DictCityDao dictCityDao;
+
     private final TemplateService templateService;
 
     private final Environment environment;
@@ -89,8 +93,7 @@ public class OrderService {
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
-    @Autowired
-    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao, GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao, HrCompanyDao hrCompanyDao, MallMailAddressDao addressDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
+    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao, GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao, HrCompanyDao hrCompanyDao, MallMailAddressDao addressDao, DictCityDao dictCityDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
         this.orderDao = orderDao;
         this.userEmployeeDao = userEmployeeDao;
         this.historyUserEmployeeDao = historyUserEmployeeDao;
@@ -99,6 +102,7 @@ public class OrderService {
         this.userEmployeePointsDao = userEmployeePointsDao;
         this.hrCompanyDao = hrCompanyDao;
         this.addressDao = addressDao;
+        this.dictCityDao = dictCityDao;
         this.templateService = templateService;
         this.environment = environment;
         this.searchengineEntity = searchengineEntity;
@@ -742,7 +746,23 @@ public class OrderService {
     public MallMailAddressForm getAddressById(Integer id){
         MallMailAddress address = addressDao.fetchOneById(id);
         MallMailAddressForm form = new MallMailAddressForm();
+
+        //根据城市code获取城市信息
+        List<Integer> codes = Lists.newArrayList(address.getProvince(),address.getCity(),address.getRegion());
+        List<DictCity> cities = dictCityDao.getDictCitiesByCodes(codes);
+        Map<Integer,DictCity> citiesMap =
+                cities.stream().collect(Collectors.toMap(DictCity::getCode,city->city));
         BeanUtils.copyProperties(address,form);
+
+        if(cities!=null&&cities.size()>0){
+            DictCity province = citiesMap.get(form.getProvince());
+            DictCity city = citiesMap.get(form.getCity());
+            DictCity region = citiesMap.get(form.getRegion());
+            form.setProvinceName(province!=null?province.getName():null);
+            form.setCityName(city!=null?city.getName():null);
+            form.setRegionName(region!=null?region.getName():null);
+        }
+
         return form;
     }
 
