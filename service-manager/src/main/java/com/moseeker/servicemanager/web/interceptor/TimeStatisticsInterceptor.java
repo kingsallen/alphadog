@@ -69,6 +69,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             long startTime = (long) request.getAttribute("StatisticsStartTime");
             long consumerTime = System.currentTimeMillis() - startTime;
             logMap.put("runTime", consumerTime);
+            logMap.put("application", "service-manager");
             logger.info("TimeStatisticsInterceptor.afterCompletion : {}", JSON.toJSONString(logMap));
             logMap.put("message", "接口运行时间:" + consumerTime);
             this.save(JSONObject.toJSONString(logMap));
