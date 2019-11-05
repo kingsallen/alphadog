@@ -179,6 +179,7 @@ public class MallOrderInfoVO{
         setPic_url(mallOrderDO.getPic_url());
         setOrder_state(mallOrderDO.getState());
         setTitle(mallOrderDO.getTitle());
+        setMailId(mallOrderDO.getMailId());
         if(dateFormat == null){
             setCreate_time(mallOrderDO.getCreateTime());
             setAssign_time(mallOrderDO.getAssign_time());
