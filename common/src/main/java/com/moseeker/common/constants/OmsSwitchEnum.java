@@ -26,7 +26,16 @@ public enum OmsSwitchEnum {
     HUNTER_MANAGE(13,"猎头管理", false),
     WORK_WEICHAT(14,"企业微信版", false),// 允许使用企业微信进行员工认证
     IDCARD_RECOGNITION(15,"身份证识别", false),//身份证识别
-    MOMO_WECHAT(17,"MOMO微信端", true);//身份证识别
+    MOMO_WECHAT(17,"MOMO微信端", true),//身份证识别
+    SM_MANUAL_IM(18,"社招版MoBot(人工对话模式)", false),
+    SM_AI_IM(19,"社招版MoBot(人工+智能对话模式)", false),
+    SM_TURNHR_IM(20,"社招版MoBot(请转HR（仅开启智能对话模式有效）)", false),
+    CM_MANUAL_IM(21,"社招版MoBot(人工对话模式)", false),
+    CM_AI_IM(22,"社招版MoBot(人工+智能对话模式)", false),
+    CM_TURNHR_IM(23,"社招版MoBot(请转HR（仅开启智能对话模式有效）)", false),
+    EM_MANUAL_IM(24,"员工版MoBot(人工对话模式)", false),
+    EM_AI_IM(25,"员工版MoBot(人工+智能对话模式)", false),
+    EM_TURNHR_IM(26,"员工版MoBot(请转HR（仅开启智能对话模式有效）)", false);
 
     private int value;
     private String name;
