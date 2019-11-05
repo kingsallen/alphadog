@@ -27,6 +27,7 @@ import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
+import com.moseeker.mall.vo.MallMailAddressVO;
 import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -231,8 +232,30 @@ public class OrderService {
         //获取所有的邮寄地址id
         List<Integer> mailIdList = orderList.stream().map(MallOrderDO::getMailId).collect(Collectors.toList());
         //再根据地址id获取所有邮寄信息
-        List<MallMailAddress> addresses = addressDao.getAddressByIdList(mailIdList);
-        Map<Integer,MallMailAddress> addressMap = addresses.stream().collect(Collectors.toMap(MallMailAddress::getId,address->address));
+        List<MallMailAddress> addres = addressDao.getAddressByIdList(mailIdList);
+
+        List<MallMailAddressVO> addresses = addres.stream().map(addr -> {
+            MallMailAddressVO vo = new MallMailAddressVO();
+            BeanUtils.copyProperties(addr,vo);
+            return vo;
+        }).collect(Collectors.toList());
+
+        Set<Integer> codes = new HashSet<>();
+        addresses.stream().forEach(address -> {
+            codes.add(address.getProvince());
+            codes.add(address.getCity());
+            codes.add(address.getRegion());
+        });
+        List<DictCity> dictCities = dictCityDao.getDictCitiesByCodes(Lists.newArrayList(codes));
+        Map<Integer,DictCity> cityMap = dictCities.stream().collect(Collectors.toMap(DictCity::getCode,dictCity -> dictCity));
+
+        addresses.stream().forEach(address->{
+            address.setCityName(cityMap.get(address.getCity()).getName());
+            address.setRegionName(cityMap.get(address.getRegion()).getName());
+            address.setProvinceName(cityMap.get(address.getProvince()).getName());
+        });
+
+        Map<Integer,MallMailAddressVO> addressMap = addresses.stream().collect(Collectors.toMap(MallMailAddressVO::getId,address->address));
 
         Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
