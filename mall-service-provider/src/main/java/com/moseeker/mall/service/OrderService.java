@@ -146,6 +146,7 @@ public class OrderService {
                 orderList = orderDao.getOrdersListByPageAndStateAndKeyword(orderSearchForm, startIndex);
             }
         }
+        logger.info("OrderService getCompanyOrderList orderList:{}",orderList);
         Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
         List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
@@ -154,6 +155,7 @@ public class OrderService {
             historyEmployeeDOS = historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds);
         }
         List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds);
+        logger.info("OrderService getCompanyOrderList orderList:{}",mallOrderInfoVOS);
         resultMap.put("total_row", totalRows + "");
         resultMap.put("list", JSON.toJSONString(mallOrderInfoVOS));
         return resultMap;
