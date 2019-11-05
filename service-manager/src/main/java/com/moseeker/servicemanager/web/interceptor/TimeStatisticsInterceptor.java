@@ -13,6 +13,7 @@ import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -63,7 +64,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             Map<String, Object> logMap = new HashMap<>();
             logMap.put("url", request.getRequestURI());
             logMap.put("method", request.getMethod());
-            logMap.put("ipAddr", request.getRemoteAddr());
+            logMap.put("ipAddr", InetAddress.getLocalHost().getHostAddress());
 
             long startTime = (long) request.getAttribute("StatisticsStartTime");
             long consumerTime = System.currentTimeMillis() - startTime;
