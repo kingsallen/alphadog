@@ -202,7 +202,7 @@ public class OrderController {
     public String previewMailAddress(HttpServletRequest request){
         try {
             Map<String,Object> params = ParamUtils.parseRequestParam(request);
-            Integer mailId = (int)params.get("mailId");
+            Integer mailId = Integer.valueOf(String.valueOf(params.get("mailId")));
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("mailId", mailId);
             String message = vu.validate();
