@@ -766,7 +766,7 @@ public class TemplateMsgHttp {
                     colMap.put("keyword3", keywords3);
 
                     MessageTplDataCol remarkJson = new MessageTplDataCol();
-                    remarkJson.setColor("#173177");
+                    remarkJson.setColor("#E75E48");
                     remarkJson.setValue(remark);
                     colMap.put("remark", remarkJson);
 
