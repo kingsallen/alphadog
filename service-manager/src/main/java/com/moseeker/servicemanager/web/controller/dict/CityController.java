@@ -83,7 +83,7 @@ public class CityController {
             Response result = cityServices.getProvinceAndCity();
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
+            logger.error("getProvinceAndCitys error, url:{}, method:{}, message:{}, reason:{}", "/dict/provinceandcitys", "GET", e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

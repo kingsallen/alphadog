@@ -75,7 +75,7 @@ public class MqController {
         try {
             // 发送消息模板
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
-            logger.error("sendSms param:{}",param);
+            logger.info("sendSms param:{}",param);
             Map<String, String> data = (Map<String, String>) param.get("data");
             int smsType = param.getInt("smsType");
             String mobile = param.getString("mobile");
@@ -87,6 +87,7 @@ public class MqController {
             Response result = mqService.sendSMS(SmsType.findByValue(smsType),mobile, data, sys, ip);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            logger.error("sendSms error,url:{}, method:{},message:{}", "/sms/sendSms", "POST",e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
