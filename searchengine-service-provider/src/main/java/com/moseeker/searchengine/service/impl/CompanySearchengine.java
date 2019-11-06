@@ -142,7 +142,7 @@ public class CompanySearchengine {
 						.setQuery(query)
 						.setTrackScores(true)
 						.setFrom((page-1)*pageSize)
-						.setSize(pageSize);
+						.setSize(pageSize)
 						.addAggregation(this.handleAggIndustry())
 						.addAggregation(this.handleAggPositionCity())
 						.addAggregation(this.handleAggScale());
