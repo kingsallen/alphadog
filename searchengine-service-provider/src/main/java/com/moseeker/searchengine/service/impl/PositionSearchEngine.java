@@ -108,25 +108,25 @@ public class PositionSearchEngine {
                     cityCode,startTime,endTime,companyId,teamId,motherCompanyId,moduleId,candidateSource);
             SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
                     .setQuery(sentence)
-                    .addAggregation(searchUtil.handleIndustry("industry"))
-                    .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
-                    .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
+//                    .addAggregation(searchUtil.handleIndustry("industry"))
+//                    .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
+//                    .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
                     .setFrom((page-1)*pageSize)
                     .setSize(pageSize)
                     .setTrackScores(true);
             if(order==1){
                 responseBuilder.addSort("position.update_time",SortOrder.DESC);
-                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
-                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                }
+//                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
+//                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
+//                    builder.order(SortOrder.DESC);
+//                    responseBuilder.addSort(builder);
+//                }
             }else{
-                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
-                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                }
+//                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
+//                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
+//                    builder.order(SortOrder.DESC);
+//                    responseBuilder.addSort(builder);
+//                }
             }
             logger.info(responseBuilder.toString());
             SearchResponse response = responseBuilder.execute().actionGet();
