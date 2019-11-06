@@ -36,7 +36,8 @@ public enum OmsSwitchEnum {
     EM_MANUAL_IM(24,"员工版MoBot(人工对话模式)", false),
     EM_AI_IM(25,"员工版MoBot(人工+智能对话模式)", false),
     EM_TURNHR_IM(26,"员工版MoBot(请转HR（仅开启智能对话模式有效）)", false),
-    CM_PERFECT_RESUME(27,"校招粉丝完善简历",false);
+    CM_PERFECT_RESUME(27,"校招粉丝完善简历",false),
+    EMPLOYEE_REFERRAL(28,"员工内推职位推荐",false);
 
     private int value;
     private String name;
