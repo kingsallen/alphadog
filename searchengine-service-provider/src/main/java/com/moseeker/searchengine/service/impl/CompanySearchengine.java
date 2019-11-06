@@ -143,9 +143,9 @@ public class CompanySearchengine {
 						.setTrackScores(true)
 						.setFrom((page-1)*pageSize)
 						.setSize(pageSize);
-//						.addAggregation(this.handleAggIndustry())
-//						.addAggregation(this.handleAggPositionCity())
-//						.addAggregation(this.handleAggScale());
+						.addAggregation(this.handleAggIndustry())
+						.addAggregation(this.handleAggPositionCity())
+						.addAggregation(this.handleAggScale());
 
 				if(StringUtils.isNotEmpty(keywords)){
 					Script script=this.buildScriptSort(keywords);
