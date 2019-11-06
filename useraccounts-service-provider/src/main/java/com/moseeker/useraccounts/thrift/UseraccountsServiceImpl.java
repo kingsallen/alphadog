@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.thrift;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -623,7 +624,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
 
 		try {
-			service.agreeReleasePrivacy(userId);
+			service.deletePrivacyRecordByUserId(userId);
 		} catch (Exception e) {
 			ExceptionUtils.convertException(e);
 		}
