@@ -142,10 +142,10 @@ public class CompanySearchengine {
 						.setQuery(query)
 						.setTrackScores(true)
 						.setFrom((page-1)*pageSize)
-						.setSize(pageSize)
-						.addAggregation(this.handleAggIndustry())
-						.addAggregation(this.handleAggPositionCity())
-						.addAggregation(this.handleAggScale());
+						.setSize(pageSize);
+//						.addAggregation(this.handleAggIndustry())
+//						.addAggregation(this.handleAggPositionCity())
+//						.addAggregation(this.handleAggScale());
 
 				if(StringUtils.isNotEmpty(keywords)){
 					Script script=this.buildScriptSort(keywords);

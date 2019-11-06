@@ -143,9 +143,9 @@ public class PositionSearchEngine {
                                                         endTime,companyId,teamId,motherCompanyId,moduleId,candidateSource);
             SearchRequestBuilder responseBuilder=client.prepareSearch("positions").setTypes("position")
                     .setQuery(sentence)
-                    .addAggregation(searchUtil.handleIndustry("industry"))
-                    .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
-                    .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
+//                    .addAggregation(searchUtil.handleIndustry("industry"))
+//                    .addAggregation(searchUtil.handleArray("_source.position.city_data","city"))
+//                    .addAggregation(searchUtil.handle("_source.position.salary_data","salary"))
                     .setFrom((page-1)*pageSize)
                     .setSize(pageSize)
                     .setTrackScores(true);
