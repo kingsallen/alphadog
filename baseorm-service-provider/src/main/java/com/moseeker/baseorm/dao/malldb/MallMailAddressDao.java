@@ -27,6 +27,10 @@ public class MallMailAddressDao extends com.moseeker.baseorm.db.malldb.tables.da
     @Autowired
     private DSLContext create;
 
+    public MallMailAddressDao() {
+    }
+
+    @Autowired
     public MallMailAddressDao(Configuration configuration) {
         super(configuration);
     }
