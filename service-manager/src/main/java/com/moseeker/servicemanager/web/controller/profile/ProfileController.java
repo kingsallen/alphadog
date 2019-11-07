@@ -942,8 +942,12 @@ public class ProfileController {
             }
         }*/
         if (!pdf_file.exists() || pdf_file.length() == 0) {
-            OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-            logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
+            try {
+                OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
+                logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
+            } catch (Exception e) {
+                logger.error("OfficeUtils error :{}, reason:{}", e.getMessage(), e);
+            }
         }
         pdf_file = new File(pdf_name);
         logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
