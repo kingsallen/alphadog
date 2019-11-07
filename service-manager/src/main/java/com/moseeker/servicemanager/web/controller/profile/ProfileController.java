@@ -929,8 +929,12 @@ public class ProfileController {
         File pdf_file = new File(pdf_name);
         //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
         if (!pdf_file.exists() || pdf_file.length() == 0) {
-            OpenOfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-            logger.info("Create OpenOfficeUtils.Word2Pdf: {} -----------", pdf_name);
+            try {
+                OpenOfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
+                logger.info("Create OpenOfficeUtils.Word2Pdf: {} -----------", pdf_name);
+            } catch (Exception e) {
+                logger.error("OpenOfficeUtils error :{}, reason:{}", e.getMessage(), e);
+            }
             pdf_file = new File(pdf_name);
             if (!pdf_file.exists() || pdf_file.length() == 0) {
                 OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
