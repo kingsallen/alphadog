@@ -288,7 +288,6 @@ public class JobApplicationController {
             return ResponseLogNotification.success(request, res);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -306,7 +305,6 @@ public class JobApplicationController {
             applicationService.viewApplications(hrId, applicationIds);
             return ResponseLogNotification.successJson(request, "success");
         } catch (Exception e) {
-            logger.warn(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -324,7 +322,6 @@ public class JobApplicationController {
             return ResponseLogNotification.success(request, res);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -393,7 +390,6 @@ public class JobApplicationController {
             int result = applicationService.appSendEmail(appId);
             return ResponseLogNotification.successJson(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

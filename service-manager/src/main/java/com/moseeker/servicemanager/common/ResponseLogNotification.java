@@ -71,6 +71,8 @@ public class ResponseLogNotification {
     }
 
     public static String failJson(HttpServletRequest request, Exception e) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         Map<String, Object> result = new HashMap<>();
         if (e instanceof CommonException) {
             result.put("status", ((CommonException) e).getCode());
@@ -83,6 +85,7 @@ public class ResponseLogNotification {
             result.put("message", "发生异常，请稍候再试!");
         }
         //转换json的时候去掉thrift结构体中的set方法
+        logger.error("Controller failJson error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
         return BeanUtils.convertStructToJSON(result);
     }
 
