@@ -159,27 +159,27 @@ public class PositionSearchEngine {
 
             }
             if(StringUtils.isNotEmpty(keyWord)){
-                Script script=this.buildScriptSort(keyWord);
-                ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
-                builder.order( SortOrder.DESC);
-                responseBuilder.addSort(builder);
+//                Script script=this.buildScriptSort(keyWord);
+//                ScriptSortBuilder builder=new ScriptSortBuilder(script,"number");
+//                builder.order( SortOrder.DESC);
+//                responseBuilder.addSort(builder);
 
             }
             if(order==1){
                 responseBuilder.addSort("position.update_time",SortOrder.DESC);
-                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
-                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                }
+//                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.contains("233333")&&!cityCode.equals("111111")){
+//                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,1),"number");
+//                    builder.order(SortOrder.DESC);
+//                    responseBuilder.addSort(builder);
+//                }
 
 
             }else{
-                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
-                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
-                    builder.order(SortOrder.DESC);
-                    responseBuilder.addSort(builder);
-                }
+//                if(StringUtils.isNotEmpty(cityCode)&&!cityCode.equals("233333")&&!cityCode.equals("111111")){
+//                    SortBuilder builder=new ScriptSortBuilder(this.buildScriptCitySort(cityCode,2),"number");
+//                    builder.order(SortOrder.DESC);
+//                    responseBuilder.addSort(builder);
+//                }
             }
             logger.info(responseBuilder.toString());
             SearchResponse response = responseBuilder.execute().actionGet();
