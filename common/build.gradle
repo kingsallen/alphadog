@@ -11,8 +11,6 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 dependencies {
-    compile group: 'com.artofsolving', name: 'jodconverter', version: '2.2.1'
-    compile group: 'com.github.livesense', name: 'jodconverter-core', version: '1.0.5'
     compile project(":thrift-jooq")
     //compile fileTree(dir:'../libs',include:'thrift-jooq.jar')
     //compile deps["libthrift"]
@@ -47,7 +45,6 @@ dependencies {
     compile group: 'org.jsoup',name: 'jsoup' ,version: '1.11.2'
     compile deps["zxing-core"]
     compile deps["SensorsAnalyticsSDK"]
-    compile deps["pdfbox"]
 }
 
 project.description = '''
