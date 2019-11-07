@@ -65,7 +65,6 @@ public class TalentpoolController {
             }
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -101,7 +100,6 @@ public class TalentpoolController {
                 return ResponseLogNotification.success(request, res);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -120,7 +118,6 @@ public class TalentpoolController {
             Response result = service.hrAddTag(hrId,companyId,name);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -138,7 +135,6 @@ public class TalentpoolController {
             Response result = service.hrDelTag(hrId,companyId,tagId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -157,7 +153,6 @@ public class TalentpoolController {
             Response result = service.hrUpdateTag(hrId,companyId,tagId,name);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -185,7 +180,6 @@ public class TalentpoolController {
             Response result = service.getHrTag(hrId,companyId,pageNum,pageSize);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -206,7 +200,6 @@ public class TalentpoolController {
             Response result = service.batchAddTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -243,7 +236,6 @@ public class TalentpoolController {
             }
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -264,7 +256,6 @@ public class TalentpoolController {
             Response result = service.batchCancleTalentTag(hrId,userIdList,tagIdList,companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -300,7 +291,6 @@ public class TalentpoolController {
                 return ResponseLogNotification.success(request, res);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -328,7 +318,6 @@ public class TalentpoolController {
             Response result = service.getCompanyPulicTalent(hrId,companyId,pageNum,pageSize);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -363,7 +352,6 @@ public class TalentpoolController {
                 return ResponseLogNotification.success(request, res);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -381,7 +369,6 @@ public class TalentpoolController {
             Response result = service.hrAddComment(hrId,companyId,userId,content);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -398,7 +385,6 @@ public class TalentpoolController {
             Response result = service.hrDelComment(hrId,companyId,commentId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -431,7 +417,6 @@ public class TalentpoolController {
             Response result = service.getTalentAllComment(hrId,companyId,userId,pageNum,pageSize);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -448,7 +433,6 @@ public class TalentpoolController {
             Response result = service.getTalentStat(hrId,companyId,type);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -466,7 +450,6 @@ public class TalentpoolController {
             Response result = service.getHrUserTag(hrId,companyId,userId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -484,7 +467,6 @@ public class TalentpoolController {
             Response result = service.getCompanyUserPublic(hrId,companyId,userId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -502,7 +484,6 @@ public class TalentpoolController {
             Response result = service.getCompanyTalent(hrId,companyId,userId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -519,7 +500,6 @@ public class TalentpoolController {
             Response result = service.getUserOrigin(hrId,companyId,userId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -536,7 +516,6 @@ public class TalentpoolController {
             Response result = service.getTalentAndPublicHr(hrId,companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -565,7 +544,6 @@ public class TalentpoolController {
             Response result = service.upsertTalentPoolApp(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(type));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -587,7 +565,6 @@ public class TalentpoolController {
             Response result = service.getPositionOrCompanyPast(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -612,7 +589,6 @@ public class TalentpoolController {
             Response result = service.addPositionOrCompanyPast(Integer.parseInt(companyId),Integer.parseInt(type),Integer.parseInt(flag),name);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -639,7 +615,6 @@ public class TalentpoolController {
             Response result = service.getTalentTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -667,7 +642,6 @@ public class TalentpoolController {
             Response result = service.getProfileFilterList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -699,7 +673,6 @@ public class TalentpoolController {
             Response result = service.handerProfileFilterByIds(hrId, companyId, 0, filter_idList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -731,7 +704,6 @@ public class TalentpoolController {
             Response result = service.handerProfileFilterByIds(hrId, companyId , disable, filter_idList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -760,7 +732,6 @@ public class TalentpoolController {
             Response result = service.getProfileFilterInfo(hrId, companyId, filter_id);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -818,7 +789,6 @@ public class TalentpoolController {
             Response result = service.addProfileFilter(profileFilterDO, actionFormList, positionIdList, Integer.parseInt(hrId), position_total);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -878,7 +848,6 @@ public class TalentpoolController {
             Response result = service.updateProfileFilter(profileFilterDO, actionFormList, positionIdList, Integer.parseInt(hrId), position_total);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -907,7 +876,6 @@ public class TalentpoolController {
             Response result = service.getTalentCountByPositionFilter(hrId, companyId, position_id);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -932,7 +900,6 @@ public class TalentpoolController {
             Response result = service.getEmailBalance(hrId, companyId);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -957,7 +924,6 @@ public class TalentpoolController {
             Response result = service.getEmailTemplateList(hrId, companyId);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -985,7 +951,6 @@ public class TalentpoolController {
             Response result = service.getEmailInfo(hrId, companyId, type);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -1016,7 +981,6 @@ public class TalentpoolController {
             Response result = service.updateCompanyEmailInfo(hrId, companyId, type, status, text, sign);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -1033,7 +997,6 @@ public class TalentpoolController {
             Response result=service.updateCompanyEmailBalance(companyId,balance);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -1081,7 +1044,6 @@ public class TalentpoolController {
             Response result=service.sendResumeEmail(condition,userIdList,idList,companyId,hrId,flag,emailList,appIdList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -1122,7 +1084,6 @@ public class TalentpoolController {
             Response result=service.sendInviteEmail(condition,userIdList,positionIdList,companyId,hrId,flag,positionFlag);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -1140,7 +1101,6 @@ public class TalentpoolController {
             Response result=service.sendPositionInviteEmail(hrId,positionId,companyId);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -1158,7 +1118,6 @@ public class TalentpoolController {
             Response result=service.getCompanyCommentByUserIdList(companyId,userIdList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

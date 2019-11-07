@@ -38,7 +38,6 @@ public class HrTeamController {
             Response result = ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrTeamDOList));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -65,7 +64,6 @@ public class HrTeamController {
             Response result=hrTeamServices.teamListInfo(companyId,page,pageSize);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing
@@ -85,7 +83,6 @@ public class HrTeamController {
             Response result=hrTeamServices.teamDeatils(companyId,teamId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             // do nothing

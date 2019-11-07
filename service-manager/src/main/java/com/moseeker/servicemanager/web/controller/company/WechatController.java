@@ -109,7 +109,6 @@ public class WechatController {
             Response result = companyServices.updateWechatThenm(Integer.parseInt(status), Integer.parseInt(company_id));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
