@@ -937,14 +937,7 @@ public class ProfileController {
                 logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
             }
         }
-        OpenOfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-        logger.info("Create OpenOfficeUtils.Word2Pdf: {} -----------", pdf_name);
         pdf_file = new File(pdf_name);
-        System.out.println("OpenOfficeUtils:" + pdf_file.length()+"::" + pdf_file.getName());
-        OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-        logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
-        pdf_file = new File(pdf_name);
-        System.out.println("OfficeUtils:" + pdf_file.length()+"::" + pdf_file.getName());
         logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
         return Result.success(pdf_name).toJson();
     }
