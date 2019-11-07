@@ -25,11 +25,14 @@ public class ResponseLogNotification {
 
 
     public static String success(HttpServletRequest request, Response response) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         try {
             String jsonresponse = JSON.toJSONString(CleanJsonResponseWithParse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
             return jsonresponse;
         } catch (Exception e) {
+            logger.error("controller return response error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
             logger.error(e.getMessage());
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
@@ -84,6 +87,8 @@ public class ResponseLogNotification {
     }
 
     public static String fail(HttpServletRequest request, Response response) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         try {
             String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
@@ -91,17 +96,19 @@ public class ResponseLogNotification {
             if (request.getParameter("appid") != null) {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
-            logger.info(JSON.toJSONString(response));
+            logger.error("Controller error, url:{}, method:{}, message:{}", url, method, JSON.toJSONString(response));
             //Notification.sendNotification(appid, eventkey, response.getMessage());
             return jsonresponse;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Controller response error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
     }
 
     public static String fail(HttpServletRequest request, String message) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         try {
             Response response = new Response();
             response.setStatus(1);
@@ -112,11 +119,12 @@ public class ResponseLogNotification {
             if (request.getParameter("appid") != null) {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
-            logger.info(JSON.toJSONString(response));
+            //进入到fail()方法，所有日志应该为error
+            logger.error("controller error, url:{}, method:{}, message:{}", url, method,JSON.toJSONString(response));
             //Notification.sendNotification(appid, eventkey, response.getMessage());
             return jsonresponse;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("controller response error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
