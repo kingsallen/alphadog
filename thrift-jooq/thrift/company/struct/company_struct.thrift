@@ -122,7 +122,7 @@ struct HrCompanyWechatDO {
     6: optional  string templateId,
     7: optional  string topcolor,
     8: optional  i32    employeeCount,
-    9: optional  string frequency // 模板消息发送频率配置值
+    9: optional  string sendFrequency // 模板消息发送频率配置值
 }
 
 struct GDPRProtectedInfo {

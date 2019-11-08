@@ -1,19 +1,23 @@
 package com.moseeker.mq.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
+import com.moseeker.baseorm.pojo.HrWxNoticeMessagePojo;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.mq.exception.MqException;
 import com.moseeker.mq.service.TemplateMsgFinder;
-import com.moseeker.mq.service.message.FlexibleField;
-import com.moseeker.mq.service.message.MessageBody;
+import com.moseeker.thrift.gen.mq.struct.FlexibleField;
+import com.moseeker.thrift.gen.mq.struct.MessageBody;
+import com.moseeker.thrift.gen.mq.struct.WxMessageFrequency;
 import org.apache.commons.lang.StringUtils;
-import org.jooq.Record13;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -46,24 +50,22 @@ public class TemplateMsgFinderImpl implements TemplateMsgFinder {
     @Override
     public List<MessageBody> listTemplateMsg(int wechatId) throws MqException {
 
-        List<Record13<Integer, String, String, String, String, String, String, Integer, String, String, String, Integer, Byte>> list =
-                noticeMessageDao.listByWechatId(wechatId);
+        List<HrWxNoticeMessagePojo> list = noticeMessageDao.listByWechatId(wechatId);
         if (list != null && list.size() > 0) {
             List<MessageBody> bodies = list.stream().map(record -> {
                 MessageBody messageBody = new MessageBody();
+                BeanUtils.copyProperties(record,messageBody);
 
-                messageBody.setId(record.value1());
-                messageBody.setTitle(record.value2());
-                messageBody.setSendCondition(record.value3());
-                messageBody.setSendTime(record.value4());
-                messageBody.setSendTo(record.value5());
-                messageBody.setSample(record.value6());
-                messageBody.setFirst(record.value7());
-                messageBody.setPriority(record.value8()!=null?record.value8().toString():"");
-                messageBody.setRemark(record.value9());
-                messageBody.setCustomFirst(record.value10());
-                messageBody.setCustomRemark(record.value11());
-                messageBody.setStatus(record.value13());
+                if(StringUtils.isNotBlank(record.getFrequencyOptions())){
+                    WxMessageFrequency interval = JSONObject.parseObject(record.getFrequencyOptions(),WxMessageFrequency.class);
+                    if(StringUtils.isNotBlank(record.getFrequencyValue()) && interval.getOptions().stream()
+                            .filter(item-> Objects.equals(record.getFrequencyValue(),item.getValue())).count() > 0){
+                        interval.setValue(record.getFrequencyValue());
+                    }else{
+                        interval.setValue(interval.getDefaultValue());
+                    }
+                    messageBody.setSendFrequency(interval);
+                }
 
                 if (PERFECT_PROFILE_NOTICE.equals(messageBody.getTitle())) {
 
@@ -129,7 +131,7 @@ public class TemplateMsgFinderImpl implements TemplateMsgFinder {
                     flexibleFields.add(flexibleField3);
                     messageBody.setFlexibleFields(flexibleFields);
 
-                } else if(record.value12() != null && Constant.EMPLOYEE_RECOM_POSITION == record.value12()) {
+                } else if(record.getConfigId() != null && Constant.EMPLOYEE_RECOM_POSITION == record.getConfigId()) {
 
                     List<FlexibleField> flexibleFields = new ArrayList<>(4);
                     FlexibleField flexibleField = new FlexibleField();

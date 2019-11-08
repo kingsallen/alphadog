@@ -3,12 +3,14 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
@@ -23,6 +25,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.WxMessageFrequency;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
@@ -110,6 +113,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+    @Autowired
+    private HrWxNoticeMessageDao noticeDao;
+
 
     @Autowired
     private UserUserDao userDao;
@@ -335,6 +341,7 @@ public class UserEmployeeServiceImpl {
         return new ArrayList<>();
     }
 
+
     /**
      * 分页查找员工的内推数据
      * @param companyId 公司编号
@@ -342,7 +349,14 @@ public class UserEmployeeServiceImpl {
      * @param pageSize 每页数据
      * @return 分页的内推数据
      */
-    public PaginationUtil<ContributionDetail> getContributions(int companyId, int pageNum, int pageSize) {
+    public PaginationUtil<ContributionDetail> getContributions(int companyId, String sendFrequency,int pageNum, int pageSize) {
+
+        if(StringUtils.isNotNullOrEmpty(sendFrequency)){
+            HrWxNoticeMessageRecord messageRecord = noticeDao.getHrWxNoticeMessageDOByWechatId(wechatDao.getHrWxWechatByCompanyId(companyId).getId(), Constant.AWARD_RANKING);
+            if(messageRecord != null){
+                sendFrequency = messageRecord.getSendFrequency();
+            }
+        }
 
         List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
         int totalRow = employeeEntity.countActiveEmployeeByCompanyIds(companyIdList);
@@ -377,23 +391,22 @@ public class UserEmployeeServiceImpl {
 
             logger.info("getContributions userEmployeeMap:{}", userEmployeeMap);
 
-            LocalDateTime today = LocalDateTime.now();
-            LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-            LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime[] dates = getDatePeriod( sendFrequency);
+            LocalDateTime sinceDate = dates[0],currentFriday = dates[1];
 
-            logger.info("getContributions start date:{}", lastFriday.toString());
+            logger.info("getContributions start date:{}", sinceDate.toString());
             logger.info("getContributions end date:{}", currentFriday.toString());
 
             //查找转发数量
             Future<Map<Integer,Integer>> forwardCountFuture = threadPool.startTast(() ->
-                    referralEntity.countEmployeeForward(userIdList, positionIdList, lastFriday, currentFriday));
+                    referralEntity.countEmployeeForward(userIdList, positionIdList, sinceDate, currentFriday));
             //查找申请数量
             Future<Map<Integer, Integer>> applyCountFuture = threadPool.startTast(() ->
-                    applicationEntity.countEmployeeApply(userIdList, positionIdList, lastFriday, currentFriday));
+                    applicationEntity.countEmployeeApply(userIdList, positionIdList, sinceDate, currentFriday));
 
             //查找积分数量
             Future<Map<Integer, Integer>> awardsCountFuture = threadPool.startTast(() ->
-                    referralEntity.countEmployeeAwards(employeeIdList, lastFriday, currentFriday));
+                    referralEntity.countEmployeeAwards(employeeIdList, sinceDate, currentFriday));
             //查找微信账号信息
             Future<List<UserWxUserRecord>> wxUserFuture = threadPool.startTast(() ->
                     userWxEntity.getUserWxUserData(userIdList));
@@ -504,6 +517,37 @@ public class UserEmployeeServiceImpl {
         return paginationUtil;
     }
 
+
+    /**
+     * 获取积分同时周期
+     * @param sendFrequency
+     * @return
+     */
+    private static LocalDateTime[] getDatePeriod(String sendFrequency){
+        WxMessageFrequency wxMessageFrequency = WxMessageFrequency.getWxMessageFrequency(sendFrequency);
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime sinceDate = null,currentFriday = null;
+        switch (wxMessageFrequency){
+            case EveryTwoWeeks:{
+                sinceDate = today.minusWeeks(2).with(DayOfWeek.FRIDAY);
+                currentFriday = today.with(DayOfWeek.FRIDAY);
+                break;
+            }
+            case EveryMonth: {
+                sinceDate = today.minusDays(today.getDayOfMonth());
+                currentFriday = today;
+                break;
+            }
+            case EveryWeek:
+            default: {
+                sinceDate = today.with(DayOfWeek.MONDAY).minusDays(3);
+                currentFriday = today.with(DayOfWeek.FRIDAY);
+            }
+        }
+        sinceDate = sinceDate.withHour(17).withMinute(0).withSecond(0).withNano(0);
+        currentFriday = currentFriday.withHour(17).withMinute(0).withSecond(0).withNano(0);
+        return new LocalDateTime[]{sinceDate,currentFriday};
+    }
 
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
         ValidateUtil vu = new ValidateUtil();
