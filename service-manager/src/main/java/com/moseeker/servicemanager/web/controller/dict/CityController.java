@@ -39,7 +39,7 @@ public class CityController {
             Response result = cityServices.getAllCities(level);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -61,7 +61,7 @@ public class CityController {
             Response result = cityServices.getAllCitiesByLevelOrUsing(level, using, hotcity);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -72,7 +72,7 @@ public class CityController {
 			Response result = cityServices.getCitiesById((int) id);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -83,8 +83,7 @@ public class CityController {
             Response result = cityServices.getProvinceAndCity();
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error("getProvinceAndCitys error, url:{}, method:{}, message:{}, reason:{}", "/dict/provinceandcitys", "GET", e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/dict/province/citycode", method = RequestMethod.GET)
@@ -100,7 +99,7 @@ public class CityController {
             Response result = cityServices.getCityByProvince(codeList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

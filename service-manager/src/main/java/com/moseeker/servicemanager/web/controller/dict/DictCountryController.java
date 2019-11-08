@@ -40,7 +40,7 @@ public class DictCountryController {
             Response result = dictCountryService.getDictCountry(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

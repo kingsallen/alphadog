@@ -43,7 +43,7 @@ public class IntentionController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -59,8 +59,7 @@ public class IntentionController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -75,7 +74,7 @@ public class IntentionController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -91,7 +90,7 @@ public class IntentionController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

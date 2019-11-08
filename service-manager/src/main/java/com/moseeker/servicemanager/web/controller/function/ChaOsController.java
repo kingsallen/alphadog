@@ -34,7 +34,7 @@ public class ChaOsController {
 			Response result=ChaosThriftService.sendParamForChaos(param);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	@RequestMapping(value = "/thirdparty/account/member_name", method = RequestMethod.POST)
@@ -46,7 +46,7 @@ public class ChaOsController {
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 

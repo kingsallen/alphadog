@@ -49,8 +49,7 @@ public class PositionMiniController {
             Response res = positonServices.getMiniPositionList(accountId,keyWords,page,pageSize);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /**
@@ -77,8 +76,7 @@ public class PositionMiniController {
             Response res = positonServices.getMiniPositionSuggest(accountId,keyWords,page,pageSize);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /**
@@ -105,8 +103,7 @@ public class PositionMiniController {
             Response res = positonServices.getMiniPositionNumStatus(accountId,keyWords,page,pageSize);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

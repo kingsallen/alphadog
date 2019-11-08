@@ -242,7 +242,7 @@ public class PositionController {
             logger.info("-----------refresh Third Party Param end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -262,7 +262,7 @@ public class PositionController {
             logger.info("-----------synchronizePosition end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -283,7 +283,7 @@ public class PositionController {
             logger.info("-----------syncVerifyInfo end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -304,11 +304,9 @@ public class PositionController {
             logger.info("-----------getVerifyInfo end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -320,8 +318,7 @@ public class PositionController {
             Response res = positonServices.saveAndSync(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             //do nothing
         }

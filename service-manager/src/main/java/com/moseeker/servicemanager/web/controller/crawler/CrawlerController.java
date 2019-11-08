@@ -107,9 +107,9 @@ public class CrawlerController {
 		} catch (ConnectException e) {
 			logger.error("CrawlerController.get error:{}, url:{}, method:{}, reason:{}", e.getMessage(), "/crawler", "POST", e);
 			return ResponseLogNotification.fail(request,
-					ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT));
+					ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT), e);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		} finally {
 			// do nothing
 		}
@@ -145,7 +145,7 @@ public class CrawlerController {
 		} catch (BIZException e) {
 			return ResponseLogNotification.failJson(request,e);
 		}  catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

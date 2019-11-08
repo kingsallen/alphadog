@@ -56,8 +56,7 @@ public class OrderController {
             resultMap.put("list", JSONArray.parseArray(orderMap.get("list")));
             return ResponseLogNotification.successJson(request, resultMap);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -83,8 +82,7 @@ public class OrderController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -117,8 +115,7 @@ public class OrderController {
         }catch (BIZException e){
             return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -152,8 +149,7 @@ public class OrderController {
         } catch (BIZException e){
             return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -179,8 +175,7 @@ public class OrderController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

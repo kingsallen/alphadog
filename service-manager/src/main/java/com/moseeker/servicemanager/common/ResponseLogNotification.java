@@ -32,8 +32,7 @@ public class ResponseLogNotification {
             logRequestResponse(request, jsonresponse);
             return jsonresponse;
         } catch (Exception e) {
-            logger.error("controller return response error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
-            logger.error(e.getMessage());
+            logger.error("controller return response error, url:{}, method:{}, reason:{}", url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -85,11 +84,25 @@ public class ResponseLogNotification {
             result.put("message", "发生异常，请稍候再试!");
         }
         //转换json的时候去掉thrift结构体中的set方法
-        logger.error("Controller failJson error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
+        logger.error("Controller failJson error, url:{}, method:{}, reason:{}", url, method, e);
         return BeanUtils.convertStructToJSON(result);
     }
 
     public static String fail(HttpServletRequest request, Response response) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
+        try {
+            String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+            logRequestResponse(request, jsonresponse);
+            return jsonresponse;
+        } catch (Exception e) {
+            logger.error("Controller response error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
+        }
+        return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
+
+    }
+
+    public static String fail(HttpServletRequest request, Response response, Exception ex) {
         String url = request.getRequestURI();
         String method = request.getMethod();
         try {
@@ -109,7 +122,7 @@ public class ResponseLogNotification {
 
     }
 
-    public static String fail(HttpServletRequest request, String message) {
+    /*public static String fail(HttpServletRequest request, String message) {
         String url = request.getRequestURI();
         String method = request.getMethod();
         try {
@@ -118,16 +131,40 @@ public class ResponseLogNotification {
             response.setMessage(message);
             String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
+            return jsonresponse;
+        } catch (Exception e) {
+            logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
+        }
+        return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
+
+    }*/
+
+    /**
+     * 全局error log整理
+     *
+     * @param request
+     * @param ex
+     * @return
+     */
+    public static String fail(HttpServletRequest request, Exception ex) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
+        try {
+            Response response = new Response();
+            response.setStatus(1);
+            response.setMessage(ex.getMessage());
+            String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+            logRequestResponse(request, jsonresponse);
             int appid = 0;
             if (request.getParameter("appid") != null) {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
             //进入到fail()方法，所有日志应该为error
-            logger.error("controller error, url:{}, method:{}, message:{}", url, method,JSON.toJSONString(response));
+            logger.error("controller error, url:{}, method:{}, reason:", url, method, ex);
             //Notification.sendNotification(appid, eventkey, response.getMessage());
             return jsonresponse;
         } catch (Exception e) {
-            logger.error("controller response error, url:{}, method:{}, message:{}, reason:{}", url, method, e.getMessage(), e);
+            logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 

@@ -38,7 +38,11 @@ public class DeprecatedCityController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
+	}
+
+	public static void main(String[] args) {
+		System.out.println();
 	}
 }

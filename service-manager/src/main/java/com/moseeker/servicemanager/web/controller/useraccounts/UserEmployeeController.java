@@ -811,7 +811,7 @@ public class UserEmployeeController {
             Response res = employeeService.employeeSftpImport(form.getCompanyId(),employeeDOS);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
             logger.error("中骏员工信息导入 异常",e);
             return ResponseLogNotification.fail(request, e.getMessage());

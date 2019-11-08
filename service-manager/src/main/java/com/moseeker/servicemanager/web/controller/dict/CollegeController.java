@@ -38,7 +38,7 @@ public class CollegeController {
 
 		} catch (Exception e) {
 
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 
 		}
 	}
@@ -57,7 +57,7 @@ public class CollegeController {
             Response result = collegeServices.getCollegeByDomestic();
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -78,7 +78,7 @@ public class CollegeController {
 
         } catch (Exception e) {
 
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
 
         }
     }

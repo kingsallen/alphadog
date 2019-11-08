@@ -50,8 +50,7 @@ public class MqController {
             Response result = mqService.messageTemplateNotice(this.getMessageTemplateNoticeStruct(request));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-        	e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -65,7 +64,7 @@ public class MqController {
             Response result = mqService.sendEMail(emailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -87,8 +86,7 @@ public class MqController {
             Response result = mqService.sendSMS(SmsType.findByValue(smsType),mobile, data, sys, ip);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error("sendSms error,url:{}, method:{},message:{}", "/sms/sendSms", "POST",e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -111,7 +109,7 @@ public class MqController {
             Response result = mqService.sendAuthEMail(params, eventType, email, subject, senderName, senderDisplay);
             return ResponseLogNotification.success(request, result);
         }catch (Exception e){
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -161,7 +159,7 @@ public class MqController {
             Response result = mqService.sendMandrilEmail(mandrillEmailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -202,7 +200,7 @@ public class MqController {
             Response res = ResponseUtils.success("");
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /**
@@ -258,7 +256,7 @@ public class MqController {
             Response result = mqService.sendMessageAndEmailToDelivery(emailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -269,7 +267,7 @@ public class MqController {
             List<MessageBody> messageBodies = mqService.listMessages(wechatId);
             return ResponseLogNotification.successJson(request, messageBodies);
         }catch (Exception e){
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
