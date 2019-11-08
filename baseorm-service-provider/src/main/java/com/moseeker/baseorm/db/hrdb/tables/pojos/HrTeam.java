@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam implements Serializable {
 
-    private static final long serialVersionUID = -715993310;
+    private static final long serialVersionUID = 2022670124;
 
     private Integer   id;
     private String    name;
@@ -42,6 +42,8 @@ public class HrTeam implements Serializable {
     private String    subTitle;
     private String    resAttrs;
     private String    link;
+    private Integer   parentId;
+    private String    departmentCode;
 
     public HrTeam() {}
 
@@ -63,6 +65,8 @@ public class HrTeam implements Serializable {
         this.subTitle = value.subTitle;
         this.resAttrs = value.resAttrs;
         this.link = value.link;
+        this.parentId = value.parentId;
+        this.departmentCode = value.departmentCode;
     }
 
     public HrTeam(
@@ -82,7 +86,9 @@ public class HrTeam implements Serializable {
         Integer   disable,
         String    subTitle,
         String    resAttrs,
-        String    link
+        String    link,
+        Integer   parentId,
+        String    departmentCode
     ) {
         this.id = id;
         this.name = name;
@@ -101,6 +107,8 @@ public class HrTeam implements Serializable {
         this.subTitle = subTitle;
         this.resAttrs = resAttrs;
         this.link = link;
+        this.parentId = parentId;
+        this.departmentCode = departmentCode;
     }
 
     public Integer getId() {
@@ -239,6 +247,22 @@ public class HrTeam implements Serializable {
         this.link = link;
     }
 
+    public Integer getParentId() {
+        return this.parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getDepartmentCode() {
+        return this.departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrTeam (");
@@ -260,6 +284,8 @@ public class HrTeam implements Serializable {
         sb.append(", ").append(subTitle);
         sb.append(", ").append(resAttrs);
         sb.append(", ").append(link);
+        sb.append(", ").append(parentId);
+        sb.append(", ").append(departmentCode);
 
         sb.append(")");
         return sb.toString();

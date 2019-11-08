@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigOmsSwitchManagement extends TableImpl<ConfigOmsSwitchManagementRecord> {
 
-    private static final long serialVersionUID = -1332102459;
+    private static final long serialVersionUID = 1185530183;
 
     /**
      * The reference instance of <code>configdb.config_oms_switch_management</code>
@@ -62,9 +62,9 @@ public class ConfigOmsSwitchManagement extends TableImpl<ConfigOmsSwitchManageme
     public final TableField<ConfigOmsSwitchManagementRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司id hrdb.HrCompany.id");
 
     /**
-     * The column <code>configdb.config_oms_switch_management.module_name</code>. 各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强
+     * The column <code>configdb.config_oms_switch_management.module_name</code>. 各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强，10:多IP访问，11：红包活动，12:ATS招聘流程升级，13:猎头管理，14:企业微信版，15:身份证识别，16：LBS职位列表
      */
-    public final TableField<ConfigOmsSwitchManagementRecord, Integer> MODULE_NAME = createField("module_name", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强");
+    public final TableField<ConfigOmsSwitchManagementRecord, Integer> MODULE_NAME = createField("module_name", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强，10:多IP访问，11：红包活动，12:ATS招聘流程升级，13:猎头管理，14:企业微信版，15:身份证识别，16：LBS职位列表");
 
     /**
      * The column <code>configdb.config_oms_switch_management.module_param</code>. 各产品所需附加参数，json格式 (只用于oms后端配置的参数)

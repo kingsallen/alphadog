@@ -127,4 +127,11 @@ public class HrAtsProcessNewRecordDao extends DAOImpl<HrAtsProcessNewRecordRecor
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsProcessNewRecord> fetchByCreateTime(Timestamp... values) {
         return fetch(HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD.CREATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>ext_content IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrAtsProcessNewRecord> fetchByExtContent(String... values) {
+        return fetch(HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD.EXT_CONTENT, values);
+    }
 }

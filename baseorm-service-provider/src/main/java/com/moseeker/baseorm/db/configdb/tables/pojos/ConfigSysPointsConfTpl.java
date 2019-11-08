@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysPointsConfTpl implements Serializable {
 
-    private static final long serialVersionUID = -1296918597;
+    private static final long serialVersionUID = 1900161030;
 
     private Integer id;
     private String  status;
@@ -35,6 +35,7 @@ public class ConfigSysPointsConfTpl implements Serializable {
     private Byte    isInitAward;
     private Integer recruitOrder;
     private String  applierView;
+    private String  atsName;
 
     public ConfigSysPointsConfTpl() {}
 
@@ -50,6 +51,7 @@ public class ConfigSysPointsConfTpl implements Serializable {
         this.isInitAward = value.isInitAward;
         this.recruitOrder = value.recruitOrder;
         this.applierView = value.applierView;
+        this.atsName = value.atsName;
     }
 
     public ConfigSysPointsConfTpl(
@@ -63,7 +65,8 @@ public class ConfigSysPointsConfTpl implements Serializable {
         Byte    tag,
         Byte    isInitAward,
         Integer recruitOrder,
-        String  applierView
+        String  applierView,
+        String  atsName
     ) {
         this.id = id;
         this.status = status;
@@ -76,6 +79,7 @@ public class ConfigSysPointsConfTpl implements Serializable {
         this.isInitAward = isInitAward;
         this.recruitOrder = recruitOrder;
         this.applierView = applierView;
+        this.atsName = atsName;
     }
 
     public Integer getId() {
@@ -166,6 +170,14 @@ public class ConfigSysPointsConfTpl implements Serializable {
         this.applierView = applierView;
     }
 
+    public String getAtsName() {
+        return this.atsName;
+    }
+
+    public void setAtsName(String atsName) {
+        this.atsName = atsName;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ConfigSysPointsConfTpl (");
@@ -181,6 +193,7 @@ public class ConfigSysPointsConfTpl implements Serializable {
         sb.append(", ").append(isInitAward);
         sb.append(", ").append(recruitOrder);
         sb.append(", ").append(applierView);
+        sb.append(", ").append(atsName);
 
         sb.append(")");
         return sb.toString();

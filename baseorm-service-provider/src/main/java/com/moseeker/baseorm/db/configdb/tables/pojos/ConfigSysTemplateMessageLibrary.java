@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary implements Serializable {
 
-    private static final long serialVersionUID = 793797446;
+    private static final long serialVersionUID = 978757404;
 
     private Integer id;
     private String  title;
@@ -44,6 +44,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
     private String  fromName;
     private String  subject;
     private String  colorJson;
+    private String  sendFrequency;
 
     public ConfigSysTemplateMessageLibrary() {}
 
@@ -68,6 +69,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.fromName = value.fromName;
         this.subject = value.subject;
         this.colorJson = value.colorJson;
+        this.sendFrequency = value.sendFrequency;
     }
 
     public ConfigSysTemplateMessageLibrary(
@@ -90,7 +92,8 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         String  url,
         String  fromName,
         String  subject,
-        String  colorJson
+        String  colorJson,
+        String  sendFrequency
     ) {
         this.id = id;
         this.title = title;
@@ -112,6 +115,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.fromName = fromName;
         this.subject = subject;
         this.colorJson = colorJson;
+        this.sendFrequency = sendFrequency;
     }
 
     public Integer getId() {
@@ -274,6 +278,14 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.colorJson = colorJson;
     }
 
+    public String getSendFrequency() {
+        return this.sendFrequency;
+    }
+
+    public void setSendFrequency(String sendFrequency) {
+        this.sendFrequency = sendFrequency;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ConfigSysTemplateMessageLibrary (");
@@ -298,6 +310,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         sb.append(", ").append(fromName);
         sb.append(", ").append(subject);
         sb.append(", ").append(colorJson);
+        sb.append(", ").append(sendFrequency);
 
         sb.append(")");
         return sb.toString();

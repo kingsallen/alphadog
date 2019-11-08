@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = -1426238460;
+    private static final long serialVersionUID = -1555895283;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -174,7 +174,7 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     /**
      * The column <code>hrdb.hr_third_party_position.address_id</code>. 绑定第三方账号对应地址的id，关联thirdparty_account_company_address的id
      */
-    public final TableField<HrThirdPartyPositionRecord, Integer> ADDRESS_ID = createField("address_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定第三方账号对应地址的id，关联thirdparty_account_company_address的id");
+    public final TableField<HrThirdPartyPositionRecord, Long> ADDRESS_ID = createField("address_id", org.jooq.impl.SQLDataType.BIGINT, this, "绑定第三方账号对应地址的id，关联thirdparty_account_company_address的id");
 
     /**
      * The column <code>hrdb.hr_third_party_position.department_id</code>. 绑定第三方账号对应部门的id，关联thirdparty_account_department的id

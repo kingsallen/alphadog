@@ -9,11 +9,16 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsEventType;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
+import com.moseeker.baseorm.db.configdb.tables.ConfigObsoleteReason;
 import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
+import com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogTemplate;
+import com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogType;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
@@ -68,6 +73,16 @@ public class Tables {
     public static final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
     /**
+     * 招聘管理自定义可显示字段基表
+     */
+    public static final ConfigAtsApplicationShowField CONFIG_ATS_APPLICATION_SHOW_FIELD = com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD;
+
+    /**
+     * 事件状态管理表
+     */
+    public static final ConfigAtsEventType CONFIG_ATS_EVENT_TYPE = com.moseeker.baseorm.db.configdb.tables.ConfigAtsEventType.CONFIG_ATS_EVENT_TYPE;
+
+    /**
      * The table <code>configdb.config_ats_source</code>.
      */
     public static final ConfigAtsSource CONFIG_ATS_SOURCE = com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource.CONFIG_ATS_SOURCE;
@@ -88,9 +103,24 @@ public class Tables {
     public static final ConfigHbBalance CONFIG_HB_BALANCE = com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance.CONFIG_HB_BALANCE;
 
     /**
+     * 淘汰理由记录表
+     */
+    public static final ConfigObsoleteReason CONFIG_OBSOLETE_REASON = com.moseeker.baseorm.db.configdb.tables.ConfigObsoleteReason.CONFIG_OBSOLETE_REASON;
+
+    /**
      * The table <code>configdb.config_oms_switch_management</code>.
      */
     public static final ConfigOmsSwitchManagement CONFIG_OMS_SWITCH_MANAGEMENT = com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT;
+
+    /**
+     * 操作记录模版配置表
+     */
+    public static final ConfigOperationLogTemplate CONFIG_OPERATION_LOG_TEMPLATE = com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogTemplate.CONFIG_OPERATION_LOG_TEMPLATE;
+
+    /**
+     * 操作记录类型配置表
+     */
+    public static final ConfigOperationLogType CONFIG_OPERATION_LOG_TYPE = com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogType.CONFIG_OPERATION_LOG_TYPE;
 
     /**
      * kenexa职位字段映射表
