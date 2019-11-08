@@ -100,7 +100,6 @@ public class CityController {
             Response result = cityServices.getCityByProvince(codeList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
