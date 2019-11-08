@@ -41,8 +41,4 @@ public class DeprecatedCityController {
 			return ResponseLogNotification.fail(request, e);
 		}
 	}
-
-	public static void main(String[] args) {
-		System.out.println();
-	}
 }

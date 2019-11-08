@@ -54,7 +54,7 @@ public class JobApplicationController {
             boolean result = applicationService.healthCheck();
             return ResponseLogNotification.successJson(request,result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -74,7 +74,7 @@ public class JobApplicationController {
             logger.info("JobApplicationController result:{}", result);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -93,7 +93,7 @@ public class JobApplicationController {
             Response result = applicationService.putApplication(jobApplication);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -151,7 +151,7 @@ public class JobApplicationController {
             }
             return ResponseLogNotification.successJson(request, results);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -167,7 +167,7 @@ public class JobApplicationController {
             Response result = applicationService.deleteApplication(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -186,7 +186,7 @@ public class JobApplicationController {
             Response result = applicationService.postJobResumeOther(jobResumeOther);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -206,7 +206,7 @@ public class JobApplicationController {
             Response result = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -225,7 +225,7 @@ public class JobApplicationController {
             Response result = applicationService.deleteRedisKeyApplicationCheckCount(userId, companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -249,7 +249,7 @@ public class JobApplicationController {
             logger.info("JobApplicationController result:{}", result);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -269,7 +269,7 @@ public class JobApplicationController {
             logger.info("JobApplicationController result:{}", result);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -288,7 +288,7 @@ public class JobApplicationController {
             return ResponseLogNotification.success(request, res);
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -305,7 +305,7 @@ public class JobApplicationController {
             applicationService.viewApplications(hrId, applicationIds);
             return ResponseLogNotification.successJson(request, "success");
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -322,7 +322,7 @@ public class JobApplicationController {
             return ResponseLogNotification.success(request, res);
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -390,7 +390,7 @@ public class JobApplicationController {
             int result = applicationService.appSendEmail(appId);
             return ResponseLogNotification.successJson(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

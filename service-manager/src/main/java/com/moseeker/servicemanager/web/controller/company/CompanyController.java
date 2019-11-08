@@ -251,7 +251,6 @@ public class CompanyController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.fail(request, e);
         }
     }

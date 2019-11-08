@@ -444,8 +444,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -474,8 +473,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -503,8 +501,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -534,8 +531,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -565,8 +561,7 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -594,9 +589,7 @@ public class UserHrAccountController {
             Response result = userHrAccountService.userHrAccount(companyId, disable, page, per_age);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -623,8 +616,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -649,8 +641,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -672,8 +663,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -686,7 +676,7 @@ public class UserHrAccountController {
             List<HrThirdPartyAccountDO> result = userHrAccountService.getThirdPartyAccounts(commonQuery);
             return ResponseLogNotification.success(request, ResponseUtils.success(result));
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -704,7 +694,7 @@ public class UserHrAccountController {
             int result = userHrAccountService.updateThirdPartyAccount(thirdPartyAccount);
             return ResponseLogNotification.success(request, ResponseUtils.success(result));
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -745,7 +735,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             LocalDateTime after = LocalDateTime.now();
             logger.info("UserHrAccountController after unbindEmployee now:{}", after.format(dateTimeFormatter));
@@ -784,7 +774,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -851,7 +841,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -875,8 +865,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -912,8 +901,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -944,8 +932,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -971,8 +958,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -996,8 +982,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1032,8 +1017,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            logger.debug("PUT /hraccount/employee/update error",e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1058,7 +1042,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             LocalDateTime lastDateTime = LocalDateTime.now();
             logger.info("UserHrAccountController checkBatchInsert lastDateTime:{}, Duration:{}", lastDateTime.toString(), Duration.between(initDateTime, lastDateTime).toMillis());
@@ -1141,8 +1125,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1171,8 +1154,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1196,8 +1178,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1226,8 +1207,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1364,8 +1344,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1390,8 +1369,7 @@ public class UserHrAccountController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1421,7 +1399,6 @@ public class UserHrAccountController {
                 return ResponseLogNotification.fail(request, message);
             }
         }catch (Exception e){
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request, e);
         }
     }

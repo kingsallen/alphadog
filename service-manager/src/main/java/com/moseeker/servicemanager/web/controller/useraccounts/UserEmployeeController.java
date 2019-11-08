@@ -88,7 +88,7 @@ public class UserEmployeeController {
             Response result = service.delUserEmployee(commonQuery);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -100,7 +100,7 @@ public class UserEmployeeController {
             Response result = service.getUserEmployees(commonQuery);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -115,7 +115,7 @@ public class UserEmployeeController {
             Response result = service.getUserEmployee(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -137,7 +137,7 @@ public class UserEmployeeController {
             Response result = service.postPutUserEmployeeBatch(batchForm);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -157,7 +157,7 @@ public class UserEmployeeController {
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -169,7 +169,7 @@ public class UserEmployeeController {
             Response res=service.putUserEmployee(userEmployee);
             return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -180,7 +180,7 @@ public class UserEmployeeController {
             service.addEmployeeAward(form.getApplicationIds(), form.getEventType());
             return ResponseLogNotification.successJson(request,"success");
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -204,7 +204,7 @@ public class UserEmployeeController {
             Response res=service.getValidateUserEmployee(companyId,email,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -219,7 +219,7 @@ public class UserEmployeeController {
             Response res=service.getPastUserEmployee(hrId);
             return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -258,11 +258,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.successJson(request, result.employeeId);
             }
         } catch (BIZException e){
-            logger.error("POST /user/employee/unbind error",e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
-            logger.error("POST /user/employee/unbind error",e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -295,11 +293,9 @@ public class UserEmployeeController {
             }
             return ResponseLogNotification.successJson(request, result.employeeId);
         } catch (BIZException e){
-            logger.error("POST /user/employee/bind error",e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
-            logger.error("POST /user/employee/bind error",e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -381,7 +377,7 @@ public class UserEmployeeController {
                 return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
             }
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -411,11 +407,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.failJson(request, message);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -435,11 +429,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.successJson(request, null);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -456,11 +448,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.success(request,confDO);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -591,8 +581,7 @@ public class UserEmployeeController {
             Response res=service.addUserEmployeePointRecord(employeeId,companyId,data);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -607,8 +596,7 @@ public class UserEmployeeController {
             Response res=service.getUserEmployeeList(companyId,userIdList);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
     @RequestMapping(value="/employee/user", method = RequestMethod.GET)
@@ -620,8 +608,7 @@ public class UserEmployeeController {
             Response res=service.getUserEmployeeByuserId(userId);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
     @RequestMapping(value="/employee/user/company", method = RequestMethod.POST)
@@ -634,8 +621,7 @@ public class UserEmployeeController {
             Response res=service.getUserEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -649,8 +635,7 @@ public class UserEmployeeController {
             service.batchUpdateEmployeeFromWorkwx(userIds,companyId);
             return com.moseeker.servicemanager.web.controller.Result.SUCCESS;
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -813,8 +798,7 @@ public class UserEmployeeController {
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            logger.error("中骏员工信息导入 异常",e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             logger.info("中骏员工信息导入 Duration:{}", Duration.between(initDateTime, LocalDateTime.now()).toMillis());
         }

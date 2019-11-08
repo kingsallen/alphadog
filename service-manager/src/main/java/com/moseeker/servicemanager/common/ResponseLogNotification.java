@@ -122,7 +122,7 @@ public class ResponseLogNotification {
 
     }
 
-    /*public static String fail(HttpServletRequest request, String message) {
+    public static String fail(HttpServletRequest request, String message) {
         String url = request.getRequestURI();
         String method = request.getMethod();
         try {
@@ -137,7 +137,7 @@ public class ResponseLogNotification {
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
-    }*/
+    }
 
     /**
      * 全局error log整理
