@@ -14,6 +14,7 @@ import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
 import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import emoji4j.EmojiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -103,6 +105,10 @@ public class OrderController {
             vu.addRequiredValidate("商城id", orderForm.getGoods_id());
             vu.addRequiredValidate("商品兑换数量", orderForm.getCount());
             if(2==orderForm.getDeliverType()){
+                if(EmojiUtils.countEmojis(orderForm.getAddress())>0){
+                    logger.warn("OrderController confirmOrder emoji are not permited orderForm:{}",orderForm);
+                    return ResponseLogNotification.fail(request, "详细地址不能包含表情");
+                }
                 vu.addRequiredValidate("收件人", orderForm.getAddressee());
                 vu.addRequiredValidate("province", orderForm.getProvince());
                 vu.addRequiredValidate("city", orderForm.getCity());
