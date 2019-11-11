@@ -114,6 +114,7 @@ public class OrderController {
                 vu.addRequiredValidate("city", orderForm.getCity());
                 vu.addRequiredValidate("region", orderForm.getRegion());
                 vu.addRequiredValidate("详细地址", orderForm.getAddress());
+                vu.addStringLengthValidate("详细地址", orderForm.getAddress(),1,100);
                 vu.addRequiredValidate("用户编号", orderForm.getUserId());
                 vu.addRequiredValidate("手机号", orderForm.getMobile());
             }
