@@ -106,7 +106,7 @@ public class OrderController {
             vu.addRequiredValidate("商品兑换数量", orderForm.getCount());
             if(2==orderForm.getDeliverType()){
                 if(EmojiUtils.countEmojis(orderForm.getAddress())>0){
-                    logger.warn("OrderController confirmOrder emoji are not permited orderForm:{}",orderForm);
+                    logger.warn("/api/mall/visit/order emoji are not permited orderForm:{}",orderForm);
                     return ResponseLogNotification.fail(request, "详细地址不能包含表情");
                 }
                 vu.addRequiredValidate("收件人", orderForm.getAddressee());
