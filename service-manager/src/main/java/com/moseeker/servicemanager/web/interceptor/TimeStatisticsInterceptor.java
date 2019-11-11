@@ -77,7 +77,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             logMap.put("message", "接口运行时间:" + consumerTime);
             this.save(JSONObject.toJSONString(logMap));
         } catch (Exception e) {
-            logger.error("TimeStatisticsInterceptor.afterCompletion error:{}", e.getMessage());
+            logger.error("TimeStatisticsInterceptor.afterCompletion error:", e);
         }
     }
 
