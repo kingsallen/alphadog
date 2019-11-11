@@ -26,6 +26,7 @@ public enum OmsSwitchEnum {
     HUNTER_MANAGE(13,"猎头管理", false),
     WORK_WEICHAT(14,"企业微信版", false),// 允许使用企业微信进行员工认证
     IDCARD_RECOGNITION(15,"身份证识别", false),//身份证识别
+    LBS_POSITION_LIST(16,"LBS职位列表",false),//LBS职位列表
     MOMO_WECHAT(17,"MOMO微信端", true);//身份证识别
 
     private int value;
