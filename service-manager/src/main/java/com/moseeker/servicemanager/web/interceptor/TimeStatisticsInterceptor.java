@@ -65,6 +65,7 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             logMap.put("url", request.getRequestURI());
             logMap.put("method", request.getMethod());
             logMap.put("ipAddr", InetAddress.getLocalHost().getHostAddress());
+            logMap.put("httpStatus", response.getStatus());
 
             long startTime = (long) request.getAttribute("StatisticsStartTime");
             long consumerTime = System.currentTimeMillis() - startTime;
