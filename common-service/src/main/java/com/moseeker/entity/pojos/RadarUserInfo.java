@@ -103,6 +103,19 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
         return this;
     }
 
+    public RadarUserInfo initFromUserUser(UserUserRecord userUserRecord){
+        String avatar;
+        String nickname;
+        int uid;
+        avatar = userUserRecord.getHeadimg();
+        nickname = userUserRecord.getNickname();
+        uid = userUserRecord.getId();
+        this.avatar = avatar;
+        this.nickname = nickname;
+        this.uid = uid;
+        return this;
+    }
+
     /**
      *
      * @param userDO 需要初始化的用户

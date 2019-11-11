@@ -15,10 +15,7 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterL
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.EmployeeOperationEntrance;
-import com.moseeker.common.constants.EmployeeOperationIsSuccess;
-import com.moseeker.common.constants.EmployeeOperationType;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.StringUtils;
@@ -381,6 +378,17 @@ public abstract class EmployeeBinder {
         properties.put("employee_origin",source);
 
         sensorSend.send(String.valueOf(useremployee.getSysuserId()),"employeeRegister",properties);
+        //员工认证状态放入redis
+        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(), String.valueOf(useremployee.getCompanyId()),
+                String.valueOf(useremployee.getSysuserId()), "1");
+
+        employees.forEach(employee -> {
+            if (employee.getActivation() > 0) {
+                //取消认证的员工信息放入redis
+                client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(), String.valueOf(employee.getCompanyId()),
+                        String.valueOf(employee.getSysuserId()), "0");
+            }
+        });
         return response;
     }
 

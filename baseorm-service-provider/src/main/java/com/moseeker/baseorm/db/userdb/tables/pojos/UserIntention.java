@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 用户求职意向
+ * 用户求职意向-已弃用，老微信中的账号设置-》我的兴趣。
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserIntention implements Serializable {
 
-    private static final long serialVersionUID = -1425159917;
+    private static final long serialVersionUID = -1745336599;
 
     private Integer   sysuserId;
     private String    intention;

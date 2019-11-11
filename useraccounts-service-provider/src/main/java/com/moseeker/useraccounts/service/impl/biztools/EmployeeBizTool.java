@@ -16,9 +16,10 @@ import com.moseeker.useraccounts.constant.ForwardSourceType;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewPageVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * @Author: jack
@@ -33,13 +34,16 @@ public class EmployeeBizTool {
         UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
         if(userUserRecord == null){
             return radar;
+        }else{
+            radar.setNickname(userUserRecord.getNickname());
+            radar.setHeadimgurl(userUserRecord.getHeadimg());
         }
         radar.setUserId(userUserRecord.getId());
-        UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+        /*UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
         if(wxUserRecord != null){
             radar.setNickname(wxUserRecord.getNickname());
             radar.setHeadimgurl(wxUserRecord.getHeadimgurl());
-        }
+        }*/
         radar.setSeekRecommend(false);
         if(data.getRecommendUserSet().contains(userId)){
             radar.setSeekRecommend(true);
@@ -81,10 +85,13 @@ public class EmployeeBizTool {
         EmployeeForwardViewPageVO result = new EmployeeForwardViewPageVO();
         int userId= record.getPresenteeUserId();
         result.setUserId(userId);
+/*
         UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
-        if(wxUserRecord!=null){
-            result.setNickname(wxUserRecord.getNickname());
-            result.setHeadimgurl(wxUserRecord.getHeadimgurl());
+*/
+        UserUserRecord userUserRecord = data.getUserRecordList().get(userId);
+        if(userUserRecord!=null){
+            result.setNickname(userUserRecord.getNickname());
+            result.setHeadimgurl(userUserRecord.getHeadimg());
         }
         JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
         if(position!=null){
@@ -92,8 +99,11 @@ public class EmployeeBizTool {
             result.setPositionTitle(position.getTitle());
             result.setStatus((int)position.getStatus());
         }
-        String time = DateUtils.dateToMinuteDate(record.getClickTime());
-        result.setClickTime(time);
+        if(record.getClickTime() != null){
+            String time = DateUtils.dateToMinuteDate(record.getClickTime());
+            result.setClickTime(time);
+        }
+
         if(!StringUtils.isEmptyList(data.getShareChainList())){
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
                 if(shareChain.getPositionId() == record.getPositionId().intValue() && shareChain.getPresenteeUserId() == userId){
@@ -150,12 +160,13 @@ public class EmployeeBizTool {
         int userId= record.getPresenteeId();
         result.setUserId(userId);
         result.setReferralId(record.getId());
-        UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+        /*UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
         if(wxUserRecord!=null){
             result.setHeadimgurl(wxUserRecord.getHeadimgurl());
-        }
+        }*/
         UserUserRecord userRecord = data.getUserRecordList().get(userId);
         if(userRecord!=null){
+            result.setHeadimgurl(userRecord.getHeadimg());
             result.setNickname(userRecord.getNickname());
         }
         JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());

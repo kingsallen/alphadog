@@ -87,18 +87,17 @@ public class SensorSend {
         });
     }
 
-    public void profileSet(String distinctId, String property, String value){
+    public void profileSet(String distinctId, String property, Object value){
         tp.startTast(()->{
             try {
+                // $project 线上：ToCProduction，沙盒：ToCTest
                 Map<String, Object> properties = new HashMap<>();
-             //   properties.put("$project", "ToCProduction");//线上环境专用
-             //   properties.put("$project", "ToCTest");//沙盒环境专用
                 properties.put("$project", configUtils.get("sensor_env",String.class).trim());//动态加载环境
                 properties.put(property, value);
-                logger.info("SensorSend send");
                 sa.profileSet(distinctId, true, properties);
+                logger.info("SensorSend profileSet :{}", properties);
             }catch (Exception e){
-                logger.error(e.getMessage(),e);
+                logger.error("SensorSend profileSet error: {},errorDetail:{}", e.getMessage(), e);
             }
             return 0;
         });
