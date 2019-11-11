@@ -145,6 +145,7 @@ public class UserEmployeeController {
     @ResponseBody
     public String checkUserIsEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
+            long start_time = System.currentTimeMillis();
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("userId", 0);
             int companyId = params.getInt("companyId", 0);
@@ -154,6 +155,13 @@ public class UserEmployeeController {
                 return ResponseLogNotification.fail(request, "员工Id不能为空");
             } else {
                 boolean result = service.isEmployee(userId, companyId);
+                Thread.sleep(1000);
+                long end_time = System.currentTimeMillis();
+                //记录下接口执行时间过长时的参数
+                long consumeTime = end_time - start_time;
+                if (consumeTime > 1000) {
+                    logger.info("UserEmployeeController /user/employee/check，接口执行时间：{}, params:[ userId:{}, companyId:{} ] ", consumeTime, userId, companyId);
+                }
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
         } catch (Exception e) {
