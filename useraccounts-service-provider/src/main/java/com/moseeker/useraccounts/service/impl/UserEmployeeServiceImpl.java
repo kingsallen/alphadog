@@ -59,20 +59,21 @@ import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.*;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Future;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -644,6 +645,7 @@ public class UserEmployeeServiceImpl {
 
     @RadarSwitchLimit
     public EmployeeForwardViewVO fetchEmployeeForwardView(int companyId, int userId, String positionTitle, String order, int page, int size){
+        logger.info("fetchEmployeeForwardView( companyId:{} ,userId:{}, positionTitle:{}) ",companyId,userId,positionTitle);
         long startTime = System.currentTimeMillis();
         EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
@@ -690,15 +692,30 @@ public class UserEmployeeServiceImpl {
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         long neo4jTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView neo4jTime:{}",neo4jTime-chainTime);
+        int wechatId = wechatDao.getHrWxWechatByCompanyId(companyId).getId();
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
+        Set<Integer> users = new HashSet<>();
+
         for(CandidateRecomRecordRecord record: list){
-            viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList));
+            EmployeeForwardViewPageVO pageVO = EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList);
+            users.add(pageVO.getUserId());
+            viewPages.add(pageVO);
         }
+
+        Map<Integer,Boolean> userFocusMap = new HashMap<>();
+        users.forEach((userid)->{
+            // 如果已关注公众号，可以建立IM聊天
+            userFocusMap.put(userid,wxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(userid,wechatId) != null);
+        });
+        viewPages.forEach(viewPage->viewPage.setCanChat(userFocusMap.getOrDefault(viewPage.getUserId(),false)));
+
         long dataBizTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView dataBizTime:{}",dataBizTime-neo4jTime);
         result.setUserList(viewPages);
         return result;
     }
+
+
 
     private void fetchEmployeePostConnection(EmployeeCardViewData data){
         List<ReferralConnectionLogRecord> connectionLogList = data.getConnectionLogList();

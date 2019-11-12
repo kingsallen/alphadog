@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 
-    private static final long serialVersionUID = 823980927;
+    private static final long serialVersionUID = -481360502;
 
     /**
      * The reference instance of <code>userdb.user_hr_account</code>
@@ -72,9 +72,9 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "邮箱");
 
     /**
-     * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
+     * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
      */
-    public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信账号");
+    public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信 账号");
 
     /**
      * The column <code>userdb.user_hr_account.password</code>. 登录密码
@@ -160,6 +160,21 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
      * The column <code>userdb.user_hr_account.remark_name</code>. 备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称
      */
     public final TableField<UserHrAccountRecord, String> REMARK_NAME = createField("remark_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称");
+
+    /**
+     * The column <code>userdb.user_hr_account.job_number</code>. 工号
+     */
+    public final TableField<UserHrAccountRecord, String> JOB_NUMBER = createField("job_number", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "工号");
+
+    /**
+     * The column <code>userdb.user_hr_account.deparment_id</code>. 部门id
+     */
+    public final TableField<UserHrAccountRecord, Integer> DEPARMENT_ID = createField("deparment_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "部门id");
+
+    /**
+     * The column <code>userdb.user_hr_account.managed_department_id</code>. 负责部门id
+     */
+    public final TableField<UserHrAccountRecord, String> MANAGED_DEPARTMENT_ID = createField("managed_department_id", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "负责部门id");
 
     /**
      * Create a <code>userdb.user_hr_account</code> table reference

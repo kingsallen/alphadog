@@ -5,25 +5,33 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
-import com.moseeker.baseorm.db.userdb.tables.EmployeeAward;
+import com.moseeker.baseorm.db.userdb.tables.UserAccountTypeRoleMap;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
+import com.moseeker.baseorm.db.userdb.tables.UserApp;
+import com.moseeker.baseorm.db.userdb.tables.UserAppMenu;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
+import com.moseeker.baseorm.db.userdb.tables.UserChatMsg;
+import com.moseeker.baseorm.db.userdb.tables.UserChatPositionCardRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserChatRoom;
+import com.moseeker.baseorm.db.userdb.tables.UserChatTemplateMsg;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyFollow;
 import com.moseeker.baseorm.db.userdb.tables.UserCompanyVisitReq;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserFormerEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserHrPerm;
+import com.moseeker.baseorm.db.userdb.tables.UserHrRole;
+import com.moseeker.baseorm.db.userdb.tables.UserHrRoleApp;
+import com.moseeker.baseorm.db.userdb.tables.UserHrRolePerm;
+import com.moseeker.baseorm.db.userdb.tables.UserHrUserRole;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
+import com.moseeker.baseorm.db.userdb.tables.UserMenu;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserPrivacyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
@@ -32,6 +40,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
+import com.moseeker.baseorm.db.userdb.tables.UserUploadFiles;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserWorkwx;
@@ -60,9 +69,9 @@ public class Tables {
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
     /**
-     * The table <code>userdb.employee_award</code>.
+     * 账号类型-角色映射表
      */
-    public static final EmployeeAward EMPLOYEE_AWARD = com.moseeker.baseorm.db.userdb.tables.EmployeeAward.EMPLOYEE_AWARD;
+    public static final UserAccountTypeRoleMap USER_ACCOUNT_TYPE_ROLE_MAP = com.moseeker.baseorm.db.userdb.tables.UserAccountTypeRoleMap.USER_ACCOUNT_TYPE_ROLE_MAP;
 
     /**
      * 阿里用户信息表
@@ -70,9 +79,39 @@ public class Tables {
     public static final UserAliUser USER_ALI_USER = com.moseeker.baseorm.db.userdb.tables.UserAliUser.USER_ALI_USER;
 
     /**
+     * 应用
+     */
+    public static final UserApp USER_APP = com.moseeker.baseorm.db.userdb.tables.UserApp.USER_APP;
+
+    /**
+     * 应用下的菜单
+     */
+    public static final UserAppMenu USER_APP_MENU = com.moseeker.baseorm.db.userdb.tables.UserAppMenu.USER_APP_MENU;
+
+    /**
      * 百度用户信息表
      */
     public static final UserBdUser USER_BD_USER = com.moseeker.baseorm.db.userdb.tables.UserBdUser.USER_BD_USER;
+
+    /**
+     * 员工和候选人的聊天消息
+     */
+    public static final UserChatMsg USER_CHAT_MSG = com.moseeker.baseorm.db.userdb.tables.UserChatMsg.USER_CHAT_MSG;
+
+    /**
+     * 员工和候选人聊天室的职位卡片显示记录
+     */
+    public static final UserChatPositionCardRecord USER_CHAT_POSITION_CARD_RECORD = com.moseeker.baseorm.db.userdb.tables.UserChatPositionCardRecord.USER_CHAT_POSITION_CARD_RECORD;
+
+    /**
+     * 员工和候选人的聊天室
+     */
+    public static final UserChatRoom USER_CHAT_ROOM = com.moseeker.baseorm.db.userdb.tables.UserChatRoom.USER_CHAT_ROOM;
+
+    /**
+     * 员工和候选人聊天的通知配置
+     */
+    public static final UserChatTemplateMsg USER_CHAT_TEMPLATE_MSG = com.moseeker.baseorm.db.userdb.tables.UserChatTemplateMsg.USER_CHAT_TEMPLATE_MSG;
 
     /**
      * 用户职位收藏
@@ -105,29 +144,9 @@ public class Tables {
     public static final UserEmployeePointsRecordCompanyRel USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL;
 
     /**
-     * 员工积分记录表
-     */
-    public static final UserEmployeePointsRecordTemp USER_EMPLOYEE_POINTS_RECORD_TEMP = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTemp.USER_EMPLOYEE_POINTS_RECORD_TEMP;
-
-    /**
-     * 员工积分记录表
-     */
-    public static final UserEmployeePointsRecordTest USER_EMPLOYEE_POINTS_RECORD_TEST = com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordTest.USER_EMPLOYEE_POINTS_RECORD_TEST;
-
-    /**
      * 员工想要了解内推政策点击次数表
      */
     public static final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
-
-    /**
-     * The table <code>userdb.user_employee_temp</code>.
-     */
-    public static final UserEmployeeTemp USER_EMPLOYEE_TEMP = com.moseeker.baseorm.db.userdb.tables.UserEmployeeTemp.USER_EMPLOYEE_TEMP;
-
-    /**
-     * The table <code>userdb.user_employee_test</code>.
-     */
-    public static final UserEmployeeTest USER_EMPLOYEE_TEST = com.moseeker.baseorm.db.userdb.tables.UserEmployeeTest.USER_EMPLOYEE_TEST;
 
     /**
      * 员工点赞记录
@@ -150,9 +169,39 @@ public class Tables {
     public static final UserHrAccount USER_HR_ACCOUNT = com.moseeker.baseorm.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
 
     /**
-     * 用户求职意向
+     * 操作权限
+     */
+    public static final UserHrPerm USER_HR_PERM = com.moseeker.baseorm.db.userdb.tables.UserHrPerm.USER_HR_PERM;
+
+    /**
+     * 角色
+     */
+    public static final UserHrRole USER_HR_ROLE = com.moseeker.baseorm.db.userdb.tables.UserHrRole.USER_HR_ROLE;
+
+    /**
+     * 角色的应用权限
+     */
+    public static final UserHrRoleApp USER_HR_ROLE_APP = com.moseeker.baseorm.db.userdb.tables.UserHrRoleApp.USER_HR_ROLE_APP;
+
+    /**
+     * 角色的操作权限
+     */
+    public static final UserHrRolePerm USER_HR_ROLE_PERM = com.moseeker.baseorm.db.userdb.tables.UserHrRolePerm.USER_HR_ROLE_PERM;
+
+    /**
+     * 用户的角色
+     */
+    public static final UserHrUserRole USER_HR_USER_ROLE = com.moseeker.baseorm.db.userdb.tables.UserHrUserRole.USER_HR_USER_ROLE;
+
+    /**
+     * 用户求职意向-已弃用，老微信中的账号设置-》我的兴趣。
      */
     public static final UserIntention USER_INTENTION = com.moseeker.baseorm.db.userdb.tables.UserIntention.USER_INTENTION;
+
+    /**
+     * 菜单
+     */
+    public static final UserMenu USER_MENU = com.moseeker.baseorm.db.userdb.tables.UserMenu.USER_MENU;
 
     /**
      * 用户订阅职位推荐邮件
@@ -195,6 +244,11 @@ public class Tables {
     public static final UserThirdpartyUser USER_THIRDPARTY_USER = com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser.USER_THIRDPARTY_USER;
 
     /**
+     * 用户上传文件记录表
+     */
+    public static final UserUploadFiles USER_UPLOAD_FILES = com.moseeker.baseorm.db.userdb.tables.UserUploadFiles.USER_UPLOAD_FILES;
+
+    /**
      * 用户表
      */
     public static final UserUser USER_USER = com.moseeker.baseorm.db.userdb.tables.UserUser.USER_USER;
@@ -205,7 +259,7 @@ public class Tables {
     public static final UserViewedPosition USER_VIEWED_POSITION = com.moseeker.baseorm.db.userdb.tables.UserViewedPosition.USER_VIEWED_POSITION;
 
     /**
-     * ä¼ä¸šå¾®ä¿¡ç”¨æˆ·ä¿¡æ¯
+     * 企业微信用户信息
      */
     public static final UserWorkwx USER_WORKWX = com.moseeker.baseorm.db.userdb.tables.UserWorkwx.USER_WORKWX;
 

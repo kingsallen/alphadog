@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionRecomRecord> {
 
-    private static final long serialVersionUID = 964450994;
+    private static final long serialVersionUID = -68096734;
 
     /**
      * The reference instance of <code>userdb.candidate_v_job_position_recom</code>
@@ -64,7 +64,7 @@ public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionR
     /**
      * The column <code>userdb.candidate_v_job_position_recom.create_time</code>. 创建时间
      */
-    public final TableField<CandidateVJobPositionRecomRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+    public final TableField<CandidateVJobPositionRecomRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>userdb.candidate_v_job_position_recom.nickname</code>. 用户昵称

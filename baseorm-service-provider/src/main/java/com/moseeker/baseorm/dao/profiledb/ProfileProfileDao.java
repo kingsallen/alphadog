@@ -1144,6 +1144,14 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         }
     }
 
+    private void buildMap(Map map, String key, Map<String, Object> object) {
+        if (object == null) {
+            map.put(key, new HashMap<>());
+        } else {
+            map.put(key, object);
+        }
+    }
+
     public boolean filterTable(Map<String, List<String>> filter, String key) {
         if (filter != null && filter.containsKey(key)) {
             if (filter.get(key).contains("*")) {
@@ -2051,6 +2059,145 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
         return result;
 
+    }
+
+    /**
+     * filter为全量时调用
+     *
+     * "filter" : {"profile_language":["*"],"user_user":["*"],"profile_intention_position":["*"],"profile_intention":["*"],"profile_skills":["*"],"profile_basic":["*"],"user_thirdparty_user":["*"],"profile_credentials":["*"],"profile_workexp":["*"],"profile_award":["*"],"job_resume_other":["*"],"profile_projectexp":["*"],"job_position_ext":["*"],"profile_profile":["*"],"profile_attachment":["*"],"profile_other":["*"],"profile_intention_industry":["*"],"profile_intention_city":["*"],"profile_educations":["*"],"profile_import":["*"]}
+     * @param  positonApplicatons
+     * @param recommender
+     * @return List
+     * @Author lee
+     * @Date 2019/11/1 11:00
+     */
+    public List<Map<String, Object>> getRelatedDataByJobApplicationFullFilter(List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>> positonApplicatons,
+                                                                              boolean recommender) {
+        Set<Integer> positionIds = new HashSet<>();
+        Set<Integer> applicationIds = new HashSet<>();
+        Set<Integer> applierIds = new HashSet<>();
+        Set<Integer> recommenderIds = new HashSet<>();
+
+        for (AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> entry : positonApplicatons) {
+            positionIds.add((Integer) entry.getKey().get("id"));
+            applicationIds.add((Integer) entry.getValue().get("id"));
+            applierIds.add((Integer) entry.getValue().get("applier_id"));
+            recommenderIds.add(((Integer) entry.getValue().get("recommender_user_id")));
+        }
+
+        positionIds.remove(Integer.valueOf(0));
+        applicationIds.remove(Integer.valueOf(0));
+        applierIds.remove(Integer.valueOf(0));
+        recommenderIds.remove(Integer.valueOf(0));
+
+        //所有的user_user
+        List<Map<String, Object>> allApplierEmployee = new ArrayList<>();
+        if (applierIds.size() > 0) {
+            allApplierEmployee = create
+                    .select()
+                    .from(UserEmployee.USER_EMPLOYEE)
+                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(applierIds))
+                    .and(USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                    .and(USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                    .and(USER_EMPLOYEE.STATUS.eq(0))
+                    .fetchMaps();
+        }
+
+        //所有的候选人推荐记录
+        Map<Integer, List<CandidateRecomRecordDO>> allCandidateRecomRecord = new HashMap<>();
+        if (applicationIds.size() > 0) {
+            List<CandidateRecomRecordDO> tempRecomRecords = create
+                    .select()
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.in(applicationIds))
+                    .fetchInto(CandidateRecomRecordDO.class);
+
+            if(!StringUtils.isEmptyList(tempRecomRecords)){
+                allCandidateRecomRecord = tempRecomRecords.stream().collect(Collectors.groupingBy(r->r.getAppId()));
+            }
+
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>> entry : positonApplicatons) {
+
+            Map<String, Object> map = new HashMap<>();
+
+            Integer applicationId = (Integer) entry.getValue().get("id");
+            Integer recommenderId = (Integer) entry.getValue().get("recommender_user_id");
+            Integer applierId = (Integer) entry.getValue().get("applier_id");
+
+            buildMap(map, "job_position", entry.getKey());
+            buildMap(map, "job_application", entry.getValue());
+            buildMap(map, "user_employee", new HashMap<>());
+            for (Map<String, Object> mp : allApplierEmployee) {
+                Integer sysuser_id = (Integer) mp.get("sysuser_id");
+                if (sysuser_id != null && sysuser_id.intValue() > 0 && sysuser_id.intValue() == applierId.intValue()) {
+                    buildMap(map, "user_employee", mp);
+                    break;
+                }
+            }
+
+            if (recommender && recommenderId != null && recommenderId.intValue() != 0) {
+
+                //recommender employee
+                List<Map<String, Object>> allRecommenderEmployee = new ArrayList<>();
+                //recommender user
+                List<Map<String, Object>> allRecommenderUser = new ArrayList<>();
+                if (recommenderIds.size() > 0) {
+                    allRecommenderEmployee = create
+                            .select()
+                            .from(USER_EMPLOYEE)
+                            .where(USER_EMPLOYEE.SYSUSER_ID.in(recommenderIds))
+                            .and(USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                            .and(USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                            .and(USER_EMPLOYEE.STATUS.eq(0))
+                            .fetchMaps();
+                    allRecommenderUser = create
+                            .select()
+                            .from(UserUser.USER_USER)
+                            .where(UserUser.USER_USER.ID.in(recommenderIds))
+                            .fetchMaps();
+                }
+
+                Map<String, Object> recommenderMap = new HashMap<>();
+
+                for (Map<String, Object> mp : allRecommenderUser) {
+                    Integer user_id = (Integer) mp.get("id");
+                    if (user_id != null && user_id > 0 && user_id.intValue() == recommenderId.intValue()) {
+                        recommenderMap.putAll(mp);
+                        break;
+                    }
+                }
+
+                for (Map<String, Object> mp : allRecommenderEmployee) {
+                    Integer sysUserId = (Integer) mp.get("sysuser_id");
+                    if (sysUserId != null && sysUserId > 0 && sysUserId == recommenderId.intValue()) {
+                        recommenderMap.put("employeeid", mp.get("employeeid"));
+                        recommenderMap.put("custom_field", mp.get("custom_field"));
+                        recommenderMap.put("custom_field_values", mp.get("custom_field_values"));
+                        recommenderMap.put("auth_method", mp.get("auth_method"));
+                        recommenderMap.put("employee_email", mp.get("email"));
+                        recommenderMap.put("is_first_post_user", false);
+
+                        if(allCandidateRecomRecord.containsKey(applicationId)){
+                            CandidateRecomRecordDO recomRecord = allCandidateRecomRecord.get(applicationId).get(0);
+                            if (recomRecord.getDepth() <= 1  && recommenderId ==  recomRecord.getPostUserId()){
+                                recommenderMap.put("is_first_post_user", true);
+                            }
+                        }
+                        break;
+                    }
+                }
+                if(!recommenderMap.containsKey("employeeid")) {
+                    recommenderMap.clear();
+                }
+                buildMap(map, "recommender", recommenderMap);
+            }
+            result.add(map);
+        }
+        return result;
     }
 
     public ProfileProfileRecord getProfileByUserId(int userId) {

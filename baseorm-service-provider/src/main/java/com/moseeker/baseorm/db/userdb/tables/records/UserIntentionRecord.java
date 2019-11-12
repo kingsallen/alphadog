@@ -17,7 +17,7 @@ import org.jooq.impl.TableRecordImpl;
 
 
 /**
- * 用户求职意向
+ * 用户求职意向-已弃用，老微信中的账号设置-》我的兴趣。
  */
 @Generated(
     value = {
@@ -29,7 +29,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserIntentionRecord extends TableRecordImpl<UserIntentionRecord> implements Record4<Integer, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 2051172324;
+    private static final long serialVersionUID = 211051478;
 
     /**
      * Setter for <code>userdb.user_intention.sysuser_id</code>. 用户ID
