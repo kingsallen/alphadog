@@ -29,10 +29,10 @@ public class RedisUtils {
         long check = redisClient.incrIfNotExist(Constant.APPID_ALPHADOG, key_identifier, key);
         if (check > 1) {
             //同步中
-            return true;
+            return false;
         }
         redisClient.expire(Constant.APPID_ALPHADOG, key_identifier, key, lockSeconds);
-        return false;
+        return true;
     }
 
     /**
