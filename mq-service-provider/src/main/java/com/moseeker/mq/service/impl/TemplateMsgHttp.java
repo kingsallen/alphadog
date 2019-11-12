@@ -894,7 +894,7 @@ public class TemplateMsgHttp {
             first.setValue(String.format("您好，感谢您推荐候选人应聘职位，%s已投递简历，详情如下：", user.getName()));
             colMap.put("first",first);
             MessageTplDataCol remark = new MessageTplDataCol();
-            remark.setColor("#173177");
+            remark.setColor("#2BA245");
             remark.setValue("感谢您对公司人才招聘的支持，欢迎继续推荐！");
             colMap.put("remark",remark);
             MessageTplDataCol job = new MessageTplDataCol();
