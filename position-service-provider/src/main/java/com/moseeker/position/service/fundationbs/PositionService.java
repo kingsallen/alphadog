@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.google.common.collect.Maps;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
@@ -186,12 +187,15 @@ public class PositionService {
 
 
     private static String ALPHACLOUD_SEARCH_SYNC_MQ;
+    private static String refreshCoordinatorsUrl;
 
     static {
         try {
             ConfigPropertiesUtil configPropertiesUtil = ConfigPropertiesUtil.getInstance();
             configPropertiesUtil.loadResource("setting.properties");
             ALPHACLOUD_SEARCH_SYNC_MQ = configPropertiesUtil.get("alphacloud_search_sync_mq",String.class);
+
+            refreshCoordinatorsUrl = configPropertiesUtil.get("alphacloud.position.refreshcoordinates.url", String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1068,6 +1072,8 @@ public class PositionService {
                     logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + formRcord.toString() + "--");
                     Integer pid = jobPositionDao.addRecord(formRcord).getId();
                     if (pid != null) {
+                        // 宜家刷协助人
+                        refreshCoordinators(pid, formData.getDepartmentCode());
                         jobPositionIds.add(pid);
                         List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
                         if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
@@ -3041,4 +3047,19 @@ public class PositionService {
         return ret;
     }
 
+    /**
+     * 刷入职位协助人
+     * @param positionId
+     * @param departmentCode
+     */
+    public void refreshCoordinators(Integer positionId, String departmentCode) {
+        try {
+            Map<String, Object> params = Maps.newHashMap();
+            params.put("jobPositionId", positionId);
+            params.put("departmentCode", departmentCode);
+            HttpClientUtil.sentHttpPostRequest(refreshCoordinatorsUrl, null, params);
+        } catch (Exception e) {
+            logger.error("error: {}", e.getMessage());
+        }
+    }
 }
