@@ -1073,7 +1073,9 @@ public class PositionService {
                     Integer pid = jobPositionDao.addRecord(formRcord).getId();
                     if (pid != null) {
                         // 宜家刷协助人
-                        refreshCoordinators(pid, formData.getDepartmentCode());
+                        if (StringUtils.isNotNullOrEmpty(formData.getDepartmentCode())) {
+                            refreshCoordinators(pid, formData.getDepartmentCode());
+                        }
                         jobPositionIds.add(pid);
                         List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
                         if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
