@@ -535,6 +535,10 @@ public class PositionService {
             return true;
         }
 
+        if("*#*#*".equals(feature)) {
+            jobPositionHandlerDate.setFeature(String.join("#", featureMap.keySet()));
+        }
+
         for (String featureName : feature.split("#")) {
             if (!featureMap.containsKey(featureName)) {
                 return false;
