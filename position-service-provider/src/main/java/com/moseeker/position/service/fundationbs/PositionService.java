@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.PropertyFilter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.google.common.collect.Maps;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
@@ -1073,6 +1074,7 @@ public class PositionService {
                     Integer pid = jobPositionDao.addRecord(formRcord).getId();
                     if (pid != null) {
                         // 宜家刷协助人
+                        logger.info(JSON.toJSONString(formData, SerializerFeature.PrettyFormat));
                         if (StringUtils.isNotNullOrEmpty(formData.getDepartmentCode())) {
                             refreshCoordinators(pid, formData.getDepartmentCode());
                         }
