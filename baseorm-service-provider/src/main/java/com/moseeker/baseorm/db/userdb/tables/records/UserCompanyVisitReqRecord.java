@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCompanyVisitReqRecord extends UpdatableRecordImpl<UserCompanyVisitReqRecord> implements Record7<Integer, Integer, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1697642836;
+    private static final long serialVersionUID = -898181588;
 
     /**
      * Setter for <code>userdb.user_company_visit_req.id</code>. id
@@ -75,28 +75,28 @@ public class UserCompanyVisitReqRecord extends UpdatableRecordImpl<UserCompanyVi
     }
 
     /**
-     * Setter for <code>userdb.user_company_visit_req.status</code>. 0: 取消申请参观 1：申请参观
+     * Setter for <code>userdb.user_company_visit_req.status</code>. 0: 取消申请参观 1:申请参观
      */
     public void setStatus(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>userdb.user_company_visit_req.status</code>. 0: 取消申请参观 1：申请参观
+     * Getter for <code>userdb.user_company_visit_req.status</code>. 0: 取消申请参观 1:申请参观
      */
     public Integer getStatus() {
         return (Integer) get(3);
     }
 
     /**
-     * Setter for <code>userdb.user_company_visit_req.source</code>. 操作来源 0: 未知 1：微信端 2：PC 端
+     * Setter for <code>userdb.user_company_visit_req.source</code>. 操作来源 0: 未知 1:微信端 2:PC 端
      */
     public void setSource(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>userdb.user_company_visit_req.source</code>. 操作来源 0: 未知 1：微信端 2：PC 端
+     * Getter for <code>userdb.user_company_visit_req.source</code>. 操作来源 0: 未知 1:微信端 2:PC 端
      */
     public Integer getSource() {
         return (Integer) get(4);

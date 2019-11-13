@@ -15,6 +15,7 @@ import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
 import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -157,6 +158,9 @@ public class ProfileServicesImpl implements Iface {
     public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId, String syncId) throws BIZException, TException {
         logger.info("ProfileServicesImpl parseFileProfileByFilePath");
         logger.info("ProfileServicesImpl parseFileProfileByFilePath filePath:{}, userId:{}, syncId:{}", filePath, userId, syncId);
+        // 如果是从word转化而得的pdf，获得转化为pdf前的word文件。如果是用户直接上传的pdf，获取pdf文件名。其他格式，文件名不变。
+        filePath = OfficeUtils.getOriginFile(filePath);
+        logger.info("ProfileServicesImpl origin filePath:{}",filePath);
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
                     referralService.parseFileProfileByFilePath(filePath, userId);
@@ -422,6 +426,15 @@ public class ProfileServicesImpl implements Iface {
             logger.error(e.getMessage(),e);
         }
         return profileParseResult;
+    }
+
+    @Override
+    public String wordToPdf(String source_name, String target_name) throws BIZException, TException {
+        int i = OfficeUtils.Word2Pdf(source_name, target_name);
+        if (i ==0) {
+            com.moseeker.common.util.OfficeUtils.Word2Pdf(source_name, target_name);
+        }
+        return target_name;
     }
 
     @Override

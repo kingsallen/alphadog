@@ -7,6 +7,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -17,8 +18,10 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.*;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -525,6 +528,32 @@ public class HttpClient {
             sr.register(new Scheme("https", ssf,443));
         }
     }
+
+
+
+
+
+    public static String postWithJson(String url, String json) throws IOException {
+        String returnValue = "";
+        ResponseHandler<String> responseHandler = new BasicResponseHandler();
+        try(CloseableHttpClient httpClient = HttpClients.createDefault()){
+
+            HttpPost httpPost = new HttpPost(url);
+
+            //第三步：给httpPost设置JSON格式的参数
+            StringEntity requestEntity = new StringEntity(json,"utf-8");
+            requestEntity.setContentEncoding("UTF-8");
+            httpPost.setHeader("Content-type", "application/json");
+            httpPost.setEntity(requestEntity);
+
+            //第四步：发送HttpPost请求，获取返回值
+            returnValue = httpClient.execute(httpPost,responseHandler); //调接口获取返回值时，必须用此方法
+
+        }
+        //第五步：处理返回值
+        return returnValue;
+    }
+
 
 
 

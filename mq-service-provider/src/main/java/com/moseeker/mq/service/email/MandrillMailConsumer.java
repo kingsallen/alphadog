@@ -19,11 +19,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.security.x509.IPAddressName;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 
+ *
  * 业务邮件处理工具
  * <p>
  * Company: MoSeeker
@@ -45,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * Email: wangyaofeng@moseeker.com
  * </p>
- * 
+ *
  * @author wangyaofeng
  * @version
  */
@@ -69,7 +71,7 @@ public class MandrillMailConsumer {
 
 	/**
 	 * 从redis业务邮件队列中获取邮件信息
-	 * 
+	 *
 	 * @return
 	 */
 	private String fetchConstantlyMessage() {
@@ -87,7 +89,7 @@ public class MandrillMailConsumer {
 
 	/**
 	 * 初始化业务邮件处理工具
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
@@ -97,7 +99,7 @@ public class MandrillMailConsumer {
 
 	/**
 	 * 发送邮件
-	 * 
+	 *
 	 * @param redisMsg
 	 * @return
 	 * @throws Exception
@@ -117,7 +119,7 @@ public class MandrillMailConsumer {
 					if (StringUtils.isNotNullOrEmpty(mandrillEmailStruct.getTo_name())){
 						recipient.setName(mandrillEmailStruct.getTo_name());
 					}
-					recipients.add(recipient);						
+					recipients.add(recipient);
 					message.setTo(recipients);
 
 					List<MergeVarBucket> mergeVars = new ArrayList<MergeVarBucket>();
@@ -129,27 +131,27 @@ public class MandrillMailConsumer {
 						vars[vars_i].setName(entry.getKey());
 						vars[vars_i].setContent(entry.getValue());
 						vars_i++;
-					}					
+					}
 
 					if (vars_i>0){
 						mergeVar.setVars(vars);
 						mergeVar.setRcpt(mandrillEmailStruct.getTo_email());
-						mergeVars.add(mergeVar);	
+						mergeVars.add(mergeVar);
 						message.setMergeVars(mergeVars);
-					}	
-					
+					}
+
 					if (StringUtils.isNotNullOrEmpty(mandrillEmailStruct.getSubject())){
 						message.setSubject(mandrillEmailStruct.getSubject());
 					}
-					
+
 					if (StringUtils.isNotNullOrEmpty(mandrillEmailStruct.getFrom_email())){
 						message.setFromEmail(mandrillEmailStruct.getFrom_email());
-					}					
+					}
 
 					if (StringUtils.isNotNullOrEmpty(mandrillEmailStruct.getFrom_name())){
 						message.setFromName(mandrillEmailStruct.getFrom_name());
-					}	
-					
+					}
+
 					message.setTo(recipients);
 					message.setMerge(true);
 					message.setInlineCss(true);
@@ -159,8 +161,8 @@ public class MandrillMailConsumer {
 					message.setTrackClicks(true);
 					message.setTrackOpens(true);
 					message.setViewContentLink(true);
-					
-					MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailStruct.getTemplateName(), 
+
+					MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailStruct.getTemplateName(),
 							null,message, false);
 					LogEmailSendrecordDO emailrecord = new LogEmailSendrecordDO();
 
@@ -179,7 +181,7 @@ public class MandrillMailConsumer {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					logger.error(e.getMessage());
+					logger.error(e.getClass().getName(),e);
 				}
 			});
 		}
@@ -187,7 +189,7 @@ public class MandrillMailConsumer {
 
 	/**
 	 * 开启 业务邮件处理工具 处理业务邮件
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws MessagingException
 	 */

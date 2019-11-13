@@ -19,7 +19,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 用户求职意向
+ * 用户求职意向-已弃用，老微信中的账号设置-》我的兴趣。
  */
 @Generated(
     value = {
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserIntention extends TableImpl<UserIntentionRecord> {
 
-    private static final long serialVersionUID = -711476731;
+    private static final long serialVersionUID = -412558699;
 
     /**
      * The reference instance of <code>userdb.user_intention</code>
@@ -85,7 +85,7 @@ public class UserIntention extends TableImpl<UserIntentionRecord> {
     }
 
     private UserIntention(String alias, Table<UserIntentionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "用户求职意向");
+        super(alias, null, aliased, parameters, "用户求职意向-已弃用，老微信中的账号设置-》我的兴趣。");
     }
 
     /**

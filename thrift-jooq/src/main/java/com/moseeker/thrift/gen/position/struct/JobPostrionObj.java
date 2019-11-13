@@ -4213,14 +4213,6 @@ public class JobPostrionObj implements org.apache.thrift.TBase<JobPostrionObj, J
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("accountabilities:");
-    if (this.accountabilities == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.accountabilities);
-    }
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("experience:");
     if (this.experience == null) {
       sb.append("null");
@@ -4439,14 +4431,6 @@ public class JobPostrionObj implements org.apache.thrift.TBase<JobPostrionObj, J
     if (!first) sb.append(", ");
     sb.append("id:");
     sb.append(this.id);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("requirement:");
-    if (this.requirement == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.requirement);
-    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("custom:");

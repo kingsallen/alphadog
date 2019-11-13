@@ -107,7 +107,15 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     @Override
     public boolean isEmployee(int userId, int companyId) throws BIZException, TException {
         try {
-            return employeeEntity.isEmployee(userId, companyId);
+            long start_time = System.currentTimeMillis();
+            boolean isEmployee = employeeEntity.isEmployee(userId, companyId);
+            long end_time = System.currentTimeMillis();
+            //记录下接口执行时间过长时的参数
+            long consumeTime = end_time - start_time;
+            if (consumeTime > 1000) {
+                logger.info("UserEmployeeThriftService.isEmployee /user/employee/check，接口响应时间：{} ms, params:[ userId:{}, companyId:{} ] ", consumeTime, userId, companyId);
+            }
+            return isEmployee;
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

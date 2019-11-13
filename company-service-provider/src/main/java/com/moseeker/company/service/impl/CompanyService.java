@@ -104,6 +104,9 @@ public class CompanyService {
     private HrGroupCompanyRelDao hrGroupCompanyRelDao;
 
     @Autowired
+    private HrCompanyDao hrCompanyDao;
+
+    @Autowired
     private HrEmployeeSectionDao hrEmployeeSectionDao;
 
     @Autowired
@@ -1071,6 +1074,8 @@ public class CompanyService {
         if(!StringUtils.isEmptyList(employeeDOList)) {
             List<Integer> companyList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
             List<Integer> companyIdList = hrGroupCompanyRelDao.getGroupCompanyRelDoByCompanyIds(companyList);
+            Map<Integer,String> companyNames = companyDao.getCompaniesByIds(companyIdList).stream().collect(
+                    Collectors.toMap(HrCompanyRecord::getId,HrCompanyRecord::getAbbreviation));
             long companyTime = System.currentTimeMillis();
             logger.info("getCompanyInfoByTemplateRank ============== groupCompany :{}",companyTime - employeeTime);
             //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
@@ -1097,7 +1102,7 @@ public class CompanyService {
                     companyIdList = wechatDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
                     long companyIdTime = System.currentTimeMillis();
                     logger.info("getCompanyInfoByTemplateRank ============== companyIdTime :{}", companyIdTime - noticeTime);
-                    return handerCompanyWechatInfo(companyId, companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
+                    return handerCompanyWechatInfo(companyId, companyIdList, companyNames,wechatDOList, messageDOList, companyEmployeeMap);
                 }
             }
         }
@@ -1343,7 +1348,7 @@ public class CompanyService {
         return 0;
     }
 
-    private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
+    private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, Map<Integer,String> companyNames,List<HrWxWechatDO> wechatDOList,
                                                             List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
         long startTime = System.currentTimeMillis();
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
@@ -1355,6 +1360,8 @@ public class CompanyService {
                 }
                 HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
                 companyWechatDO.setCompanyId(companyId);
+                companyWechatDO.setCompanyName(companyNames.get(companyId));
+
                 int wechatId = 0;
                 if(!StringUtils.isEmptyList(wechatDOList)){
                     for(HrWxWechatDO wechatDO : wechatDOList){
@@ -1623,8 +1630,9 @@ public class CompanyService {
         if(configOmsSwitchManagementDO==null&&companyId!=0){
             ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
             configOmsSwitchManagement.setCompanyId(companyId);
-            configOmsSwitchManagement.setModuleName(toOmsSwitchValue(moduleNames));
-            configOmsSwitchManagement.setIsValid((byte)0);
+            OmsSwitchEnum omsSwitchEnum = instanceFromModule(moduleNames);
+            configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
+            configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
             configOmsSwitchManagementDao.add(configOmsSwitchManagement);
             configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
         }
@@ -1646,6 +1654,15 @@ public class CompanyService {
         }
         return omsSwitchEnum.getValue();
     }
+
+    private static OmsSwitchEnum instanceFromModule(String moduleNames){
+        OmsSwitchEnum omsSwitchEnum = OmsSwitchEnum.instanceFromName(moduleNames);
+        if(omsSwitchEnum == null){
+            throw CompanySwitchException.MODULE_NAME_NOT_EXISTS;
+        }
+        return omsSwitchEnum;
+    }
+
     private static OmsSwitchEnum getOmsSwitch(Integer value){
         if (value == null){
             throw CompanySwitchException.SWITCH_NOT_EXISTS;

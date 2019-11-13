@@ -10,6 +10,8 @@ import org.jooq.exception.DataAccessException;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * 用户隐私协议记录Dao
  *
@@ -32,36 +34,63 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
      * @return 1:未读，弹窗， 0：已读，不弹窗
      * @throws Exception
      */
-    public int ifViewPrivacyProtocol(int userId) throws Exception {
-        UserPrivacyRecordRecord record = null;
-        record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).fetchOne();
-        //有记录，说明未阅读协议，弹窗
+    public Optional<com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord> ifViewPrivacyProtocol(int userId) throws Exception {
+        UserPrivacyRecordRecord record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId))
+                .fetchOne();
         if (record != null) {
-            return 1;
+            return Optional.of(record.into(com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord.class));
+        } else {
+            return Optional.empty();
         }
-        return 0;
     }
 
     /**
-     * 根据userId删除记录
+     * 同意最新的隐私版本
+     * 之前的代码如果同意了隐私协议则删除。本期由于需要区分同意了老版本和最新版本隐私协议，所以增加了隐私协议版本号。
+     * 如果用户同意的隐私协议版本号不是最新，那么用户同意的就是老版本的隐私协议。
      *
      * @param userId user_user.id
+     * @param version 隐私协议版本号
      * @throws Exception
      */
-    public void deletePrivacyRecordByUserId(int userId) throws Exception {
-        create.deleteFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).execute();
+    public void agreeReleasePrivacy(int userId, byte version) throws Exception {
+        UserPrivacyRecordRecord record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId))
+                .fetchOne();
+        //如果record 不存在那么添加最新版本的同意记录。
+        if (record == null) {
+            create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                    .columns(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, UserPrivacyRecord.USER_PRIVACY_RECORD.VERSION)
+                    .values(userId,version)
+                    .onDuplicateKeyUpdate()
+                    .set(UserPrivacyRecord.USER_PRIVACY_RECORD.VERSION, version)
+                    .execute();
+        } else {
+            //如果已经存在并且版本号比指定的版本号小，那么更新到指定的版本号
+            if (record.getVersion() < version) {
+                create.update(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                        .set(UserPrivacyRecord.USER_PRIVACY_RECORD.VERSION, version)
+                        .where(UserPrivacyRecord.USER_PRIVACY_RECORD.ID.eq(record.getId()))
+                        .execute();
+            }
+        }
     }
 
     /**
      * 新用户插入隐私协议未阅读记录
-     *
-     * @param userId
+     * 如果添加时触发唯一索引，那么更新成最新的版本号
+     * @param userId 用户编号
+     * @param version 版本号
      * @throws Exception
      */
-    public void insertPrivacyRecord(int userId) throws Exception {
-        create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD).set(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, userId).execute();
+    public void insertPrivacyRecord(int userId, byte version) throws Exception {
+
+        create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .columns(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, UserPrivacyRecord.USER_PRIVACY_RECORD.VERSION)
+                .values(userId,version)
+                .onDuplicateKeyIgnore()
+                .execute();
     }
 
 }

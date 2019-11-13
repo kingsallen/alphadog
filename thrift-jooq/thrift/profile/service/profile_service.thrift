@@ -114,6 +114,8 @@ service ProfileServices {
     bool getSpecifyProfileResult(1: i32 employeeId,2:string syncId) throws (1:common_struct.BIZException e);
     //解析结果返回并确认
     profile_struct.ProfileParseResult checkResult(1: i32 employeeId) throws (1:common_struct.BIZException e);
+    //word to pdf
+    string wordToPdf(1: string source_name, 2: string target_name) throws (1:common_struct.BIZException e);
 }
 
 service AttachmentServices {
