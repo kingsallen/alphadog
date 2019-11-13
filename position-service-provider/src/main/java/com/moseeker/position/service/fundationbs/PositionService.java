@@ -3062,7 +3062,7 @@ public class PositionService {
             params.put("jobPositionId", positionId);
             params.put("departmentCode", departmentCode);
             String result = HttpClientUtil.sentHttpPostRequest(refreshCoordinatorsUrl + "?appid=A11009&interfaceid=A11009001", null, JSON.toJSONString(params));
-            System.out.println(result);
+            logger.info("result: {}",result);
         } catch (Exception e) {
             logger.error("error: {}", e.getMessage());
         }
