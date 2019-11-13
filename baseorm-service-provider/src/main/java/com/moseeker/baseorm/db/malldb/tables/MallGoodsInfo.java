@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallGoodsInfo extends TableImpl<MallGoodsInfoRecord> {
 
-    private static final long serialVersionUID = 526813996;
+    private static final long serialVersionUID = -1359253125;
 
     /**
      * The reference instance of <code>malldb.mall_goods_info</code>
@@ -64,7 +64,7 @@ public class MallGoodsInfo extends TableImpl<MallGoodsInfoRecord> {
     /**
      * The column <code>malldb.mall_goods_info.title</code>. 商品标题，长度不超过16
      */
-    public final TableField<MallGoodsInfoRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false), this, "商品标题，长度不超过16");
+    public final TableField<MallGoodsInfoRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false), this, "商品标题，长度不超过16");
 
     /**
      * The column <code>malldb.mall_goods_info.pic_url</code>. 商品主图url
@@ -94,7 +94,7 @@ public class MallGoodsInfo extends TableImpl<MallGoodsInfoRecord> {
     /**
      * The column <code>malldb.mall_goods_info.detail</code>. 商品详情
      */
-    public final TableField<MallGoodsInfoRecord, String> DETAIL = createField("detail", org.jooq.impl.SQLDataType.VARCHAR.length(5000).nullable(false), this, "商品详情");
+    public final TableField<MallGoodsInfoRecord, String> DETAIL = createField("detail", org.jooq.impl.SQLDataType.VARCHAR.length(2000).nullable(false), this, "商品详情");
 
     /**
      * The column <code>malldb.mall_goods_info.state</code>. 1 未上架  2 上架中 
@@ -104,7 +104,7 @@ public class MallGoodsInfo extends TableImpl<MallGoodsInfoRecord> {
     /**
      * The column <code>malldb.mall_goods_info.rule</code>. 领取规则
      */
-    public final TableField<MallGoodsInfoRecord, String> RULE = createField("rule", org.jooq.impl.SQLDataType.VARCHAR.length(2000).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "领取规则");
+    public final TableField<MallGoodsInfoRecord, String> RULE = createField("rule", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "领取规则");
 
     /**
      * The column <code>malldb.mall_goods_info.create_time</code>.

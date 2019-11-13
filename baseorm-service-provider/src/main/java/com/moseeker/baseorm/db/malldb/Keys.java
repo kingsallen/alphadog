@@ -5,11 +5,9 @@ package com.moseeker.baseorm.db.malldb;
 
 
 import com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo;
-import com.moseeker.baseorm.db.malldb.tables.MallMailAddress;
 import com.moseeker.baseorm.db.malldb.tables.MallOrder;
 import com.moseeker.baseorm.db.malldb.tables.MallOrderOperation;
 import com.moseeker.baseorm.db.malldb.tables.records.MallGoodsInfoRecord;
-import com.moseeker.baseorm.db.malldb.tables.records.MallMailAddressRecord;
 import com.moseeker.baseorm.db.malldb.tables.records.MallOrderOperationRecord;
 import com.moseeker.baseorm.db.malldb.tables.records.MallOrderRecord;
 
@@ -39,7 +37,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<MallGoodsInfoRecord, Integer> IDENTITY_MALL_GOODS_INFO = Identities0.IDENTITY_MALL_GOODS_INFO;
-    public static final Identity<MallMailAddressRecord, Integer> IDENTITY_MALL_MAIL_ADDRESS = Identities0.IDENTITY_MALL_MAIL_ADDRESS;
     public static final Identity<MallOrderRecord, Integer> IDENTITY_MALL_ORDER = Identities0.IDENTITY_MALL_ORDER;
     public static final Identity<MallOrderOperationRecord, Integer> IDENTITY_MALL_ORDER_OPERATION = Identities0.IDENTITY_MALL_ORDER_OPERATION;
 
@@ -48,7 +45,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<MallGoodsInfoRecord> KEY_MALL_GOODS_INFO_PRIMARY = UniqueKeys0.KEY_MALL_GOODS_INFO_PRIMARY;
-    public static final UniqueKey<MallMailAddressRecord> KEY_MALL_MAIL_ADDRESS_PRIMARY = UniqueKeys0.KEY_MALL_MAIL_ADDRESS_PRIMARY;
     public static final UniqueKey<MallOrderRecord> KEY_MALL_ORDER_PRIMARY = UniqueKeys0.KEY_MALL_ORDER_PRIMARY;
     public static final UniqueKey<MallOrderOperationRecord> KEY_MALL_ORDER_OPERATION_PRIMARY = UniqueKeys0.KEY_MALL_ORDER_OPERATION_PRIMARY;
 
@@ -63,14 +59,12 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<MallGoodsInfoRecord, Integer> IDENTITY_MALL_GOODS_INFO = createIdentity(MallGoodsInfo.MALL_GOODS_INFO, MallGoodsInfo.MALL_GOODS_INFO.ID);
-        public static Identity<MallMailAddressRecord, Integer> IDENTITY_MALL_MAIL_ADDRESS = createIdentity(MallMailAddress.MALL_MAIL_ADDRESS, MallMailAddress.MALL_MAIL_ADDRESS.ID);
         public static Identity<MallOrderRecord, Integer> IDENTITY_MALL_ORDER = createIdentity(MallOrder.MALL_ORDER, MallOrder.MALL_ORDER.ID);
         public static Identity<MallOrderOperationRecord, Integer> IDENTITY_MALL_ORDER_OPERATION = createIdentity(MallOrderOperation.MALL_ORDER_OPERATION, MallOrderOperation.MALL_ORDER_OPERATION.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<MallGoodsInfoRecord> KEY_MALL_GOODS_INFO_PRIMARY = createUniqueKey(MallGoodsInfo.MALL_GOODS_INFO, "KEY_mall_goods_info_PRIMARY", MallGoodsInfo.MALL_GOODS_INFO.ID);
-        public static final UniqueKey<MallMailAddressRecord> KEY_MALL_MAIL_ADDRESS_PRIMARY = createUniqueKey(MallMailAddress.MALL_MAIL_ADDRESS, "KEY_mall_mail_address_PRIMARY", MallMailAddress.MALL_MAIL_ADDRESS.ID);
         public static final UniqueKey<MallOrderRecord> KEY_MALL_ORDER_PRIMARY = createUniqueKey(MallOrder.MALL_ORDER, "KEY_mall_order_PRIMARY", MallOrder.MALL_ORDER.ID);
         public static final UniqueKey<MallOrderOperationRecord> KEY_MALL_ORDER_OPERATION_PRIMARY = createUniqueKey(MallOrderOperation.MALL_ORDER_OPERATION, "KEY_mall_order_operation_PRIMARY", MallOrderOperation.MALL_ORDER_OPERATION.ID);
     }
