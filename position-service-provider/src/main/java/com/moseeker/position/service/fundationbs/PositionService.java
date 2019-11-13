@@ -1101,10 +1101,12 @@ public class PositionService {
 
                     }
                 }
+                RedisUtils.unLock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber);
             } catch (RedisLockException e) {
                 logger.info("batchHandlerJobPostion，重复提交职位， company_id：{}, jobnumber:{}", company_id, jobnumber);
-            } finally {
+            } catch (Exception e) {
                 RedisUtils.unLock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber);
+                throw e;
             }
         }
         logger.info("需要更新jobPostion数据的条数:{},\n需要更新jobPostionExt数据的条数:{},\n新增jobPostionExt数据的条数:{},\n新增jobPositionCity数据的条数:{},\n需要更新jobPositionCity数据条数:{}" ,
