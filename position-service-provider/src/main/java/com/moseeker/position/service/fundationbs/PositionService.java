@@ -3059,7 +3059,8 @@ public class PositionService {
             Map<String, Object> params = Maps.newHashMap();
             params.put("jobPositionId", positionId);
             params.put("departmentCode", departmentCode);
-            HttpClientUtil.sentHttpPostRequest(refreshCoordinatorsUrl, null, params);
+            String result = HttpClientUtil.sentHttpPostRequest(refreshCoordinatorsUrl + "?appid=A11009&interfaceid=A11009001", null, JSON.toJSONString(params));
+            System.out.println(result);
         } catch (Exception e) {
             logger.error("error: {}", e.getMessage());
         }
