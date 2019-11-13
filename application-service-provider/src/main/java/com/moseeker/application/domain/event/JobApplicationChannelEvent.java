@@ -9,18 +9,49 @@ import org.springframework.context.ApplicationEvent;
  */
 public class JobApplicationChannelEvent extends ApplicationEvent {
 
-    private String origin;
+    /**
+     * application的origin字段
+     */
+    private Integer origin;
 
-    public JobApplicationChannelEvent(Object source, String origin) {
+    /**
+     * 公司id
+     */
+    private Integer companyId;
+
+    /**
+     * 申请id
+     */
+    private Integer applicationId;
+
+    public JobApplicationChannelEvent(Object source, Integer applicationId, Integer companyId, Integer origin) {
         super(source);
         this.origin = origin;
+        this.companyId = companyId;
+        this.applicationId = applicationId;
     }
 
-    public String getOrigin() {
+    public Integer getOrigin() {
         return origin;
     }
 
-    public void setOrigin(String origin) {
+    public void setOrigin(Integer origin) {
         this.origin = origin;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
+    public Integer getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(Integer applicationId) {
+        this.applicationId = applicationId;
     }
 }
