@@ -18,5 +18,4 @@ service OrderService {
 
    string exportOrder(1: mall_struct.BaseMallForm baseMallForm) throws (1: common_struct.BIZException e);
 
-   mall_struct.MallMailAddressForm getAddressById(1: i32 mailId) throws (1: common_struct.BIZException e);
 }
