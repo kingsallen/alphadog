@@ -1074,7 +1074,7 @@ public class PositionService {
                     Integer pid = jobPositionDao.addRecord(formRcord).getId();
                     if (pid != null) {
                         // 宜家刷协助人
-                        logger.info(JSON.toJSONString(formData, SerializerFeature.PrettyFormat));
+                        logger.info("ikea: {}", JSON.toJSONString(formData, SerializerFeature.PrettyFormat));
                         if (StringUtils.isNotNullOrEmpty(formData.getDepartmentCode())) {
                             refreshCoordinators(pid, formData.getDepartmentCode());
                         }
