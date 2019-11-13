@@ -3016,9 +3016,4 @@ public class PositionService {
             logger.error("error: {}", e.getMessage());
         }
     }
-
-    public static void main(String[] args) {
-        PositionService service = new PositionService();
-        service.refreshCoordinators(19539432, 39978,"wwwwwwww2");
-    }
 }
