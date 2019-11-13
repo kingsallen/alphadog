@@ -250,9 +250,15 @@ public class OrderService {
         Map<Integer,DictCity> cityMap = dictCities.stream().collect(Collectors.toMap(DictCity::getCode,dictCity -> dictCity));
 
         addresses.stream().forEach(address->{
-            address.setCityName(cityMap.get(address.getCity()).getName());
-            address.setRegionName(cityMap.get(address.getRegion()).getName());
-            address.setProvinceName(cityMap.get(address.getProvince()).getName());
+            if(cityMap.get(address.getCity())!=null){
+                address.setCityName(cityMap.get(address.getCity()).getName());
+            }
+            if(cityMap.get(address.getRegion())!=null){
+                address.setRegionName(cityMap.get(address.getRegion()).getName());
+            }
+            if(cityMap.get(address.getProvince())!=null){
+                address.setProvinceName(cityMap.get(address.getProvince()).getName());
+            }
         });
 
         Map<Integer,MallMailAddressVO> addressMap = addresses.stream().collect(Collectors.toMap(MallMailAddressVO::getId,address->address));
