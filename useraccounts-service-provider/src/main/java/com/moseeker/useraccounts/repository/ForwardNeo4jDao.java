@@ -23,5 +23,4 @@ public interface ForwardNeo4jDao extends GraphRepository<Relation> {
     @Query("match (u1:UserUser{user_id:{firstUserId}}),(u2:UserUser{user_id:{secondUserId}}),p = shortestpath((u1)-[*]-(u2)) " +
                    " where all(x in nodes(p)  where x.user_id={firstUserId} or x.employee_company<>{companyId}) return p")
     List<Relation> getTwoUserShortFriend(@Param("firstUserId") int firstUserId, @Param("secondUserId") int secondUserId, @Param("companyId") int companyId);
-
 }
