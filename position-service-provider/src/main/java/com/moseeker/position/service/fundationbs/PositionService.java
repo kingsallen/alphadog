@@ -535,8 +535,9 @@ public class PositionService {
             return true;
         }
 
-        if("*#*#*".equals(feature)) {
+        if ("*#*#*".equals(feature)) {
             jobPositionHandlerDate.setFeature(String.join("#", featureMap.keySet()));
+            feature = jobPositionHandlerDate.getFeature();
         }
 
         for (String featureName : feature.split("#")) {
