@@ -78,13 +78,15 @@ public final class Constant {
     public static final String POSITION_SYNC_FAIL_ROUTINGKEY = "messagetemplate.position_sync_fail";
 
     //延时交换机常量,以及队列常量
-    public static final String ACTIVITY_DELAY_EXCHANGE = "activity_delay_exchange_dog";
     public static final String EXCHANGE_TYPE_DELAY = "x-delayed-type";
     public static final String MESSAGE_TYPE_DELAY = "x-delayed-message";
+    public static final String ACTIVITY_DELAY_EXCHANGE = "activity_delay_exchange_dog";
     public static final String ACTIVITY_DELAY_QUEUE = "activity_delay_queue_dog";
     public static final String ACTIVITY_DELAY_ROUTING_KEY = "activity_delay_routing_key";
 
-
+    public static final String NEO4J_SHUTDOWN_TASK_DELAY_EXCHANGE = "NEO4J_SHUTDOWN_TASK_DELAY_EXCHANGE";
+    public static final String NEO4J_SHUTDOWN_TASK_DELAY_QUEUE = "NEO4J_SHUTDOWN_TASK_DELAY_QUEUE";
+    public static final String NEO4J_SHUTDOWN_TASK_DELAY_ROUTING_KEY = "NEO4J_SHUTDOWN_TASK_DELAY_ROUTING_KEY";
 
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
