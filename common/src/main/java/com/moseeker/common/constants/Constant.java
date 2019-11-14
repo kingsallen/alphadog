@@ -372,6 +372,13 @@ public final class Constant {
     public static final String KAFKA_TOPIC_RADAR_STATUS = "radar_button_status";
     public static final String KAFKA_TOPIC_IM_TPL_MSG = "jdpv_im_topic";
 
+    /**
+     * B端上传简历时，创建doc转pdf，存储pdf的目录地址
+     */
+    public static final String WORD_TO_PDF_2B_DIRCTORY="/mnt/nfs/attachment/candidate_upload";
+
+
+
     //简历上传小程序推荐来源的认领不需要校验手机号
     public static final String NO_VSCODE_CHECK = "no_vscode_check";
 
