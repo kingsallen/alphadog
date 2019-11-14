@@ -793,14 +793,14 @@ public class OrderService {
         BeanUtils.copyProperties(address,form);
 
         if(cities!=null&&cities.size()>0){
-            if(810000==form.getProvince()){
-                form.setProvinceName("中国香港");
-            }else if(820000==form.getProvince()){
-                form.setProvinceName("中国澳门");
-            }
             DictCity province = citiesMap.get(form.getProvince());
             DictCity city = citiesMap.get(form.getCity());
             DictCity region = citiesMap.get(form.getRegion());
+            if(810000==province.getCode()){
+                province.setName("中国香港");
+            }else if(820000==province.getCode()){
+                province.setName("中国澳门");
+            }
             form.setProvinceName(province!=null?province.getName():null);
             form.setCityName(city!=null?city.getName():null);
             form.setRegionName(region!=null?region.getName():null);
