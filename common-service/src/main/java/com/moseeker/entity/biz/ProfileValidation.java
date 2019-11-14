@@ -91,13 +91,16 @@ public class ProfileValidation {
 		if(education.getDegree() == 0) {
 			vm.addFailedElement("学历", "未选择学历");
 		}
-		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
+		/**
+		 * 教育经历去掉时间相关的校验
+		 */
+		/*if(StringUtils.isNullOrEmpty(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
 		if (org.apache.commons.lang.StringUtils.isBlank(education.getEnd_date())
 				&& education.getEnd_until_now() == UntitlNow.NotUntilNow.getStatus()) {
 			vm.addFailedElement("结束时间", "未选择结束时间");
-		}
+		}*/
 		if (org.apache.commons.lang.StringUtils.isNotBlank(education.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(education.getEnd_date())
 				&& education.getEnd_until_now() != UntitlNow.UntilNow.getStatus()
@@ -125,12 +128,15 @@ public class ProfileValidation {
 		if(education.getDegree() == null || education.getDegree().intValue() == 0) {
 			vm.addFailedElement("学历", "未选择学历");
 		}
-		if(education.getStart() == null) {
+		/**
+		 * 教育经历去掉时间相关的校验
+		 */
+		/*if(education.getStart() == null) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
 		if (education.getEnd() == null && education.getEndUntilNow() == UntitlNow.NotUntilNow.getStatus()) {
 			vm.addFailedElement("结束时间", "未选择结束时间");
-		}
+		}*/
 		if (education.getStart() != null && education.getEnd() != null
 				&& education.getStart().getTime() > education.getEnd().getTime()
 				&& (education.getEndUntilNow() == null
@@ -169,13 +175,16 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(projectExp.getName())) {
 			vm.addFailedElement("项目名称", "未填写项目名称!");
 		}
-		if(StringUtils.isNullOrEmpty(projectExp.getStart_date())&& projectExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
+		/**
+		 * 项目经历取消起始时间校验
+		 */
+		/*if(StringUtils.isNullOrEmpty(projectExp.getStart_date())&& projectExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if (StringUtils.isNullOrEmpty(projectExp.getEnd_date())
 				&& projectExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
-		}
+		}*/
 		if (org.apache.commons.lang.StringUtils.isNotBlank(projectExp.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(projectExp.getEnd_date())
 				&& DateTime.parse(projectExp.getStart_date()).getMillis()
@@ -200,12 +209,15 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(projectExp.getName())) {
 			vm.addFailedElement("项目名称", "未填写项目名称!");
 		}
-		if(projectExp.getStart() == null) {
+		/**
+		 * 项目经历取消起始时间校验
+		 */
+		/*if(projectExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if (projectExp.getEnd() == null && (projectExp.getEndUntilNow() == null || projectExp.getEndUntilNow()  != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
-		}
+		}*/
 		if (projectExp.getStart() != null && projectExp.getEnd() != null
 				&& projectExp.getStart().getTime() > projectExp.getEnd().getTime()
 				&& (projectExp.getEndUntilNow() == null
@@ -247,22 +259,24 @@ public class ProfileValidation {
 		if(workExp.getCompany_id() == 0 && StringUtils.isNullOrEmpty(workExp.getCompany_name())) {
 			vm.addFailedElement("就职公司", "未填写就职公司");
 		}
-		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+		//取消职位校验
+		/*if(StringUtils.isNullOrEmpty(workExp.getJob())) {
 			vm.addFailedElement("职位名称", "未填写职位名称");
-		}
+		}*/
         if(workExp.getJob()!=null && workExp.getJob().length()>100) {
             vm.addFailedElement("职位名称", "超过最长字数限制");
         }
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
-		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
+        //取消起始时间校验
+		/*if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if (StringUtils.isNullOrEmpty(workExp.getEnd_date())
 				&& workExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
-		}
+		}*/
 		if (org.apache.commons.lang.StringUtils.isNotBlank(workExp.getStart_date())
 				&& org.apache.commons.lang.StringUtils.isNotBlank(workExp.getEnd_date())
 				&& DateTime.parse(workExp.getStart_date()).getMillis()
@@ -286,21 +300,22 @@ public class ProfileValidation {
 		if(workExp.getCompany() == null || StringUtils.isNullOrEmpty(workExp.getCompany().getName())) {
 			vm.addFailedElement("就职公司", "未填写就职公司");
 		}
-		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+		/*if(StringUtils.isNullOrEmpty(workExp.getJob())) {
 			vm.addFailedElement("职位名称", "未填写职位名称");
-		}
+		}*/
 		if(workExp.getJob()!=null && workExp.getJob().length()>100) {
 			vm.addFailedElement("职位名称", "超过最长字数限制");
 		}
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
-		if(workExp.getStart() == null) {
+		//取消起始时间校验
+		/*if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if (workExp.getEnd() == null && (workExp.getEndUntilNow() == null || workExp.getEndUntilNow() != UntitlNow.UntilNow.getStatus())) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
-		}
+		}*/
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& (workExp.getEndUntilNow() == null
@@ -324,22 +339,23 @@ public class ProfileValidation {
 		if(workExp.getCompanyId() == null ) {
 			vm.addFailedElement("就职公司", "未填写就职公司");
 		}
-		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+		/*if(StringUtils.isNullOrEmpty(workExp.getJob())) {
 			vm.addFailedElement("职位名称", "未填写职位名称");
-		}
+		}*/
 		if(workExp.getJob()!=null && workExp.getJob().length()>100) {
 			vm.addFailedElement("职位名称", "超过最长字数限制");
 		}
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
-		if(workExp.getStart() == null) {
+		//取消起始时间校验
+		/*if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if(workExp.getEnd() == null && workExp.getEndUntilNow() != null
 				&& workExp.getEndUntilNow() == UntitlNow.NotUntilNow.getStatus() ) {
 			vm.addFailedElement("结束时间", "未填写结束时间");
-		}
+		}*/
 		if (workExp.getStart() != null && workExp.getEnd() != null
 				&& workExp.getStart().getTime() > workExp.getEnd().getTime()
 				&& (workExp.getEndUntilNow() == null
