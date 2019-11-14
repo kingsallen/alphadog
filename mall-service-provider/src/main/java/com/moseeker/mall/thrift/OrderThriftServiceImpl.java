@@ -3,11 +3,10 @@ package com.moseeker.mall.thrift;
 import com.moseeker.mall.service.OrderService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.mall.service.OrderService.Iface;
-import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
-import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
-import com.moseeker.thrift.gen.mall.struct.OrderForm;
-import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import com.moseeker.thrift.gen.mall.struct.*;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,8 @@ import java.util.Map;
  **/
 @Service
 public class OrderThriftServiceImpl implements Iface{
+
+    private static Logger logger = LoggerFactory.getLogger(OrderThriftServiceImpl.class);
 
     private final OrderService orderService;
 
@@ -51,6 +52,7 @@ public class OrderThriftServiceImpl implements Iface{
         try {
             orderService.confirmOrder(orderForm);
         }catch (BIZException e){
+            logger.error(e.getMessage(),e);
             throw e;
         }catch (Exception e){
             throw e;
@@ -76,4 +78,14 @@ public class OrderThriftServiceImpl implements Iface{
             throw e;
         }
     }
+
+    @Override
+    public MallMailAddressForm getAddressById(int mailId) throws BIZException, TException {
+        try{
+            return orderService.getAddressById(mailId);
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
 }
