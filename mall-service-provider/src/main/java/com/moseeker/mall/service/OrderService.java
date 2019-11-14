@@ -796,9 +796,9 @@ public class OrderService {
             DictCity province = citiesMap.get(form.getProvince());
             DictCity city = citiesMap.get(form.getCity());
             DictCity region = citiesMap.get(form.getRegion());
-            if(810000==province.getCode()){
+            if(province!=null&&810000==province.getCode()){
                 province.setName("中国香港");
-            }else if(820000==province.getCode()){
+            }else if(province!=null&&820000==province.getCode()){
                 province.setName("中国澳门");
             }
             form.setProvinceName(province!=null?province.getName():null);
