@@ -37,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>malldb</code>.
      */
-    public final Malldb MALLDB = com.moseeker.baseorm.db.malldb.Malldb.MALLDB;
+    public final Malldb MALLDB = Malldb.MALLDB;
 
     /**
      * No further instances allowed
