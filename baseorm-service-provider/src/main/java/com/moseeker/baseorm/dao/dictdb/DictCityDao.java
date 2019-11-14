@@ -110,6 +110,13 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         return records;
     }
 
+    public List<com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity> getDictCitiesByCodes(List<Integer> cityCodes) {
+
+        return create.selectFrom(DictCity.DICT_CITY)
+                .where(DictCity.DICT_CITY.CODE.in(cityCodes))
+                .fetchInto(com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity.class);
+    }
+
     public DictCityRecord getCityByCode(int city_code) {
         DictCityRecord record = null;
         Result<DictCityRecord> result = create.selectFrom(DictCity.DICT_CITY)
