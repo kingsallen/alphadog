@@ -257,7 +257,13 @@ public class OrderService {
                 address.setRegionName(cityMap.get(address.getRegion()).getName());
             }
             if(cityMap.get(address.getProvince())!=null){
-                address.setProvinceName(cityMap.get(address.getProvince()).getName());
+                if(810000==address.getProvince()){
+                    address.setProvinceName("中国香港");
+                }else if(820000==address.getProvince()){
+                    address.setProvinceName("中国澳门");
+                }else{
+                    address.setProvinceName(cityMap.get(address.getProvince()).getName());
+                }
             }
         });
 
@@ -787,6 +793,11 @@ public class OrderService {
         BeanUtils.copyProperties(address,form);
 
         if(cities!=null&&cities.size()>0){
+            if(810000==form.getProvince()){
+                form.setProvinceName("中国香港");
+            }else if(820000==form.getProvince()){
+                form.setProvinceName("中国澳门");
+            }
             DictCity province = citiesMap.get(form.getProvince());
             DictCity city = citiesMap.get(form.getCity());
             DictCity region = citiesMap.get(form.getRegion());
