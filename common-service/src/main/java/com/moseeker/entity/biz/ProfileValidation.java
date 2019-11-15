@@ -309,7 +309,9 @@ public class ProfileValidation {
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
-		//取消起始时间校验
+		/**
+		 * 取消起始时间校验
+		 */
 		/*if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
@@ -348,7 +350,9 @@ public class ProfileValidation {
         if(workExp.getDescription()!=null && workExp.getDescription().length()>5000) {
             vm.addFailedElement("工作描述", "超过最长字数限制");
         }
-		//取消起始时间校验
+		/**
+		 * 取消起始时间校验
+		 */
 		/*if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
