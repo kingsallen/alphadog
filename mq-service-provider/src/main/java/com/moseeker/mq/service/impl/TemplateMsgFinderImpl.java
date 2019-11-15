@@ -10,6 +10,7 @@ import com.moseeker.mq.service.TemplateMsgFinder;
 import com.moseeker.thrift.gen.mq.struct.FlexibleField;
 import com.moseeker.thrift.gen.mq.struct.MessageBody;
 import com.moseeker.thrift.gen.mq.struct.WxMessageFrequency;
+import com.moseeker.thrift.gen.mq.struct.WxMessageFrequencyOption;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -63,6 +65,11 @@ public class TemplateMsgFinderImpl implements TemplateMsgFinder {
                         interval.setValue(record.getFrequencyValue());
                     }else{
                         interval.setValue(interval.getDefaultValue());
+                    }
+                    Optional<WxMessageFrequencyOption> selectedOption = interval.getOptions().stream().filter(
+                            option -> Objects.equals(option.getValue(), interval.getValue())).findFirst();
+                    if(selectedOption != null && selectedOption.isPresent()){
+                        messageBody.setSendTime(selectedOption.get().getSend_time());
                     }
                     messageBody.setSendFrequency(interval);
                 }
