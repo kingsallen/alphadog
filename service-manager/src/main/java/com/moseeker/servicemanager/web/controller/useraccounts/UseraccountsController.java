@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -1124,8 +1125,10 @@ public class UseraccountsController {
     public String getUserSearchPositionHistory(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userId = params.getInt("user_id", 0);
-
+            Integer userId = params.getInt("user_id");
+			if (userId == null || userId == 0) {
+				throw CommonException.PROGRAM_PARAM_NOTEXIST;
+			}
             Response result = useraccountsServices.getUserSearchPositionHistory(userId);
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
@@ -1149,8 +1152,8 @@ public class UseraccountsController {
 	public String ifViewPrivacyProtocol(HttpServletRequest request, HttpServletResponse response) {
 
 		String user_id = request.getParameter("user_id");
-		if (user_id == null) {
-			throw ExceptionUtils.getCommonException("参数有误！");
+		if (user_id == null || user_id.equals("0")) {
+			throw CommonException.PROGRAM_PARAM_NOTEXIST;
 		}
 		try {
 			int result = useraccountsServices.ifViewPrivacyProtocol(Integer.parseInt(user_id));
@@ -1172,8 +1175,8 @@ public class UseraccountsController {
 	public String insertPrivacyRecord(HttpServletRequest request, HttpServletResponse response) {
 
 		String user_id = request.getParameter("user_id");
-		if (user_id == null) {
-			throw ExceptionUtils.getCommonException("参数有误！");
+		if (user_id == null || user_id.equals("0")) {
+			throw CommonException.PROGRAM_PARAM_NOTEXIST;
 		}
 		try {
 			useraccountsServices.insertPrivacyRecord(Integer.parseInt(user_id));
