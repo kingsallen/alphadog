@@ -1153,7 +1153,10 @@ public class UseraccountsController {
 
 		String user_id = request.getParameter("user_id");
 		if (user_id == null || user_id.equals("0")) {
-			throw CommonException.PROGRAM_PARAM_NOTEXIST;
+			return ResponseLogNotification.failJson(request,
+					CommonException.PROGRAM_PARAM_NOTEXIST.getCode(),
+					CommonException.PROGRAM_PARAM_NOTEXIST.getMessage(),
+					null);
 		}
 		try {
 			int result = useraccountsServices.ifViewPrivacyProtocol(Integer.parseInt(user_id));
@@ -1176,7 +1179,10 @@ public class UseraccountsController {
 
 		String user_id = request.getParameter("user_id");
 		if (user_id == null || user_id.equals("0")) {
-			throw CommonException.PROGRAM_PARAM_NOTEXIST;
+			return ResponseLogNotification.failJson(request,
+					CommonException.PROGRAM_PARAM_NOTEXIST.getCode(),
+					CommonException.PROGRAM_PARAM_NOTEXIST.getMessage(),
+					null);
 		}
 		try {
 			useraccountsServices.insertPrivacyRecord(Integer.parseInt(user_id));
@@ -1201,7 +1207,10 @@ public class UseraccountsController {
 
 		String user_id = request.getParameter("user_id");
 		if (user_id == null) {
-			return ResponseLogNotification.fail(request, "参数有误！");
+			return ResponseLogNotification.failJson(request,
+					CommonException.PROGRAM_PARAM_NOTEXIST.getCode(),
+					CommonException.PROGRAM_PARAM_NOTEXIST.getMessage(),
+					null);
 		}
 		try {
 			useraccountsServices.deletePrivacyRecordByUserId(Integer.parseInt(user_id));
