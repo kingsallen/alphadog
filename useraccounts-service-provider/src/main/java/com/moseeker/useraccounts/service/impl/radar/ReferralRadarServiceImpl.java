@@ -30,15 +30,11 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
@@ -513,7 +509,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         long t1 = System.currentTimeMillis();
        //调回alphacloud取出公司配置信息
-        String url = ProfileEntity.getParsingUrl("v4/company/conf/companyId");
+        String url = AlphaCloudProvider.Company.buildURL("v4/company/conf/companyId");
         String getResult = HttpClient.sendGet(url, "companyId=" + companyId);
         Integer newAtsStatus = JSON.parseObject(getResult).getJSONObject("data").getInteger("newAtsStatus");
         List<JobApplicationDO> jobApplicationDOS;
@@ -605,15 +601,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         params.put("pageSize", progressInfo.getPageSize());
         //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
         // TODO: 2019/11/18 暂定的url 联调时修改
-        String parsingUrl = ProfileEntity.getParsingUrl("/V4/application/statusApps");
+        String applicationUrl = AlphaCloudProvider.Application.buildURL("/V4/application/statusApps");
         try {
-            String appsString = HttpClient.sendPost(parsingUrl, JSON.toJSONString(params));
-            List<JobApplicationDO> result = new ArrayList<>();
-            JSONArray data = JSON.parseObject(appsString).getJSONArray("data");
-
-            for (int i = 0; i < data.size(); i++) {
-                result.add(JSON.parseObject(data.getString(i), JobApplicationDO.class));
-            }
+            String appsString = HttpClient.sendPost(applicationUrl, JSON.toJSONString(params));
+            List<JobApplicationDO> result = JSON.parseArray(JSON.parseObject(appsString).getString("data"), JobApplicationDO.class);
             return result;
         } catch (ConnectException e) {
             e.printStackTrace();
