@@ -32,7 +32,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.net.ConnectException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -80,9 +83,9 @@ public class JobApplicataionServicesImpl implements Iface {
             String channelCode = jobApplication.getChannel_code();
             Integer sourceId = jobApplication.getChannel_source_id();
             Object appId = JSON.parseObject(response.getData()).get("jobApplicationId");
-            if (Objects.nonNull(appId)) {
+            if (appId != null && channelCode != null && sourceId != null) {
                 Integer jobApplicationId = (Integer) appId;
-                saveChannelApplicationRelationRequest(jobApplicationId,channelCode,sourceId);
+                saveChannelApplicationRelationRequest(jobApplicationId, channelCode, sourceId);
             }
             return response;
         } catch (CommonException e) {
