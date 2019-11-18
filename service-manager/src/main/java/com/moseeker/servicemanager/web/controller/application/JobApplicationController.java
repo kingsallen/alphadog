@@ -88,28 +88,10 @@ public class JobApplicationController {
             // 创建申请记录
             Response result = applicationService.postApplication(jobApplication);
             logger.info("JobApplicationController result:{}", result);
-            saveChannelApplicationRelationRequest(request, result);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
-    }
-
-    /**
-     * 发送保存申请和渠道关联关系的请求
-     * @param request
-     * @param response
-     * @throws ConnectException
-     */
-    private void saveChannelApplicationRelationRequest(HttpServletRequest request, Response response) throws ConnectException {
-        Integer jobApplicationId = (Integer) response.getFieldValue(Response._Fields.findByName("jobApplicationId"));
-        String channelCode = request.getParameter("channel_code");
-        String sourceId = request.getParameter("channel_source_id");
-        Map<String, Object> params = new HashMap<>();
-        params.put("jobApplicationId", jobApplicationId);
-        params.put("channelCode", channelCode);
-        params.put("sourceId", sourceId);
-        HttpClient.sendPost(saveChannelApplicationUrl, JSON.toJSONString(params));
     }
 
     /**
