@@ -11,10 +11,20 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ResponseLogNotification {
 
@@ -22,7 +32,37 @@ public class ResponseLogNotification {
     private final static String logkey = "LOG";
     private final static String eventkey = "RESTFUL_API_ERROR";
     private static Logger logger = LoggerFactory.getLogger(ResponseLogNotification.class);
+    private static final String errorLogRedisKey = "log_0_error";
+    static JedisPool jedisPool;
+    // 线程池
+    private static ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
+
+    /**
+     * 初始化redis集群
+     */
+    static {
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+        String host = propertiesUtils.get("redis.elk.host", String.class);
+        Integer port = propertiesUtils.get("redis.elk.port", Integer.class);
+        jedisPool = new JedisPool(host, port);
+    }
+
+    public static void save(String url, String method, Exception ex) {
+        Map<String, Object> errorLogMap = new HashMap<>();
+        errorLogMap.put("url", url);
+        errorLogMap.put("method", method);
+        errorLogMap.put("reason", ex);
+        errorLogMap.put("errorKey", "serviceManager interface error");
+        String jsonStr = JSONObject.toJSONString(errorLogMap);
+        threadPool.execute(() -> {
+            try (Jedis client = jedisPool.getResource()) {
+                client.lpush(errorLogRedisKey, jsonStr);
+            } catch (Exception e) {
+                logger.error("redis Connection refused");
+            }
+        });
+    }
 
     public static String success(HttpServletRequest request, Response response) {
         String url = request.getRequestURI();
@@ -32,6 +72,7 @@ public class ResponseLogNotification {
             logRequestResponse(request, jsonresponse);
             return jsonresponse;
         } catch (Exception e) {
+            save(url, method, e);
             logger.error("controller return response error, url:{}, method:{}, reason:", url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
@@ -85,6 +126,7 @@ public class ResponseLogNotification {
         }
         //转换json的时候去掉thrift结构体中的set方法
         logger.error("Controller failJson error, url:{}, method:{}, reason:", url, method, e);
+        save(url, method, e);
         return BeanUtils.convertStructToJSON(result);
     }
 
@@ -97,6 +139,7 @@ public class ResponseLogNotification {
             return jsonresponse;
         } catch (Exception e) {
             logger.error("Controller response error, url:{}, method:{}, reason:", url, method, e);
+            save(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -113,9 +156,11 @@ public class ResponseLogNotification {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
             logger.error("Controller error, url:{}, method:{}, reason:", url, method, ex);
+            save(url, method, ex);
             return jsonresponse;
         } catch (Exception e) {
             logger.error("Controller response error, url:{}, method:{}, reason:", url, method, e);
+            save(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -133,6 +178,7 @@ public class ResponseLogNotification {
             return jsonresponse;
         } catch (Exception e) {
             logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
+            save(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -160,10 +206,12 @@ public class ResponseLogNotification {
             }
             //进入到fail()方法，所有日志应该为error
             logger.error("controller error, url:{}, method:{}, reason:", url, method, ex);
+            save(url, method, ex);
             //Notification.sendNotification(appid, eventkey, response.getMessage());
             return jsonresponse;
         } catch (Exception e) {
             logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
+            save(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
