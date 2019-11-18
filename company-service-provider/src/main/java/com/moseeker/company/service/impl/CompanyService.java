@@ -1523,11 +1523,7 @@ public class CompanyService {
                 companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
                 return companySwitchVO;
             }).collect(Collectors.toList());
-            final int companyIdParam = companyId;
-            threadPool.startTast(() -> {
-                addDefaultSwitch(result, companyIdParam);
-                return true;
-            });
+            addDefaultSwitch(result, companyId);
             return result;
 
         } else {
@@ -1545,7 +1541,6 @@ public class CompanyService {
         if (switchList == null || switchList.size() == 0 || companyId == 0) {
             return;
         }
-        List<ConfigOmsSwitchManagement> needAdd = new ArrayList<>();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         for (OmsSwitchEnum omsSwitchEnum : OmsSwitchEnum.values()) {
             if (omsSwitchEnum.isValid()) {
@@ -1561,17 +1556,20 @@ public class CompanyService {
                         })
                         .findAny();
                 if (!optionalConfigOmsSwitchManagement.isPresent()) {
+
                     ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
                     configOmsSwitchManagement.setCompanyId(companyId);
                     configOmsSwitchManagement.setCreateTime(timestamp);
                     configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
                     configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
-                    needAdd.add(configOmsSwitchManagement);
+                    int id = configOmsSwitchManagementDao.add(configOmsSwitchManagement);
+                    CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+                    companySwitchVO.setId(id);
+                    companySwitchVO.setCompanyId(configOmsSwitchManagement.getCompanyId());
+                    companySwitchVO.setKeyword(omsSwitchEnum.getName());
+                    companySwitchVO.setValid(omsSwitchEnum.getValidToByte());
                 }
             }
-        }
-        if (needAdd.size() > 0) {
-            configOmsSwitchManagementDao.batchInsertIfNotExists(needAdd);
         }
     }
 
