@@ -28,7 +28,25 @@ public class MallOrderInfoVO{
     private Byte order_state;
     private Byte employee_state;
     private String assign_time;
+    private Integer mailId;
+    private MallMailAddressVO address;
     private String create_time;
+
+    public MallMailAddressVO getAddress() {
+        return address;
+    }
+
+    public void setAddress(MallMailAddressVO address) {
+        this.address = address;
+    }
+
+    public Integer getMailId() {
+        return mailId;
+    }
+
+    public void setMailId(Integer mailId) {
+        this.mailId = mailId;
+    }
 
     public Integer getId() {
         return id;
@@ -160,6 +178,7 @@ public class MallOrderInfoVO{
         setPic_url(mallOrderDO.getPic_url());
         setOrder_state(mallOrderDO.getState());
         setTitle(mallOrderDO.getTitle());
+        setMailId(mallOrderDO.getMailId());
         if(dateFormat == null){
             setCreate_time(mallOrderDO.getCreateTime());
             setAssign_time(mallOrderDO.getAssign_time());
@@ -211,6 +230,7 @@ public class MallOrderInfoVO{
                 ", order_id='" + order_id + '\'' +
                 ", good_id=" + good_id +
                 ", credit=" + credit +
+                ", name='" + name + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", email='" + email + '\'' +
                 ", custom='" + custom + '\'' +
@@ -220,6 +240,7 @@ public class MallOrderInfoVO{
                 ", order_state=" + order_state +
                 ", employee_state=" + employee_state +
                 ", assign_time='" + assign_time + '\'' +
+                ", mailId=" + mailId +
                 ", create_time='" + create_time + '\'' +
                 '}';
     }

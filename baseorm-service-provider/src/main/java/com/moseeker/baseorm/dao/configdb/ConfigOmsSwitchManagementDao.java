@@ -1,6 +1,5 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import com.moseeker.baseorm.constant.ValidGeneralType;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.pojos.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigOmsSwitchManagementRecord;
@@ -8,7 +7,6 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigOmsSwitchManagementDO;
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,11 +22,8 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
         super(table, configCronjobsDOClass);
     }
 
-    public List<ConfigOmsSwitchManagement> getValidOmsSwitchListByParams(int companyId, List<Integer> moduleList){
-        Condition condition =  CONFIG_OMS_SWITCH_MANAGEMENT.IS_VALID.eq(ValidGeneralType.valid.getValue());
-        if(companyId != 0){
-            condition = condition.and(CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyId));
-        }
+    public List<ConfigOmsSwitchManagement> getOmsSwitchListByParams(int companyId, List<Integer> moduleList){
+        Condition condition =  CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyId);
         if(moduleList.size()>0){
             condition = condition.and(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.in(moduleList));
         }

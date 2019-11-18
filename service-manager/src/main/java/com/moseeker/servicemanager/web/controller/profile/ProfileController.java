@@ -940,4 +940,34 @@ public class ProfileController {
         logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
         return Result.success(pdf_name).toJson();
     }
+
+    @RequestMapping(value = "/profile/word/topdf/new", method = RequestMethod.GET)
+    @ResponseBody
+    public String wordToPdfNew(@RequestParam(value = "file_name") String file_name) throws Exception {
+        File file = new File(file_name);
+        if (!file.exists()) {
+            logger.info("wordToPdf file not exists path:{}", file_name);
+            throw ProfileException.NODATA_EXCEPTION;
+        }
+        String file_type = file_name.substring(file_name.lastIndexOf(".") + 1).toLowerCase().trim();
+        if (!Constant.WORD_DOC.equals(file_type) && !Constant.WORD_DOCX.equals(file_type)) {
+            throw new ProfileException(99999, "仅支持doc和docx类型文件");
+        }
+
+        logger.info("wordToPdf fileName = {} ++++++++++++", file_name);
+        String pdf_name = Constant.WORD_TO_PDF_2B_DIRCTORY+file_name.substring(file_name.lastIndexOf("/"),file_name.indexOf("."))+Constant.WORD_PDF;
+        File pdf_file = new File(pdf_name);
+        //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
+        if (!pdf_file.exists() || pdf_file.length() == 0) {
+            try {
+                service.wordToPdf(file_name.trim(), pdf_name);
+                logger.info("ProfileController.service Word2Pdf: {} -----------", pdf_name);
+            } catch (Exception e) {
+                logger.error("OfficeUtils error :{}, reason:{}", e.getMessage(), e);
+            }
+        }
+        pdf_file = new File(pdf_name);
+        logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
+        return Result.success(pdf_name).toJson();
+    }
 }

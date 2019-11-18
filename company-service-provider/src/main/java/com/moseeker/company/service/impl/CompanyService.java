@@ -67,7 +67,6 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -1502,25 +1501,25 @@ public class CompanyService {
             HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
             companyId = hrCompanyDO.getId();
         }
-        List<Integer> moduleList = new ArrayList<>();
+        List<OmsSwitchEnum> moduleList = new ArrayList<>();
         if(moduleNames!=null){
-            moduleList = moduleNames.stream().map(str ->{
-                return toOmsSwitchValue(str);
-            } ).collect(Collectors.toList());
+            moduleList = moduleNames.stream().map(CompanyService::instanceFromModule).collect(Collectors.toList());
         }
-       List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
-       return  switchList.stream().map(configOmsSwitchManagementDO -> {
-           CompanySwitchVO companySwitchVO = new CompanySwitchVO();
-           companySwitchVO.setId(configOmsSwitchManagementDO.getId());
-           companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
-           companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
-           companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
-           companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
-           return companySwitchVO;
-       }).collect(Collectors.toList());
+        List<Integer> moduleParamList = moduleList.stream().map(OmsSwitchEnum::getValue).collect(Collectors.toList());
+        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getOmsSwitchListByParams(companyId,moduleParamList);
+        List<CompanySwitchVO> result = new ArrayList<>();
+        if(moduleNames != null && !moduleNames.isEmpty() ){
+            Map<Integer,ConfigOmsSwitchManagement> switchMap = switchList.stream().collect(Collectors.toMap(ConfigOmsSwitchManagement::getModuleName,m->m));
+            for (OmsSwitchEnum module : moduleList) {
+                result.add(getCompanySwitchVO(companyId,module,switchMap.get(module.getValue())));
+            }
+        }else{
+            int cid = companyId;
+            result = switchList.stream().map(management-> getCompanySwitchVO(cid,
+                    getOmsSwitch(management.getModuleName()),management)).collect(Collectors.toList());
+        }
+        return result;
     }
-
-
 
     /*
      *
@@ -1627,14 +1626,17 @@ public class CompanyService {
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
         companyId = hrCompanyDO.getId();
         ConfigOmsSwitchManagement configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
+        return getCompanySwitchVO(companyId,instanceFromModule(moduleNames),configOmsSwitchManagementDO);
+    }
+
+    private CompanySwitchVO getCompanySwitchVO(int companyId, OmsSwitchEnum omsSwitchEnum,ConfigOmsSwitchManagement configOmsSwitchManagementDO){
         if(configOmsSwitchManagementDO==null&&companyId!=0){
             ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
             configOmsSwitchManagement.setCompanyId(companyId);
-            OmsSwitchEnum omsSwitchEnum = instanceFromModule(moduleNames);
             configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
             configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
             configOmsSwitchManagementDao.add(configOmsSwitchManagement);
-            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
+            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,omsSwitchEnum.getValue());
         }
         CompanySwitchVO companySwitchVO = new CompanySwitchVO();
         if(configOmsSwitchManagementDO != null){
