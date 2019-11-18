@@ -1568,6 +1568,7 @@ public class CompanyService {
                     companySwitchVO.setCompanyId(configOmsSwitchManagement.getCompanyId());
                     companySwitchVO.setKeyword(omsSwitchEnum.getName());
                     companySwitchVO.setValid(omsSwitchEnum.getValidToByte());
+                    switchList.add(companySwitchVO);
                 }
             }
         }
