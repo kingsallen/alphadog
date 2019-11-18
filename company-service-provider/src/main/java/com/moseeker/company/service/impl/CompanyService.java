@@ -32,6 +32,7 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -63,6 +64,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.SmsType;
+import org.apache.thrift.Option;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +73,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -166,6 +169,8 @@ public class CompanyService {
 
     @Autowired
     CompanySwitchFactory companySwitchFactory;
+
+    ThreadPool threadPool = ThreadPool.Instance;
 
     MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
@@ -1501,24 +1506,71 @@ public class CompanyService {
             HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
             companyId = hrCompanyDO.getId();
         }
-        List<OmsSwitchEnum> moduleList = new ArrayList<>();
+        List<Integer> moduleList = new ArrayList<>();
         if(moduleNames!=null){
-            moduleList = moduleNames.stream().map(CompanyService::instanceFromModule).collect(Collectors.toList());
+            moduleList = moduleNames.stream().map(str ->{
+                return toOmsSwitchValue(str);
+            } ).collect(Collectors.toList());
         }
-        List<Integer> moduleParamList = moduleList.stream().map(OmsSwitchEnum::getValue).collect(Collectors.toList());
-        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getOmsSwitchListByParams(companyId,moduleParamList);
-        List<CompanySwitchVO> result = new ArrayList<>();
-        if(moduleNames != null && !moduleNames.isEmpty() ){
-            Map<Integer,ConfigOmsSwitchManagement> switchMap = switchList.stream().collect(Collectors.toMap(ConfigOmsSwitchManagement::getModuleName,m->m));
-            for (OmsSwitchEnum module : moduleList) {
-                result.add(getCompanySwitchVO(companyId,module,switchMap.get(module.getValue())));
+        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
+        if (switchList != null && switchList.size() > 0) {
+            List<CompanySwitchVO> result = switchList.stream().map(configOmsSwitchManagementDO -> {
+                CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+                companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+                companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
+                companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
+                companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
+                companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+                return companySwitchVO;
+            }).collect(Collectors.toList());
+            addDefaultSwitch(result, companyId);
+            return result;
+
+        } else {
+            return new ArrayList<>(0);
+        }
+    }
+
+    private void addDefaultSwitch(List<CompanySwitchVO> switchList, int companyId) {
+
+        if (switchList == null || switchList.size() == 0 || companyId == 0) {
+            return;
+        }
+        List<ConfigOmsSwitchManagement> needAdd = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        for (OmsSwitchEnum omsSwitchEnum : OmsSwitchEnum.values()) {
+            if (omsSwitchEnum.isValid()) {
+                Optional<CompanySwitchVO> optionalConfigOmsSwitchManagement = switchList
+                        .stream()
+                        .filter(companySwitchVO -> {
+                            OmsSwitchEnum omsSwitchEnum1 = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword());
+                            if (omsSwitchEnum1 != null && omsSwitchEnum1.equals(omsSwitchEnum)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        })
+                        .findAny();
+                if (!optionalConfigOmsSwitchManagement.isPresent()) {
+                    ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
+                    configOmsSwitchManagement.setCompanyId(companyId);
+                    configOmsSwitchManagement.setCreateTime(timestamp);
+                    configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
+                    configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
+                    needAdd.add(configOmsSwitchManagement);
+                }
             }
-        }else{
-            int cid = companyId;
-            result = switchList.stream().map(management-> getCompanySwitchVO(cid,
-                    getOmsSwitch(management.getModuleName()),management)).collect(Collectors.toList());
         }
-        return result;
+        if (needAdd.size() > 0) {
+            threadPool.startTast(() -> {
+                batchInsertIfNotExists(needAdd);
+                return true;
+            });
+        }
+    }
+
+    private void batchInsertIfNotExists(List<ConfigOmsSwitchManagement> list) {
+        configOmsSwitchManagementDao.batchInsertIfNotExists(list);
     }
 
     /*

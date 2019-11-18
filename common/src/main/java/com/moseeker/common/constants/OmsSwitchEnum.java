@@ -68,6 +68,10 @@ public enum OmsSwitchEnum {
         return (byte) (valid?1:0);
     }
 
+    public boolean isValid() {
+        return valid;
+    }
+
     @Override
     public String toString() {
         return name;
