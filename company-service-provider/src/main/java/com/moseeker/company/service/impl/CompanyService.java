@@ -1506,7 +1506,7 @@ public class CompanyService {
             moduleList = moduleNames.stream().map(CompanyService::instanceFromModule).collect(Collectors.toList());
         }
         List<Integer> moduleParamList = moduleList.stream().map(OmsSwitchEnum::getValue).collect(Collectors.toList());
-        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleParamList);
+        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getOmsSwitchListByParams(companyId,moduleParamList);
         Map<Integer,ConfigOmsSwitchManagement> switchMap = switchList.stream().collect(Collectors.toMap(ConfigOmsSwitchManagement::getModuleName,m->m));
         List<CompanySwitchVO> result = new ArrayList<>();
         for (OmsSwitchEnum module : moduleList) {
