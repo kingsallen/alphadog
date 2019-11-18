@@ -509,7 +509,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         long t1 = System.currentTimeMillis();
-        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+        boolean ats = isOpenMoAts(companyId);
+        List<JobApplicationDO> jobApplicationDOS;
+        if (ats) {
+            jobApplicationDOS = getQueryJobApplications(progressInfo);
+        } else {
+            jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+        }
         long t2 = System.currentTimeMillis();
         logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getQueryJobApplications : {}",t2-t1);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
@@ -575,6 +581,23 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.PROGRAM_EXCEPTION;
         }
 
+    }
+
+    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo) {
+        HashMap<String, Object> params = new HashMap<>();
+        String userName = progressInfo.getKeyword();
+        if (!StringUtils.isEmpty(userName)) {
+            List<Integer> applierIds = userUserDao.fetchByName(userName).stream().map(UserUserRecord::getId).collect(Collectors.toList());
+            params.put("applierIds", applierIds);
+        }
+
+        params.put("userId", progressInfo.getUserId());
+        params.put("companyId", progressInfo.getCompanyId());
+        params.put("progress", progressInfo.getProgress());
+        params.put("pageNum", progressInfo.getPageNum());
+        params.put("pageSize", progressInfo.getPageSize());
+        //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
+        return getQueryJobApplications4cloud(params);
     }
 
     public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,
