@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.constant.ApplicationOriginEnum;
-import com.moseeker.application.domain.event.JobApplicationChannelEvent;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
@@ -240,8 +239,6 @@ public class JobApplicataionService implements ApplicationEventPublisherAware {
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
             this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
-            // 返回 jobApplicationId
-            this.publishSaveApplicationOriginEvent(jobApplication,jobApplicationId);
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
                                                  put("jobApplicationId", jobApplicationId);
@@ -1595,15 +1592,6 @@ public class JobApplicataionService implements ApplicationEventPublisherAware {
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher=applicationEventPublisher;
-    }
-
-    /**
-     * 发布保存origin和channel关联关系的事件
-     * @param jobApplication
-     * @param applicationId
-     */
-    private void publishSaveApplicationOriginEvent(JobApplication jobApplication, Integer applicationId) {
-        applicationEventPublisher.publishEvent(new JobApplicationChannelEvent(this,applicationId,(int)jobApplication.getCompany_id(),jobApplication.getOrigin()));
     }
 }
 
