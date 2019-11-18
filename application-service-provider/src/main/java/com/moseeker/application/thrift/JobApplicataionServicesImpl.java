@@ -1,6 +1,6 @@
 package com.moseeker.application.thrift;
 
-
+import com.alibaba.fastjson.JSON;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.application.service.impl.vo.ApplicationRecord;
@@ -10,9 +10,10 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.ApplicationRecordsForm;
@@ -30,8 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.ConnectException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +49,18 @@ public class JobApplicataionServicesImpl implements Iface {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    private static String saveChannelApplicationUrl;
+
+    static {
+        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+        try {
+            configUtils.loadResource("setting.properties");
+            saveChannelApplicationUrl = configUtils.get("alphacloud.company.save.channel_application_relation.url", String.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public boolean healthCheck() throws TException {
@@ -63,7 +76,15 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response postApplication(JobApplication jobApplication){
         try{
-            return service.postApplication(jobApplication);
+            Response response = service.postApplication(jobApplication);
+            String channelCode = jobApplication.getChannel_code();
+            Integer sourceId = jobApplication.getChannel_source_id();
+            Object appId = JSON.parseObject(response.getData()).get("jobApplicationId");
+            if (Objects.nonNull(appId)) {
+                Integer jobApplicationId = (Integer) appId;
+                saveChannelApplicationRelationRequest(jobApplicationId,channelCode,sourceId);
+            }
+            return response;
         } catch (CommonException e) {
             // todo redis删除
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
@@ -76,6 +97,20 @@ public class JobApplicataionServicesImpl implements Iface {
             logger.error(e.getMessage(),e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
+    }
+
+    /**
+     * 发送保存申请和渠道关联关系的请求
+     * @param jobApplicationId
+     * @param channelCode
+     * @throws ConnectException
+     */
+    private void saveChannelApplicationRelationRequest(Integer jobApplicationId,String channelCode,Integer sourceId) throws ConnectException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("jobApplicationId", jobApplicationId);
+        params.put("channelCode", channelCode);
+        params.put("sourceId", sourceId);
+        HttpClient.sendPost(saveChannelApplicationUrl, JSON.toJSONString(params));
     }
 
 
