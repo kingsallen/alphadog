@@ -41,6 +41,30 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
         return create.selectFrom(CONFIG_OMS_SWITCH_MANAGEMENT).where(condition).fetchInto(ConfigOmsSwitchManagement.class);
     }
 
+    public List<ConfigOmsSwitchManagement> fetchOmsSwitchListByParams(int companyId, List<Integer> moduleList){
+        Condition condition =  null;
+        if(companyId != 0){
+            if (condition == null) {
+                condition = CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyId);
+            } else {
+                condition = condition.and(CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyId));
+            }
+        }
+        if(moduleList.size()>0){
+            if (condition == null) {
+                condition = CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.in(moduleList);
+            } else {
+                condition = condition.and(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.in(moduleList));
+            }
+        }
+        if (condition != null) {
+            return create.selectFrom(CONFIG_OMS_SWITCH_MANAGEMENT).where(condition).fetchInto(ConfigOmsSwitchManagement.class);
+        } else {
+            return new ArrayList<>(0);
+        }
+
+    }
+
     public ConfigOmsSwitchManagement getOmsSwitchByParams(int companyId, Integer moduleId){
         return create.selectFrom(CONFIG_OMS_SWITCH_MANAGEMENT)
                 .where(CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyId)

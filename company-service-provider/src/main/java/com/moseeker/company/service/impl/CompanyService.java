@@ -1512,7 +1512,7 @@ public class CompanyService {
                 return toOmsSwitchValue(str);
             } ).collect(Collectors.toList());
         }
-        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
+        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.fetchOmsSwitchListByParams(companyId,moduleList);
         if (switchList != null && switchList.size() > 0) {
             List<CompanySwitchVO> result = switchList.stream().map(configOmsSwitchManagementDO -> {
                 CompanySwitchVO companySwitchVO = new CompanySwitchVO();
