@@ -36,7 +36,9 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
@@ -80,6 +82,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -509,9 +512,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         long t1 = System.currentTimeMillis();
-        boolean ats = isOpenMoAts(companyId);
+       //调回alphacloud取出公司配置信息
+        String url = ProfileEntity.getParsingUrl("v4/company/conf/companyId");
+        String getResult = HttpClient.sendGet(url, "companyId=" + companyId);
+        Integer newAtsStatus = JSON.parseObject(getResult).getJSONObject("data").getInteger("newAtsStatus");
         List<JobApplicationDO> jobApplicationDOS;
-        if (ats) {
+        //是否开通MoAts
+        if (newAtsStatus != null && newAtsStatus == 1) {
             jobApplicationDOS = getQueryJobApplications(progressInfo);
         } else {
             jobApplicationDOS = getQueryJobApplications(progressInfo, true);
@@ -597,7 +604,21 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         params.put("pageNum", progressInfo.getPageNum());
         params.put("pageSize", progressInfo.getPageSize());
         //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
-        return getQueryJobApplications4cloud(params);
+        // TODO: 2019/11/18 暂定的url 联调时修改
+        String parsingUrl = ProfileEntity.getParsingUrl("/V4/application/statusApps");
+        try {
+            String appsString = HttpClient.sendPost(parsingUrl, JSON.toJSONString(params));
+            List<JobApplicationDO> result = new ArrayList<>();
+            JSONArray data = JSON.parseObject(appsString).getJSONArray("data");
+
+            for (int i = 0; i < data.size(); i++) {
+                result.add(JSON.parseObject(data.getString(i), JobApplicationDO.class));
+            }
+            return result;
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,
