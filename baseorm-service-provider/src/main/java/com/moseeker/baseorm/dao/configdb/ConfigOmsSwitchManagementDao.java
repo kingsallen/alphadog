@@ -67,7 +67,7 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
         Param<String> moduleParamParam = param(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_PARAM.getName(), configOmsSwitchManagement.getModuleParam());
         Param<Byte> validParam = param(CONFIG_OMS_SWITCH_MANAGEMENT.IS_VALID.getName(), configOmsSwitchManagement.getIsValid());
         Param<Integer> versionParam = param(CONFIG_OMS_SWITCH_MANAGEMENT.VERSION.getName(), configOmsSwitchManagement.getVersion());
-        ConfigOmsSwitchManagementRecord record = create.insertInto(CONFIG_OMS_SWITCH_MANAGEMENT)
+        create.insertInto(CONFIG_OMS_SWITCH_MANAGEMENT)
                 .columns(
                         CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID,
                         CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME,
@@ -90,7 +90,10 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
                                 .and(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.eq(moduleNameParam.getValue()))
                         )
                 )
-                .returning()
+                .execute();
+        ConfigOmsSwitchManagementRecord record = create.selectFrom(CONFIG_OMS_SWITCH_MANAGEMENT)
+                .where(CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyIdParam.getValue()))
+                .and(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.eq(moduleNameParam.getValue()))
                 .fetchOne();
         if (record != null) {
             return record.getId();
