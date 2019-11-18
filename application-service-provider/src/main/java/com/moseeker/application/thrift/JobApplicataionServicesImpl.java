@@ -54,7 +54,7 @@ public class JobApplicataionServicesImpl implements Iface {
     static {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
         try {
-            configUtils.loadResource("setting.properties");
+            configUtils.loadResource("common.properties");
             saveChannelApplicationUrl = configUtils.get("alphacloud.company.save.channel_application_relation.url", String.class);
         } catch (Exception e) {
             e.printStackTrace();
