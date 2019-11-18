@@ -1,10 +1,7 @@
 package com.moseeker.servicemanager.web.controller.application;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,18 +46,6 @@ public class JobApplicationController {
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
-
-    private static String saveChannelApplicationUrl;
-
-    static {
-        ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-        try {
-            configUtils.loadResource("setting.properties");
-            saveChannelApplicationUrl = configUtils.get("alphacloud.company.save.channel_application_relation.url", String.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @RequestMapping(value = "/application/health_check", method = RequestMethod.GET)
     @ResponseBody
