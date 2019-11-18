@@ -32,7 +32,6 @@ import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -64,7 +63,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.SmsType;
-import org.apache.thrift.Option;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,9 +167,7 @@ public class CompanyService {
 
     @Autowired
     CompanySwitchFactory companySwitchFactory;
-
-    ThreadPool threadPool = ThreadPool.Instance;
-
+    
     MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     public Response getResource(CommonQuery query) throws TException {
