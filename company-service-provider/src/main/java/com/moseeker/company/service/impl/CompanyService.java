@@ -1537,6 +1537,7 @@ public class CompanyService {
         if (switchList == null || switchList.size() == 0 || companyId == 0) {
             return;
         }
+        List<CompanySwitchVO> addList = new ArrayList<>();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         for (OmsSwitchEnum omsSwitchEnum : OmsSwitchEnum.values()) {
             if (omsSwitchEnum.isValid()) {
@@ -1564,9 +1565,12 @@ public class CompanyService {
                     companySwitchVO.setCompanyId(configOmsSwitchManagement.getCompanyId());
                     companySwitchVO.setKeyword(omsSwitchEnum.getName());
                     companySwitchVO.setValid(omsSwitchEnum.getValidToByte());
-                    switchList.add(companySwitchVO);
+                    addList.add(companySwitchVO);
                 }
             }
+        }
+        if (addList.size() > 0) {
+            switchList.addAll(addList);
         }
     }
 
