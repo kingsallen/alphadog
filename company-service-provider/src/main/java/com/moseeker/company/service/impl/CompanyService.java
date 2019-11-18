@@ -1523,7 +1523,11 @@ public class CompanyService {
                 companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
                 return companySwitchVO;
             }).collect(Collectors.toList());
-            addDefaultSwitch(result, companyId);
+            final int companyIdParam = companyId;
+            threadPool.startTast(() -> {
+                addDefaultSwitch(result, companyIdParam);
+                return true;
+            });
             return result;
 
         } else {
@@ -1531,6 +1535,11 @@ public class CompanyService {
         }
     }
 
+    /**
+     * 添加默认开启的开关
+     * @param switchList 开关列表
+     * @param companyId 公司编号
+     */
     private void addDefaultSwitch(List<CompanySwitchVO> switchList, int companyId) {
 
         if (switchList == null || switchList.size() == 0 || companyId == 0) {
@@ -1562,13 +1571,15 @@ public class CompanyService {
             }
         }
         if (needAdd.size() > 0) {
-            threadPool.startTast(() -> {
-                batchInsertIfNotExists(needAdd);
-                return true;
-            });
+            configOmsSwitchManagementDao.batchInsertIfNotExists(needAdd);
         }
     }
 
+    /**
+     * 批量增加开关
+     * 提供单独的接口方便异步执行
+     * @param list
+     */
     private void batchInsertIfNotExists(List<ConfigOmsSwitchManagement> list) {
         configOmsSwitchManagementDao.batchInsertIfNotExists(list);
     }
