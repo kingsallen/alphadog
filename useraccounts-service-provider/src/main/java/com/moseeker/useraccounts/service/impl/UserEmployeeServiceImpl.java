@@ -350,8 +350,7 @@ public class UserEmployeeServiceImpl {
      * @return 分页的内推数据
      */
     public PaginationUtil<ContributionDetail> getContributions(int companyId, String sendFrequency,int pageNum, int pageSize) {
-
-        if(StringUtils.isNotNullOrEmpty(sendFrequency)){
+        if(StringUtils.isNullOrEmpty(sendFrequency)){
             HrWxNoticeMessageRecord messageRecord = noticeDao.getHrWxNoticeMessageDOByWechatId(wechatDao.getHrWxWechatByCompanyId(companyId).getId(), Constant.AWARD_RANKING);
             if(messageRecord != null){
                 sendFrequency = messageRecord.getSendFrequency();

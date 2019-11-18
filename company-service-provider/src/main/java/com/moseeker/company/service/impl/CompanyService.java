@@ -1139,7 +1139,7 @@ public class CompanyService {
         if(WxMessageFrequency.EveryMonth.equals(frequency)){
             // HR设置频率每月一次
             // 当天必须为本月末
-            return c.get(Calendar.DAY_OF_MONTH) == c.getMaximum(Calendar.DAY_OF_MONTH);
+            return c.get(Calendar.DAY_OF_MONTH) == c.getActualMaximum(Calendar.DAY_OF_MONTH);
         }else{
             // HR设置频率为每周/每2周
             // 发送时间周五17：00，上次发送时间记录在HrWxNoticeMessageRecord.sentDate字段
