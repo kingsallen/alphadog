@@ -1507,10 +1507,16 @@ public class CompanyService {
         }
         List<Integer> moduleParamList = moduleList.stream().map(OmsSwitchEnum::getValue).collect(Collectors.toList());
         List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getOmsSwitchListByParams(companyId,moduleParamList);
-        Map<Integer,ConfigOmsSwitchManagement> switchMap = switchList.stream().collect(Collectors.toMap(ConfigOmsSwitchManagement::getModuleName,m->m));
         List<CompanySwitchVO> result = new ArrayList<>();
-        for (OmsSwitchEnum module : moduleList) {
-            result.add(getCompanySwitchVO(companyId,module,switchMap.get(module.getValue())));
+        if(moduleNames != null && !moduleNames.isEmpty() ){
+            Map<Integer,ConfigOmsSwitchManagement> switchMap = switchList.stream().collect(Collectors.toMap(ConfigOmsSwitchManagement::getModuleName,m->m));
+            for (OmsSwitchEnum module : moduleList) {
+                result.add(getCompanySwitchVO(companyId,module,switchMap.get(module.getValue())));
+            }
+        }else{
+            int cid = companyId;
+            result = switchList.stream().map(management-> getCompanySwitchVO(cid,
+                    getOmsSwitch(management.getModuleName()),management)).collect(Collectors.toList());
         }
         return result;
     }
