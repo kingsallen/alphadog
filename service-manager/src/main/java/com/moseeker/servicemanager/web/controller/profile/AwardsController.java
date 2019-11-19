@@ -41,7 +41,7 @@ public class AwardsController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -53,9 +53,8 @@ public class AwardsController {
 			Awards award = ParamUtils.initModelForm(request, Awards.class);
 			Response result = awardService.postResource(award);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			e.printStackTrace();
-			return ResponseLogNotification.fail(request, e.getMessage());
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -67,7 +66,7 @@ public class AwardsController {
 			Response result = awardService.putResource(award);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -79,7 +78,7 @@ public class AwardsController {
 			Response result = awardService.delResource(award);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

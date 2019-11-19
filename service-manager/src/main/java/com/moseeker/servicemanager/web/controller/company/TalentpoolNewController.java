@@ -60,8 +60,7 @@ public class TalentpoolNewController {
             Response result = service.getCompanyTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -93,8 +92,7 @@ public class TalentpoolNewController {
             Response result = service.deleteCompanyTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),company_tagList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -123,8 +121,7 @@ public class TalentpoolNewController {
             Response result = service.getCompanyIdInfo(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(company_tag_id));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -147,8 +144,7 @@ public class TalentpoolNewController {
             Response result = service.addCompanyTag(companyTagDO, Integer.parseInt(hrId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -174,8 +170,7 @@ public class TalentpoolNewController {
             Response result = service.updateCompanyTag(companyTagDO, Integer.parseInt(hrId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -205,8 +200,7 @@ public class TalentpoolNewController {
             }
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -226,8 +220,7 @@ public class TalentpoolNewController {
             Response res = service.addHrAutoMaticTag(tagDO, Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -247,8 +240,7 @@ public class TalentpoolNewController {
             Response res = service.updateHrAutoMaticTag(tagDO, Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -280,8 +272,7 @@ public class TalentpoolNewController {
             Response result = service.deleteHrAutoMaticTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),tagList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -305,8 +296,7 @@ public class TalentpoolNewController {
             Response result = service.getHrAutoMaticTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -333,8 +323,7 @@ public class TalentpoolNewController {
             Response result = service.getHrAutoMaticTagSingle(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(id));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

@@ -42,7 +42,7 @@ public class BasicController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class BasicController {
 			if (e instanceof DataIntegrityViolationException) {
 				return ResponseLogNotification.fail(request, "数据输入异常！");
 			}
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -112,7 +112,7 @@ public class BasicController {
 			if (e instanceof DataIntegrityViolationException) {
 				return ResponseLogNotification.fail(request, "数据输入异常！");
 			}
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -126,7 +126,7 @@ public class BasicController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }
