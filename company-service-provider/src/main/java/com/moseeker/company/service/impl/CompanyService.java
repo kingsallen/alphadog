@@ -1520,6 +1520,9 @@ public class CompanyService {
                 return companySwitchVO;
             }).collect(Collectors.toList());
             addDefaultSwitch(result, companyId);
+            logger.info("CompanyService switchCheck after result:{}", JSONObject.toJSONString(result));
+            filtrationValidSwitch(result);
+            logger.info("CompanyService switchCheck after filtrationValidSwitch result:{}", JSONObject.toJSONString(result));
             return result;
 
         } else {
@@ -1571,6 +1574,23 @@ public class CompanyService {
         }
         if (addList.size() > 0) {
             switchList.addAll(addList);
+        }
+    }
+
+    /**
+     * 只返回开启的开关
+     * 由于查找公司下开关的接口的逻辑是只返回开启的开关，所以做一下特殊处理
+     * @param result 开启的开关
+     */
+    private void filtrationValidSwitch(List<CompanySwitchVO> result) {
+        if (result != null && result.size() > 0) {
+            Iterator<CompanySwitchVO> iterator = result.iterator();
+            while (iterator.hasNext()) {
+                CompanySwitchVO companySwitchVO = iterator.next();
+                if (companySwitchVO.getValid() == 0) {
+                    iterator.remove();
+                }
+            }
         }
     }
 
