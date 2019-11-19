@@ -509,10 +509,19 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         long t1 = System.currentTimeMillis();
        //调回alphacloud取出公司配置信息
-        String url = AlphaCloudProvider.Company.buildURL("v4/company/conf/companyId");
-        String getResult = HttpClient.sendGet(url, "companyId=" + companyId);
-        Integer newAtsStatus = JSON.parseObject(getResult).getJSONObject("data").getInteger("newAtsStatus");
+        Integer newAtsStatus = null;
         List<JobApplicationDO> jobApplicationDOS;
+        try {
+            String url = AlphaCloudProvider.Company.buildURL("v4/company/conf/companyId");
+            String getResult = HttpClient.sendGet(url, "companyId=" + companyId);
+            logger.info("ReferralRadarServiceImpl.getProgressBatch v4/company/conf/companyId : {}", getResult);
+            JSONObject jsonResult = JSON.parseObject(getResult);
+            if ("0".equals(jsonResult.getString("code"))) {
+                newAtsStatus = JSON.parseObject(getResult).getJSONObject("data").getInteger("newAtsStatus");
+            }
+        } catch (Exception e) {
+
+        }
         //是否开通MoAts
         if (newAtsStatus != null && newAtsStatus == 1) {
             jobApplicationDOS = getQueryJobApplications(progressInfo);
@@ -600,16 +609,19 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         params.put("pageNum", progressInfo.getPageNum());
         params.put("pageSize", progressInfo.getPageSize());
         //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
-        // TODO: 2019/11/18 暂定的url 联调时修改
-        String applicationUrl = AlphaCloudProvider.Application.buildURL("/V4/application/statusApps");
         try {
+            String applicationUrl = AlphaCloudProvider.Application.buildURL("/v5/application/process/toc");
             String appsString = HttpClient.sendPost(applicationUrl, JSON.toJSONString(params));
-            List<JobApplicationDO> result = JSON.parseArray(JSON.parseObject(appsString).getString("data"), JobApplicationDO.class);
-            return result;
+            logger.info("ReferralRadarServiceImpl.getQueryJobApplications : {}", appsString);
+            JSONObject jsonResult = JSON.parseObject(appsString);
+            if ("0".equals(jsonResult.getString("code"))) {
+                List<JobApplicationDO> result = JSON.parseArray(jsonResult.getString("data"), JobApplicationDO.class);
+                return result;
+            }
         } catch (ConnectException e) {
-            e.printStackTrace();
+            logger.error("ReferralRadarServiceImpl.getQueryJobApplications /v5/application/process/toc error :", e);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,
