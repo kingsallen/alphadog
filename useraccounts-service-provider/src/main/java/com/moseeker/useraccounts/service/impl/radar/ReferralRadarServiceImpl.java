@@ -615,7 +615,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             logger.info("ReferralRadarServiceImpl.getQueryJobApplications : {}", appsString);
             JSONObject jsonResult = JSON.parseObject(appsString);
             if ("0".equals(jsonResult.getString("code"))) {
-                List<JobApplicationDO> result = JSON.parseArray(jsonResult.getString("data"), JobApplicationDO.class);
+                List<JobApplicationDO> result = JSON.parseArray(jsonResult.getJSONObject("data").getString("data"), JobApplicationDO.class);
                 return result;
             }
         } catch (ConnectException e) {
