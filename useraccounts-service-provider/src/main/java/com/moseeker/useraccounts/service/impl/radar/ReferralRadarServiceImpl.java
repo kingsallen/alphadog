@@ -610,7 +610,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         params.put("pageSize", progressInfo.getPageSize());
         //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
         try {
-            String applicationUrl = AlphaCloudProvider.Application.buildURL("/v5/application/process/toc");
+            String applicationUrl = AlphaCloudProvider.Application.buildURL("/v4/application/process/toc");
             String appsString = HttpClient.sendPost(applicationUrl, JSON.toJSONString(params));
             logger.info("ReferralRadarServiceImpl.getQueryJobApplications : {}", appsString);
             JSONObject jsonResult = JSON.parseObject(appsString);
