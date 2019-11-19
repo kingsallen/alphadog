@@ -6,6 +6,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -30,8 +31,7 @@ public class ResponseLogNotification {
     private static final String errorLogRedisKey = "log_0_error";
     static JedisPool jedisPool;
     // 线程池
-    private static ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-
+    private static ThreadPool threadPool =ThreadPool.Instance;
 
     /**
      * 初始化redis集群
@@ -59,12 +59,13 @@ public class ResponseLogNotification {
         errorLogMap.put("reason", ex);
         errorLogMap.put("errorKey", "serviceManager interface error");
         String jsonStr = JSONObject.toJSONString(errorLogMap);
-        threadPool.execute(() -> {
+        threadPool.startTast(() -> {
             try (Jedis client = jedisPool.getResource()) {
                 client.lpush(errorLogRedisKey, jsonStr);
             } catch (Exception e) {
                 logger.error("redis Connection refused");
             }
+            return 0;
         });
     }
 
