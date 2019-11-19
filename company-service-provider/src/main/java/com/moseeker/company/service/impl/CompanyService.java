@@ -69,6 +69,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -167,7 +168,7 @@ public class CompanyService {
 
     @Autowired
     CompanySwitchFactory companySwitchFactory;
-
+    
     MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     public Response getResource(CommonQuery query) throws TException {
@@ -1577,19 +1578,100 @@ public class CompanyService {
                 return toOmsSwitchValue(str);
             } ).collect(Collectors.toList());
         }
-       List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
-       return  switchList.stream().map(configOmsSwitchManagementDO -> {
-           CompanySwitchVO companySwitchVO = new CompanySwitchVO();
-           companySwitchVO.setId(configOmsSwitchManagementDO.getId());
-           companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
-           companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
-           companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
-           companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
-           return companySwitchVO;
-       }).collect(Collectors.toList());
+        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.fetchOmsSwitchListByParams(companyId,moduleList);
+        if (switchList != null && switchList.size() > 0) {
+            List<CompanySwitchVO> result = switchList.stream().map(configOmsSwitchManagementDO -> {
+                CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+                companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+                companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
+                companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
+                companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
+                companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+                return companySwitchVO;
+            }).collect(Collectors.toList());
+            addDefaultSwitch(result, companyId);
+            logger.info("CompanyService switchCheck after result:{}", JSONObject.toJSONString(result));
+            filtrationValidSwitch(result);
+            logger.info("CompanyService switchCheck after filtrationValidSwitch result:{}", JSONObject.toJSONString(result));
+            return result;
+
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 
+    /**
+     * 添加默认开启的开关
+     * @param switchList 开关列表
+     * @param companyId 公司编号
+     */
+    private void addDefaultSwitch(List<CompanySwitchVO> switchList, int companyId) {
 
+        if (switchList == null || switchList.size() == 0 || companyId == 0) {
+            return;
+        }
+        List<CompanySwitchVO> addList = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        for (OmsSwitchEnum omsSwitchEnum : OmsSwitchEnum.values()) {
+            if (omsSwitchEnum.isValid()) {
+                Optional<CompanySwitchVO> optionalConfigOmsSwitchManagement = switchList
+                        .stream()
+                        .filter(companySwitchVO -> {
+                            OmsSwitchEnum omsSwitchEnum1 = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword());
+                            if (omsSwitchEnum1 != null && omsSwitchEnum1.equals(omsSwitchEnum)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        })
+                        .findAny();
+                if (!optionalConfigOmsSwitchManagement.isPresent()) {
+
+                    ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
+                    configOmsSwitchManagement.setCompanyId(companyId);
+                    configOmsSwitchManagement.setCreateTime(timestamp);
+                    configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
+                    configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
+                    int id = configOmsSwitchManagementDao.add(configOmsSwitchManagement);
+                    CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+                    companySwitchVO.setId(id);
+                    companySwitchVO.setCompanyId(configOmsSwitchManagement.getCompanyId());
+                    companySwitchVO.setKeyword(omsSwitchEnum.getName());
+                    companySwitchVO.setValid(omsSwitchEnum.getValidToByte());
+                    addList.add(companySwitchVO);
+                }
+            }
+        }
+        if (addList.size() > 0) {
+            switchList.addAll(addList);
+        }
+    }
+
+    /**
+     * 只返回开启的开关
+     * 由于查找公司下开关的接口的逻辑是只返回开启的开关，所以做一下特殊处理
+     * @param result 开启的开关
+     */
+    private void filtrationValidSwitch(List<CompanySwitchVO> result) {
+        if (result != null && result.size() > 0) {
+            Iterator<CompanySwitchVO> iterator = result.iterator();
+            while (iterator.hasNext()) {
+                CompanySwitchVO companySwitchVO = iterator.next();
+                if (companySwitchVO.getValid() == 0) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * 批量增加开关
+     * 提供单独的接口方便异步执行
+     * @param list
+     */
+    private void batchInsertIfNotExists(List<ConfigOmsSwitchManagement> list) {
+        configOmsSwitchManagementDao.batchInsertIfNotExists(list);
+    }
 
     /*
      *
@@ -1696,14 +1778,17 @@ public class CompanyService {
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
         companyId = hrCompanyDO.getId();
         ConfigOmsSwitchManagement configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
+        return getCompanySwitchVO(companyId,instanceFromModule(moduleNames),configOmsSwitchManagementDO);
+    }
+
+    private CompanySwitchVO getCompanySwitchVO(int companyId, OmsSwitchEnum omsSwitchEnum,ConfigOmsSwitchManagement configOmsSwitchManagementDO){
         if(configOmsSwitchManagementDO==null&&companyId!=0){
             ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
             configOmsSwitchManagement.setCompanyId(companyId);
-            OmsSwitchEnum omsSwitchEnum = instanceFromModule(moduleNames);
             configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
             configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
             configOmsSwitchManagementDao.add(configOmsSwitchManagement);
-            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
+            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,omsSwitchEnum.getValue());
         }
         CompanySwitchVO companySwitchVO = new CompanySwitchVO();
         if(configOmsSwitchManagementDO != null){
