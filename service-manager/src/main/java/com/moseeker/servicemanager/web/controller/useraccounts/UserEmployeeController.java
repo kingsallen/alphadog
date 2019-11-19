@@ -335,7 +335,7 @@ public class UserEmployeeController {
     }
 
     /*
-    获取最近转发人员
+     * 获取最近转发人员，用户发送员工积分排行模板消息
      */
     @RequestMapping(value="/v1.0/employee/rank", method = RequestMethod.GET)
     @ResponseBody
@@ -343,6 +343,7 @@ public class UserEmployeeController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("company_id", 0);
+            String frequency = params.getString("frequency");
             int pageSize = params.getInt("page_size", 0);
             int pageNo = params.getInt("page_no", 0);
 
@@ -354,7 +355,7 @@ public class UserEmployeeController {
 
             } else {
                 PaginationUtil<ContributionDetail> result = new PaginationUtil<>();
-                com.moseeker.thrift.gen.useraccounts.struct.Pagination pagination = service.getContributions(companyId,
+                com.moseeker.thrift.gen.useraccounts.struct.Pagination pagination = service.getContributions(companyId,frequency,
                         pageNo, pageSize);
 
                 result.setPageNum(pagination.getPageNum());

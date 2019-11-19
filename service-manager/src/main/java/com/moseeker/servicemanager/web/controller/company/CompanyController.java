@@ -944,11 +944,31 @@ public class CompanyController {
     public String getCompanyAward(HttpServletRequest request) throws Exception {
         try {
             Map<String, Object> data = parseRequestParam(request);
-            String companyId=(String)data.get("company_id");
-            if(StringUtils.isNullOrEmpty(companyId)){
-               companyId = "0";
-            }
-            Response confDO  = companyServices.getCompanyWechatList(Integer.parseInt(companyId));
+            String companyId=(String)data.getOrDefault("company_id","0");
+            String currentDate = (String)data.get("currentDate");
+            Response confDO  = companyServices.getCompanyWechatList(Integer.parseInt(companyId),currentDate);
+            return ResponseLogNotification.success(request,confDO);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 积分排行模板消息发送成功后通知服务
+     * 主要用于记录发送了模板消息的公司的发送时间
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/api/company/awardsRanking/notifyTplMsgSent", method = RequestMethod.POST)
+    @ResponseBody
+    public String sentAwardsRankingTplMsg(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            List<Integer> ids= (List<Integer>) data.get("wechatIds");
+            String currentDate = (String)data.get("currentDate");
+            Response confDO  = companyServices.notifyAwardsRankingTplMsgSent(ids,currentDate);
             return ResponseLogNotification.success(request,confDO);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.hrdb.Hrdb;
 import com.moseeker.baseorm.db.hrdb.Keys;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 
-    private static final long serialVersionUID = -1436648116;
+    private static final long serialVersionUID = 480055992;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_notice_message</code>
@@ -84,6 +85,16 @@ public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
      * The column <code>hrdb.hr_wx_notice_message.disable</code>. 是否是有效数据 0 是 1否
      */
     public final TableField<HrWxNoticeMessageRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否是有效数据 0 是 1否");
+
+    /**
+     * The column <code>hrdb.hr_wx_notice_message.send_frequency</code>. 模板消息发送频率，如： 1w 2w 1m
+     */
+    public final TableField<HrWxNoticeMessageRecord, String> SEND_FREQUENCY = createField("send_frequency", org.jooq.impl.SQLDataType.VARCHAR.length(5), this, "模板消息发送频率，如： 1w 2w 1m");
+
+    /**
+     * The column <code>hrdb.hr_wx_notice_message.sent_date</code>. 最近一次发送时间
+     */
+    public final TableField<HrWxNoticeMessageRecord, Date> SENT_DATE = createField("sent_date", org.jooq.impl.SQLDataType.DATE, this, "最近一次发送时间");
 
     /**
      * Create a <code>hrdb.hr_wx_notice_message</code> table reference

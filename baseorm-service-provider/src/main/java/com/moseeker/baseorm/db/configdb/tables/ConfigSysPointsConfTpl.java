@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysPointsConfTpl extends TableImpl<ConfigSysPointsConfTplRecord> {
 
-    private static final long serialVersionUID = -1674740030;
+    private static final long serialVersionUID = -2029862153;
 
     /**
      * The reference instance of <code>configdb.config_sys_points_conf_tpl</code>
@@ -104,6 +104,11 @@ public class ConfigSysPointsConfTpl extends TableImpl<ConfigSysPointsConfTplReco
      * The column <code>configdb.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
      */
     public final TableField<ConfigSysPointsConfTplRecord, String> APPLIER_VIEW = createField("applier_view", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "求职者的文案");
+
+    /**
+     * The column <code>configdb.config_sys_points_conf_tpl.ats_name</code>. ats的状态名称
+     */
+    public final TableField<ConfigSysPointsConfTplRecord, String> ATS_NAME = createField("ats_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "ats的状态名称");
 
     /**
      * Create a <code>configdb.config_sys_points_conf_tpl</code> table reference

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCertConfRecord extends UpdatableRecordImpl<HrEmployeeCertConfRecord> implements Record14<Integer, Integer, Byte, String, Timestamp, Timestamp, Byte, Byte, Integer, Byte, String, String, String, String> {
 
-    private static final long serialVersionUID = -983748484;
+    private static final long serialVersionUID = -1182485712;
 
     /**
      * Setter for <code>hrdb.hr_employee_cert_conf.id</code>.
@@ -159,14 +159,14 @@ public class HrEmployeeCertConfRecord extends UpdatableRecordImpl<HrEmployeeCert
     }
 
     /**
-     * Setter for <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答
+     * Setter for <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答 7:企业微信
      */
     public void setAuthMode(Byte value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答
+     * Getter for <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答 7:企业微信
      */
     public Byte getAuthMode() {
         return (Byte) get(9);
