@@ -14,12 +14,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import javax.servlet.*;
 import javax.servlet.http.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -48,7 +43,16 @@ public class ResponseLogNotification {
         jedisPool = new JedisPool(host, port);
     }
 
-    public static void save(String url, String method, Exception ex) {
+    /**
+     * 错误日志写入ELK
+     *
+     * @param  url 请求url
+     * @param method 请求方式
+     * @param ex 异常信息
+     * @Author lee
+     * @Date 2019/11/19 10:08
+     */
+    public static void log2ELK(String url, String method, Exception ex) {
         Map<String, Object> errorLogMap = new HashMap<>();
         errorLogMap.put("url", url);
         errorLogMap.put("method", method);
@@ -72,7 +76,7 @@ public class ResponseLogNotification {
             logRequestResponse(request, jsonresponse);
             return jsonresponse;
         } catch (Exception e) {
-            save(url, method, e);
+            log2ELK(url, method, e);
             logger.error("controller return response error, url:{}, method:{}, reason:", url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
@@ -126,7 +130,7 @@ public class ResponseLogNotification {
         }
         //转换json的时候去掉thrift结构体中的set方法
         logger.error("Controller failJson error, url:{}, method:{}, reason:", url, method, e);
-        save(url, method, e);
+        log2ELK(url, method, e);
         return BeanUtils.convertStructToJSON(result);
     }
 
@@ -139,7 +143,7 @@ public class ResponseLogNotification {
             return jsonresponse;
         } catch (Exception e) {
             logger.error("Controller response error, url:{}, method:{}, reason:", url, method, e);
-            save(url, method, e);
+            log2ELK(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -156,11 +160,11 @@ public class ResponseLogNotification {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
             logger.error("Controller error, url:{}, method:{}, reason:", url, method, ex);
-            save(url, method, ex);
+            log2ELK(url, method, ex);
             return jsonresponse;
         } catch (Exception e) {
             logger.error("Controller response error, url:{}, method:{}, reason:", url, method, e);
-            save(url, method, e);
+            log2ELK(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -178,7 +182,7 @@ public class ResponseLogNotification {
             return jsonresponse;
         } catch (Exception e) {
             logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
-            save(url, method, e);
+            log2ELK(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -206,12 +210,12 @@ public class ResponseLogNotification {
             }
             //进入到fail()方法，所有日志应该为error
             logger.error("controller error, url:{}, method:{}, reason:", url, method, ex);
-            save(url, method, ex);
+            log2ELK(url, method, ex);
             //Notification.sendNotification(appid, eventkey, response.getMessage());
             return jsonresponse;
         } catch (Exception e) {
             logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
-            save(url, method, e);
+            log2ELK(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
