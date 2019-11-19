@@ -86,6 +86,9 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
         if (configOmsSwitchManagement.getVersion() == null) {
             configOmsSwitchManagement.setVersion(1);
         }
+        if (configOmsSwitchManagement.getIsValid() == null) {
+            configOmsSwitchManagement.setIsValid((byte)1);
+        }
         Param<Integer> companyIdParam = param(CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.getName(), configOmsSwitchManagement.getCompanyId());
         Param<Integer> moduleNameParam = param(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.getName(), configOmsSwitchManagement.getModuleName());
         Param<String> moduleParamParam = param(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_PARAM.getName(), configOmsSwitchManagement.getModuleParam());
