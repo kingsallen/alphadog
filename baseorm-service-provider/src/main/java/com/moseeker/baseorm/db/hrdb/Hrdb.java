@@ -24,6 +24,10 @@ import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessCompanyItem;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsProcessNewRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrAtsRecommend;
+import com.moseeker.baseorm.db.hrdb.tables.HrChannel;
+import com.moseeker.baseorm.db.hrdb.tables.HrChannelCategory;
+import com.moseeker.baseorm.db.hrdb.tables.HrChannelCategorySourceRelation;
+import com.moseeker.baseorm.db.hrdb.tables.HrChannelSource;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
@@ -134,7 +138,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -128202718;
+    private static final long serialVersionUID = 2043839186;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -240,6 +244,26 @@ public class Hrdb extends SchemaImpl {
      * 推荐给用人部门表
      */
     public final HrAtsRecommend HR_ATS_RECOMMEND = com.moseeker.baseorm.db.hrdb.tables.HrAtsRecommend.HR_ATS_RECOMMEND;
+
+    /**
+     * 渠道表
+     */
+    public final HrChannel HR_CHANNEL = com.moseeker.baseorm.db.hrdb.tables.HrChannel.HR_CHANNEL;
+
+    /**
+     * 渠道类型表,1: 招聘网站,2 微信招聘 3 内部推荐 4 猎头公司 5 内部自有 6 其他渠道
+     */
+    public final HrChannelCategory HR_CHANNEL_CATEGORY = com.moseeker.baseorm.db.hrdb.tables.HrChannelCategory.HR_CHANNEL_CATEGORY;
+
+    /**
+     * 渠道类型和来源关联关系表
+     */
+    public final HrChannelCategorySourceRelation HR_CHANNEL_CATEGORY_SOURCE_RELATION = com.moseeker.baseorm.db.hrdb.tables.HrChannelCategorySourceRelation.HR_CHANNEL_CATEGORY_SOURCE_RELATION;
+
+    /**
+     * 投递来源
+     */
+    public final HrChannelSource HR_CHANNEL_SOURCE = com.moseeker.baseorm.db.hrdb.tables.HrChannelSource.HR_CHANNEL_SOURCE;
 
     /**
      * 聊天室未读消息
@@ -711,6 +735,10 @@ public class Hrdb extends SchemaImpl {
             HrAtsProcessCompanyItem.HR_ATS_PROCESS_COMPANY_ITEM,
             HrAtsProcessNewRecord.HR_ATS_PROCESS_NEW_RECORD,
             HrAtsRecommend.HR_ATS_RECOMMEND,
+            HrChannel.HR_CHANNEL,
+            HrChannelCategory.HR_CHANNEL_CATEGORY,
+            HrChannelCategorySourceRelation.HR_CHANNEL_CATEGORY_SOURCE_RELATION,
+            HrChannelSource.HR_CHANNEL_SOURCE,
             HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
             HrCmsMedia.HR_CMS_MEDIA,
             HrCmsModule.HR_CMS_MODULE,

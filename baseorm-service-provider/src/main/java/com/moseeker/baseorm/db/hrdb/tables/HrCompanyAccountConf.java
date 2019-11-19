@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyAccountConf extends TableImpl<HrCompanyAccountConfRecord> {
 
-    private static final long serialVersionUID = 1549142639;
+    private static final long serialVersionUID = 33922893;
 
     /**
      * The reference instance of <code>hrdb.hr_company_account_conf</code>
@@ -62,9 +62,9 @@ public class HrCompanyAccountConf extends TableImpl<HrCompanyAccountConfRecord> 
     public final TableField<HrCompanyAccountConfRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司id");
 
     /**
-     * The column <code>hrdb.hr_company_account_conf.role_type</code>. 角色类型(1:超级管理员 2:管理员 3:招聘负责人 4:高级用人经理  5:用人经理 6:面试官')
+     * The column <code>hrdb.hr_company_account_conf.role_type</code>. 角色类型(1:超级管理员 2:管理员 3:HR 4:高级用人经理  5:用人经理 6:面试官')
      */
-    public final TableField<HrCompanyAccountConfRecord, String> ROLE_TYPE = createField("role_type", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "角色类型(1:超级管理员 2:管理员 3:招聘负责人 4:高级用人经理  5:用人经理 6:面试官')");
+    public final TableField<HrCompanyAccountConfRecord, String> ROLE_TYPE = createField("role_type", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "角色类型(1:超级管理员 2:管理员 3:HR 4:高级用人经理  5:用人经理 6:面试官')");
 
     /**
      * The column <code>hrdb.hr_company_account_conf.account_limit</code>. 账号总额(该公司总共可拥有的该类型账号的数量)

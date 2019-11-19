@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyAccountConfRecord extends UpdatableRecordImpl<HrCompanyAccountConfRecord> implements Record6<Integer, Integer, String, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1841480670;
+    private static final long serialVersionUID = -625459580;
 
     /**
      * Setter for <code>hrdb.hr_company_account_conf.id</code>. 自增id
@@ -61,14 +61,14 @@ public class HrCompanyAccountConfRecord extends UpdatableRecordImpl<HrCompanyAcc
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_account_conf.role_type</code>. 角色类型(1:超级管理员 2:管理员 3:招聘负责人 4:高级用人经理  5:用人经理 6:面试官')
+     * Setter for <code>hrdb.hr_company_account_conf.role_type</code>. 角色类型(1:超级管理员 2:管理员 3:HR 4:高级用人经理  5:用人经理 6:面试官')
      */
     public void setRoleType(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_account_conf.role_type</code>. 角色类型(1:超级管理员 2:管理员 3:招聘负责人 4:高级用人经理  5:用人经理 6:面试官')
+     * Getter for <code>hrdb.hr_company_account_conf.role_type</code>. 角色类型(1:超级管理员 2:管理员 3:HR 4:高级用人经理  5:用人经理 6:面试官')
      */
     public String getRoleType() {
         return (String) get(2);

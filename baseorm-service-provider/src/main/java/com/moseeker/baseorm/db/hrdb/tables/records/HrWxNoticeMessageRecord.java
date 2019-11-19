@@ -5,14 +5,16 @@ package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+
+import java.sql.Date;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record9;
 import org.jooq.Row9;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import javax.annotation.Generated;
-import java.sql.Date;
 
 
 /**
