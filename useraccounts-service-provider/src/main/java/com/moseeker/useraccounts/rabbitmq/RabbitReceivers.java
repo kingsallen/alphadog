@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.rabbitmq;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
@@ -22,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.kafka.KafkaSender;
+import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +69,8 @@ public class RabbitReceivers {
     private CandidateTemplateShareChainDao templateShareChainDao;
     @Autowired
     private ReferralTemplateSender referralTemplateSender;
+    @Autowired
+    private Neo4jService neo4jService;
 
     @RabbitListener(queues = "handle_share_chain", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -148,6 +153,49 @@ public class RabbitReceivers {
             referralTemplateSender.sendTenMinuteTemplateIfNecessary(cardInfo);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
+        }
+    }
+
+    @RabbitListener(queues = Constant.NEO4J_SHUTDOWN_TASK_DELAY_QUEUE,containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void handleNeo4jDelayTask(Message message){
+        String method = null;
+        try{
+            String msgBody = new String(message.getBody());
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            if (jsonObject.get("method") != null && jsonObject.get("params") != null) {
+                method = jsonObject.getString("method");
+                JSONArray jsonArray = jsonObject.getJSONArray("params");
+                switch (method) {
+                    case "addFriendRelation":
+                        if (jsonArray.size() != 3) {
+                            logger.info("handleReferralApply handleNeo4jDelayTask end! 方法参数异常！method:{}, addFriendRelation jsonArray:{}", method, jsonArray.toString());
+                        } else {
+                            neo4jService.addFriendRelation(jsonArray.getInteger(0), jsonArray.getInteger(1),
+                                    jsonArray.getInteger(2));
+                            logger.info("handleReferralApply handleNeo4jDelayTask end! 成功！method:{}", method);
+                        }
+                        break;
+                    case "addConnRelation":
+                        if (jsonArray.size() != 4) {
+                            logger.info("handleReferralApply handleNeo4jDelayTask end! 方法参数异常！method:{}, addConnRelation jsonArray:{}", method, jsonArray.toString());
+                        } else {
+                            neo4jService.addConnRelation(jsonArray.getInteger(0), jsonArray.getInteger(1),
+                                    jsonArray.getInteger(2), jsonArray.getInteger(3));
+                            logger.info("handleReferralApply handleNeo4jDelayTask end! 成功！method:{}", method);
+                        }
+                        break;
+                    default:
+                        logger.info("handleReferralApply handleNeo4jDelayTask end! 方法名异常！ method:{}", method);
+                }
+            } else {
+                logger.info("handleReferralApply handleNeo4jDelayTask end! 重试参数异常！params:{}", msgBody);
+            }
+        } catch(Exception e){
+            logger.error(e.getMessage(),e);
+        } finally {
+            LocalDateTime now = LocalDateTime.now();
+            logger.info("neo4j handlerRetryEvent end. method:{}, endTime:{}", method, now);
         }
     }
 

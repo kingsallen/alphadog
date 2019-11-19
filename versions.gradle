@@ -58,7 +58,8 @@ ext {
             "commons-fileupload"       : 'commons-fileupload:commons-fileupload:1.2.1',
             "zxing-core"                :'com.google.zxing:core:3.3.3',
             "SensorsAnalyticsSDK"     :'com.sensorsdata.analytics.javasdk:SensorsAnalyticsSDK:3.1.10-standalone',
-            "pdfbox"              : 'org.apache.pdfbox:pdfbox:1.8.16'
+            "pdfbox"              : 'org.apache.pdfbox:pdfbox:1.8.16',
+            "emoji"               : 'com.kcthota:emoji4j:5.0'
 
     ]
 }

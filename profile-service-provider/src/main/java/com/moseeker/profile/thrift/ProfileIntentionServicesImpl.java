@@ -1,18 +1,15 @@
 package com.moseeker.profile.thrift;
 
 import com.moseeker.baseorm.tool.QueryConvert;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.profile.service.impl.ProfileIntentionService;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.IntentionServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +17,6 @@ import java.util.List;
 
 @Service
 public class ProfileIntentionServicesImpl implements Iface {
-
-    Logger logger = LoggerFactory.getLogger(ProfileIntentionServicesImpl.class);
 
     @Autowired
     private ProfileIntentionService service;
@@ -31,9 +26,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.getResources(query);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -42,9 +35,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.postResource(struct);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -53,9 +44,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.putResource(struct);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -64,9 +53,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.delResource(struct);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -75,9 +62,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.getResource(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -86,9 +71,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.postResources(structs);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -97,9 +80,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.putResources(structs);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -108,9 +89,7 @@ public class ProfileIntentionServicesImpl implements Iface {
         try {
             return service.delResources(structs);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -120,9 +99,7 @@ public class ProfileIntentionServicesImpl implements Iface {
             Pagination pagination = service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
             return ResponseUtils.success(pagination);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 }
