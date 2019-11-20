@@ -17,10 +17,6 @@ import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.*;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class ResponseLogNotification {
 
@@ -28,7 +24,7 @@ public class ResponseLogNotification {
     private final static String logkey = "LOG";
     private final static String eventkey = "RESTFUL_API_ERROR";
     private static Logger logger = LoggerFactory.getLogger(ResponseLogNotification.class);
-    private static final String errorLogRedisKey = "log_0_error";
+    private static final String errorLogRedisKey = "log_0_interface";
     static JedisPool jedisPool;
     // 线程池
     private static ThreadPool threadPool =ThreadPool.Instance;
@@ -56,14 +52,19 @@ public class ResponseLogNotification {
         Map<String, Object> errorLogMap = new HashMap<>();
         errorLogMap.put("url", url);
         errorLogMap.put("method", method);
-        errorLogMap.put("reason", ex);
+        StringBuffer error = new StringBuffer(ex.toString());
+        for (StackTraceElement ste : ex.getStackTrace()) {
+            error.append("\n  <br> at ").append(ste.toString());
+        }
+        logger.info("exception to reason : {}", error.toString());
+        errorLogMap.put("reason", error.toString());
         errorLogMap.put("errorKey", "serviceManager interface error");
         String jsonStr = JSONObject.toJSONString(errorLogMap);
         threadPool.startTast(() -> {
             try (Jedis client = jedisPool.getResource()) {
                 client.lpush(errorLogRedisKey, jsonStr);
             } catch (Exception e) {
-                logger.error("redis Connection refused");
+                logger.error("ResponseLogNotification redis Connection refused");
             }
             return 0;
         });
