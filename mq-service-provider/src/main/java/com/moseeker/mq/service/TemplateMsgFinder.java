@@ -1,7 +1,7 @@
 package com.moseeker.mq.service;
 
 import com.moseeker.mq.exception.MqException;
-import com.moseeker.mq.service.message.MessageBody;
+import com.moseeker.thrift.gen.mq.struct.MessageBody;
 
 import java.util.List;
 

@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.hrdb.Hrdb;
 import com.moseeker.baseorm.db.hrdb.Keys;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsRecord> {
 
-    private static final long serialVersionUID = 1597373008;
+    private static final long serialVersionUID = 1343835603;
 
     /**
      * The reference instance of <code>hrdb.hr_employee_custom_fields</code>
@@ -104,6 +105,16 @@ public class HrEmployeeCustomFields extends TableImpl<HrEmployeeCustomFieldsReco
      * The column <code>hrdb.hr_employee_custom_fields.ename</code>. 自定义字段英文名
      */
     public final TableField<HrEmployeeCustomFieldsRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "自定义字段英文名");
+
+    /**
+     * The column <code>hrdb.hr_employee_custom_fields.create_time</code>. 创建时间
+     */
+    public final TableField<HrEmployeeCustomFieldsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>hrdb.hr_employee_custom_fields.update_time</code>. 更新时间
+     */
+    public final TableField<HrEmployeeCustomFieldsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>hrdb.hr_employee_custom_fields</code> table reference

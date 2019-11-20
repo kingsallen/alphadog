@@ -6,15 +6,17 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.*;
+import java.util.*;
 
 public class ResponseLogNotification {
 
@@ -22,15 +24,62 @@ public class ResponseLogNotification {
     private final static String logkey = "LOG";
     private final static String eventkey = "RESTFUL_API_ERROR";
     private static Logger logger = LoggerFactory.getLogger(ResponseLogNotification.class);
+    private static final String errorLogRedisKey = "log_0_interface";
+    static JedisPool jedisPool;
+    // 线程池
+    private static ThreadPool threadPool =ThreadPool.Instance;
 
+    /**
+     * 初始化redis集群
+     */
+    static {
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+        String host = propertiesUtils.get("redis.elk.host", String.class);
+        Integer port = propertiesUtils.get("redis.elk.port", Integer.class);
+        jedisPool = new JedisPool(host, port);
+    }
+
+    /**
+     * 错误日志写入ELK
+     *
+     * @param  url 请求url
+     * @param method 请求方式
+     * @param ex 异常信息
+     * @Author lee
+     * @Date 2019/11/19 10:08
+     */
+    public static void log2ELK(String url, String method, Exception ex) {
+        Map<String, Object> errorLogMap = new HashMap<>();
+        errorLogMap.put("url", url);
+        errorLogMap.put("method", method);
+        StringBuffer error = new StringBuffer(ex.toString());
+        for (StackTraceElement ste : ex.getStackTrace()) {
+            error.append("\n  <br> at ").append(ste.toString());
+        }
+        logger.info("exception to reason : {}", error.toString());
+        errorLogMap.put("reason", error.toString());
+        errorLogMap.put("errorKey", "serviceManager interface error");
+        String jsonStr = JSONObject.toJSONString(errorLogMap);
+        threadPool.startTast(() -> {
+            try (Jedis client = jedisPool.getResource()) {
+                client.lpush(errorLogRedisKey, jsonStr);
+            } catch (Exception e) {
+                logger.error("ResponseLogNotification redis Connection refused");
+            }
+            return 0;
+        });
+    }
 
     public static String success(HttpServletRequest request, Response response) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         try {
             String jsonresponse = JSON.toJSONString(CleanJsonResponseWithParse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
             return jsonresponse;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log2ELK(url, method, e);
+            logger.error("controller return response error, url:{}, method:{}, reason:", url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
@@ -68,6 +117,8 @@ public class ResponseLogNotification {
     }
 
     public static String failJson(HttpServletRequest request, Exception e) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         Map<String, Object> result = new HashMap<>();
         if (e instanceof CommonException) {
             result.put("status", ((CommonException) e).getCode());
@@ -80,10 +131,29 @@ public class ResponseLogNotification {
             result.put("message", "发生异常，请稍候再试!");
         }
         //转换json的时候去掉thrift结构体中的set方法
+        logger.error("Controller failJson error, url:{}, method:{}, reason:", url, method, e);
+        log2ELK(url, method, e);
         return BeanUtils.convertStructToJSON(result);
     }
 
     public static String fail(HttpServletRequest request, Response response) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
+        try {
+            String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+            logRequestResponse(request, jsonresponse);
+            return jsonresponse;
+        } catch (Exception e) {
+            logger.error("Controller response error, url:{}, method:{}, reason:", url, method, e);
+            log2ELK(url, method, e);
+        }
+        return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
+
+    }
+
+    public static String fail(HttpServletRequest request, Response response, Exception ex) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         try {
             String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
@@ -91,32 +161,63 @@ public class ResponseLogNotification {
             if (request.getParameter("appid") != null) {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
-            logger.info(JSON.toJSONString(response));
-            //Notification.sendNotification(appid, eventkey, response.getMessage());
+            logger.error("Controller error, url:{}, method:{}, reason:", url, method, ex);
+            log2ELK(url, method, ex);
             return jsonresponse;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Controller response error, url:{}, method:{}, reason:", url, method, e);
+            log2ELK(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 
     }
 
     public static String fail(HttpServletRequest request, String message) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
         try {
             Response response = new Response();
             response.setStatus(1);
             response.setMessage(message);
             String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
             logRequestResponse(request, jsonresponse);
+            return jsonresponse;
+        } catch (Exception e) {
+            logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
+            log2ELK(url, method, e);
+        }
+        return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
+
+    }
+
+    /**
+     * 全局error log整理
+     *
+     * @param request
+     * @param ex
+     * @return
+     */
+    public static String fail(HttpServletRequest request, Exception ex) {
+        String url = request.getRequestURI();
+        String method = request.getMethod();
+        try {
+            Response response = new Response();
+            response.setStatus(1);
+            response.setMessage(ex.getMessage());
+            String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+            logRequestResponse(request, jsonresponse);
             int appid = 0;
             if (request.getParameter("appid") != null) {
                 appid = Integer.parseInt(request.getParameter("appid"));
             }
-            logger.info(JSON.toJSONString(response));
+            //进入到fail()方法，所有日志应该为error
+            logger.error("controller error, url:{}, method:{}, reason:", url, method, ex);
+            log2ELK(url, method, ex);
             //Notification.sendNotification(appid, eventkey, response.getMessage());
             return jsonresponse;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("controller response error, url:{}, method:{}, reason:", url, method, e);
+            log2ELK(url, method, e);
         }
         return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;
 

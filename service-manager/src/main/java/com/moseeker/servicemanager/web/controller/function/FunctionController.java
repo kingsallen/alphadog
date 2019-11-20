@@ -39,7 +39,7 @@ public class FunctionController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

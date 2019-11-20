@@ -57,7 +57,6 @@ public class CandidateController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -80,7 +79,6 @@ public class CandidateController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -106,7 +104,6 @@ public class CandidateController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -128,7 +125,6 @@ public class CandidateController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -153,7 +149,6 @@ public class CandidateController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -178,7 +173,6 @@ public class CandidateController {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
