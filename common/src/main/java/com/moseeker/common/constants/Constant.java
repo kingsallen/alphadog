@@ -368,7 +368,12 @@ public final class Constant {
     public static final String KAFKA_TOPIC_POSITION_STATUS = "radar_position_status";
     public static final String KAFKA_TOPIC_EMPLOYEE_CERTIFICATION = "radar_employee_certification";
     public static final String KAFKA_TOPIC_RADAR_STATUS = "radar_button_status";
+    public static final String KAFKA_TOPIC_IM_TPL_MSG = "jdpv_im_topic";
 
     //简历上传小程序推荐来源的认领不需要校验手机号
     public static final String NO_VSCODE_CHECK = "no_vscode_check";
+
+    //最新的隐私协议版本号
+    public static final byte PRIVACY_POLICY_RELEASE_VERSION = 1;
+    public static final byte PRIVACY_POLICY_DISAGREE_VERSION = 0;
 }

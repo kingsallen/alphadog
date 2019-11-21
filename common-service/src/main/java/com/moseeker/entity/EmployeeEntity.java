@@ -212,11 +212,29 @@ public class EmployeeEntity {
      * @redpacket_exchange
      */
     public boolean isEmployee(int userId, int companyId) {
-        UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
-        if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
-            return true;
+        //默认取缓存中的结果
+        /**
+         * INSERT INTO configdb.config_cacheconfig_rediskey
+         * (project_appid, key_identifier, `type`, pattern, json_extraparams, ttl, `desc`)
+         * VALUES(0, 'USER_EMPLOYEE_ISEMPLOYEE', 1, 'USER_EMPLOYEE_ISEMPLOYEE_%s_%s', NULL, 0, '用户是否是认证员工');
+         *
+         */
+        String isEmployee = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                String.valueOf(companyId), String.valueOf(userId));
+        logger.info("EmployeeEntity.isEmployee redis get: [ companyId:{}, userId:{}, value:{} ]", companyId, userId, isEmployee);
+        if (isEmployee == null) {
+            isEmployee = "0";
+            UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
+            if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                isEmployee = "1";
+//                return true;
+            }
+//            return false;
         }
-        return false;
+        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                String.valueOf(companyId), String.valueOf(userId), isEmployee);
+        logger.info("EmployeeEntity.isEmployee redis set: [ companyId:{}, userId:{}, value:{} ]", companyId, userId, isEmployee);
+        return isEmployee.equals("1");
     }
 
     public UserEmployeeDO getCompanyEmployee(int userId, int companyId) {
@@ -739,6 +757,17 @@ public class EmployeeEntity {
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
 
+                //员工取消认证
+                try {
+                    employees.forEach(employee -> {
+                        if (employee.getActivation() >0) {
+                            client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                                    String.valueOf(employee.getCompanyId()), String.valueOf(employee.getSysuserId()), "0");
+                        }
+                    });
+                } catch (Exception e) {
+                    logger.error("EmployeeEntity.unbind set USER_EMPLOYEE_ISEMPLOYEE error : {}", e.getMessage());
+                }
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
@@ -798,6 +827,18 @@ public class EmployeeEntity {
                         client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(),
                                 String.valueOf(companyId),  JSON.toJSONString(list));
                     }
+                }
+
+                //员工取消认证
+                try {
+                    userEmployeeDOList.forEach(employee -> {
+                        if (employee.getActivation() >0) {
+                            client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_ISEMPLOYEE.toString(),
+                                    String.valueOf(employee.getCompanyId()), String.valueOf(employee.getSysuserId()), "0");
+                        }
+                    });
+                } catch (Exception e) {
+                    logger.error("EmployeeEntity.removeEmployee set USER_EMPLOYEE_ISEMPLOYEE error : {}", e.getMessage());
                 }
                 return true;
             } else {

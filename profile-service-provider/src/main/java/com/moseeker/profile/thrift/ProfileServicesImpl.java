@@ -429,6 +429,15 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public String wordToPdf(String source_name, String target_name) throws BIZException, TException {
+        int i = OfficeUtils.Word2Pdf(source_name, target_name);
+        if (i ==0) {
+            com.moseeker.common.util.OfficeUtils.Word2Pdf(source_name, target_name);
+        }
+        return target_name;
+    }
+
+    @Override
     public int upsertProfile(int userId, String profile) throws BIZException, TException {
         try {
             int result= profileService.upsertProfile(userId, profile);

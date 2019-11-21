@@ -689,6 +689,8 @@ public class UserEmployeeController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             RadarInfo radarInfo = service.fetchRadarIndex(userId, companyId, page, size);
+            logger.info("UserEmployeeController fetchRadarIndexData radarInfo:{}",
+                    com.moseeker.servicemanager.web.controller.Result.success(radarInfo).toJson());
             return com.moseeker.servicemanager.web.controller.Result.success(copyRadarInfoVO(radarInfo)).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
@@ -711,6 +713,8 @@ public class UserEmployeeController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             RadarInfo radarInfo = service.fetchEmployeeSeekRecommendPage(userId, companyId, page, size);
+            logger.info("UserEmployeeController fetchSeekRecommendData radarInfo:{}",
+                    com.moseeker.servicemanager.web.controller.Result.success(radarInfo).toJson());
             return com.moseeker.servicemanager.web.controller.Result.success(copyRadarInfoVO(radarInfo)).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
@@ -769,6 +773,8 @@ public class UserEmployeeController {
                     forwardViews.add(forwardView);
                 });
                 viewVO.setUserList(forwardViews);
+                logger.info("UserEmployeeController fetchRadarIndexData viewVO:{}",
+                        com.moseeker.servicemanager.web.controller.Result.success(viewVO).toJson());
             }
             return com.moseeker.servicemanager.web.controller.Result.success(viewVO).toJson();
         } else {

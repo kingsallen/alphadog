@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount implements Serializable {
 
-    private static final long serialVersionUID = 1073746268;
+    private static final long serialVersionUID = 90847083;
 
     private Integer   id;
     private Integer   companyId;
@@ -47,6 +47,9 @@ public class UserHrAccount implements Serializable {
     private String    headimgurl;
     private Byte      leaveToMobot;
     private String    remarkName;
+    private String    jobNumber;
+    private Integer   deparmentId;
+    private String    managedDepartmentId;
 
     public UserHrAccount() {}
 
@@ -73,6 +76,9 @@ public class UserHrAccount implements Serializable {
         this.headimgurl = value.headimgurl;
         this.leaveToMobot = value.leaveToMobot;
         this.remarkName = value.remarkName;
+        this.jobNumber = value.jobNumber;
+        this.deparmentId = value.deparmentId;
+        this.managedDepartmentId = value.managedDepartmentId;
     }
 
     public UserHrAccount(
@@ -97,7 +103,10 @@ public class UserHrAccount implements Serializable {
         Timestamp updateTime,
         String    headimgurl,
         Byte      leaveToMobot,
-        String    remarkName
+        String    remarkName,
+        String    jobNumber,
+        Integer   deparmentId,
+        String    managedDepartmentId
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -121,6 +130,9 @@ public class UserHrAccount implements Serializable {
         this.headimgurl = headimgurl;
         this.leaveToMobot = leaveToMobot;
         this.remarkName = remarkName;
+        this.jobNumber = jobNumber;
+        this.deparmentId = deparmentId;
+        this.managedDepartmentId = managedDepartmentId;
     }
 
     public Integer getId() {
@@ -299,6 +311,30 @@ public class UserHrAccount implements Serializable {
         this.remarkName = remarkName;
     }
 
+    public String getJobNumber() {
+        return this.jobNumber;
+    }
+
+    public void setJobNumber(String jobNumber) {
+        this.jobNumber = jobNumber;
+    }
+
+    public Integer getDeparmentId() {
+        return this.deparmentId;
+    }
+
+    public void setDeparmentId(Integer deparmentId) {
+        this.deparmentId = deparmentId;
+    }
+
+    public String getManagedDepartmentId() {
+        return this.managedDepartmentId;
+    }
+
+    public void setManagedDepartmentId(String managedDepartmentId) {
+        this.managedDepartmentId = managedDepartmentId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserHrAccount (");
@@ -325,6 +361,9 @@ public class UserHrAccount implements Serializable {
         sb.append(", ").append(headimgurl);
         sb.append(", ").append(leaveToMobot);
         sb.append(", ").append(remarkName);
+        sb.append(", ").append(jobNumber);
+        sb.append(", ").append(deparmentId);
+        sb.append(", ").append(managedDepartmentId);
 
         sb.append(")");
         return sb.toString();

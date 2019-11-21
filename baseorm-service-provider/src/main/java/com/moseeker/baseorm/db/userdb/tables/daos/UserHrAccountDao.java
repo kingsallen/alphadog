@@ -218,4 +218,25 @@ public class UserHrAccountDao extends DAOImpl<UserHrAccountRecord, com.moseeker.
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> fetchByRemarkName(String... values) {
         return fetch(UserHrAccount.USER_HR_ACCOUNT.REMARK_NAME, values);
     }
+
+    /**
+     * Fetch records that have <code>job_number IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> fetchByJobNumber(String... values) {
+        return fetch(UserHrAccount.USER_HR_ACCOUNT.JOB_NUMBER, values);
+    }
+
+    /**
+     * Fetch records that have <code>deparment_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> fetchByDeparmentId(Integer... values) {
+        return fetch(UserHrAccount.USER_HR_ACCOUNT.DEPARMENT_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>managed_department_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> fetchByManagedDepartmentId(String... values) {
+        return fetch(UserHrAccount.USER_HR_ACCOUNT.MANAGED_DEPARTMENT_ID, values);
+    }
 }

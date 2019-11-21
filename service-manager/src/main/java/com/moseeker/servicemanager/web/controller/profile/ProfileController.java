@@ -213,6 +213,7 @@ public class ProfileController {
                     form.getInt("channel"),
                     JSON.toJSONString(form.get("profile")));
 
+            logger.info("/profile/retrieve basic form:{}", form);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             e.printStackTrace();
@@ -463,6 +464,7 @@ public class ProfileController {
             int userId = params.getInt("userId",0);
             String profile = params.getString("profile");
             int profileId = service.upsertProfile(userId, profile);
+            logger.info("v2/profile basic profile: {}", profile);
             return ResponseLogNotification.successJson(request, profileId);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -603,6 +605,7 @@ public class ProfileController {
             Map<String,Object> profile= (Map<String, Object>) params.get("profile");
             int companyId=(int)params.get("company_id");
             Response res = profileService.combinationProfile(JSON.toJSONString(profile),companyId);
+            logger.info("/api/profile/upload/combine basic profile:{}", JSON.toJSONString(profile));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -622,6 +625,7 @@ public class ProfileController {
             int companyId=(int)params.get("company_id");
             String fileName=(String)params.get("file_name");
             Response res = profileService.preserveProfile(JSON.toJSONString(profile),hrId,companyId,fileName,userId);
+            logger.info("/api/profile/talent/preserve basic profile:{}", JSON.toJSONString(profile));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
             return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
@@ -924,12 +928,16 @@ public class ProfileController {
         String pdf_name = file_name.replace("." + file_type, Constant.WORD_PDF).trim();
         File pdf_file = new File(pdf_name);
         //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
-        if (!pdf_file.exists()) {
-            OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-            logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
+        if (!pdf_file.exists() || pdf_file.length() == 0) {
+            try {
+                service.wordToPdf(file_name.trim(), pdf_name);
+                logger.info("ProfileController.service Word2Pdf: {} -----------", pdf_name);
+            } catch (Exception e) {
+                logger.error("OfficeUtils error :{}, reason:{}", e.getMessage(), e);
+            }
         }
-
-        logger.info("wordToPdf return file : {}", pdf_name);
+        pdf_file = new File(pdf_name);
+        logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
         return Result.success(pdf_name).toJson();
     }
 }

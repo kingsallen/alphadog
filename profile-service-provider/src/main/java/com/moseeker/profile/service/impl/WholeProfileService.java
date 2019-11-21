@@ -22,12 +22,10 @@ import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChannelType;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -68,6 +66,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -195,6 +194,9 @@ public class WholeProfileService {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICE_MANAGER.getService(UseraccountsServices.Iface.class);
 
@@ -487,6 +489,7 @@ public class WholeProfileService {
                     int property = profileRecord.getCompleteness();
                     logger.info("WholeProfileService.postResource distinctId:{}, ProfileCompleteness:{}", distinctId, property);
                     sensorSend.profileSet(distinctId,"ProfileCompleteness", property);
+                    redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -556,6 +559,7 @@ public class WholeProfileService {
                 int property=profilePojo.getProfileRecord().getCompleteness();
                 logger.info("WholeProfileService.importCV distinctId:{}, ProfileCompleteness:{}", distinctId, property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -617,6 +621,7 @@ public class WholeProfileService {
                 int property = profilePojo.getProfileRecord().getCompleteness();
                 logger.info("WholeProfileService.createProfileItem distinctId:{}, ProfileCompleteness:{}", distinctId, property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_PROFILE_COMPLETENESS.toString(), distinctId, String.valueOf(property));
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

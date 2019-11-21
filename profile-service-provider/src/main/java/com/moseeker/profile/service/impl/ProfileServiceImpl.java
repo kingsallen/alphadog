@@ -148,7 +148,10 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
 
         JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
 
+        logger.info("updateUserProfile,redis profilePojoStr:{}", profilePojoStr);
         ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
+        logger.info("updateUserProfile profilePojo:{}", profilePojo);
+
         profilePojo.getUserRecord().setName(name);
         profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
         ProfileProfileDO profileProfileDO = profileEntity.getProfileByUserId(id);

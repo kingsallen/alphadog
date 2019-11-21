@@ -21,6 +21,9 @@ service UserQxService {
     user_qx_struct.UserCollectPositionListVO getUserCollectPositions(1: i32 userId);
     // 用户收藏职位
     user_qx_struct.UserCollectPositionVO postUserCollectPosition(1: i32 userId, 2: i32 positionId);
+    // 用户收藏员工推荐的职位
+    user_qx_struct.UserCollectPositionVO postUserCollectReferredPosition(1: i32  userId,2: i32  employeeId,3: i32  positionId,4: i32 parentShareChainId);
+
     // 用户取消收藏职位
     user_qx_struct.UserCollectPositionVO delUserCollectPosition(1: i32 userId, 2: i32 positionId);
 

@@ -37,8 +37,6 @@ import com.moseeker.entity.*;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
-import com.moseeker.entity.pojo.profile.User;
-import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.constants.ProfileSource;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
@@ -46,7 +44,6 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
@@ -62,7 +59,6 @@ import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.http.Consts;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -485,18 +481,24 @@ public class ProfileService {
         }
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
-        logger.debug("profilesByApplication:{}", JSON.toJSONString(profileApplicationForm));
+        logger.info("ProfileService.getProfileByApplication:{}", JSON.toJSONString(profileApplicationForm));
         List<AbstractMap.SimpleEntry<Map<String, Object>, Map<String, Object>>>   positionApplications = dao.getResourceByApplication(downloadUrl, password, profileApplicationForm);
-        logger.debug("原始数据=======================================");
-        logger.debug(JSON.toJSONString(positionApplications));
-        logger.debug("处理后的数据=======================================");
+
         positionApplications=handlerApplicationData(positionApplications);
         if(StringUtils.isEmptyList(positionApplications)){
             return ResponseUtils.success("");
         }
 
-        logger.debug("=================================================");
-        List<Map<String, Object>> datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
+        List<Map<String, Object>> datas;
+        if (profileApplicationForm.getFilter() != null && profileApplicationForm.getFilter().size() == 20) {
+            logger.info("ProfileService.getProfileByApplication getRelatedDataByJobApplicationFullFilter, params:{}",
+                    profileApplicationForm.getFilter());
+            datas = dao.getRelatedDataByJobApplicationFullFilter(positionApplications, profileApplicationForm.isRecommender());
+        } else {
+            logger.info("ProfileService.getProfileByApplication getRelatedDataByJobApplication, params:{}",
+                    profileApplicationForm.getFilter());
+            datas =dao.getRelatedDataByJobApplication( positionApplications, downloadUrl, password, profileApplicationForm.isRecommender(), profileApplicationForm.isDl_url_required(), profileApplicationForm.getFilter());
+        }
         return dao.handleResponse(datas);
     }
 
