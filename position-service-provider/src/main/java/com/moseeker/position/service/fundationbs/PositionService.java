@@ -828,18 +828,6 @@ public class PositionService {
         for (JobPostrionObj formData : jobPositionHandlerDates) {
             int company_id = formData.getCompany_id();
             String jobnumber = formData.getJobnumber();
-            if(!RedisUtils.lock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber, 20 * 60)){
-                try {
-                    String positionIdStr = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "/" + jobnumber);
-                    int positionId = Integer.parseInt(positionIdStr);
-                    if (positionId != 0) {
-                        addSyncData(syncData, positionId, formData.getThirdParty_position());
-                    }
-                    continue;
-                } catch (Exception e) {
-                    logger.warn("未在redis找到positionId ,{}, {}", company_id, jobnumber);
-                }
-            }
             logger.info("batchHandlerJobPostion提交的数据：" + formData.toString());
 
             // 基础校验
@@ -955,8 +943,22 @@ public class PositionService {
                 handlerFailMess(ConstantErrorCodeMessage.CITY_TOO_LONG, jobPositionFailMessPojos, formData);
                 continue;
             }
+            if(!RedisUtils.lock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "_" + jobnumber, 20 * 60)){
+                try {
+                    String positionIdStr = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "_" + jobnumber);
+                    int positionId = Integer.parseInt(positionIdStr);
+                    if (positionId != 0) {
+                        addSyncData(syncData, positionId, formData.getThirdParty_position());
+                    }
+                    continue;
+                } catch (Exception e) {
+                    logger.warn("未在redis找到positionId ,{}, {}", company_id, jobnumber);
+                }
+            }
+
             // 更新或者新增数据
-            if (dbOperation == DBOperation.UPDATE) {  // 数据更新
+            if (dbOperation == DBOperation.UPDATE) {
+                // 数据更新
                 // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
                 if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                     formRcord.setId(jobPositionRecord.getId());
@@ -968,7 +970,7 @@ public class PositionService {
                         updatePostionIds.add(jobPositionRecord.getId());
                     }
                 }
-                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "/" + jobnumber, String.valueOf(formRcord.getId()));
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "_" + jobnumber, String.valueOf(formRcord.getId()));
                 // 添加同步数据
                 addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
 
@@ -1089,7 +1091,7 @@ public class PositionService {
                 formData.setId(pid);
                 // 需要新增的JobPosition数据
                 jobPositionAddRecordList.add(formRcord);
-                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "/" + jobnumber, String.valueOf(formRcord.getId()));
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "_" + jobnumber, String.valueOf(formRcord.getId()));
                 // 需要同步的数据
                 addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
                 // 需要更新的抄送邮箱数据
