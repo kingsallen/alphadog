@@ -828,285 +828,289 @@ public class PositionService {
         for (JobPostrionObj formData : jobPositionHandlerDates) {
             int company_id = formData.getCompany_id();
             String jobnumber = formData.getJobnumber();
-            try {
-                RedisUtils.lock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber, 20 * 60, 100);
-
-                logger.info("batchHandlerJobPostion提交的数据：" + formData.toString());
-
-                // 基础校验
-                if (!basicCheckBatchPostionData(formData, jobPositionFailMessPojos)) {
-                    continue;
-                }
-
-                // 按company_id + .source_id + .jobnumber + source=9取得数据
-                JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePositionIgnoreDelete(
-                        formData.getCompany_id(),
-                        PositionSource.ATS.getCode(),
-                        formData.getSource_id(),
-                        formData.getJobnumber());
-                // todo 猎聘新增
-                // 更新或者新增数据
-                if (formData.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
-                    dbOperation = DBOperation.UPDATE;
-                    if (jobPositionRecord.getStatus() == PositionStatus.BANNED.getValue()) {
-                        needReSyncData.add(jobPositionRecord.getId());      // 记录上架职位
-                    } else if (jobPositionRecord.getStatus() == PositionStatus.ACTIVED.getValue()) {
-                        jobPositionOldRecordList.add(jobPositionRecord);
+            if(!RedisUtils.lock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber, 20 * 60)){
+                try {
+                    String positionIdStr = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "/" + jobnumber);
+                    int positionId = Integer.parseInt(positionIdStr);
+                    if (positionId != 0) {
+                        addSyncData(syncData, positionId, formData.getThirdParty_position());
                     }
-                } else {
-                    dbOperation = DBOperation.INSERT;
-                }
-
-                // 参数校验
-                if (!checkBatchPostionData(formData, jobPositionFailMessPojos, dbOperation)) {
                     continue;
+                } catch (Exception e) {
+                    logger.warn("未在redis找到positionId ,{}, {}", company_id, jobnumber);
                 }
+            }
+            logger.info("batchHandlerJobPostion提交的数据：" + formData.toString());
 
-                JobPositionRecord formRcord = BeanUtils.structToDB(formData, JobPositionRecord.class);
-                // 参数预处理
-                preHandlePostionData(formRcord);
+            // 基础校验
+            if (!basicCheckBatchPostionData(formData, jobPositionFailMessPojos)) {
+                continue;
+            }
 
-                // 判断publisher是否存在
-                if (!userHrAccountMap.containsKey(formData.getPublisher())) {
-                    handlerFailMess(ConstantErrorCodeMessage.POSITION_PUBLISHER_NOT_EXIST, jobPositionFailMessPojos, formData);
-                    continue;
+            // 按company_id + .source_id + .jobnumber + source=9取得数据
+            JobPositionRecord jobPositionRecord = jobPositionDao.getUniquePositionIgnoreDelete(
+                    formData.getCompany_id(),
+                    PositionSource.ATS.getCode(),
+                    formData.getSource_id(),
+                    formData.getJobnumber());
+            // todo 猎聘新增
+            // 更新或者新增数据
+            if (formData.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
+                dbOperation = DBOperation.UPDATE;
+                if (jobPositionRecord.getStatus() == PositionStatus.BANNED.getValue()) {
+                    needReSyncData.add(jobPositionRecord.getId());      // 记录上架职位
+                } else if (jobPositionRecord.getStatus() == PositionStatus.ACTIVED.getValue()) {
+                    jobPositionOldRecordList.add(jobPositionRecord);
                 }
+            } else {
+                dbOperation = DBOperation.INSERT;
+            }
 
-                // 处理职位福利特色数据
-                if (!containsFeature(featureMap, formData)) {
-                    handlerFailMess(ConstantErrorCodeMessage.FEATURE_MUST_EXISTS, jobPositionFailMessPojos, formData);
-                    continue;
+            // 参数校验
+            if (!checkBatchPostionData(formData, jobPositionFailMessPojos, dbOperation)) {
+                continue;
+            }
+
+            JobPositionRecord formRcord = BeanUtils.structToDB(formData, JobPositionRecord.class);
+            // 参数预处理
+            preHandlePostionData(formRcord);
+
+            // 判断publisher是否存在
+            if (!userHrAccountMap.containsKey(formData.getPublisher())) {
+                handlerFailMess(ConstantErrorCodeMessage.POSITION_PUBLISHER_NOT_EXIST, jobPositionFailMessPojos, formData);
+                continue;
+            }
+
+            // 处理职位福利特色数据
+            if (!containsFeature(featureMap, formData)) {
+                handlerFailMess(ConstantErrorCodeMessage.FEATURE_MUST_EXISTS, jobPositionFailMessPojos, formData);
+                continue;
+            } else {
+                needBindFeatureData.add(formData);
+            }
+
+            int team_id = 0;
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formRcord.getDepartment())) {
+                String department = replaceBlank(formRcord.getDepartment());
+                HrTeamRecord hrTeamRecord = (HrTeamRecord) hashMapHrTeam.get(department);
+                if (hrTeamRecord != null) {
+                    team_id = hrTeamRecord.getId();
                 } else {
-                    needBindFeatureData.add(formData);
-                }
+                    //部分公司在部门不存在时，直接插入新部门
+                    if (batchHandlerJobPosition.isCreateDeparment) {
+                        HrTeamRecord team = new HrTeamRecord();
+                        team.setName(formRcord.getDepartment());
+                        team.setCompanyId(formRcord.getCompanyId());
 
-                int team_id = 0;
-                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formRcord.getDepartment())) {
-                    String department = replaceBlank(formRcord.getDepartment());
-                    HrTeamRecord hrTeamRecord = (HrTeamRecord) hashMapHrTeam.get(department);
-                    if (hrTeamRecord != null) {
-                        team_id = hrTeamRecord.getId();
+                        HrTeamRecord teamTemp = hrTeamDao.addRecord(team);
+                        logger.info("----插入的部门ID为---:" + teamTemp.getId());
+
+                        team_id = teamTemp.getId();
+
+                        hashMapHrTeam.put(department, teamTemp);
                     } else {
-                        //部分公司在部门不存在时，直接插入新部门
-                        if (batchHandlerJobPosition.isCreateDeparment) {
-                            HrTeamRecord team = new HrTeamRecord();
-                            team.setName(formRcord.getDepartment());
-                            team.setCompanyId(formRcord.getCompanyId());
-
-                            HrTeamRecord teamTemp = hrTeamDao.addRecord(team);
-                            logger.info("----插入的部门ID为---:" + teamTemp.getId());
-
-                            team_id = teamTemp.getId();
-
-                            hashMapHrTeam.put(department, teamTemp);
-                        } else {
-                            logger.info("-----未取到TeamId-------部门名称为 ,{},company_id : {}", formRcord.getDepartment(), formRcord.getCompanyId());
-                            handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, formData);
-                            continue;
-                        }
-                    }
-                } else {
-                    formRcord.setDepartment("");
-                }
-                int jobOccupationId = 0;
-                // 验证职能信息是否正确
-                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formData.getOccupation())) {
-                    JobOccupationDO jobOccupationDO = jobOccupationMap.get(formData.getOccupation().trim());
-                    if (jobOccupationDO != null) {
-                        jobOccupationId = jobOccupationDO.getId();
-                    } else {
-                        // 职能错误的时候，自动添加一条职能新
-                        JobOccupationDO jobOccupation = new JobOccupationDO();
-                        jobOccupation.setCompanyId(companyId);
-                        jobOccupation.setStatus((byte) 1);
-                        jobOccupation.setName(formData.getOccupation());
-                        JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
-                        jobOccupationId = jobOccupationDOTemp.getId();
-                        jobOccupationMap.put(jobOccupationDOTemp.getName().trim(), jobOccupationDOTemp);
-                    }
-                }
-                // 验证职位自定义字段
-                int customId = 0;
-                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formData.getCustom())) {
-                    JobCustomRecord jobCustomRecord = (JobCustomRecord) jobCustomMap.get(formData.getCustom());
-                    if (jobCustomRecord != null) {
-                        customId = jobCustomRecord.getId();
-                    } else {
-                        logger.info("-----职位自定义字段错误,职位自定义为:" + formData.getCustom());
-                        handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", formData.getCustom()), jobPositionFailMessPojos, formData);
+                        logger.info("-----未取到TeamId-------部门名称为 ,{},company_id : {}", formRcord.getDepartment(), formRcord.getCompanyId());
+                        handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR, jobPositionFailMessPojos, formData);
                         continue;
                     }
                 }
-
-                // 城市信息
-                String city = citys(formData.getCity());
-                logger.info("城市信息：{}", city);
-                // 城市信息太长时候，需要过滤数据
-                if (city.length() > 100) {
-                    handlerFailMess(ConstantErrorCodeMessage.CITY_TOO_LONG, jobPositionFailMessPojos, formData);
+            } else {
+                formRcord.setDepartment("");
+            }
+            int jobOccupationId = 0;
+            // 验证职能信息是否正确
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formData.getOccupation())) {
+                JobOccupationDO jobOccupationDO = jobOccupationMap.get(formData.getOccupation().trim());
+                if (jobOccupationDO != null) {
+                    jobOccupationId = jobOccupationDO.getId();
+                } else {
+                    // 职能错误的时候，自动添加一条职能新
+                    JobOccupationDO jobOccupation = new JobOccupationDO();
+                    jobOccupation.setCompanyId(companyId);
+                    jobOccupation.setStatus((byte) 1);
+                    jobOccupation.setName(formData.getOccupation());
+                    JobOccupationDO jobOccupationDOTemp = jobOccupationDao.addData(jobOccupation);
+                    jobOccupationId = jobOccupationDOTemp.getId();
+                    jobOccupationMap.put(jobOccupationDOTemp.getName().trim(), jobOccupationDOTemp);
+                }
+            }
+            // 验证职位自定义字段
+            int customId = 0;
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formData.getCustom())) {
+                JobCustomRecord jobCustomRecord = (JobCustomRecord) jobCustomMap.get(formData.getCustom());
+                if (jobCustomRecord != null) {
+                    customId = jobCustomRecord.getId();
+                } else {
+                    logger.info("-----职位自定义字段错误,职位自定义为:" + formData.getCustom());
+                    handlerFailMess(ConstantErrorCodeMessage.POSITION_DATA_CUSTOM_ERROR.replace("{MESSAGE}", formData.getCustom()), jobPositionFailMessPojos, formData);
                     continue;
                 }
-                // 更新或者新增数据
-                if (dbOperation == DBOperation.UPDATE) {  // 数据更新
-                    // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
-                    if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
-                        formRcord.setId(jobPositionRecord.getId());
-                        // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
-                        formData.setId(jobPositionRecord.getId());
-                        // TODO: 2019/9/6 job更新刷新Es规则
-                        if (isUpdatePosition(formData, jobPositionRecord)) {
-                            jobPositionIds.add(jobPositionRecord.getId());
-                            updatePostionIds.add(jobPositionRecord.getId());
-                        }
-                    }
-                    // 添加同步数据
-                    addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
+            }
 
-                    // 取出数据库中的数据进行对比操作
-                    JobPositionRecord jobPositionRecordTemp = jobPositionRecord;
-                    if (jobPositionRecordTemp != null) {
-                        Query query = new Query.QueryBuilder()
-                                .where("pid", jobPositionRecordTemp.getId())
-                                .buildQuery();
-                        JobPositionExtRecord jobPositionExtRecord = jobPositonExtDao.getRecord(query);
-                        if (fieldsNohashs == null ||
-                                (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord != null ? jobPositionExtRecord.getExtra() : "").equals(md5(fieldsNohashs, formRcord, formData.getExtra())))) {
-
-                            formRcord.setSourceId(jobPositionRecordTemp.getSourceId());
-                            formRcord.setCompanyId(companyId);
-                            if (com.moseeker.common.util.StringUtils.isNullOrEmpty(formRcord.getJobnumber())) {
-                                formRcord.setJobnumber(jobPositionRecordTemp.getJobnumber());
-                            }
-                            // 当城市无法转换时，入库为提交的数据
-                            if (city != null) {
-                                formRcord.setCity(city);
-                            }
-                            formRcord.setTeamId(team_id);
-                            // 设置不需要更新的字段
-                            if (fieldsNooverwriteStrings != null && fieldsNooverwriteStrings.length > 0) {
-                                for (Field field : formRcord.fields()) {
-                                    for (String fieldNo : fieldsNooverwriteStrings) {
-                                        if (field.getName().equals(fieldNo)) {
-                                            formRcord.set(field, jobPositionRecordTemp.getValue(field.getName()));
-                                        }
-                                    }
-                                }
-                            }
-
-                            // 需要更新的抄送邮箱数据
-                            if (formData.isSetProfile_cc_mail_enabled()) {
-                                // 增加需要删除抄送邮箱
-                                ccmailPositionIdsToDelete.add(formRcord.getId());
-
-                                handleCcmail(formData, formRcord, jobPositionCcmailRecordsAddlist);
-                            }
-
-
-                            // 将需要更新JobPosition的数据放入更新的列表
-                            jobPositionUpdateRecordList.add(formRcord);
-
-                            //更新的职位只有在title变化时才发布新职位
-                            //das端在更新职位时同样有这个判断，所以修改此处时考虑是否需要修改das中的PositionHandler.update方法
-                            //考虑是否写个共通
-                            if (formData.isSetTitle() && !jobPositionRecord.getTitle().equals(formRcord.getTitle())) {
-                                //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
-                                thirdPartyPositionDisablelist.add(formRcord.getId());
-                            }
-
-                            // 需要更新JobPositionCity数据
-                            List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
-                            if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
-                                // 更新时候需要把之前的jobPositionCity数据删除
-                                deleteCitylist.add(formRcord.getId());
-                                jobPositionCityRecordsUpdatelist.addAll(jobPositionCityRecordList);
-                            }
-                            // 需要更新的JobPositionExra数据
-                            if (formData.getExtra() != null
-                                    || jobOccupationId != 0
-                                    || customId != 0
-                                    || StringUtils.isNotNullOrEmpty(formData.getExt())) {
-                                if (jobPositionExtRecord == null) {
-                                    jobPositionExtRecord = new JobPositionExtRecord();
-                                    jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
-                                    jobPositionExtRecord.setExtra(formData.getExtra() == null ? "" : formData.getExtra());
-                                    if (jobOccupationId != 0) {
-                                        jobPositionExtRecord.setJobOccupationId(jobOccupationId);
-                                    }
-                                    if (customId != 0) {
-                                        jobPositionExtRecord.setJobCustomId(customId);
-                                    }
-                                    if (StringUtils.isNotNullOrEmpty(formData.getExt())) {
-                                        jobPositionExtRecord.setExt(formData.getExt());
-                                    }
-                                    jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
-                                } else {
-                                    jobPositionExtRecord.setExtra(formData.getExtra() == null ? "" : formData.getExtra());
-                                    if (jobOccupationId != 0) {
-                                        jobPositionExtRecord.setJobOccupationId(jobOccupationId);
-                                    }
-                                    if (customId != 0) {
-                                        jobPositionExtRecord.setJobCustomId(customId);
-                                    }
-                                    if (StringUtils.isNotNullOrEmpty(formData.getExt())) {
-                                        jobPositionExtRecord.setExt(formData.getExt());
-                                    }
-                                    jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
-                                }
-                            }
-                        }
-                    }
-                } else { // 数据的新增
-                    formRcord.setTeamId(team_id);
-                    // 当城市无法转换时，入库为提交的数据
-                    if (city != null) {
-                        formRcord.setCity(city);
-                    }
-                    if (StringUtils.isNotNullOrEmpty(formRcord.getTitle())) {
-                        String pinYin = PinyinUtil.getFirstLetter(formRcord.getTitle());
-                        formRcord.setFirstPinyin(pinYin);
-                    }
-                    logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + formRcord.toString() + "--");
-                    Integer pid = jobPositionDao.addRecord(formRcord).getId();
-                    if (pid != null) {
-                        jobPositionIds.add(pid);
-                        List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
-                        if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
-                            // 新增城市code时，需要先删除jobpostionCity数据
-                            jobPositionCityRecordsAddlist.addAll(jobPositionCityRecordList);
-                        }
-                    }
+            // 城市信息
+            String city = citys(formData.getCity());
+            logger.info("城市信息：{}", city);
+            // 城市信息太长时候，需要过滤数据
+            if (city.length() > 100) {
+                handlerFailMess(ConstantErrorCodeMessage.CITY_TOO_LONG, jobPositionFailMessPojos, formData);
+                continue;
+            }
+            // 更新或者新增数据
+            if (dbOperation == DBOperation.UPDATE) {  // 数据更新
+                // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
+                if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
+                    formRcord.setId(jobPositionRecord.getId());
                     // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
-                    formData.setId(pid);
-                    // 需要新增的JobPosition数据
-                    jobPositionAddRecordList.add(formRcord);
-                    // 需要同步的数据
-                    addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
-                    // 需要更新的抄送邮箱数据
-                    if (formData.isSetProfile_cc_mail_enabled()) {
-                        handleCcmail(formData, formRcord, jobPositionCcmailRecordsAddlist);
-                    }
-
-                    if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formData.getExtra())
-                            || jobOccupationId != 0
-                            || customId != 0
-                            || StringUtils.isNotNullOrEmpty(formData.getExt())) {
-                        // 新增jobPostion_ext数据
-                        JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
-                        jobPositionExtRecord.setExtra(formData.getExtra() == null ? "" : formData.getExtra());
-                        jobPositionExtRecord.setJobOccupationId(jobOccupationId);
-                        jobPositionExtRecord.setJobCustomId(customId);
-                        jobPositionExtRecord.setPid(pid);
-                        jobPositionExtRecord.setExt(formData.getExt());
-                        jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
-
+                    formData.setId(jobPositionRecord.getId());
+                    // TODO: 2019/9/6 job更新刷新Es规则
+                    if (isUpdatePosition(formData, jobPositionRecord)) {
+                        jobPositionIds.add(jobPositionRecord.getId());
+                        updatePostionIds.add(jobPositionRecord.getId());
                     }
                 }
-                RedisUtils.unLock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber);
-            } catch (RedisLockException e) {
-                logger.info("batchHandlerJobPostion，重复提交职位， company_id：{}, jobnumber:{}", company_id, jobnumber);
-            } catch (Exception e) {
-                RedisUtils.unLock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "/" + jobnumber);
-                throw e;
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "/" + jobnumber, String.valueOf(formRcord.getId()));
+                // 添加同步数据
+                addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
+
+                // 取出数据库中的数据进行对比操作
+                JobPositionRecord jobPositionRecordTemp = jobPositionRecord;
+                if (jobPositionRecordTemp != null) {
+                    Query query = new Query.QueryBuilder()
+                            .where("pid", jobPositionRecordTemp.getId())
+                            .buildQuery();
+                    JobPositionExtRecord jobPositionExtRecord = jobPositonExtDao.getRecord(query);
+                    if (fieldsNohashs == null ||
+                            (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord != null ? jobPositionExtRecord.getExtra() : "").equals(md5(fieldsNohashs, formRcord, formData.getExtra())))) {
+
+                        formRcord.setSourceId(jobPositionRecordTemp.getSourceId());
+                        formRcord.setCompanyId(companyId);
+                        if (com.moseeker.common.util.StringUtils.isNullOrEmpty(formRcord.getJobnumber())) {
+                            formRcord.setJobnumber(jobPositionRecordTemp.getJobnumber());
+                        }
+                        // 当城市无法转换时，入库为提交的数据
+                        if (city != null) {
+                            formRcord.setCity(city);
+                        }
+                        formRcord.setTeamId(team_id);
+                        // 设置不需要更新的字段
+                        if (fieldsNooverwriteStrings != null && fieldsNooverwriteStrings.length > 0) {
+                            for (Field field : formRcord.fields()) {
+                                for (String fieldNo : fieldsNooverwriteStrings) {
+                                    if (field.getName().equals(fieldNo)) {
+                                        formRcord.set(field, jobPositionRecordTemp.getValue(field.getName()));
+                                    }
+                                }
+                            }
+                        }
+
+                        // 需要更新的抄送邮箱数据
+                        if (formData.isSetProfile_cc_mail_enabled()) {
+                            // 增加需要删除抄送邮箱
+                            ccmailPositionIdsToDelete.add(formRcord.getId());
+
+                            handleCcmail(formData, formRcord, jobPositionCcmailRecordsAddlist);
+                        }
+
+
+                        // 将需要更新JobPosition的数据放入更新的列表
+                        jobPositionUpdateRecordList.add(formRcord);
+
+                        //更新的职位只有在title变化时才发布新职位
+                        //das端在更新职位时同样有这个判断，所以修改此处时考虑是否需要修改das中的PositionHandler.update方法
+                        //考虑是否写个共通
+                        if (formData.isSetTitle() && !jobPositionRecord.getTitle().equals(formRcord.getTitle())) {
+                            //添加修改标题的职位对应的需要作废的第三方职位数据parent_id
+                            thirdPartyPositionDisablelist.add(formRcord.getId());
+                        }
+
+                        // 需要更新JobPositionCity数据
+                        List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
+                        if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
+                            // 更新时候需要把之前的jobPositionCity数据删除
+                            deleteCitylist.add(formRcord.getId());
+                            jobPositionCityRecordsUpdatelist.addAll(jobPositionCityRecordList);
+                        }
+                        // 需要更新的JobPositionExra数据
+                        if (formData.getExtra() != null
+                                || jobOccupationId != 0
+                                || customId != 0
+                                || StringUtils.isNotNullOrEmpty(formData.getExt())) {
+                            if (jobPositionExtRecord == null) {
+                                jobPositionExtRecord = new JobPositionExtRecord();
+                                jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
+                                jobPositionExtRecord.setExtra(formData.getExtra() == null ? "" : formData.getExtra());
+                                if (jobOccupationId != 0) {
+                                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                }
+                                if (customId != 0) {
+                                    jobPositionExtRecord.setJobCustomId(customId);
+                                }
+                                if (StringUtils.isNotNullOrEmpty(formData.getExt())) {
+                                    jobPositionExtRecord.setExt(formData.getExt());
+                                }
+                                jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
+                            } else {
+                                jobPositionExtRecord.setExtra(formData.getExtra() == null ? "" : formData.getExtra());
+                                if (jobOccupationId != 0) {
+                                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                                }
+                                if (customId != 0) {
+                                    jobPositionExtRecord.setJobCustomId(customId);
+                                }
+                                if (StringUtils.isNotNullOrEmpty(formData.getExt())) {
+                                    jobPositionExtRecord.setExt(formData.getExt());
+                                }
+                                jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
+                            }
+                        }
+                    }
+                }
+            } else { // 数据的新增
+                formRcord.setTeamId(team_id);
+                // 当城市无法转换时，入库为提交的数据
+                if (city != null) {
+                    formRcord.setCity(city);
+                }
+                if (StringUtils.isNotNullOrEmpty(formRcord.getTitle())) {
+                    String pinYin = PinyinUtil.getFirstLetter(formRcord.getTitle());
+                    formRcord.setFirstPinyin(pinYin);
+                }
+                logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + formRcord.toString() + "--");
+                Integer pid = jobPositionDao.addRecord(formRcord).getId();
+                if (pid != null) {
+                    jobPositionIds.add(pid);
+                    List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
+                    if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
+                        // 新增城市code时，需要先删除jobpostionCity数据
+                        jobPositionCityRecordsAddlist.addAll(jobPositionCityRecordList);
+                    }
+                }
+                // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
+                formData.setId(pid);
+                // 需要新增的JobPosition数据
+                jobPositionAddRecordList.add(formRcord);
+                redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "/" + jobnumber, String.valueOf(formRcord.getId()));
+                // 需要同步的数据
+                addSyncData(syncData, formRcord.getId(), formData.getThirdParty_position());
+                // 需要更新的抄送邮箱数据
+                if (formData.isSetProfile_cc_mail_enabled()) {
+                    handleCcmail(formData, formRcord, jobPositionCcmailRecordsAddlist);
+                }
+
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(formData.getExtra())
+                        || jobOccupationId != 0
+                        || customId != 0
+                        || StringUtils.isNotNullOrEmpty(formData.getExt())) {
+                    // 新增jobPostion_ext数据
+                    JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
+                    jobPositionExtRecord.setExtra(formData.getExtra() == null ? "" : formData.getExtra());
+                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
+                    jobPositionExtRecord.setJobCustomId(customId);
+                    jobPositionExtRecord.setPid(pid);
+                    jobPositionExtRecord.setExt(formData.getExt());
+                    jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
+
+                }
             }
         }
         logger.info("需要更新jobPostion数据的条数:{},\n需要更新jobPostionExt数据的条数:{},\n新增jobPostionExt数据的条数:{},\n新增jobPositionCity数据的条数:{},\n需要更新jobPositionCity数据条数:{}" ,
