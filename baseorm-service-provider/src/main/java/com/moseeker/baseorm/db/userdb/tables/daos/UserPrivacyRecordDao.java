@@ -99,11 +99,4 @@ public class UserPrivacyRecordDao extends DAOImpl<UserPrivacyRecordRecord, com.m
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord> fetchByUpdateTime(Timestamp... values) {
         return fetch(UserPrivacyRecord.USER_PRIVACY_RECORD.UPDATE_TIME, values);
     }
-
-    /**
-     * Fetch records that have <code>version IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord> fetchByVersion(Byte... values) {
-        return fetch(UserPrivacyRecord.USER_PRIVACY_RECORD.VERSION, values);
-    }
 }
