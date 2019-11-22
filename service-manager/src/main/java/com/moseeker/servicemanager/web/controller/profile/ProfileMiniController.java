@@ -52,7 +52,7 @@ public class ProfileMiniController {
             Response res=profileService.getProfileMiniList(requestParams);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -70,8 +70,7 @@ public class ProfileMiniController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -91,8 +90,7 @@ public class ProfileMiniController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -122,8 +120,7 @@ public class ProfileMiniController {
             Response res = profileService.getMiniProfileSuggest(accountId,keyWords,page,pageSize);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

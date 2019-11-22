@@ -22,7 +22,15 @@ struct OrderForm {
     1:  optional i32 employee_id,
     2:  optional i32 company_id,
     3:  optional i32 count,
-    4:  optional i32 goods_id
+    4:  optional i32 goods_id,
+    5:  optional string addressee,
+    6:  optional string mobile,
+    7:  optional i32 province,
+    8:  optional i32 city,
+    9:  optional i32 region,
+    10: optional string address,
+    11: optional i32 userId,
+    12: optional i32 deliverType
 }
 
 struct MallSwitchForm {
@@ -93,4 +101,18 @@ struct MallGoodsOrderUpdateForm {
     2:  optional i32 hr_id,
     3:  optional list<i32> ids,
     4:  optional i32 state
+}
+
+struct MallMailAddressForm{
+    1: optional i32 id,
+    2: optional i32 userId;
+    3: optional string addressee,
+    4: optional string mobile,
+    5: optional i32 province,
+    6: optional i32 city,
+    7: optional i32 region,
+    8: optional string provinceName,
+    9: optional string cityName,
+    10: optional string regionName,
+    11: optional string address
 }

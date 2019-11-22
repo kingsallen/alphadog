@@ -1082,7 +1082,7 @@ public class SearchengineService {
         TransportClient client=null;
         Map<String,Object> map=new HashMap<String,Object>();
         try {
-            client = searchUtil.getEsClient();
+            client = searchUtil.getEsClientNew();
             SearchResponse hits=this.searchProfilePrefix(keyWord,Integer.parseInt(companyId),Integer.parseInt(hr_account_id),Integer.parseInt(account_type),Integer.parseInt(flag),returnParams,Integer.parseInt(page),Integer.parseInt(pageSize),client);
             long hitNum=hits.getHits().getTotalHits();
             if(hitNum==0){

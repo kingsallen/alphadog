@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 
 /**
  * 全局异常处理
@@ -28,13 +27,12 @@ public class GlobalExceptionHandler {
 
         if (e instanceof BIZException) {
             try {
-                return ResponseLogNotification.fail(request, ResponseUtils.fail(((BIZException)e).getCode(), e.getMessage()));
+                return ResponseLogNotification.fail(request, ResponseUtils.fail(((BIZException)e).getCode(), e.getMessage()), e);
             } catch (ParamNullException e1) {
-                return ResponseLogNotification.fail(request, e.getMessage());
+                return ResponseLogNotification.fail(request, e);
             }
         } else {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

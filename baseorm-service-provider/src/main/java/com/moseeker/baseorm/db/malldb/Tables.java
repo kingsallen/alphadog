@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.malldb;
 
 
 import com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo;
+import com.moseeker.baseorm.db.malldb.tables.MallMailAddress;
 import com.moseeker.baseorm.db.malldb.tables.MallOrder;
 import com.moseeker.baseorm.db.malldb.tables.MallOrderOperation;
 
@@ -27,15 +28,20 @@ public class Tables {
     /**
      * 商品信息表
      */
-    public static final MallGoodsInfo MALL_GOODS_INFO = MallGoodsInfo.MALL_GOODS_INFO;
+    public static final MallGoodsInfo MALL_GOODS_INFO = com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo.MALL_GOODS_INFO;
+
+    /**
+     * 邮寄地址信息
+     */
+    public static final MallMailAddress MALL_MAIL_ADDRESS = com.moseeker.baseorm.db.malldb.tables.MallMailAddress.MALL_MAIL_ADDRESS;
 
     /**
      * 商品申请记录
      */
-    public static final MallOrder MALL_ORDER = MallOrder.MALL_ORDER;
+    public static final MallOrder MALL_ORDER = com.moseeker.baseorm.db.malldb.tables.MallOrder.MALL_ORDER;
 
     /**
      * 商品发放hr操作记录
      */
-    public static final MallOrderOperation MALL_ORDER_OPERATION = MallOrderOperation.MALL_ORDER_OPERATION;
+    public static final MallOrderOperation MALL_ORDER_OPERATION = com.moseeker.baseorm.db.malldb.tables.MallOrderOperation.MALL_ORDER_OPERATION;
 }

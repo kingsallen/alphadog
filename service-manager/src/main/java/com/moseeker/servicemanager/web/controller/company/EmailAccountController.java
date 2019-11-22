@@ -40,7 +40,6 @@ public class EmailAccountController {
             EmailAccountForm emailAccountForm = service.fetchEmailAccounts(companyId, companyName, pageNumber, pageSize);
             return ResponseLogNotification.successJson(request, emailAccountForm);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -59,7 +58,6 @@ public class EmailAccountController {
             EmailAccountConsumptionForm emailAccountConsumptionForm = service.fetchEmailAccountConsumption(companyId, type, pageNumber, pageSize, startDate, endDate);
             return ResponseLogNotification.successJson(request, emailAccountConsumptionForm);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -75,7 +73,6 @@ public class EmailAccountController {
             int id = service.rechargeEmailAccount(companyId, lost);
             return ResponseLogNotification.successJson(request, id);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -91,7 +88,6 @@ public class EmailAccountController {
             service.updateEmailAccountRechargeValue(id, lost);
             return ResponseLogNotification.successJson(request, null);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
             return ResponseLogNotification.failJson(request, e);
         }
     }

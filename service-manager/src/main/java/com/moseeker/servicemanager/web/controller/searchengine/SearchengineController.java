@@ -88,10 +88,7 @@ public class SearchengineController {
 
 
         } catch (Exception e) {
-
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
 
         return ResponseLogNotification.success(request, search_res);
@@ -139,8 +136,7 @@ public class SearchengineController {
             }
 
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -183,9 +179,7 @@ public class SearchengineController {
             }
 
         } catch (Exception e) {
-
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
 
         return ResponseLogNotification.success(request, result);
@@ -257,8 +251,7 @@ public class SearchengineController {
             Response res = searchengineServices.companyQuery(keyWord, citys, industry, scale, Integer.parseInt(page), Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
 
     }
@@ -335,8 +328,7 @@ public class SearchengineController {
             );
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -364,8 +356,7 @@ public class SearchengineController {
             Response res = searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -385,8 +376,7 @@ public class SearchengineController {
             Response res = searchengineServices.userAggInfo(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -411,8 +401,7 @@ public class SearchengineController {
             Response res = searchengineServices.searchPositionSuggest(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -431,8 +420,7 @@ public class SearchengineController {
             Response res = searchengineServices.searchpastPosition(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -451,8 +439,7 @@ public class SearchengineController {
             Response res = searchengineServices.searchpastCompany(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -471,8 +458,7 @@ public class SearchengineController {
             Response res = searchengineServices.mobotSearchPosition(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -724,8 +710,7 @@ public class SearchengineController {
             Response res = searchengineServices.queryPositionMini(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }
