@@ -944,8 +944,10 @@ public class PositionService {
                 continue;
             }
             if(!RedisUtils.lock(redisClient, KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_JOBNUMBER.toString(), company_id + "_" + jobnumber, 20 * 60)){
+                logger.info("{}已存在正在更新的职位，直接添加同步数据", formData.getJobnumber());
                 try {
                     String positionIdStr = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.THIRD_PARTY_POSITION_SYNC_POSITIONID.toString(), company_id + "_" + jobnumber);
+                    logger.info("{} positionId {}", formData.getJobnumber(), positionIdStr);
                     int positionId = Integer.parseInt(positionIdStr);
                     if (positionId != 0) {
                         addSyncData(syncData, positionId, formData.getThirdParty_position());
@@ -955,6 +957,7 @@ public class PositionService {
                     logger.warn("未在redis找到positionId ,{}, {}", company_id, jobnumber);
                 }
             }
+            logger.info("{} 不存在数据", formData.getJobnumber());
 
             // 更新或者新增数据
             if (dbOperation == DBOperation.UPDATE) {
