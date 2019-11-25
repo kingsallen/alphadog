@@ -14,10 +14,7 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.configdb.tables.pojos.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.hrdb.tables.*;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.*;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -28,6 +25,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.OmsSwitchEnum;
+import com.moseeker.common.constants.WxMessageFrequency;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -67,16 +65,19 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.WxMessageFrequency.EveryWeek;
 
 @CounterIface
 @Service
@@ -102,6 +103,9 @@ public class CompanyService {
 
     @Autowired
     private HrGroupCompanyRelDao hrGroupCompanyRelDao;
+
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
 
     @Autowired
     private HrEmployeeSectionDao hrEmployeeSectionDao;
@@ -164,7 +168,7 @@ public class CompanyService {
 
     @Autowired
     CompanySwitchFactory companySwitchFactory;
-
+    
     MqService.Iface mqServer = ServiceManager.SERVICE_MANAGER.getService(MqService.Iface.class);
 
     public Response getResource(CommonQuery query) throws TException {
@@ -1048,19 +1052,20 @@ public class CompanyService {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
     }
 
-    public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(int companyId){
-        String timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        timeStr = timeStr+"-01 00:00:00";
-        logger.info("===============time:{}",timeStr);
-        Date date = null;
-        try {
-            date = DateUtils.shortTimeToDate(timeStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    /**
+     * 积分统计
+     * 用于"统计结果通知"模板消息
+     * @param companyId
+     * @param currentDate
+     * @return
+     */
+    public List<HrCompanyWechatDO> getCompanyInfoByTemplateRank(int companyId, String currentDate) throws ParseException {
+        String firstDayOfMonthStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-01 00:00:00"));
+        Date firstDayOfMonth =  DateUtils.shortTimeToDate(firstDayOfMonthStr);
+        Date today = StringUtils.isNotNullOrEmpty(currentDate) ? DateUtils.nomalDateToDate(currentDate) : new Date();
         long startTime = System.currentTimeMillis();
         //获取本月有积分增加的员工map 员工编号 = 积分增加只
-        Map<Integer, Integer> employeePointsMap = employeeEntity.getEmployeeAwardSum(date);
+        Map<Integer, Integer> employeePointsMap = employeeEntity.getEmployeeAwardSum(firstDayOfMonth);
         Set<Integer> employeeIdList = employeePointsMap.keySet();
         long pointTime = System.currentTimeMillis();
         logger.info("getCompanyInfoByTemplateRank ============== point:{}",pointTime - startTime);
@@ -1071,6 +1076,8 @@ public class CompanyService {
         if(!StringUtils.isEmptyList(employeeDOList)) {
             List<Integer> companyList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
             List<Integer> companyIdList = hrGroupCompanyRelDao.getGroupCompanyRelDoByCompanyIds(companyList);
+            Map<Integer,String> companyNames = companyDao.getCompaniesByIds(companyIdList).stream().collect(
+                    Collectors.toMap(HrCompanyRecord::getId,HrCompanyRecord::getAbbreviation));
             long companyTime = System.currentTimeMillis();
             logger.info("getCompanyInfoByTemplateRank ============== groupCompany :{}",companyTime - employeeTime);
             //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
@@ -1088,7 +1095,10 @@ public class CompanyService {
                 long messageTime = System.currentTimeMillis();
                 logger.info("getCompanyInfoByTemplateRank ============== message :{}", messageTime - wechatTime);
                 //筛选出来排名通知消息模板为开的公众号开关
-                List<HrWxNoticeMessageDO> noticeList = noticeDao.getHrWxNoticeMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                List<HrWxNoticeMessageRecord> noticeList = noticeDao.getHrWxNoticeMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                noticeList = noticeList.stream().filter(wxd->filter(today,wxd)).collect(Collectors.toList());
+                Map<Integer,String> wechatFrequencyMap = noticeList.stream().filter(wxd->StringUtils.isNotNullOrEmpty(wxd.getSendFrequency()))
+                        .collect(Collectors.toMap(HrWxNoticeMessageRecord::getWechatId,HrWxNoticeMessageRecord::getSendFrequency));
                 long noticeTime = System.currentTimeMillis();
                 logger.info("getCompanyInfoByTemplateRank ============== notice :{}", noticeTime - messageTime);
                 if(!StringUtils.isEmptyList(noticeList)) {
@@ -1097,11 +1107,75 @@ public class CompanyService {
                     companyIdList = wechatDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
                     long companyIdTime = System.currentTimeMillis();
                     logger.info("getCompanyInfoByTemplateRank ============== companyIdTime :{}", companyIdTime - noticeTime);
-                    return handerCompanyWechatInfo(companyId, companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
+                    return handerCompanyWechatInfo(companyId, companyIdList, companyNames,wechatDOList, messageDOList, companyEmployeeMap,wechatFrequencyMap);
                 }
             }
         }
         return new ArrayList<>();
+    }
+
+    public int notifyAwardsRankingTplMsgSent(List<Integer> wechatIds, String currentDate) throws ParseException {
+        if(StringUtils.isNullOrEmpty(currentDate)){
+            currentDate = DateUtils.dateToNormalDate(new Date());
+        }
+        java.sql.Date today = new java.sql.Date(DateUtils.nomalDateToDate(currentDate).getTime()) ;
+        if(wechatIds != null && wechatIds.size() > 0){
+            return noticeDao.updateSentDate(wechatIds,Constant.AWARD_RANKING,today);
+        }
+        return 0 ;
+    }
+
+    private boolean filter(Date currentDate,HrWxNoticeMessageRecord message){
+        WxMessageFrequency frequency = WxMessageFrequency.getWxMessageFrequency(message.getSendFrequency());
+        Date sentDate = message.getSentDate();
+
+        if(WxMessageFrequency.EveryWeek.equals(frequency) || sentDate == null){
+            return true ;
+        }
+
+        Calendar c = Calendar.getInstance();
+        if(currentDate != null){
+            c.setTime(currentDate);
+        }
+        if(WxMessageFrequency.EveryMonth.equals(frequency)){
+            // HR设置频率每月一次
+            // 当天必须为本月末
+            return c.get(Calendar.DAY_OF_MONTH) == c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        }else{
+            // HR设置频率为每周/每2周
+            // 发送时间周五17：00，上次发送时间记录在HrWxNoticeMessageRecord.sentDate字段
+            // 当前时间应为周五
+            if(c.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY){
+                if(EveryWeek.equals(frequency) || sentDate == null){
+                    return  true ;
+                }
+
+                // 如果距上次发送间隔日期大于等于14天，则允许发送模板消息
+                // 考虑到HR将频率从每月一次切换到每两周一次，仍然使用14条时间间隔判断
+                return getDifferDays(sentDate,c.getTime()) >= 14;
+            }else{
+                return false ;
+            }
+        }
+    }
+
+    /**
+     * 计算两个日期之间天数差
+     * @param date1
+     * @param date2
+     * @return data2比data1晚的天数
+     */
+    public static int getDifferDays(Date date1, Date date2)  {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 00:00:00:000");
+        try {
+            date1 = sdf.parse(sdf.format(date1));
+            date2 = sdf.parse(sdf.format(date2));
+            int days = (int) ((date2.getTime() - date1.getTime()) / 24 / 3600 / 1000);
+            return days;
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage(),e);
+        }
+
     }
 
     /**
@@ -1343,8 +1417,8 @@ public class CompanyService {
         return 0;
     }
 
-    private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
-                                                            List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
+    private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, Map<Integer,String> companyNames,List<HrWxWechatDO> wechatDOList,
+                                                            List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params,Map<Integer,String> wechatFrequencyMap){
         long startTime = System.currentTimeMillis();
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
             logger.info("===============params:{}",params);
@@ -1355,6 +1429,8 @@ public class CompanyService {
                 }
                 HrCompanyWechatDO companyWechatDO = new HrCompanyWechatDO();
                 companyWechatDO.setCompanyId(companyId);
+                companyWechatDO.setCompanyName(companyNames.get(companyId));
+
                 int wechatId = 0;
                 if(!StringUtils.isEmptyList(wechatDOList)){
                     for(HrWxWechatDO wechatDO : wechatDOList){
@@ -1380,6 +1456,7 @@ public class CompanyService {
                 if(params.get(companyId)!=null) {
                     companyWechatDO.setEmployeeCount(params.get(companyId));
                 }
+                companyWechatDO.setFrequency(wechatFrequencyMap.getOrDefault(companyWechatDO.getWechatId(),EveryWeek.getValue()));
                 companyWechatDOList.add(companyWechatDO);
             }
             long endTime = System.currentTimeMillis();
@@ -1501,19 +1578,100 @@ public class CompanyService {
                 return toOmsSwitchValue(str);
             } ).collect(Collectors.toList());
         }
-       List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
-       return  switchList.stream().map(configOmsSwitchManagementDO -> {
-           CompanySwitchVO companySwitchVO = new CompanySwitchVO();
-           companySwitchVO.setId(configOmsSwitchManagementDO.getId());
-           companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
-           companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
-           companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
-           companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
-           return companySwitchVO;
-       }).collect(Collectors.toList());
+        List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.fetchOmsSwitchListByParams(companyId,moduleList);
+        if (switchList != null && switchList.size() > 0) {
+            List<CompanySwitchVO> result = switchList.stream().map(configOmsSwitchManagementDO -> {
+                CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+                companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+                companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
+                companySwitchVO.setKeyword(getOmsSwitch(configOmsSwitchManagementDO.getModuleName()).getName());
+                companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
+                companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+                return companySwitchVO;
+            }).collect(Collectors.toList());
+            addDefaultSwitch(result, companyId);
+            logger.info("CompanyService switchCheck after result:{}", JSONObject.toJSONString(result));
+            filtrationValidSwitch(result);
+            logger.info("CompanyService switchCheck after filtrationValidSwitch result:{}", JSONObject.toJSONString(result));
+            return result;
+
+        } else {
+            return new ArrayList<>(0);
+        }
     }
 
+    /**
+     * 添加默认开启的开关
+     * @param switchList 开关列表
+     * @param companyId 公司编号
+     */
+    private void addDefaultSwitch(List<CompanySwitchVO> switchList, int companyId) {
 
+        if (switchList == null || switchList.size() == 0 || companyId == 0) {
+            return;
+        }
+        List<CompanySwitchVO> addList = new ArrayList<>();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        for (OmsSwitchEnum omsSwitchEnum : OmsSwitchEnum.values()) {
+            if (omsSwitchEnum.isValid()) {
+                Optional<CompanySwitchVO> optionalConfigOmsSwitchManagement = switchList
+                        .stream()
+                        .filter(companySwitchVO -> {
+                            OmsSwitchEnum omsSwitchEnum1 = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword());
+                            if (omsSwitchEnum1 != null && omsSwitchEnum1.equals(omsSwitchEnum)) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        })
+                        .findAny();
+                if (!optionalConfigOmsSwitchManagement.isPresent()) {
+
+                    ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
+                    configOmsSwitchManagement.setCompanyId(companyId);
+                    configOmsSwitchManagement.setCreateTime(timestamp);
+                    configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
+                    configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
+                    int id = configOmsSwitchManagementDao.add(configOmsSwitchManagement);
+                    CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+                    companySwitchVO.setId(id);
+                    companySwitchVO.setCompanyId(configOmsSwitchManagement.getCompanyId());
+                    companySwitchVO.setKeyword(omsSwitchEnum.getName());
+                    companySwitchVO.setValid(omsSwitchEnum.getValidToByte());
+                    addList.add(companySwitchVO);
+                }
+            }
+        }
+        if (addList.size() > 0) {
+            switchList.addAll(addList);
+        }
+    }
+
+    /**
+     * 只返回开启的开关
+     * 由于查找公司下开关的接口的逻辑是只返回开启的开关，所以做一下特殊处理
+     * @param result 开启的开关
+     */
+    private void filtrationValidSwitch(List<CompanySwitchVO> result) {
+        if (result != null && result.size() > 0) {
+            Iterator<CompanySwitchVO> iterator = result.iterator();
+            while (iterator.hasNext()) {
+                CompanySwitchVO companySwitchVO = iterator.next();
+                if (companySwitchVO.getValid() == 0) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    /**
+     * 批量增加开关
+     * 提供单独的接口方便异步执行
+     * @param list
+     */
+    private void batchInsertIfNotExists(List<ConfigOmsSwitchManagement> list) {
+        configOmsSwitchManagementDao.batchInsertIfNotExists(list);
+    }
 
     /*
      *
@@ -1620,13 +1778,17 @@ public class CompanyService {
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
         companyId = hrCompanyDO.getId();
         ConfigOmsSwitchManagement configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
+        return getCompanySwitchVO(companyId,instanceFromModule(moduleNames),configOmsSwitchManagementDO);
+    }
+
+    private CompanySwitchVO getCompanySwitchVO(int companyId, OmsSwitchEnum omsSwitchEnum,ConfigOmsSwitchManagement configOmsSwitchManagementDO){
         if(configOmsSwitchManagementDO==null&&companyId!=0){
             ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
             configOmsSwitchManagement.setCompanyId(companyId);
-            configOmsSwitchManagement.setModuleName(toOmsSwitchValue(moduleNames));
-            configOmsSwitchManagement.setIsValid((byte)0);
+            configOmsSwitchManagement.setModuleName(omsSwitchEnum.getValue());
+            configOmsSwitchManagement.setIsValid(omsSwitchEnum.getValidToByte());
             configOmsSwitchManagementDao.add(configOmsSwitchManagement);
-            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,toOmsSwitchValue(moduleNames));
+            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,omsSwitchEnum.getValue());
         }
         CompanySwitchVO companySwitchVO = new CompanySwitchVO();
         if(configOmsSwitchManagementDO != null){
@@ -1646,6 +1808,15 @@ public class CompanyService {
         }
         return omsSwitchEnum.getValue();
     }
+
+    private static OmsSwitchEnum instanceFromModule(String moduleNames){
+        OmsSwitchEnum omsSwitchEnum = OmsSwitchEnum.instanceFromName(moduleNames);
+        if(omsSwitchEnum == null){
+            throw CompanySwitchException.MODULE_NAME_NOT_EXISTS;
+        }
+        return omsSwitchEnum;
+    }
+
     private static OmsSwitchEnum getOmsSwitch(Integer value){
         if (value == null){
             throw CompanySwitchException.SWITCH_NOT_EXISTS;

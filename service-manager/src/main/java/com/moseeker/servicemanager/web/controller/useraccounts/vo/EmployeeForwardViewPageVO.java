@@ -8,21 +8,22 @@ import java.util.List;
  */
 public class EmployeeForwardViewPageVO {
 
-    public int userId;
-    public String nickname;
-    public int viewCount;
-    public int connection;
-    public int depth;
-    public String headimgurl;
-    public String positionTitle;
-    public int positionId;
-    public String forwardName;
-    public boolean forwardSourceWx;
-    public String clickTime;
-    public int invitationStatus;
-    public List<RadarUserInfo> chain;
-    public int status;
-    public int chainStatus;
+    private int userId;
+    private String nickname;
+    private int viewCount;
+    private int connection;
+    private int depth;
+    private String headimgurl;
+    private String positionTitle;
+    private int positionId;
+    private String forwardName;
+    private boolean forwardSourceWx;
+    private String clickTime;
+    private int invitationStatus;
+    private List<RadarUserInfo> chain;
+    private int status;
+    private int chainStatus;
+    private boolean canChat ;
 
     public int getChainStatus() {
         return chainStatus;
@@ -142,5 +143,13 @@ public class EmployeeForwardViewPageVO {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public boolean isCanChat() {
+        return canChat;
+    }
+
+    public void setCanChat(boolean canChat) {
+        this.canChat = canChat;
     }
 }

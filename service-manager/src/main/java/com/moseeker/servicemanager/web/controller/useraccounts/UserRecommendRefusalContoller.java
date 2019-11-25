@@ -50,8 +50,7 @@ public class UserRecommendRefusalContoller {
             service.refuseRecommend(userRecommendRefusalDO);
             return ResponseLogNotification.successJson(request, null);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -70,8 +69,7 @@ public class UserRecommendRefusalContoller {
             UserRecommendRefusalVO vo = JSON.parseObject(JSON.toJSONString(result,serializeConfig),UserRecommendRefusalVO.class);
             return ResponseLogNotification.successJson(request, vo);
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     

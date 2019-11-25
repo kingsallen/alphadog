@@ -80,7 +80,7 @@ public class CompanyController {
             }
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -98,7 +98,7 @@ public class CompanyController {
                 return ResponseLogNotification.fail(request, result);
             }
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -128,7 +128,7 @@ public class CompanyController {
             }
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -151,10 +151,9 @@ public class CompanyController {
             CompanyOptions companyOptions = companyServices.getCompanyOptions(companyId);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyOptions)));
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -178,9 +177,9 @@ public class CompanyController {
                 return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -222,9 +221,9 @@ public class CompanyController {
                 }
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -250,10 +249,9 @@ public class CompanyController {
             Response res = companyServices.addImporterMonitor(companyId, hraccountId, type, file, status, message, fileName);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -276,10 +274,9 @@ public class CompanyController {
             HrImporterMonitorDO hrImporterMonitorDO = companyServices.getImporterMonitor(companyId, hraccountId, type);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(hrImporterMonitorDO)));
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -301,10 +298,9 @@ public class CompanyController {
             Response res = companyServices.bindingSwitch(companyId, disable);
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -329,10 +325,9 @@ public class CompanyController {
             logger.debug("GET /hraccount/company/hremployeecertconf companyCertConf : {}",companyCertConf);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyCertConf)));
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -377,9 +372,9 @@ public class CompanyController {
                 }}));
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -411,9 +406,9 @@ public class CompanyController {
                 }}));
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -434,9 +429,9 @@ public class CompanyController {
                 return ResponseLogNotification.successJson(request, result);
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -465,9 +460,9 @@ public class CompanyController {
                 return Result.success(result).toJson();
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -485,10 +480,9 @@ public class CompanyController {
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(companyForVerifyEmployeeList)));
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -510,10 +504,9 @@ public class CompanyController {
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result)));
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -535,8 +528,7 @@ public class CompanyController {
             Response res=companyServices.getPcBanner(Integer.parseInt(page), Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -558,8 +550,7 @@ public class CompanyController {
             Response res=positonServices.getPcRecommandCompany(page,pageSize);
             return ResponseLogNotification.success(request, res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -581,8 +572,7 @@ public class CompanyController {
             Response res=positonServices.getPcRecommandCompanyAll(page,pageSize);
             return ResponseLogNotification.success(request, res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     //获取公司信息，包括团队信息
@@ -596,8 +586,7 @@ public class CompanyController {
             Response res=companyServices.companyDetails(companyId);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -613,8 +602,7 @@ public class CompanyController {
             Response res=companyServices.companyMessage(companyId);
             return ResponseLogNotification.success(request, res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -648,8 +636,7 @@ public class CompanyController {
             Response result = companyServices.companyPaidOrFortune();
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -674,8 +661,7 @@ public class CompanyController {
             Response result = companyServices.getTalentPoolStatus(Integer.parseInt(hrId),Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -697,8 +683,7 @@ public class CompanyController {
         } catch (BIZException e) {
             return ResponseLogNotification.failJson(request, e);
         } catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -714,8 +699,7 @@ public class CompanyController {
             Response result = companyServices.updateHrCompanyConf(companyConf);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -738,8 +722,7 @@ public class CompanyController {
             Response result = companyServices.updateHrCompanyConfStatus(Integer.parseInt(status), Integer.parseInt(company_id));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -755,8 +738,7 @@ public class CompanyController {
             HrCompanyMobotConfDO result = companyServices.getMobotConf(company_id);
             return Result.success(result).toJson();
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -769,8 +751,7 @@ public class CompanyController {
             HrCompanyMobotConfDO result = companyServices.updateMobotConf(param);
             return Result.success(result).toJson();
         } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -786,8 +767,7 @@ public class CompanyController {
             Response result = companyServices.findSubAccountNum(Integer.parseInt(company_id));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -826,8 +806,7 @@ public class CompanyController {
                 return ResponseLogNotification.fail(request, result);
             }
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -841,8 +820,7 @@ public class CompanyController {
             Response res=companyServices.addCompanyFeature(DO);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.POST)
@@ -859,8 +837,7 @@ public class CompanyController {
             Response res=companyServices.addCompanyFeatures(dataList);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/company/feature", method = RequestMethod.PUT)
@@ -872,8 +849,7 @@ public class CompanyController {
             Response res=companyServices.updateCompanyFeature(DO);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.PUT)
@@ -890,8 +866,7 @@ public class CompanyController {
             Response res=companyServices.updateCompanyFeatures(dataList);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/company/feature/{id}", method = RequestMethod.GET)
@@ -901,8 +876,7 @@ public class CompanyController {
             Response res= companyServices.getFeatureById(id);
             return  ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/company/feature", method = RequestMethod.GET)
@@ -917,8 +891,7 @@ public class CompanyController {
             Response res= companyServices.getFeatureByCompanyId(Integer.parseInt(companyId));
             return  ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/company/feature/list", method = RequestMethod.GET)
@@ -934,8 +907,7 @@ public class CompanyController {
             Response res= companyServices.getCompanyFeatureIdList(dataList);
             return  ResponseLogNotification.success(request,res);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -944,15 +916,34 @@ public class CompanyController {
     public String getCompanyAward(HttpServletRequest request) throws Exception {
         try {
             Map<String, Object> data = parseRequestParam(request);
-            String companyId=(String)data.get("company_id");
-            if(StringUtils.isNullOrEmpty(companyId)){
-               companyId = "0";
-            }
-            Response confDO  = companyServices.getCompanyWechatList(Integer.parseInt(companyId));
+            String companyId=(String)data.getOrDefault("company_id","0");
+            String currentDate = (String)data.get("currentDate");
+            Response confDO  = companyServices.getCompanyWechatList(Integer.parseInt(companyId),currentDate);
             return ResponseLogNotification.success(request,confDO);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 积分排行模板消息发送成功后通知服务
+     * 主要用于记录发送了模板消息的公司的发送时间
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/api/company/awardsRanking/notifyTplMsgSent", method = RequestMethod.POST)
+    @ResponseBody
+    public String sentAwardsRankingTplMsg(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> data = parseRequestParam(request);
+            List<Integer> ids= (List<Integer>) data.get("wechatIds");
+            String currentDate = (String)data.get("currentDate");
+            Response confDO  = companyServices.notifyAwardsRankingTplMsgSent(ids,currentDate);
+            return ResponseLogNotification.success(request,confDO);
+        }catch(Exception e){
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

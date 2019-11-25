@@ -3,12 +3,14 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
@@ -23,6 +25,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.WxMessageFrequency;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
@@ -59,20 +62,21 @@ import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.*;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Future;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -109,6 +113,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+    @Autowired
+    private HrWxNoticeMessageDao noticeDao;
+
 
     @Autowired
     private UserUserDao userDao;
@@ -334,6 +341,7 @@ public class UserEmployeeServiceImpl {
         return new ArrayList<>();
     }
 
+
     /**
      * 分页查找员工的内推数据
      * @param companyId 公司编号
@@ -341,7 +349,13 @@ public class UserEmployeeServiceImpl {
      * @param pageSize 每页数据
      * @return 分页的内推数据
      */
-    public PaginationUtil<ContributionDetail> getContributions(int companyId, int pageNum, int pageSize) {
+    public PaginationUtil<ContributionDetail> getContributions(int companyId, String sendFrequency,int pageNum, int pageSize) {
+        if(StringUtils.isNullOrEmpty(sendFrequency)){
+            HrWxNoticeMessageRecord messageRecord = noticeDao.getHrWxNoticeMessageDOByWechatId(wechatDao.getHrWxWechatByCompanyId(companyId).getId(), Constant.AWARD_RANKING);
+            if(messageRecord != null){
+                sendFrequency = messageRecord.getSendFrequency();
+            }
+        }
 
         List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
         int totalRow = employeeEntity.countActiveEmployeeByCompanyIds(companyIdList);
@@ -376,23 +390,22 @@ public class UserEmployeeServiceImpl {
 
             logger.info("getContributions userEmployeeMap:{}", userEmployeeMap);
 
-            LocalDateTime today = LocalDateTime.now();
-            LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-            LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime[] dates = getDatePeriod( sendFrequency);
+            LocalDateTime sinceDate = dates[0],currentFriday = dates[1];
 
-            logger.info("getContributions start date:{}", lastFriday.toString());
+            logger.info("getContributions start date:{}", sinceDate.toString());
             logger.info("getContributions end date:{}", currentFriday.toString());
 
             //查找转发数量
             Future<Map<Integer,Integer>> forwardCountFuture = threadPool.startTast(() ->
-                    referralEntity.countEmployeeForward(userIdList, positionIdList, lastFriday, currentFriday));
+                    referralEntity.countEmployeeForward(userIdList, positionIdList, sinceDate, currentFriday));
             //查找申请数量
             Future<Map<Integer, Integer>> applyCountFuture = threadPool.startTast(() ->
-                    applicationEntity.countEmployeeApply(userIdList, positionIdList, lastFriday, currentFriday));
+                    applicationEntity.countEmployeeApply(userIdList, positionIdList, sinceDate, currentFriday));
 
             //查找积分数量
             Future<Map<Integer, Integer>> awardsCountFuture = threadPool.startTast(() ->
-                    referralEntity.countEmployeeAwards(employeeIdList, lastFriday, currentFriday));
+                    referralEntity.countEmployeeAwards(employeeIdList, sinceDate, currentFriday));
             //查找微信账号信息
             Future<List<UserWxUserRecord>> wxUserFuture = threadPool.startTast(() ->
                     userWxEntity.getUserWxUserData(userIdList));
@@ -503,6 +516,37 @@ public class UserEmployeeServiceImpl {
         return paginationUtil;
     }
 
+
+    /**
+     * 获取积分同时周期
+     * @param sendFrequency
+     * @return
+     */
+    private static LocalDateTime[] getDatePeriod(String sendFrequency){
+        WxMessageFrequency wxMessageFrequency = WxMessageFrequency.getWxMessageFrequency(sendFrequency);
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime sinceDate = null,currentFriday = null;
+        switch (wxMessageFrequency){
+            case EveryTwoWeeks:{
+                sinceDate = today.minusWeeks(2).with(DayOfWeek.FRIDAY);
+                currentFriday = today.with(DayOfWeek.FRIDAY);
+                break;
+            }
+            case EveryMonth: {
+                sinceDate = today.minusDays(today.getDayOfMonth());
+                currentFriday = today;
+                break;
+            }
+            case EveryWeek:
+            default: {
+                sinceDate = today.with(DayOfWeek.MONDAY).minusDays(3);
+                currentFriday = today.with(DayOfWeek.FRIDAY);
+            }
+        }
+        sinceDate = sinceDate.withHour(17).withMinute(0).withSecond(0).withNano(0);
+        currentFriday = currentFriday.withHour(17).withMinute(0).withSecond(0).withNano(0);
+        return new LocalDateTime[]{sinceDate,currentFriday};
+    }
 
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
         ValidateUtil vu = new ValidateUtil();
@@ -644,6 +688,7 @@ public class UserEmployeeServiceImpl {
 
     @RadarSwitchLimit
     public EmployeeForwardViewVO fetchEmployeeForwardView(int companyId, int userId, String positionTitle, String order, int page, int size){
+        logger.info("fetchEmployeeForwardView( companyId:{} ,userId:{}, positionTitle:{}) ",companyId,userId,positionTitle);
         long startTime = System.currentTimeMillis();
         EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
@@ -690,15 +735,30 @@ public class UserEmployeeServiceImpl {
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         long neo4jTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView neo4jTime:{}",neo4jTime-chainTime);
+        int wechatId = wechatDao.getHrWxWechatByCompanyId(companyId).getId();
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
+        Set<Integer> users = new HashSet<>();
+
         for(CandidateRecomRecordRecord record: list){
-            viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList));
+            EmployeeForwardViewPageVO pageVO = EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList);
+            users.add(pageVO.getUserId());
+            viewPages.add(pageVO);
         }
+
+        Map<Integer,Boolean> userFocusMap = new HashMap<>();
+        users.forEach((userid)->{
+            // 如果已关注公众号，可以建立IM聊天
+            userFocusMap.put(userid,wxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(userid,wechatId) != null);
+        });
+        viewPages.forEach(viewPage->viewPage.setCanChat(userFocusMap.getOrDefault(viewPage.getUserId(),false)));
+
         long dataBizTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView dataBizTime:{}",dataBizTime-neo4jTime);
         result.setUserList(viewPages);
         return result;
     }
+
+
 
     private void fetchEmployeePostConnection(EmployeeCardViewData data){
         List<ReferralConnectionLogRecord> connectionLogList = data.getConnectionLogList();

@@ -196,4 +196,11 @@ public class ConfigSysTemplateMessageLibraryDao extends DAOImpl<ConfigSysTemplat
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysTemplateMessageLibrary> fetchByColorJson(String... values) {
         return fetch(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.COLOR_JSON, values);
     }
+
+    /**
+     * Fetch records that have <code>send_frequency IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysTemplateMessageLibrary> fetchBySendFrequency(String... values) {
+        return fetch(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SEND_FREQUENCY, values);
+    }
 }

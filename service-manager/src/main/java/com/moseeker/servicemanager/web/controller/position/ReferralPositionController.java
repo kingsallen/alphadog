@@ -71,7 +71,7 @@ public class ReferralPositionController {
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -97,7 +97,7 @@ public class ReferralPositionController {
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -126,7 +126,7 @@ public class ReferralPositionController {
             String base64 = QRCodeUtil.generalQRCode(url,logo,width,height,ratio);
             return com.moseeker.servicemanager.web.controller.Result.success(base64).toJson();
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -168,8 +168,7 @@ public class ReferralPositionController {
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -218,8 +217,7 @@ public class ReferralPositionController {
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -250,7 +248,7 @@ public class ReferralPositionController {
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -282,7 +280,7 @@ public class ReferralPositionController {
             return ResponseLogNotification.successJson(request, vo);
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -307,7 +305,7 @@ public class ReferralPositionController {
             return ResponseLogNotification.success(request, result);
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -345,7 +343,7 @@ public class ReferralPositionController {
 
             return ResponseLogNotification.successJson(request, vo);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -373,7 +371,7 @@ public class ReferralPositionController {
             List<ReferralPositionMatchDO> match =  referralPositionService.getMatchPositionInfo(userId,companyId);
             return ResponseLogNotification.successJson(request, match);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

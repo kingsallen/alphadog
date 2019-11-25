@@ -40,7 +40,7 @@ public class EducationController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -52,9 +52,8 @@ public class EducationController {
 
 			Response result = educationService.postResource(education);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -66,7 +65,7 @@ public class EducationController {
 			Response result = educationService.putResource(education);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -79,7 +78,7 @@ public class EducationController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

@@ -14,6 +14,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.OmsSwitchEnum;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -53,10 +54,8 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICE_MANAGER.getService(CompanyServices.Iface.class);
 
-
     @Autowired
     private ProfileOtherDao dao;
-
 
     @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
@@ -75,12 +74,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return ResponseUtils.getNotNullValue(dao.getDatas(QueryConvert.commonQueryConvertToQuery(query)), new ArrayList<ProfileOtherDO>());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -89,12 +83,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return ResponseUtils.getNotNullValue(dao.getData(QueryConvert.commonQueryConvertToQuery(query)), new ProfileOtherDO());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -104,12 +93,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             List<ProfileOtherDO> otherDOList = otherService.addOthers(Others);
             return ResponseUtils.getNotNullValue(otherDOList, new ArrayList<ProfileOtherDO>());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -118,15 +102,8 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             ProfileOtherDO otherDO = otherService.addOther(Other);
             return ResponseUtils.getNotNullValue(otherDO, new ProfileOtherDO());
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -136,13 +113,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             int[] others = otherService.putOthers(Others);
             return Arrays.asList(ArrayUtils.toObject(others));
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -151,12 +122,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return otherService.putOther(Other);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -165,12 +131,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return Arrays.asList(ArrayUtils.toObject(dao.deleteDatas(Others)));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -179,13 +140,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return dao.deleteData(Other);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -232,12 +187,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
                 });
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
         return ResponseUtils.success(configCustomMetaDatas);
     }
@@ -247,12 +197,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return profileService.checkProfileOther(userId, positionId);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -261,12 +206,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return profileService.getProfileOther(params);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -275,12 +215,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return profileService.otherFieldsCheck(positionId, fields);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -299,12 +234,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             logger.info("getProfileOtherByPosition others time :{}", end-start);
             return ResponseUtils.success(profilrCamle);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -324,12 +254,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             logger.info("getProfileOtherByPosition others time :{}", end-start);
             return ResponseUtils.success(profilrCamle);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -340,12 +265,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             int result = otherService.putSpecificOther((Map<String, Object>) resume.get("data"), (Integer) resume.get("profile_id"));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -357,12 +277,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             org.springframework.beans.BeanUtils.copyProperties(result, fieldInfo);
             return fieldInfo;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            if (e instanceof BIZException) {
-                throw (BIZException) e;
-            } else {
-                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-            }
+            throw ExceptionUtils.convertException(e);
         }
     }
 

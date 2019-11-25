@@ -16,16 +16,14 @@ import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.CustomFieldValuesForm;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.EmployeeExtInfo;
-import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.*;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
@@ -43,6 +41,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,7 +88,7 @@ public class UserEmployeeController {
             Response result = service.delUserEmployee(commonQuery);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -100,7 +100,7 @@ public class UserEmployeeController {
             Response result = service.getUserEmployees(commonQuery);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -115,7 +115,7 @@ public class UserEmployeeController {
             Response result = service.getUserEmployee(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -137,7 +137,7 @@ public class UserEmployeeController {
             Response result = service.postPutUserEmployeeBatch(batchForm);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -157,7 +157,7 @@ public class UserEmployeeController {
                 return ResponseLogNotification.success(request, ResponseUtils.success(new HashMap<String, Object>(){{put("result", result);}}));
             }
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -169,7 +169,7 @@ public class UserEmployeeController {
             Response res=service.putUserEmployee(userEmployee);
             return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -180,7 +180,7 @@ public class UserEmployeeController {
             service.addEmployeeAward(form.getApplicationIds(), form.getEventType());
             return ResponseLogNotification.successJson(request,"success");
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -204,7 +204,7 @@ public class UserEmployeeController {
             Response res=service.getValidateUserEmployee(companyId,email,Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /*
@@ -219,7 +219,7 @@ public class UserEmployeeController {
             Response res=service.getPastUserEmployee(hrId);
             return ResponseLogNotification.success(request,res);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -258,11 +258,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.successJson(request, result.employeeId);
             }
         } catch (BIZException e){
-            logger.error("POST /user/employee/unbind error",e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
-            logger.error("POST /user/employee/unbind error",e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -295,11 +293,9 @@ public class UserEmployeeController {
             }
             return ResponseLogNotification.successJson(request, result.employeeId);
         } catch (BIZException e){
-            logger.error("POST /user/employee/bind error",e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e) {
-            logger.error("POST /user/employee/bind error",e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -335,7 +331,7 @@ public class UserEmployeeController {
     }
 
     /*
-    获取最近转发人员
+     * 获取最近转发人员，用户发送员工积分排行模板消息
      */
     @RequestMapping(value="/v1.0/employee/rank", method = RequestMethod.GET)
     @ResponseBody
@@ -343,6 +339,7 @@ public class UserEmployeeController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("company_id", 0);
+            String frequency = params.getString("frequency");
             int pageSize = params.getInt("page_size", 0);
             int pageNo = params.getInt("page_no", 0);
 
@@ -354,7 +351,7 @@ public class UserEmployeeController {
 
             } else {
                 PaginationUtil<ContributionDetail> result = new PaginationUtil<>();
-                com.moseeker.thrift.gen.useraccounts.struct.Pagination pagination = service.getContributions(companyId,
+                com.moseeker.thrift.gen.useraccounts.struct.Pagination pagination = service.getContributions(companyId,frequency,
                         pageNo, pageSize);
 
                 result.setPageNum(pagination.getPageNum());
@@ -381,7 +378,7 @@ public class UserEmployeeController {
                 return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
             }
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -411,11 +408,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.failJson(request, message);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -435,11 +430,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.successJson(request, null);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -456,11 +449,9 @@ public class UserEmployeeController {
                 return ResponseLogNotification.success(request,confDO);
             }
         } catch (BIZException e){
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -591,8 +582,7 @@ public class UserEmployeeController {
             Response res=service.addUserEmployeePointRecord(employeeId,companyId,data);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -607,8 +597,7 @@ public class UserEmployeeController {
             Response res=service.getUserEmployeeList(companyId,userIdList);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
     @RequestMapping(value="/employee/user", method = RequestMethod.GET)
@@ -620,8 +609,7 @@ public class UserEmployeeController {
             Response res=service.getUserEmployeeByuserId(userId);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
     @RequestMapping(value="/employee/user/company", method = RequestMethod.POST)
@@ -634,8 +622,7 @@ public class UserEmployeeController {
             Response res=service.getUserEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -649,8 +636,7 @@ public class UserEmployeeController {
             service.batchUpdateEmployeeFromWorkwx(userIds,companyId);
             return com.moseeker.servicemanager.web.controller.Result.SUCCESS;
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -689,6 +675,8 @@ public class UserEmployeeController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             RadarInfo radarInfo = service.fetchRadarIndex(userId, companyId, page, size);
+            logger.info("UserEmployeeController fetchRadarIndexData radarInfo:{}",
+                    com.moseeker.servicemanager.web.controller.Result.success(radarInfo).toJson());
             return com.moseeker.servicemanager.web.controller.Result.success(copyRadarInfoVO(radarInfo)).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
@@ -711,6 +699,8 @@ public class UserEmployeeController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             RadarInfo radarInfo = service.fetchEmployeeSeekRecommendPage(userId, companyId, page, size);
+            logger.info("UserEmployeeController fetchSeekRecommendData radarInfo:{}",
+                    com.moseeker.servicemanager.web.controller.Result.success(radarInfo).toJson());
             return com.moseeker.servicemanager.web.controller.Result.success(copyRadarInfoVO(radarInfo)).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
@@ -769,10 +759,49 @@ public class UserEmployeeController {
                     forwardViews.add(forwardView);
                 });
                 viewVO.setUserList(forwardViews);
+                logger.info("UserEmployeeController fetchRadarIndexData viewVO:{}",
+                        com.moseeker.servicemanager.web.controller.Result.success(viewVO).toJson());
             }
             return com.moseeker.servicemanager.web.controller.Result.success(viewVO).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
+    }
+
+
+    /**
+     * 中骏员工信息导入
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/sftp/employee/import", method = RequestMethod.POST)
+    @ResponseBody
+    public String atsEmployeeImport(HttpServletRequest request, @RequestBody  EmployeeBatchImportForm form) {
+        logger.info("中骏员工信息导入 initDateTime");
+        ValidateUtil validateUtil = new ValidateUtil();
+        List<UserEmployeeDO> employeeDOS = form.getEmployees();
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
+        validateUtil.addRequiredOneValidate("员工信息列表",form.getEmployees());
+        for(int i=0;i<employeeDOS.size();i++){
+            UserEmployeeDO uedo = employeeDOS.get(i);
+            validateUtil.addRequiredStringValidate("第"+i+"行员工姓名",uedo.getCname());
+            validateUtil.addRequiredStringValidate("第"+i+"行自定义字段",uedo.getCustomField());
+        }
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
+        LocalDateTime initDateTime = LocalDateTime.now();
+        try {
+            Response res = employeeService.employeeSftpImport(form.getCompanyId(),employeeDOS);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e);
+        } finally {
+            logger.info("中骏员工信息导入 Duration:{}", Duration.between(initDateTime, LocalDateTime.now()).toMillis());
         }
     }
 

@@ -37,8 +37,7 @@ public class UserEmailPositionController {
     		 Response res=userQxService.sendRecommendPosition(userId);
     		 return ResponseLogNotification.success(request,res);
     	 }catch(Exception e){
-    		 logger.info(e.getMessage(),e);
-    		 return ResponseLogNotification.fail(request, e.getMessage());
+    		 return ResponseLogNotification.fail(request, e);
     	 }
 	}
 	
@@ -61,8 +60,7 @@ public class UserEmailPositionController {
 	   		 Response res=userQxService.sendValiddateEmail(email, userId, conditions,urls);
 	   		 return ResponseLogNotification.success(request,res);
 	   	 }catch(Exception e){
-	   		 logger.info(e.getMessage(),e);
-	   		 return ResponseLogNotification.fail(request, e.getMessage());
+	   		 return ResponseLogNotification.fail(request, e);
 	   	 }
 	}
 	
@@ -83,8 +81,7 @@ public class UserEmailPositionController {
 	   		 Response res=userQxService.postUserEmailPosition(userId, conditions);
 	   		 return ResponseLogNotification.success(request,res);
 	   	 }catch(Exception e){
-	   		 logger.info(e.getMessage(),e);
-	   		 return ResponseLogNotification.fail(request, e.getMessage());
+	   		 return ResponseLogNotification.fail(request, e);
 	   	 }
 	}
 }

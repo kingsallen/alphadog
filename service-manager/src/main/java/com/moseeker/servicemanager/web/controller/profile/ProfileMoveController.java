@@ -63,8 +63,7 @@ public class ProfileMoveController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -98,8 +97,7 @@ public class ProfileMoveController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -125,8 +123,7 @@ public class ProfileMoveController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -163,8 +160,7 @@ public class ProfileMoveController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

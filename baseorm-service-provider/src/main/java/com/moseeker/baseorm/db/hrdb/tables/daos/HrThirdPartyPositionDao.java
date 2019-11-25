@@ -229,7 +229,7 @@ public class HrThirdPartyPositionDao extends DAOImpl<HrThirdPartyPositionRecord,
     /**
      * Fetch records that have <code>address_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByAddressId(Integer... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrThirdPartyPosition> fetchByAddressId(Long... values) {
         return fetch(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ADDRESS_ID, values);
     }
 

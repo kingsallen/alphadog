@@ -28,6 +28,6 @@ public class BaseController {
         if (ex instanceof TException | ex instanceof RpcException) {
             return ResponseLogNotification.fail(request, "无法连接到服务器");
         }
-        return ResponseLogNotification.fail(request, ex.getMessage());
+        return ResponseLogNotification.fail(request, ex);
     }
 }  

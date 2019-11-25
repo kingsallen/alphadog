@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAtsProcessNewRecord implements Serializable {
 
-    private static final long serialVersionUID = -545619773;
+    private static final long serialVersionUID = 465430331;
 
     private Integer   id;
     private Integer   appId;
@@ -35,6 +35,7 @@ public class HrAtsProcessNewRecord implements Serializable {
     private Integer   lastProcessId;
     private Integer   eventId;
     private Timestamp createTime;
+    private String    extContent;
 
     public HrAtsProcessNewRecord() {}
 
@@ -49,6 +50,7 @@ public class HrAtsProcessNewRecord implements Serializable {
         this.lastProcessId = value.lastProcessId;
         this.eventId = value.eventId;
         this.createTime = value.createTime;
+        this.extContent = value.extContent;
     }
 
     public HrAtsProcessNewRecord(
@@ -61,7 +63,8 @@ public class HrAtsProcessNewRecord implements Serializable {
         String    content,
         Integer   lastProcessId,
         Integer   eventId,
-        Timestamp createTime
+        Timestamp createTime,
+        String    extContent
     ) {
         this.id = id;
         this.appId = appId;
@@ -73,6 +76,7 @@ public class HrAtsProcessNewRecord implements Serializable {
         this.lastProcessId = lastProcessId;
         this.eventId = eventId;
         this.createTime = createTime;
+        this.extContent = extContent;
     }
 
     public Integer getId() {
@@ -155,6 +159,14 @@ public class HrAtsProcessNewRecord implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getExtContent() {
+        return this.extContent;
+    }
+
+    public void setExtContent(String extContent) {
+        this.extContent = extContent;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrAtsProcessNewRecord (");
@@ -169,6 +181,7 @@ public class HrAtsProcessNewRecord implements Serializable {
         sb.append(", ").append(lastProcessId);
         sb.append(", ").append(eventId);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(extContent);
 
         sb.append(")");
         return sb.toString();

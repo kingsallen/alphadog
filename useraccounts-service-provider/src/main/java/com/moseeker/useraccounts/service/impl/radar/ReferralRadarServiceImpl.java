@@ -30,13 +30,12 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;
@@ -69,7 +68,6 @@ import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -80,6 +78,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -141,6 +140,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private ReferralSeekRecommendDao seekRecommendDao;
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
+    @Autowired
+    private ReferralEntity referralEntity;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -180,7 +181,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(cardInfo.getCompanyId());
         List<UserWxUserDO> userWxUserDOS = wxUserDao.getWXUsersByUserIds(allUsers, hrWxWechatDO.getId());
         Map<Integer, UserWxUserDO> idWxUserMap = userWxUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
-        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(allUsers));
+//        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(allUsers));
+        List<UserUserRecord> userRecords = referralEntity.fetchValidUserUser(new ArrayList<>(allUsers));
         Map<Integer, UserUserRecord> idUserMap = userRecords.stream().collect(Collectors.toMap(UserUserRecord::getId, userRecord->userRecord));
         // 获取十分钟内转发的职位
         List<Integer> positionIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
@@ -208,7 +210,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 候选人信息
             RadarUserInfo user = doInitUser(idWxUserMap.get(endUserId), idUserMap.get(endUserId), endUserId, userDepthVOS);
             // 转发链路
-            List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
+            List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS,
+                    idUserMap);
             // 候选人浏览职位信息
             JSONObject position = doInitPosition(idPositionMap.get(positionId), candidatePositionDO);
             // 卡片类型相关信息
@@ -406,11 +409,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         if(recomUser == null){
             result.put("employee", 0);
+            result.put("employee_id", 0);
             logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
             return JSON.toJSONString(result);
         }
         UserUserDO userUserDO = userUserDao.getUser(recomUser.getSysuserId());
         result.put("employee", 1);
+        result.put("employee_id", recomUser.get("id"));
         RadarUserInfo userInfo = new RadarUserInfo();
         userInfo.setUid(recomUserId);
         userInfo.setName(recomUser.getCname());
@@ -503,7 +508,26 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         long t1 = System.currentTimeMillis();
-        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+       //调回alphacloud取出公司配置信息
+        Integer newAtsStatus = null;
+        List<JobApplicationDO> jobApplicationDOS;
+        try {
+            String url = AlphaCloudProvider.Company.buildURL("v4/company/conf/companyId");
+            String getResult = HttpClient.sendGet(url, "companyId=" + companyId);
+            logger.info("ReferralRadarServiceImpl.getProgressBatch v4/company/conf/companyId : {}", getResult);
+            JSONObject jsonResult = JSON.parseObject(getResult);
+            if ("0".equals(jsonResult.getString("code"))) {
+                newAtsStatus = JSON.parseObject(getResult).getJSONObject("data").getInteger("newAtsStatus");
+            }
+        } catch (Exception e) {
+
+        }
+        //是否开通MoAts
+        if (newAtsStatus != null && newAtsStatus == 1) {
+            jobApplicationDOS = getQueryJobApplications(progressInfo);
+        } else {
+            jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+        }
         long t2 = System.currentTimeMillis();
         logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getQueryJobApplications : {}",t2-t1);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
@@ -569,6 +593,35 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.PROGRAM_EXCEPTION;
         }
 
+    }
+
+    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo) {
+        HashMap<String, Object> params = new HashMap<>();
+        String userName = progressInfo.getKeyword();
+        if (!StringUtils.isEmpty(userName)) {
+            List<Integer> applierIds = userUserDao.fetchByName(userName).stream().map(UserUserRecord::getId).collect(Collectors.toList());
+            params.put("applierIds", applierIds);
+        }
+
+        params.put("userId", progressInfo.getUserId());
+        params.put("companyId", progressInfo.getCompanyId());
+        params.put("progress", progressInfo.getProgress());
+        params.put("pageNum", progressInfo.getPageNum());
+        params.put("pageSize", progressInfo.getPageSize());
+        //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
+        try {
+            String applicationUrl = AlphaCloudProvider.Application.buildURL("/v4/application/process/toc");
+            String appsString = HttpClient.sendPost(applicationUrl, JSON.toJSONString(params));
+            logger.info("ReferralRadarServiceImpl.getQueryJobApplications : {}", appsString);
+            JSONObject jsonResult = JSON.parseObject(appsString);
+            if ("0".equals(jsonResult.getString("code"))) {
+                List<JobApplicationDO> result = JSON.parseArray(jsonResult.getJSONObject("data").getString("data"), JobApplicationDO.class);
+                return result;
+            }
+        } catch (ConnectException e) {
+            logger.error("ReferralRadarServiceImpl.getQueryJobApplications /v5/application/process/toc error :", e);
+        }
+        return new ArrayList<>();
     }
 
     public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,
@@ -754,23 +807,26 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return jobApplicationDOS;
     }
 
-    private List<RadarUserInfo> doInitRadarCardChains(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo,
+    private List<RadarUserInfo> doInitRadarCardChains(Map<Integer, UserWxUserDO> idWxUserMap, ReferralCardInfo cardInfo,
                                                       CandidatePositionDO candidatePositionDO, RadarUserInfo user,
-                                                      List<CandidateTemplateShareChainDO> shareChainDOS) {
+                                                      List<CandidateTemplateShareChainDO> shareChainDOS,
+                                                      Map<Integer,UserUserRecord> idUserMap) {
         List<RadarUserInfo> chain = new ArrayList<>();
         // 链路第一个放员工信息
         chain.add(doInitEmployee(idUserMap, cardInfo));
         // 递归找到转发链路的所有被推荐人id
         List<Integer> chainBeRecomIds = getChainIdsByRecurrence(shareChainDOS, cardInfo, candidatePositionDO);
         for(Integer beRecomId : chainBeRecomIds){
-            UserWxUserDO userWxUserDO = idUserMap.get(beRecomId);
+//            UserWxUserDO userWxUserDO = idWxUserMap.get(beRecomId);
+            UserUserRecord userUserRecord = idUserMap.get(beRecomId);
             if(chain.size() == (CHAIN_LIMIT+1)){
                 chain.add(user);
                 break;
             }
             // 链路中的用户信息
             RadarUserInfo userInfo = new RadarUserInfo();
-            chain.add(userInfo.initFromUserWxUser(userWxUserDO));
+//            chain.add(userInfo.initFromUserWxUser(userWxUserDO));
+            chain.add(userInfo.initFromUserUser(userUserRecord));
             // 如果链路人数不到限制时，已经触及到邀请的粉丝，则退出循环
             if(beRecomId == candidatePositionDO.getUserId()){
                 break;
@@ -1457,10 +1513,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return chainIds;
     }
 
-    private RadarUserInfo doInitEmployee(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo) {
+    private RadarUserInfo doInitEmployee(Map<Integer, UserUserRecord> idUserMap, ReferralCardInfo cardInfo) {
         RadarUserInfo employee = new RadarUserInfo();
-        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUserId());
-        return employee.initFromUserWxUser(wxUserDO);
+        UserUserRecord userUserRecord = idUserMap.get(cardInfo.getUserId());
+//        return employee.initFromUserWxUser(wxUserDO);
+        return employee.initFromUserUser(userUserRecord);
     }
 
     /**
@@ -1472,7 +1529,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private RadarUserInfo doInitUser(UserWxUserDO userWxUserDO, UserUserRecord userUserRecord, int endUserId,
                                      List<UserDepthVO> userDepthVOS) {
         RadarUserInfo user = new RadarUserInfo();
-        user.initFromUserWxUser(userWxUserDO, userUserRecord);
+        user.initFromUserUser(userUserRecord);
+        if(user.getAvatar()==null){
+            user.initFromUserWxUser(userWxUserDO, userUserRecord);
+        }
         int degree = 0;
         for (UserDepthVO userDepthVO : userDepthVOS) {
             if(userDepthVO.getUserId() == endUserId){

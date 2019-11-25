@@ -133,4 +133,11 @@ public class ConfigSysPointsConfTplDao extends DAOImpl<ConfigSysPointsConfTplRec
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysPointsConfTpl> fetchByApplierView(String... values) {
         return fetch(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.APPLIER_VIEW, values);
     }
+
+    /**
+     * Fetch records that have <code>ats_name IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysPointsConfTpl> fetchByAtsName(String... values) {
+        return fetch(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ATS_NAME, values);
+    }
 }

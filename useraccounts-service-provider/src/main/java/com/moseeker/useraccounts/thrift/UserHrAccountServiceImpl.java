@@ -32,8 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -699,7 +697,7 @@ public class UserHrAccountServiceImpl implements Iface {
      * 去除输入字符串字段的首尾空格
      * @param edo
      */
-    private static void trimUserEmployeeDO(UserEmployeeDO edo) {
+    protected static void trimUserEmployeeDO(UserEmployeeDO edo) {
         if (edo != null){
             try{
                 for (Field field : edo.getClass().getFields()){

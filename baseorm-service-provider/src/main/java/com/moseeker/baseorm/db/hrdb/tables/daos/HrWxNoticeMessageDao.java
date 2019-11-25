@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.hrdb.tables.daos;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 
+import java.sql.Date;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -104,5 +105,19 @@ public class HrWxNoticeMessageDao extends DAOImpl<HrWxNoticeMessageRecord, com.m
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage> fetchByDisable(Byte... values) {
         return fetch(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE, values);
+    }
+
+    /**
+     * Fetch records that have <code>send_frequency IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage> fetchBySendFrequency(String... values) {
+        return fetch(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.SEND_FREQUENCY, values);
+    }
+
+    /**
+     * Fetch records that have <code>sent_date IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxNoticeMessage> fetchBySentDate(Date... values) {
+        return fetch(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.SENT_DATE, values);
     }
 }

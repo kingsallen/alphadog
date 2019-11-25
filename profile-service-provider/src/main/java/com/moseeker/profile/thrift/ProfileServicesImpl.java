@@ -1,13 +1,8 @@
 package com.moseeker.profile.thrift;
 
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.UploadFilesService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
@@ -15,15 +10,13 @@ import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
 import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.profile.service.impl.vo.UploadFilesResult;
+import com.moseeker.profile.utils.OfficeUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.*;
 import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +29,6 @@ import java.util.Map;
 
 @Service
 public class ProfileServicesImpl implements Iface {
-
-    Logger logger = LoggerFactory.getLogger(ProfileProjectExpServicesImpl.class);
 
     @Autowired
     private ResumeFileParserFactory resumeFileParserFactory;
@@ -65,8 +56,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getResource(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -75,8 +65,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.postResource(struct);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -85,7 +74,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getCompleteness(userId, uuid, profileId);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -95,8 +83,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.reCalculateUserCompleteness(userId, mobile);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -105,8 +92,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.reCalculateUserCompletenessBySettingId(id);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -115,8 +101,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getProfileByApplication(profileApplicationForm);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -125,8 +110,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.profileParser(uid, fileName, file);
         } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -155,8 +139,8 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public ProfileParseResult parseFileProfileByFilePath(String filePath, int userId, String syncId) throws BIZException, TException {
-        logger.info("ProfileServicesImpl parseFileProfileByFilePath");
-        logger.info("ProfileServicesImpl parseFileProfileByFilePath filePath:{}, userId:{}, syncId:{}", filePath, userId, syncId);
+        // 如果是从word转化而得的pdf，获得转化为pdf前的word文件。如果是用户直接上传的pdf，获取pdf文件名。其他格式，文件名不变。
+        filePath = OfficeUtils.getOriginFile(filePath);
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
                     referralService.parseFileProfileByFilePath(filePath, userId);
@@ -165,10 +149,8 @@ public class ProfileServicesImpl implements Iface {
             BeanUtils.copyProperties(result, profileParseResult);
 
             //uploadFilesService.setRedisKey(userId,sceneId);
-            logger.info("ProfileServicesImpl parseFileProfileByFilePath profileParseResult:{}", JSONObject.toJSONString(profileParseResult));
             return profileParseResult;
         } catch (Exception e) {
-            logger.error(e.getMessage());
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -222,7 +204,6 @@ public class ProfileServicesImpl implements Iface {
                                                               byte relationship, String recomReasonText,
                                                               byte referralType) throws BIZException, TException {
         try {
-            logger.info("调用profile服务多职位推荐");
             List<MobotReferralResultVO> referralResultVOS =
                     referralService.employeeReferralProfile(employeeId, name, mobile, otherFields,referralReasons, positions,
                         relationship,  recomReasonText, referralType);
@@ -326,29 +307,23 @@ public class ProfileServicesImpl implements Iface {
         ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
         try {
             UploadFilesResult uploadFilesResult = uploadFilesService.uploadFiles(fileName, fileData);
-            logger.info("ProfileServicesImpl uploadFiles uploadFilesResult:{}", JSONObject.toJSONString(uploadFilesResult));
             uploadFilesResult.setFileID(sceneId);
             uploadFilesResult.setUnionId(unionId);
             UploadFilesResult uploadResult = uploadFilesService.insertUpFiles(uploadFilesResult);
-            logger.info("uploadFiles上传简历保存记录: uploadResult{}",JSONObject.toJSONString(uploadResult));
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
             referralUploadFiles.setCreate_time(uploadFilesResult.getCreateTime());
             referralUploadFiles.setFilename(uploadFilesResult.getName());
             referralUploadFiles.setId(uploadResult.getId());
-            logger.info("ProfileServicesImpl uploadFiles referralUploadFiles:{}",referralUploadFiles);
             return referralUploadFiles;
         } catch (Exception e) {
-            logger.error(e.getMessage());
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
     public List<ReferralUploadFiles> getUploadFiles(String unionId, int pageSize, int pageNo) throws BIZException, TException {
-        logger.info("ProfileServicesImpl getUploadFiles unionId:{}, pageSize:{}, pageNo:{}", unionId, pageSize, pageNo);
         try {
             List<UploadFilesResult> list = uploadFilesService.getUploadFiles(unionId, pageSize, pageNo);
-            logger.info("ProfileServicesImpl getUploadFiles list:{}", JSONObject.toJSONString(list));
             List<ReferralUploadFiles> referralUploadFilesList = new ArrayList<>();
             if (list != null && list.size() >0){
                 for (UploadFilesResult uploadFilesResult : list){
@@ -361,10 +336,8 @@ public class ProfileServicesImpl implements Iface {
                     referralUploadFilesList.add(referralUploadFiles);
                 }
             }
-            logger.info("ProfileServicesImpl getUploadFiles referralUploadFilesList:{}", JSONObject.toJSONString(referralUploadFilesList));
             return referralUploadFilesList;
         } catch (BIZException e) {
-            logger.error(e.getMessage());
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -380,9 +353,7 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public ReferralUploadFiles referralResumeInfo(String fileId) throws BIZException, TException {
-        logger.info("UploadFilesServiceImpl resumeInfo");
         try {
-            logger.info("UploadFilesServiceImpl resumeInfo fileId:{}", fileId);
             UploadFilesResult uploadFilesResult = uploadFilesService.resumeInfo(fileId);
             ReferralUploadFiles referralUploadFiles = new ReferralUploadFiles();
             referralUploadFiles.setUrl(uploadFilesResult.getSaveUrl());
@@ -417,11 +388,19 @@ public class ProfileServicesImpl implements Iface {
             profileParseResult.setEmail(uploadFilesResult.getEmail());
             profileParseResult.setPinyinName(uploadFilesResult.getPinyinName());
             profileParseResult.setPinyinSurname(uploadFilesResult.getPinyinSurname());
-            logger.info("checkResult profileParseResult:{}",JSONObject.toJSONString(profileParseResult));
         }catch (Exception e){
-            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
         }
         return profileParseResult;
+    }
+
+    @Override
+    public String wordToPdf(String source_name, String target_name) throws BIZException, TException {
+        int i = OfficeUtils.Word2Pdf(source_name, target_name);
+        if (i ==0) {
+            com.moseeker.common.util.OfficeUtils.Word2Pdf(source_name, target_name);
+        }
+        return target_name;
     }
 
     @Override
@@ -430,12 +409,8 @@ public class ProfileServicesImpl implements Iface {
             int result= profileService.upsertProfile(userId, profile);
             profileCompanyTagService.handlerProfileCompanyTag(0,userId);
             return result;
-        } catch (CommonException e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -444,8 +419,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.talentpoolUploadParse(fileName,file,companyId);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -454,8 +428,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.fetchUserProfile(userIdList);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -463,12 +436,8 @@ public class ProfileServicesImpl implements Iface {
     public Response getProfileTokenDecrypt(String token) throws BIZException, TException {
         try {
             return service.getProfileTokenDecrypt(token);
-        } catch (CommonException e) {
-            logger.error(e.getMessage(), e);
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -477,7 +446,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.parseText(profile, referenceId,appid);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -492,8 +460,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getResources(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -502,8 +469,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.getPagination(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -512,9 +478,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.postResources(resources);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -523,9 +487,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.putResources(resources);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -534,9 +496,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.delResources(resources);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -545,9 +505,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.putResource(profile);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -556,9 +514,7 @@ public class ProfileServicesImpl implements Iface {
         try {
             return service.delResource(profile);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 

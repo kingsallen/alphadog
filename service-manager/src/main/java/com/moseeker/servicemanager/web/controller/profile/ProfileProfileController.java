@@ -43,7 +43,7 @@ public class ProfileProfileController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -56,9 +56,8 @@ public class ProfileProfileController {
 			Response result = profileService.postResource(profile);
 			
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			e.printStackTrace();
-			return ResponseLogNotification.fail(request, e.getMessage());
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -71,7 +70,7 @@ public class ProfileProfileController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -84,7 +83,7 @@ public class ProfileProfileController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -104,9 +103,8 @@ public class ProfileProfileController {
 			}
 			Response result = profileService.getCompleteness(userId, (String)params.get("uuid"), profileId);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e);
 		} finally {
 			//do nothing
 		}

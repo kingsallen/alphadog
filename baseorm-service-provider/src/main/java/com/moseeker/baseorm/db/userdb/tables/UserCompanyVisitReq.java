@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserCompanyVisitReq extends TableImpl<UserCompanyVisitReqRecord> {
 
-    private static final long serialVersionUID = -1605790215;
+    private static final long serialVersionUID = 1684948601;
 
     /**
      * The reference instance of <code>userdb.user_company_visit_req</code>
@@ -67,14 +67,14 @@ public class UserCompanyVisitReq extends TableImpl<UserCompanyVisitReqRecord> {
     public final TableField<UserCompanyVisitReqRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id");
 
     /**
-     * The column <code>userdb.user_company_visit_req.status</code>. 0: 取消申请参观 1：申请参观
+     * The column <code>userdb.user_company_visit_req.status</code>. 0: 取消申请参观 1:申请参观
      */
-    public final TableField<UserCompanyVisitReqRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "0: 取消申请参观 1：申请参观");
+    public final TableField<UserCompanyVisitReqRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "0: 取消申请参观 1:申请参观");
 
     /**
-     * The column <code>userdb.user_company_visit_req.source</code>. 操作来源 0: 未知 1：微信端 2：PC 端
+     * The column <code>userdb.user_company_visit_req.source</code>. 操作来源 0: 未知 1:微信端 2:PC 端
      */
-    public final TableField<UserCompanyVisitReqRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "操作来源 0: 未知 1：微信端 2：PC 端");
+    public final TableField<UserCompanyVisitReqRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "操作来源 0: 未知 1:微信端 2:PC 端");
 
     /**
      * The column <code>userdb.user_company_visit_req.create_time</code>. 关注时间

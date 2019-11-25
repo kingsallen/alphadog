@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * ä¼ä¸šå¾®ä¿¡ç”¨æˆ·ä¿¡æ¯
+ * 企业微信用户信息
  */
 @Generated(
     value = {
@@ -155,7 +155,6 @@ public class UserWorkwxDao extends DAOImpl<UserWorkwxRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserWorkwx> fetchByGender(Byte... values) {
         return fetch(UserWorkwx.USER_WORKWX.GENDER, values);
     }
-
 
     /**
      * Fetch records that have <code>telephone IN (values)</code>

@@ -118,6 +118,20 @@ struct MessageBody {
     11: optional string customFirst,       //公司下配置的模板消息first文案
     12: optional string customRemark,      //公司下配置的模板消息remark文案
     13: optional list<FlexibleField> flexibleFields,      //可更改的内容
+    14: optional WxMessageFrequency frequency // 发送模板消息频率时间
+}
+
+struct WxMessageFrequency {
+    1: optional string fixedTime,
+    2: optional list<WxMessageFrequencyOption> options ,
+    3: optional string value ,
+    4: optional string defaultValue
+}
+
+struct WxMessageFrequencyOption {
+    1: optional string text,
+    2: optional string value,
+    3: optional string send_time
 }
 
 struct FlexibleField {

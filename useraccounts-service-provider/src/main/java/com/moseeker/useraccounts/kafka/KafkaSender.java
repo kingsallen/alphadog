@@ -1,9 +1,7 @@
 package com.moseeker.useraccounts.kafka;
 
-import com.alibaba.fastjson.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.DateUtils;
@@ -11,23 +9,18 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
-import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
-import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
-
-import com.moseeker.useraccounts.thrift.EmployeeServiceImpl;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.moseeker.useraccounts.service.impl.pojos.KafkaBindDto;
-import com.moseeker.useraccounts.service.impl.pojos.KafkaSwitchDto;
+import com.moseeker.useraccounts.service.impl.pojos.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class KafkaSender {
@@ -137,4 +130,10 @@ public class KafkaSender {
         logger.info("KafkaSender sendUserClaimToKafka kafkaApplyPojo:{}", JSONObject.toJSONString(kafkaApplyPojo));
         sendMessage(Constant.KAFKA_TOPIC_APPLICATION, JSON.toJSONString(kafkaApplyPojo));
     }
+
+
+    public void sendUserImKafkaMsg(KafkaUserImDto dto) {
+        sendMessage(Constant.KAFKA_TOPIC_IM_TPL_MSG, JSON.toJSONString(dto));
+    }
+
 }

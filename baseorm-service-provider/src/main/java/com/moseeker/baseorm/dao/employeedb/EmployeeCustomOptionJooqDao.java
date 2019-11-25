@@ -164,6 +164,21 @@ public class EmployeeCustomOptionJooqDao extends JooqCrudImpl<EmployeeOptionValu
         return options;
     }
 
+    /**
+     * 查找系统字段选项
+     * @param customId
+     * @return
+     */
+    public  Map<String,Integer> getFieldOptions(int customId,List<String> values){
+        Map<String,Integer> options = create.select(EMPLOYEE_OPTION_VALUE.NAME,EMPLOYEE_OPTION_VALUE.ID)
+                .from(EMPLOYEE_OPTION_VALUE)
+                .where(EMPLOYEE_OPTION_VALUE.CUSTOM_FIELD_ID.eq(customId))
+                .and(EMPLOYEE_OPTION_VALUE.NAME.in(values))
+                .orderBy(EMPLOYEE_OPTION_VALUE.PRIORITY).fetch()
+                .intoMap(EMPLOYEE_OPTION_VALUE.NAME,EMPLOYEE_OPTION_VALUE.ID);
+        return options;
+    }
+
     /*
      * 添加下拉选项
      * */

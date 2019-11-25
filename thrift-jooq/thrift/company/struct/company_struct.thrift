@@ -115,12 +115,14 @@ struct HrCompanyFeatureDO {
 
 struct HrCompanyWechatDO {
     1: optional  i32    companyId,
-    2: optional  i32    wechatId,
-    3: optional  string signature,
-    4: optional  string accessToken,
-    5: optional  string templateId,
-    6: optional  string topcolor,
-    7: optional  i32    employeeCount
+    2: optional  string companyName,
+    3: optional  i32    wechatId,
+    4: optional  string signature,
+    5: optional  string accessToken,
+    6: optional  string templateId,
+    7: optional  string topcolor,
+    8: optional  i32    employeeCount,
+    9: optional  string sendFrequency // 模板消息发送频率配置值
 }
 
 struct GDPRProtectedInfo {

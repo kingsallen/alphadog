@@ -45,7 +45,7 @@ public class AttachmentController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -58,8 +58,7 @@ public class AttachmentController {
 			Response result = attachmentService.postResource(attachment);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -71,7 +70,7 @@ public class AttachmentController {
 			Response result = attachmentService.putResource(attachment);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -83,7 +82,7 @@ public class AttachmentController {
 			Response result = attachmentService.delResource(attachment);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	//pc端删除简历附件
@@ -99,7 +98,7 @@ public class AttachmentController {
 			Response result = attachmentService.delPcResource(Integer.parseInt(id));
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

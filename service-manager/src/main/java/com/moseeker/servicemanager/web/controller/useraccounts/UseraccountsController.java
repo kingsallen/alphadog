@@ -73,7 +73,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.getUserById(userId);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class UseraccountsController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class UseraccountsController {
 			}
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class UseraccountsController {
             }
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -242,7 +242,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -267,7 +267,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -298,7 +298,7 @@ public class UseraccountsController {
 				return ResponseLogNotification.fail(request, result);
 			}
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -321,7 +321,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -343,7 +343,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -367,7 +367,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -391,7 +391,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -421,7 +421,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -451,7 +451,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -486,7 +486,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -520,7 +520,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -546,7 +546,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -576,7 +576,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -606,7 +606,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -635,7 +635,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -666,7 +666,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -690,7 +690,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -715,7 +715,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -741,7 +741,7 @@ public class UseraccountsController {
 			}
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -767,7 +767,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.getUserFavPositionCountByUserIdAndPositionId(user_id, position_id);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -789,7 +789,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.postUserFavoritePosition(userFavoritePosition);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -810,7 +810,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.getScanResult(wechatId, sceneId);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -832,7 +832,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.setScanResult(wechatId, sceneId, value);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -874,8 +874,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.cerateQrcode(qrcode);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			logger.info(e.getMessage(),e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 	
@@ -895,7 +894,7 @@ public class UseraccountsController {
 			Response result = useraccountsServices.getQrcode(ticket);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -913,8 +912,7 @@ public class UseraccountsController {
             int userId = param.getInt("user_id", 0);
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.userSearchConditionList(userId));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -931,8 +929,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.postUserSearchCondition(conditionDO));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -951,8 +948,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.delUserSearchCondition(userId, id));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -971,8 +967,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.postUserCollectPosition(userId, positionId));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -991,8 +986,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserCollectPosition(userId, positionId));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1011,8 +1005,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.delUserCollectPosition(userId, positionId));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1031,8 +1024,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.userViewedPosition(userId, positionId));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1051,8 +1043,7 @@ public class UseraccountsController {
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserPositionStatus(userId, positionIds));
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1085,8 +1076,7 @@ public class UseraccountsController {
 				return ResponseLogNotification.fail(request, "position_ids参数不能为空");
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -1109,8 +1099,7 @@ public class UseraccountsController {
                 return ResponseLogNotification.fail(request, result);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1133,8 +1122,7 @@ public class UseraccountsController {
                 return ResponseLogNotification.fail(request, result);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1156,8 +1144,7 @@ public class UseraccountsController {
 			int result = useraccountsServices.ifViewPrivacyProtocol(Integer.parseInt(user_id));
 			return Result.success(result).toJson();
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -1179,8 +1166,7 @@ public class UseraccountsController {
 			useraccountsServices.insertPrivacyRecord(Integer.parseInt(user_id));
 			return Result.success(true).toJson();
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 
 	}
@@ -1203,8 +1189,7 @@ public class UseraccountsController {
 			useraccountsServices.deletePrivacyRecordByUserId(Integer.parseInt(user_id));
 			return Result.success(true).toJson();
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 

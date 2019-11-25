@@ -100,7 +100,7 @@ public class TalentpoolSearchengine {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
-            client = searchUtil.getEsClient();
+            client = searchUtil.getEsClientNew();
             QueryBuilder query = this.query(params,client);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerSortOrder(params, builder);
@@ -248,7 +248,7 @@ public class TalentpoolSearchengine {
         List<Integer> userIdList=new ArrayList<>();
         TransportClient client=null;
         try {
-            client = searchUtil.getEsClient();
+            client = searchUtil.getEsClientNew();
             QueryBuilder query = this.query(params,client);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerPage(params, builder);
@@ -280,7 +280,7 @@ public class TalentpoolSearchengine {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
-            client = searchUtil.getEsClient();
+            client = searchUtil.getEsClientNew();
             QueryBuilder query = this.queryByUserId(userIds);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.setSize(userIds.size());
@@ -304,7 +304,7 @@ public class TalentpoolSearchengine {
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
-            client = searchUtil.getEsClient();
+            client = searchUtil.getEsClientNew();
             QueryBuilder query = this.query(params,client);
             logger.info("=========================================");
             logger.info(query.toString());
@@ -338,7 +338,7 @@ public class TalentpoolSearchengine {
                 //修改progress.没办法按照建立进度查询时只有applicationcount需要变化
                 params.put("progress",progressStatus);
             }
-            client=searchUtil.getEsClient();
+            client=searchUtil.getEsClientNew();
             QueryBuilder query = this.query(params,client);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
@@ -413,7 +413,7 @@ public class TalentpoolSearchengine {
     }
 
     private SearchResponse handlerSearch(Map<String,String> params) throws TException {
-        TransportClient client=searchUtil.getEsClient();
+        TransportClient client=searchUtil.getEsClientNew();
         QueryBuilder query = this.getQueryByTag(params);
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         String[] returnParams={"user.profiles.profile.user_id"};
@@ -437,7 +437,7 @@ public class TalentpoolSearchengine {
     public  Map<String, Object> getUserListByFilterIds(List<Map<String, String>> filterList, int page_number, int page_size){
         Map<String, Object> result=new HashMap<>();
         try{
-            TransportClient client=searchUtil.getEsClient();
+            TransportClient client=searchUtil.getEsClientNew();
             QueryBuilder query = this.convertBuild(filterList);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             String[] returnParams={"user.profiles.profile.user_id","user.profiles.basic.name","user.profiles.basic.email"};
@@ -461,7 +461,7 @@ public class TalentpoolSearchengine {
     @CounterIface
     public PastPOJO searchPastPosition(SearchPast searchPast){
         try{
-            TransportClient client=searchUtil.getEsClient();
+            TransportClient client=searchUtil.getEsClientNew();
             String pageNum=searchPast.getPageNumber();
             String pageSize=searchPast.getPageSize();
             QueryBuilder query = this.handlerProfilePastPosition(searchPast);
@@ -488,7 +488,7 @@ public class TalentpoolSearchengine {
     @CounterIface
     public PastPOJO searchPastCompany(SearchPast searchPast){
         try{
-            TransportClient client=searchUtil.getEsClient();
+            TransportClient client=searchUtil.getEsClientNew();
             String pageNum=searchPast.getPageNumber();
             String pageSize=searchPast.getPageSize();
             QueryBuilder query = this.handlerProfilePastCompany(searchPast);
@@ -2626,7 +2626,7 @@ public class TalentpoolSearchengine {
      判断某一字段是否存在的查询
      */
     private boolean getIsExistField(String name){
-        TransportClient client = searchUtil.getEsClient();
+        TransportClient client = searchUtil.getEsClientNew();
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         QueryBuilder cityfilter = QueryBuilders.existsQuery(name);

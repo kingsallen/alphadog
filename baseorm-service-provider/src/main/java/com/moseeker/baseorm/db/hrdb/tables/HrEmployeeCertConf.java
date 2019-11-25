@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 
-    private static final long serialVersionUID = -414880141;
+    private static final long serialVersionUID = -1069566973;
 
     /**
      * The reference instance of <code>hrdb.hr_employee_cert_conf</code>
@@ -97,9 +97,9 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
     public final TableField<HrEmployeeCertConfRecord, Integer> BD_USE_GROUP_ID = createField("bd_use_group_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "用户绑定时需要加入员工组的分组编号");
 
     /**
-     * The column <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答
+     * The column <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答 7:企业微信
      */
-    public final TableField<HrEmployeeCertConfRecord, Byte> AUTH_MODE = createField("auth_mode", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答");
+    public final TableField<HrEmployeeCertConfRecord, Byte> AUTH_MODE = createField("auth_mode", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证,5:问答,6:邮箱与问答 7:企业微信");
 
     /**
      * The column <code>hrdb.hr_employee_cert_conf.auth_code</code>. 认证码（6到20位， 字母和数字组成，区分大小写）  默认为空

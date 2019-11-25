@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecommendRefusal extends TableImpl<UserRecommendRefusalRecord> {
 
-    private static final long serialVersionUID = 1866221739;
+    private static final long serialVersionUID = 1963666619;
 
     /**
      * The reference instance of <code>userdb.user_recommend_refusal</code>
@@ -74,7 +74,7 @@ public class UserRecommendRefusal extends TableImpl<UserRecommendRefusalRecord> 
     /**
      * The column <code>userdb.user_recommend_refusal.refuse_timeout</code>. 拒绝推荐过期时间,默认refuse_time+6个月
      */
-    public final TableField<UserRecommendRefusalRecord, Timestamp> REFUSE_TIMEOUT = createField("refuse_timeout", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "拒绝推荐过期时间,默认refuse_time+6个月");
+    public final TableField<UserRecommendRefusalRecord, Timestamp> REFUSE_TIMEOUT = createField("refuse_timeout", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "拒绝推荐过期时间,默认refuse_time+6个月");
 
     /**
      * Create a <code>userdb.user_recommend_refusal</code> table reference

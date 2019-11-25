@@ -58,7 +58,7 @@ service UseraccountsServices {
     common_struct.Response postUserFavoritePosition(1: useraccounts_struct.UserFavoritePosition userFavoritePosition);
 
     //创建微信二维码
-    common_struct.Response cerateQrcode(useraccounts_struct.WeixinQrcode weixinQrcode)throws (1: common_struct.BIZException e);
+    common_struct.Response cerateQrcode(1: useraccounts_struct.WeixinQrcode weixinQrcode)throws (1: common_struct.BIZException e);
     //获取qrcode
     common_struct.Response getQrcode(1: string ticket);
     //查询二维码是否被用户扫描
@@ -283,7 +283,7 @@ service UserEmployeeService {
 
     common_struct.Response getPastUserEmployee(1: i32 company_id) throws (1:common_struct.BIZException e);
 
-    useraccounts_struct.Pagination getContributions(1: i32 companyId, 2: i32 pageNum, 3: i32 pageSize) throws (1:common_struct.BIZException e);
+    useraccounts_struct.Pagination getContributions(1: i32 companyId, 2: string sendFrequency, 3: i32 pageNum, 4: i32 pageSize) throws (1:common_struct.BIZException e);
 
     common_struct.Response addUserEmployeePointRecord(1:i32 employeeId,2:i32 companyId,3:user_employee_points_record_struct.UserEmployeePointsRecordDO record);
 
