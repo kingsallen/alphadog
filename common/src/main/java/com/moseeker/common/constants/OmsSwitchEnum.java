@@ -28,6 +28,7 @@ public enum OmsSwitchEnum {
     IDCARD_RECOGNITION(15,"身份证识别", false),//身份证识别
     LBS_POSITION_LIST(16,"LBS职位列表",false),//LBS职位列表
     MOMO_WECHAT(17,"MOMO微信端", true),//身份证识别
+    CUSTOM_PRIVACY_WECHAT(18,"客户自定义隐私协议", false),//客户自定义隐私协议
     EMPLOYEE_IM_CHAT(30,"员工IM聊天",true);
 
     private int value;
