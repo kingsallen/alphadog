@@ -98,9 +98,11 @@ public class CrawlerController {
 					res = profileService.importCV(res.getData(), form.getUser_id());
 					return ResponseLogNotification.success(request, res);
 				} else {
+					if (res != null) {
+						logger.info("crawler fetchFirstResume error type:{}, code:{}, message:{}", form.getType(), res.getStatus(), res.getMessage());
+					}
 					return ResponseLogNotification.fail(request, res);
 				}
-
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
