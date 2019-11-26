@@ -7,6 +7,7 @@ import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.constant.ApplicationOriginEnum;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
+import com.moseeker.application.service.annotation.HandleChannelApplication;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -193,6 +194,7 @@ public class JobApplicataionService implements ApplicationEventPublisherAware {
      * @return 新创建的申请记录ID
      */
     @SuppressWarnings("serial")
+    @HandleChannelApplication
     @CounterIface
     public Response postApplication(JobApplication jobApplication) throws  TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
