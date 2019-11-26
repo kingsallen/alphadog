@@ -114,7 +114,7 @@ public class ProfileUtils {
 					} else if (workexp.get("endDate") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("endDate")));
 					}
-					if(workexp.get("end_until_now")==null){
+					if(workexp.get("endUntilNow")==null ){
 						record.setEndUntilNow((byte)0);
 					}
 					subWorkExpMaxLimit(record);
@@ -305,7 +305,7 @@ public class ProfileUtils {
 					} else if (projectexp.get("endDate") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("endDate")));
 					}
-					if(projectexp.get("end_until_now")==null){
+					if(projectexp.get("endUntilNow")==null){
 						record.setEndUntilNow((byte)0);
 					}
 
@@ -543,7 +543,7 @@ public class ProfileUtils {
 					} else if (education.get("endDate") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("endDate")));
 					}
-					if(education.get("end_until_now")==null){
+					if(education.get("endUntilNow")==null){
 						record.setEndUntilNow((byte)0);
 					}
 					if(record.getCollegeName() != null){
