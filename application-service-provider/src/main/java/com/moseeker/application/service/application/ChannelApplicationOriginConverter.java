@@ -1,6 +1,5 @@
 package com.moseeker.application.service.application;
 
-import com.alibaba.fastjson.JSON;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.moseeker.application.domain.ChannelEntity;
@@ -207,8 +206,12 @@ public class ChannelApplicationOriginConverter {
         for (int i = 0; i < binStr.length(); i++) {
             Character letter = binStr.charAt(i);
             if (letter.equals('1')) {
-                int bin = (int) Math.pow(10, binStr.length() - i - 1);
-                Integer dec = Integer.parseInt(String.valueOf(bin), 2);
+                StringBuffer sb = new StringBuffer("1");
+                for (int j = 0; j < binStr.length() - i - 1; j++) {
+                    sb.append(0);
+                }
+                System.out.println(sb);
+                Integer dec = Integer.parseInt(sb.toString(), 2);
                 decList.add(dec);
             }
         }
@@ -217,11 +220,8 @@ public class ChannelApplicationOriginConverter {
 
     public static void main(String[] args) {
         ChannelApplicationOriginConverter converter = new ChannelApplicationOriginConverter();
-        List<ChannelEntity> channelEntities = converter.origin2Channel(56);
-        System.out.println(JSON.toJSONString(channelEntities));
-//        ChannelApplicationOriginConverter converter = new ChannelApplicationOriginConverter();
-//        Integer pu0012 = converter.channel2Origin(null, null);
-//        System.out.println(pu0012);
+        List<Integer> integers = origin2DecList(16777216);
+        System.out.println(integers);
     }
 }
 
