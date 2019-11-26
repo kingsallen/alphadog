@@ -86,16 +86,17 @@ public class HandleChannelApplicationAspect {
         Integer origin = jobApplication.getOrigin();
         List<Map<String, String>> channelParams = jobApplication.getChannel();
         List<ChannelEntity> channels = Lists.newArrayList();
-        Map<Integer, List<ChannelEntity>> channelMap = Maps.newHashMap();
         // 如果origin为空,channelCode和sourceId不为空,代表是整改后的渠道
         if ((origin == null || origin == 0) && (channelParams != null && !channelParams.isEmpty())) {
             origin = 0;
             for (Map<String, String> paramMap : channelParams) {
                 JSONObject jo = JSON.parseObject(JSON.toJSONString(paramMap));
                 String code = jo.getString("code");
-                String source_id = jo.getString("source_id");
-                origin += converter.channel2Origin(code, Integer.valueOf(source_id));
+                Integer sourceId = jo.getString("source_id") == null ? 0 : Integer.valueOf(jo.getString("source_id"));
+                origin += converter.channel2Origin(code, sourceId);
                 ChannelEntity entity = new ChannelEntity();
+                entity.setCode(code);
+                entity.setSourceId(sourceId);
                 channels.add(entity);
             }
         }
