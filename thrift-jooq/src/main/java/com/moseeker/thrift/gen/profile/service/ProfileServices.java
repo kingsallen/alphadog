@@ -5518,7 +5518,7 @@ public class ProfileServices {
       }
     }
 
-    public static class parseUserFileProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, parseUserFileProfile_args, com.moseeker.thrift.gen.profile.struct.ProfileParseResult> {
+    public static class parseUserFProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, parseUserFileProfile_args, com.moseeker.thrift.gen.profile.struct.ProfileParseResult> {
       public parseUserFileProfile() {
         super("parseUserFileProfile");
       }

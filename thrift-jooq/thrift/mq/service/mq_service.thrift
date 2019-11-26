@@ -22,5 +22,7 @@ service MqService {
 
    common_struct.Response sendMessageAndEmailToDelivery(1: mq_struct.MessageEmailStruct messageEmailStruct);
 
+   common_struct.Response sendMessageAndEmailToDeliveryNew(1: mq_struct.MessageEmailStruct messageEmailStruct);
+
    list<mq_struct.MessageBody> listMessages(1: i32 wechatId) throws (1: common_struct.BIZException e);
 }
