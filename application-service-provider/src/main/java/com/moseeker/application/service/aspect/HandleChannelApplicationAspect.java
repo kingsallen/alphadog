@@ -11,6 +11,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.HttpClient;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -92,7 +93,8 @@ public class HandleChannelApplicationAspect {
             for (Map<String, String> paramMap : channelParams) {
                 JSONObject jo = JSON.parseObject(JSON.toJSONString(paramMap));
                 String code = jo.getString("code");
-                Integer sourceId = jo.getString("source_id") == null ? 0 : Integer.valueOf(jo.getString("source_id"));
+                Integer sourceId =
+                        jo.getString(StringUtils.humpName("source_id")) == null ? 0 : Integer.valueOf(jo.getString(StringUtils.humpName("source_id")));
                 origin += converter.channel2Origin(code, sourceId);
                 ChannelEntity entity = new ChannelEntity();
                 entity.setCode(code);
