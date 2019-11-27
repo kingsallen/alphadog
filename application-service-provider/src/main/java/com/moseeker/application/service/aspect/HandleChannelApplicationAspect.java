@@ -91,10 +91,16 @@ public class HandleChannelApplicationAspect {
         if ((origin == null || origin == 0) && (channelParams != null && !channelParams.isEmpty())) {
             origin = 0;
             for (Map<String, String> paramMap : channelParams) {
-                JSONObject jo = JSON.parseObject(JSON.toJSONString(paramMap));
+                Map<String, String> targetParamMap = Maps.newConcurrentMap();
+                for (Map.Entry<String, String> entry : paramMap.entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    targetParamMap.put(StringUtils.humpName(key), value);
+                }
+                JSONObject jo = JSON.parseObject(JSON.toJSONString(targetParamMap));
                 String code = jo.getString("code");
                 Integer sourceId =
-                        jo.getString(StringUtils.humpName("source_id")) == null ? 0 : Integer.valueOf(jo.getString(StringUtils.humpName("source_id")));
+                        jo.getString(StringUtils.humpName("sourceId")) == null ? 0 : Integer.valueOf(jo.getString(StringUtils.humpName("sourceId")));
                 origin += converter.channel2Origin(code, sourceId);
                 ChannelEntity entity = new ChannelEntity();
                 entity.setCode(code);
