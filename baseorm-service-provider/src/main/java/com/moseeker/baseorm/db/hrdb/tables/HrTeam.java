@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-    private static final long serialVersionUID = 833946606;
+    private static final long serialVersionUID = 2051934495;
 
     /**
      * The reference instance of <code>hrdb.hr_team</code>
@@ -135,6 +135,16 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
      * The column <code>hrdb.hr_team.link</code>. 模板链接
      */
     public final TableField<HrTeamRecord, String> LINK = createField("link", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "模板链接");
+
+    /**
+     * The column <code>hrdb.hr_team.parent_id</code>. 上级部门id
+     */
+    public final TableField<HrTeamRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "上级部门id");
+
+    /**
+     * The column <code>hrdb.hr_team.department_code</code>. 部门编码
+     */
+    public final TableField<HrTeamRecord, String> DEPARTMENT_CODE = createField("department_code", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "部门编码");
 
     /**
      * Create a <code>hrdb.hr_team</code> table reference

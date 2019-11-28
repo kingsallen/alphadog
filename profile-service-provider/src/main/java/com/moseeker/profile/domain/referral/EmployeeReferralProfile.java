@@ -173,119 +173,154 @@ public abstract class EmployeeReferralProfile {
     protected abstract void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
                                               ProfilePojo profilePojo, UserEmployeeDO employeeDO, ProfileAttementVO attementVO);
 
+    private void addTime(String title,List<Map<String,Object>> timeRecords,long startTime){
+        Map<String,Object> map = new HashMap<>();
+        map.put("time",System.currentTimeMillis()-startTime);
+        map.put("title",title);
+        timeRecords.add(map);
+    }
+
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
-        logger.info("=============employeeReferralProfileAdaptor==============");
-        ProfileAttementVO attementVO = new ProfileAttementVO();
-        validateReferralInfo(profileNotice);
-        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(profileNotice.getEmployeeId());
-        if (employeeDO == null || employeeDO.getId() <= 0) {
-            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
-        }
-
-        ProfilePojo profilePojo = getProfilePojo(profileNotice);
-        UserUserRecord userRecord = userAccountEntity.getReferralUser(
-                profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
-
-        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
-
-        List<JobPositionDO> positions = getJobPositions(profileNotice.getPositionIds(), employeeDO.getCompanyId());
-
+        //logger.info("employeeReferralProfileAdaptor {}",JSONObject.toJSONString(profileNotice));
+        long startTime = System.currentTimeMillis();
         List<MobotReferralResultVO> resultVOS = new ArrayList<>();
-        String email = profileNotice.getEmail() != null ?  profileNotice.getEmail() :
-                profileNotice.getOtherFields() != null ? profileNotice.getOtherFields().get("email") : null ;
-        if (positions != null && positions.size() > 0) {
-            List<ReferralLog> referraledList = referralEntity.fetchByPositionIdAndOldReferenceId(profileNotice.getPositionIds(), attementVO.getUserId());
-            // 推荐查重加分布式锁,根据被推荐人手机号和companyId加锁
-            // 一旦某一被推荐人被推荐，redis写入一条记录，推荐成功或失败后删除记录。如果在测过程中发生出现重复推荐请求，发生所等待，
-            // 要么等待锁超时，页面提示用户重试，要么等待若干时间获得锁，接下来进入人才库查重，抛出重复推荐错误提示，
-            lock(employeeDO.getCompanyId(),profileNotice,()-> {
-                for (int i = 0; i < profileNotice.getPositionIds().size(); i++) {
-                    int index = i;
-                    Optional<JobPositionDO> positionDOOptional = positions
-                            .stream()
-                            .filter(jobPositionDO -> jobPositionDO.getId() == profileNotice.getPositionIds().get(index))
-                            .findAny();
-                    if (positionDOOptional.isPresent()) {
+        List<Map<String,Object>> timeRecords = new LinkedList();
+        ProfileAttementVO attementVO = new ProfileAttementVO();
+        try{
+            validateReferralInfo(profileNotice);
+            addTime("employeeReferralProfileAdaptor.validateReferralInfo",timeRecords,startTime);
 
-                        if (checkIsRepeatedRecommend(referraledList, positionDOOptional.get().getId(), attementVO.getUserId(),
-                                profileNotice.getCheckRepeateFuture())) {
-                            MobotReferralResultVO mobotReferralResultVO = new MobotReferralResultVO();
-                            mobotReferralResultVO.setPosition_id(positionDOOptional.get().getId());
-                            mobotReferralResultVO.setTitle(positionDOOptional.get().getTitle());
-                            mobotReferralResultVO.setSuccess(false);
-                            mobotReferralResultVO.setReason(ProfileException.REFERRAL_REPEATE_REFERRAL.getMessage());
-                            resultVOS.add(mobotReferralResultVO);
+            UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(profileNotice.getEmployeeId());
+            addTime("employeeReferralProfileAdaptor.employeeEntity_getEmployeeByID",timeRecords,startTime);
+            if (employeeDO == null || employeeDO.getId() <= 0) {
+                throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+            }
+
+            ProfilePojo profilePojo = getProfilePojo(profileNotice);
+            addTime("employeeReferralProfileAdaptor.getProfilePojo",timeRecords,startTime);
+            UserUserRecord userRecord = userAccountEntity.getReferralUser(
+                    profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
+            addTime("employeeReferralProfileAdaptor.userAccountEntity_getReferralUser",timeRecords,startTime);
+
+            storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
+            addTime("employeeReferralProfileAdaptor.storeReferralUser",timeRecords,startTime);
+
+            List<JobPositionDO> positions = getJobPositions(profileNotice.getPositionIds(), employeeDO.getCompanyId());
+            addTime("employeeReferralProfileAdaptor.getJobPositions",timeRecords,startTime);
+
+
+            String email = profileNotice.getEmail() != null ?  profileNotice.getEmail() :
+                    profileNotice.getOtherFields() != null ? profileNotice.getOtherFields().get("email") : null ;
+            if (positions != null && positions.size() > 0) {
+                List<ReferralLog> referraledList = referralEntity.fetchByPositionIdAndOldReferenceId(profileNotice.getPositionIds(), attementVO.getUserId());
+                addTime("employeeReferralProfileAdaptor.referralEntity_fetchByPositionIdAndOldReferenceId",timeRecords,startTime);
+                // 推荐查重加分布式锁,根据被推荐人手机号和companyId加锁
+                // 一旦某一被推荐人被推荐，redis写入一条记录，推荐成功或失败后删除记录。如果在测过程中发生出现重复推荐请求，发生所等待，
+                // 要么等待锁超时，页面提示用户重试，要么等待若干时间获得锁，接下来进入人才库查重，抛出重复推荐错误提示，
+                lock(employeeDO.getCompanyId(),profileNotice,()-> {
+                    addTime("employeeReferralProfileAdaptor.getlock",timeRecords,startTime);
+                    for (int i = 0; i < profileNotice.getPositionIds().size(); i++) {
+                        int index = i;
+                        Optional<JobPositionDO> positionDOOptional = positions
+                                .stream()
+                                .filter(jobPositionDO -> jobPositionDO.getId() == profileNotice.getPositionIds().get(index))
+                                .findAny();
+                        if (positionDOOptional.isPresent()) {
+
+                            if (checkIsRepeatedRecommend(referraledList, positionDOOptional.get().getId(), attementVO.getUserId(),
+                                    profileNotice.getCheckRepeateFuture())) {
+                                MobotReferralResultVO mobotReferralResultVO = new MobotReferralResultVO();
+                                mobotReferralResultVO.setPosition_id(positionDOOptional.get().getId());
+                                mobotReferralResultVO.setTitle(positionDOOptional.get().getTitle());
+                                mobotReferralResultVO.setSuccess(false);
+                                mobotReferralResultVO.setReason(ProfileException.REFERRAL_REPEATE_REFERRAL.getMessage());
+                                resultVOS.add(mobotReferralResultVO);
+                            } else {
+                                logger.debug("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}", JSONObject.toJSONString(attementVO));
+                                int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
+                                        ApplicationSource.EMPLOYEE_CHATBOT.getValue();
+                                addTime(String.format("employeeReferralProfileAdaptor.lock[%d].handleRecommend:before",i),timeRecords,startTime);
+                                try {
+                                    handleRecommend(profileNotice, employeeDO, attementVO.getUserId(), positionDOOptional.get(), origin,
+                                            resultVOS, attementVO.getAttachmentId(),timeRecords,startTime);
+                                } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
+                                }
+                                addTime(String.format("employeeReferralProfileAdaptor.lock[%d].handleRecommend:after",i),timeRecords,startTime);
+                                try {
+                                    tp1.startTast(() -> {
+                                        logger.info("============三秒后执行=============================");
+                                        updateApplicationEsIndex(attementVO.getUserId());
+                                    }, 3000);
+                                } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
+                                    throw ProfileException.PROGRAM_EXCEPTION;
+                                }
+                            }
+
                         } else {
-                            logger.debug("EmployeeReferralProfile employeeReferralProfileAdaptor attementVO:{}", JSONObject.toJSONString(attementVO));
-                            int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
-                                    ApplicationSource.EMPLOYEE_CHATBOT.getValue();
-                            try {
-                                handleRecommend(profileNotice, employeeDO, attementVO.getUserId(), positionDOOptional.get(), origin,
-                                        resultVOS, attementVO.getAttachmentId());
-                            } catch (Exception e) {
-                                logger.error(e.getMessage(), e);
-                            }
-                            try {
-                                tp1.startTast(() -> {
-                                    logger.info("============三秒后执行=============================");
-                                    updateApplicationEsIndex(attementVO.getUserId());
-                                }, 3000);
-                            } catch (Exception e) {
-                                logger.error(e.getMessage(), e);
-                                throw ProfileException.PROGRAM_EXCEPTION;
-                            }
+                            resultVOS.add(generateNotExistInfo(i));
                         }
-
-                    } else {
-                        resultVOS.add(generateNotExistInfo(i));
                     }
-                }
-            });
-        } else {
-            for (int i=0; i<profileNotice.getPositionIds().size(); i++) {
-                resultVOS.add(generateNotExistInfo(i));
-            }
-        }
-
-        /**
-         * 如果 storeReferralUser 方法更新了userRecord的属性（用户信息），
-         * 那么如果有一次推荐成功就将userRecord的信息持久化到数据库
-         */
-        if (userRecord != null) {
-            boolean flag = false;
-            UserUserRecord userUserRecord = new UserUserRecord();
-            userUserRecord.setId(userRecord.getId());
-            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(profileNotice.getName())) {
-                userRecord.setName(profileNotice.getName());
-                userUserRecord.setName(profileNotice.getName());
-                flag = true;
-            }
-            if (StringUtils.isNotBlank(profileNotice.getEmail()) && !Objects.equals(userRecord.getEmail(),profileNotice.getEmail())) {
-                userRecord.setEmail(profileNotice.getEmail());
-                userUserRecord.setEmail(profileNotice.getEmail());
-                flag = true;
-            }
-            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
-                userRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
-                userUserRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
-                flag = true;
-            }
-            Optional<MobotReferralResultVO> mobotReferralResultVOOptional = resultVOS
-                    .stream()
-                    .filter(mobotReferralResultVO -> mobotReferralResultVO.getSuccess() != null && mobotReferralResultVO.getSuccess())
-                    .findAny();
-            if (flag && mobotReferralResultVOOptional.isPresent()) {
-                userAccountEntity.updateUserRecord(userUserRecord);
-                Optional<MobotReferralResultVO> successReferralOption = resultVOS
-                        .stream()
-                        .filter(MobotReferralResultVO::getSuccess)
-                        .findAny();
-
-                successReferralOption.ifPresent(mobotReferralResultVO -> {
-                    userAccountEntity.updateUserRecord(userUserRecord);
                 });
+                addTime("employeeReferralProfileAdaptor.lock:after",timeRecords,startTime);
+            } else {
+                for (int i=0; i<profileNotice.getPositionIds().size(); i++) {
+                    resultVOS.add(generateNotExistInfo(i));
+                }
             }
+
+            /**
+             * 如果 storeReferralUser 方法更新了userRecord的属性（用户信息），
+             * 那么如果有一次推荐成功就将userRecord的信息持久化到数据库
+             */
+            if (userRecord != null) {
+                boolean flag = false;
+                UserUserRecord userUserRecord = new UserUserRecord();
+                userUserRecord.setId(userRecord.getId());
+                if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(profileNotice.getName())) {
+                    userRecord.setName(profileNotice.getName());
+                    userUserRecord.setName(profileNotice.getName());
+                    flag = true;
+                }
+                if (StringUtils.isNotBlank(profileNotice.getEmail()) && !Objects.equals(userRecord.getEmail(),profileNotice.getEmail())) {
+                    userRecord.setEmail(profileNotice.getEmail());
+                    userUserRecord.setEmail(profileNotice.getEmail());
+                    flag = true;
+                }
+                if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
+                    userRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
+                    userUserRecord.setMobile(Long.valueOf(profileNotice.getMobile()));
+                    flag = true;
+                }
+                addTime("employeeReferralProfileAdaptor.mobotReferralResultVOOptional:before",timeRecords,startTime);
+                Optional<MobotReferralResultVO> mobotReferralResultVOOptional = resultVOS
+                        .stream()
+                        .filter(mobotReferralResultVO -> mobotReferralResultVO.getSuccess() != null && mobotReferralResultVO.getSuccess())
+                        .findAny();
+                if (flag && mobotReferralResultVOOptional.isPresent()) {
+                    userAccountEntity.updateUserRecord(userUserRecord);
+                    addTime("employeeReferralProfileAdaptor.userAccountEntity_updateUserRecord",timeRecords,startTime);
+                    Optional<MobotReferralResultVO> successReferralOption = resultVOS
+                            .stream()
+                            .filter(MobotReferralResultVO::getSuccess)
+                            .findAny();
+
+                    successReferralOption.ifPresent(mobotReferralResultVO -> {
+                        userAccountEntity.updateUserRecord(userUserRecord);
+                        addTime("employeeReferralProfileAdaptor.userAccountEntity_updateUserRecord",timeRecords,startTime);
+                    });
+                }
+            }
+        }catch (RuntimeException e){
+            logger.error(String.format("employeeReferralProfileAdaptor(%s)",JSONObject.toJSONString(profileNotice)),e);
+        }finally {
+            long time = System.currentTimeMillis() - startTime;
+            logger.info("employeeReferralProfileAdaptor{} employeeId:{},总耗时：{}ms ,params：({}) ,详细情况：{}  ",
+                        time>4000?"耗时过长":"",profileNotice.getEmployeeId(),time,JSONObject.toJSONString(profileNotice),timeRecords);
+
         }
+        logger.info("employeeReferralProfileAdaptor {} result: ",JSONObject.toJSONString(profileNotice),JSONObject.toJSONString(resultVOS));
         return resultVOS;
     }
 
@@ -330,20 +365,25 @@ public abstract class EmployeeReferralProfile {
      */
     @Transactional(rollbackFor = Exception.class)
     protected void handleRecommend(EmployeeReferralProfileNotice profileNotice, UserEmployeeDO employeeDO, int userId, JobPositionDO jobPositionDO,
-                                   int origin, List<MobotReferralResultVO> resultVOS, int attachmentId)
+                                   int origin, List<MobotReferralResultVO> resultVOS, int attachmentId,List<Map<String,Object>> timeRecords,long startTime)
             throws TException,EmployeeException {
         MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
         referralResultVO.setPosition_id(jobPositionDO.getId());
         referralResultVO.setTitle(jobPositionDO.getTitle());
         resultVOS.add(referralResultVO);
         try {
+            addTime("handleRecommend:before",timeRecords,startTime);
             int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, attachmentId, jobPositionDO.getId(),
                     profileNotice.getReferralType());
+            addTime("handleRecommend.referralEntity_logReferralOperation",timeRecords,startTime);
             int applicationId = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(),
                     profileNotice.getName(), origin, employeeDO.getSysuserId(), referralResultVO);
+            addTime("handleRecommend.createJobApplication",timeRecords,startTime);
             referralEntity.logReferralOperation(jobPositionDO.getId(), applicationId,  profileNotice.getReferralReasons(),
                     profileNotice.getMobile(), employeeDO.getSysuserId(), userId, profileNotice.getRelationship(), profileNotice.getReferralText());
+            addTime("handleRecommend.referralEntity_logReferralOperation",timeRecords,startTime);
             addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), profileNotice.getReferralType());
+            addTime("handleRecommend.addRecommandReward",timeRecords,startTime);
             referralResultVO.setId(referralId);
         } catch (EmployeeException e){
             logger.error(e.getMessage(), e);

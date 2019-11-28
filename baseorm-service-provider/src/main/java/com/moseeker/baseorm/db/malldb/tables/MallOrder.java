@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallOrder extends TableImpl<MallOrderRecord> {
 
-    private static final long serialVersionUID = 1339330584;
+    private static final long serialVersionUID = -1156918424;
 
     /**
      * The reference instance of <code>malldb.mall_order</code>
@@ -57,9 +57,9 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     public final TableField<MallOrderRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>malldb.mall_order.order_id</code>. 订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如1809270001
+     * The column <code>malldb.mall_order.order_id</code>. 订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如18092700001
      */
-    public final TableField<MallOrderRecord, String> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如1809270001");
+    public final TableField<MallOrderRecord, String> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如18092700001");
 
     /**
      * The column <code>malldb.mall_order.employee_id</code>. 员工id
@@ -79,7 +79,7 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     /**
      * The column <code>malldb.mall_order.name</code>.
      */
-    public final TableField<MallOrderRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
+    public final TableField<MallOrderRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
 
     /**
      * The column <code>malldb.mall_order.credit</code>. 下单时兑换所需积分
@@ -89,7 +89,7 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     /**
      * The column <code>malldb.mall_order.title</code>. 下单时商品的标题
      */
-    public final TableField<MallOrderRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false), this, "下单时商品的标题");
+    public final TableField<MallOrderRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false), this, "下单时商品的标题");
 
     /**
      * The column <code>malldb.mall_order.pic_url</code>. 下单时商品的主图url
@@ -110,6 +110,11 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
      * The column <code>malldb.mall_order.assign_time</code>. 发放时间
      */
     public final TableField<MallOrderRecord, Timestamp> ASSIGN_TIME = createField("assign_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发放时间");
+
+    /**
+     * The column <code>malldb.mall_order.mail_id</code>. 如需邮寄 关联到 mall_mail_address.id
+     */
+    public final TableField<MallOrderRecord, Integer> MAIL_ID = createField("mail_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "如需邮寄 关联到 mall_mail_address.id");
 
     /**
      * The column <code>malldb.mall_order.create_time</code>.

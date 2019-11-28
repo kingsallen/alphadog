@@ -4,7 +4,8 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryNTimes;
 
-public class CuratorClient {
+public class
+CuratorClient {
 	
 	/** Zookeeper info */
     private static final String ZK_ADDRESS = "192.168.31.10:2181";

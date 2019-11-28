@@ -7,19 +7,12 @@ package com.moseeker.baseorm.db.configdb.tables;
 import com.moseeker.baseorm.db.configdb.Configdb;
 import com.moseeker.baseorm.db.configdb.Keys;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
-
-import java.util.Arrays;
-import java.util.List;
+import org.jooq.*;
+import org.jooq.impl.TableImpl;
 
 import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.Identity;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.TableImpl;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -35,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplateMessageLibraryRecord> {
 
-    private static final long serialVersionUID = 1232722773;
+    private static final long serialVersionUID = -390209059;
 
     /**
      * The reference instance of <code>configdb.config_sys_template_message_library</code>
@@ -149,6 +142,11 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
      * The column <code>configdb.config_sys_template_message_library.color_json</code>. 消息模板字体默认颜色
      */
     public final TableField<ConfigSysTemplateMessageLibraryRecord, String> COLOR_JSON = createField("color_json", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息模板字体默认颜色");
+
+    /**
+     * The column <code>configdb.config_sys_template_message_library.send_frequency</code>. 模板消息发送频率（例如一周一次、一月一次）
+     */
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SEND_FREQUENCY = createField("send_frequency", org.jooq.impl.SQLDataType.CLOB, this, "模板消息发送频率（例如一周一次、一月一次）");
 
     /**
      * Create a <code>configdb.config_sys_template_message_library</code> table reference

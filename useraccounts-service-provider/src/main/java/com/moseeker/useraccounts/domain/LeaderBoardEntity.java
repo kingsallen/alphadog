@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -64,10 +66,16 @@ public class LeaderBoardEntity {
                 info.setLastUpdateTime(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
             }else if(obj instanceof String){
                 try {
-                    Date date = DateUtils.minuteTimeToDate(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getString("last_update_time"));
+                    String lastUpdateTime =
+                            jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getString("last_update_time");
+                    if(lastUpdateTime.contains("T")){
+                        lastUpdateTime = LocalDateTime.parse(lastUpdateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    }
+                    Date date = DateUtils.minuteTimeToDate(lastUpdateTime);
                     info.setLastUpdateTime(date.getTime());
                 } catch (ParseException e) {
-                    logger.error(e.getMessage());
+                    logger.warn(e.getMessage(),e);
                 }
 
             }

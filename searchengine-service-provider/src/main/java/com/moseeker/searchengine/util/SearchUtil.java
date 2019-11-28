@@ -2,6 +2,7 @@ package com.moseeker.searchengine.util;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EsClientInstance;
+import com.moseeker.common.util.EsClientInstanceNew;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -33,6 +34,9 @@ public class SearchUtil {
 
     public TransportClient getEsClient() {
         return EsClientInstance.getClient();
+    }
+    public TransportClient getEsClientNew() {
+        return EsClientInstanceNew.getClient();
     }
 
     public TransportClient getEsClient1() {

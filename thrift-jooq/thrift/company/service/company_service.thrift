@@ -65,7 +65,9 @@ service CompanyServices {
     common_struct.Response updateHrCompanyConfStatus(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response findSubAccountNum(1:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response updateWechatThenm(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e),
-    common_struct.Response getCompanyWechatList(1:i32 companyId)throws (1: common_struct.BIZException e)
+    common_struct.Response getCompanyWechatList(1:i32 companyId, 2: string currentDate)throws (1: common_struct.BIZException e)
+    common_struct.Response notifyAwardsRankingTplMsgSent(1: list<i32> wechatIds, 2: string currentDate) throws (1: common_struct.BIZException e)
+
     //校验申请人在某一家公司下是否触发GDPR隐私条款保护
     list<company_struct.GDPRProtectedInfo> validateGDPR(1: list<i32> userIds, 2: i32 companyId) throws (1: common_struct.BIZException e)
     //查看指定公司是否开启GDPR隐私保护条款

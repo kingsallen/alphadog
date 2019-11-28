@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
 
-    private static final long serialVersionUID = 1819361286;
+    private static final long serialVersionUID = -2083077425;
 
     /**
      * The reference instance of <code>configdb.config_sys_cv_tpl</code>
@@ -62,14 +62,15 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
     public final TableField<ConfigSysCvTplRecord, String> FIELD_NAME = createField("field_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性含义");
 
     /**
-     * The column <code>configdb.config_sys_cv_tpl.field_title</code>. 属性标题
+     * The column <code>configdb.config_sys_cv_tpl.field_title</code>.
      */
-    public final TableField<ConfigSysCvTplRecord, String> FIELD_TITLE = createField("field_title", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性标题");
+    public final TableField<ConfigSysCvTplRecord, String> FIELD_TITLE = createField("field_title", org.jooq.impl.SQLDataType.VARCHAR.length(2000), this, "");
 
     /**
-     * The column <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 -1:不显示 0:短文本,1:长文本,2:多选,3:单选,4:长tag,5:tag:,6:时间,7:img,8:复合字段-单条,9:复合字段-多条,10:下拉列表, 12 手机号带国际区号 101:城市选择控件(单选), 102:国家选择控件,103:行业选择控件,104:学校选择控件,105:火箭专业选择控件,106:城市选择控件(多选),107:二级行业选择控件
+     * The column <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 -1:不显示 0:短文本,1:长文本,2:多选,3:单选,4:长tag,5:tag:,6:时间,7:img,8:复合字段-单条,9:复合字段-多条,10:下拉列表, 12 手机号带国际区号 101:城市选择控件(单选), 102:国家选择控件,103:行业选择控件,104:学校选择控件,105:火箭专业选择控件,
+106:城市选择控件(多选),107:二级行业选择控件,108:玛氏专业,109:综合管理培训生项目,110:职能管理培训生项目
      */
-    public final TableField<ConfigSysCvTplRecord, String> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性类型 -1:不显示 0:短文本,1:长文本,2:多选,3:单选,4:长tag,5:tag:,6:时间,7:img,8:复合字段-单条,9:复合字段-多条,10:下拉列表, 12 手机号带国际区号 101:城市选择控件(单选), 102:国家选择控件,103:行业选择控件,104:学校选择控件,105:火箭专业选择控件,106:城市选择控件(多选),107:二级行业选择控件");
+    public final TableField<ConfigSysCvTplRecord, String> FIELD_TYPE = createField("field_type", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "属性类型 -1:不显示 0:短文本,1:长文本,2:多选,3:单选,4:长tag,5:tag:,6:时间,7:img,8:复合字段-单条,9:复合字段-多条,10:下拉列表, 12 手机号带国际区号 101:城市选择控件(单选), 102:国家选择控件,103:行业选择控件,104:学校选择控件,105:火箭专业选择控件,\r\n106:城市选择控件(多选),107:二级行业选择控件,108:玛氏专业,109:综合管理培训生项目,110:职能管理培训生项目");
 
     /**
      * The column <code>configdb.config_sys_cv_tpl.priority</code>. 排序字段

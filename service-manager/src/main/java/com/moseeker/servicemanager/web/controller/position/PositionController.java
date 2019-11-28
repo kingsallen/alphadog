@@ -68,8 +68,7 @@ public class PositionController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-        	logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -80,8 +79,7 @@ public class PositionController {
             Response result = positonServices.getPositionById(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-        	logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -138,8 +136,7 @@ public class PositionController {
             Response res = ResponseUtils.success(positionList);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -162,8 +159,7 @@ public class PositionController {
             Response res = ResponseUtils.success(positionExtList);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -188,8 +184,7 @@ public class PositionController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -202,8 +197,7 @@ public class PositionController {
             Response result = positonServices.CustomField(JSONObject.toJSONString(map));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -219,8 +213,7 @@ public class PositionController {
             Response result = ResponseUtils.success(occuPationdao.getDatas(query.buildQuery(), com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom.class));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -242,11 +235,9 @@ public class PositionController {
             logger.info("-----------refresh Third Party Param end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -262,11 +253,9 @@ public class PositionController {
             logger.info("-----------synchronizePosition end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -283,11 +272,9 @@ public class PositionController {
             logger.info("-----------syncVerifyInfo end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -304,11 +291,9 @@ public class PositionController {
             logger.info("-----------getVerifyInfo end------------");
             return ResponseLogNotification.success(request, result);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -320,8 +305,7 @@ public class PositionController {
             Response res = positonServices.saveAndSync(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             //do nothing
         }
@@ -346,8 +330,7 @@ public class PositionController {
             Response res = ResponseUtils.success(refreshResult);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -371,8 +354,7 @@ public class PositionController {
             Response result = ResponseUtils.success(mapResult);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             //do nothing
         }
@@ -396,8 +378,7 @@ public class PositionController {
             Response res = ResponseUtils.success(shareData);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -430,8 +411,7 @@ public class PositionController {
             Response res = ResponseUtils.success(rpPositionList);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -457,8 +437,7 @@ public class PositionController {
             Response res = ResponseUtils.success(rpExtInfoList);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -475,9 +454,7 @@ public class PositionController {
             logger.info("batchhandler result:{}",JSON.toJSONString(res));
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.info("batchhandler error result:{}",e);
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             //do nothing
         }
@@ -495,8 +472,7 @@ public class PositionController {
             Response res = positonServices.deleteJobposition(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -519,8 +495,7 @@ public class PositionController {
             Response res = positonServices.getTeamIdByDepartmentName(companyId, departmentName);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -551,7 +526,7 @@ public class PositionController {
             Integer positionId = params.getInt("position_id");
             return positonServices.positionDetails(positionId);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("controller error url:{}, method:{}, reason:", "/positions/positiondetails", "GET", e);
         }
         return null;
     }
@@ -617,8 +592,7 @@ public class PositionController {
 	    	Response result=positonServices.getPcRecommand(page,pageSize);
 	    	return ResponseLogNotification.success(request, result);
     	}catch(Exception e){
-    		 logger.error(e.getMessage());
-    		 return ResponseLogNotification.fail(request, e.getMessage());
+    		 return ResponseLogNotification.fail(request, e);
     	}
     }
 
@@ -636,8 +610,7 @@ public class PositionController {
             return ResponseLogNotification.success(request, res);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -659,8 +632,7 @@ public class PositionController {
             Response res = ResponseUtils.success(positions);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request,e.getMessage());
+            return ResponseLogNotification.fail(request,e);
         }
     }
 
@@ -678,7 +650,6 @@ public class PositionController {
             ThirdPartyPositionResult result = positonServices.getThirdPartyPositionInfo(infoForm);
             return ResponseLogNotification.successJson(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -704,7 +675,6 @@ public class PositionController {
             positonServices.updateThirdPartyPositionWithAccount(thirdPartyPosition, thirdPartyAccount,extThirdPartyPosition);
             return ResponseLogNotification.successJson(request, 1);
         } catch (Exception e) {
-            logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -724,7 +694,6 @@ public class PositionController {
                 return ResponseLogNotification.failJson(request, result.getStatus(), result.getMessage(), result.getData());
             }
         } catch (Exception e) {
-            logger.error(e.getMessage());
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -741,8 +710,7 @@ public class PositionController {
             Response result=positonServices.getPcPositionDetail(positionId);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -769,8 +737,7 @@ public class PositionController {
             Response result=positonServices.addPcReport(DO);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -793,8 +760,7 @@ public class PositionController {
             Response result=positonServices.getPcAdvertisement(page,pageSize);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -821,8 +787,7 @@ public class PositionController {
             Response result=positonServices.getPositionRecommendByModuleId(page,pageSize,Integer.parseInt(moduleId));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -865,8 +830,7 @@ public class PositionController {
             );
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -889,8 +853,7 @@ public class PositionController {
                );
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -924,8 +887,7 @@ public class PositionController {
                     Integer.parseInt(pageNum),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -944,8 +906,7 @@ public class PositionController {
             Response result = positonServices.positionCvConf(positionId);
            return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -984,8 +945,7 @@ public class PositionController {
             );
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -996,8 +956,7 @@ public class PositionController {
             Response result=positonServices.getFeatureByPId(pid);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/position/feature/list", method = RequestMethod.POST)
@@ -1010,8 +969,7 @@ public class PositionController {
             Response result=positonServices.updatePositionFeatures(pid,fidList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1025,8 +983,7 @@ public class PositionController {
             Response result=positonServices.updatePositionFeature(pid,fid);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/api/position/feature/batch", method = RequestMethod.POST)
@@ -1057,8 +1014,7 @@ public class PositionController {
             Response result=positonServices.updatePositionFeatureBatch(dataList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1074,8 +1030,7 @@ public class PositionController {
             Response result=positonServices.getPositionFeatureBetch(pidList);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1090,8 +1045,7 @@ public class PositionController {
             Response result=null;
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1102,8 +1056,7 @@ public class PositionController {
             ParamUtils.initModelForm(request,HrThirdPartyPositionDO.class);
             throw new NullPointerException();
         }catch(Exception e){
-            logger.error(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -1122,8 +1075,7 @@ public class PositionController {
 
             return ResponseLogNotification.successJson(request, JSONObject.toJSON(liepinPositionIds));
         }catch(Exception e){
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

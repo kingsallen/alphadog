@@ -34,6 +34,7 @@ public class ReferralWXMsgNotice extends WXMsgNoticeViceMTP {
     private int configId;
 //    private String url;
     private String color;
+    private String remarkColor = "#2BA245";
 
     private ReferralWXMsgNotice(String positionName, String username, String signature,
                                 int applicationId, int recomId, int companyId, RedisClient redisClient) {
@@ -74,7 +75,7 @@ public class ReferralWXMsgNotice extends WXMsgNoticeViceMTP {
         keyThreeMs.setValue(dateStr);
         data.put("keyword3", keyThreeMs);
         MessageTplDataCol remarkMs = new MessageTplDataCol();
-        remarkMs.setColor(color);
+        remarkMs.setColor(remarkColor);
         remarkMs.setValue(remark);
         data.put("remark", remarkMs);
         wxTemplateMsg = new WXTemplateMsgPojo();

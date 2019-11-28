@@ -37,6 +37,8 @@ public enum AlphaCloudProvider {
 
     Position("position",11009,"A11009"),
     User("user",11005,"A11005"),
+    Company("company",11007,"A11007"),
+    Application("application",11017,"A11017"),
     Parsing("parsing",11027,"A11027");
 
     public static ConfigPropertiesUtil SETTING_PROPERTIES = ConfigPropertiesUtil.getInstance();

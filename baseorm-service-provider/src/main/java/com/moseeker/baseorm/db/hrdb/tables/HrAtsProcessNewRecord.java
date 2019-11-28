@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAtsProcessNewRecord extends TableImpl<HrAtsProcessNewRecordRecord> {
 
-    private static final long serialVersionUID = 1241043866;
+    private static final long serialVersionUID = 1158794271;
 
     /**
      * The reference instance of <code>hrdb.hr_ats_process_new_record</code>
@@ -100,6 +100,11 @@ public class HrAtsProcessNewRecord extends TableImpl<HrAtsProcessNewRecordRecord
      * The column <code>hrdb.hr_ats_process_new_record.create_time</code>. 创建时间
      */
     public final TableField<HrAtsProcessNewRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>hrdb.hr_ats_process_new_record.ext_content</code>. 用于c端展示操作字段
+     */
+    public final TableField<HrAtsProcessNewRecordRecord, String> EXT_CONTENT = createField("ext_content", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用于c端展示操作字段");
 
     /**
      * Create a <code>hrdb.hr_ats_process_new_record</code> table reference

@@ -25,10 +25,6 @@ import com.moseeker.useraccounts.service.impl.UserWorkwxService;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -36,6 +32,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -107,7 +108,15 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     @Override
     public boolean isEmployee(int userId, int companyId) throws BIZException, TException {
         try {
-            return employeeEntity.isEmployee(userId, companyId);
+            long start_time = System.currentTimeMillis();
+            boolean isEmployee = employeeEntity.isEmployee(userId, companyId);
+            long end_time = System.currentTimeMillis();
+            //记录下接口执行时间过长时的参数
+            long consumeTime = end_time - start_time;
+            if (consumeTime > 1000) {
+                logger.info("UserEmployeeThriftService.isEmployee /user/employee/check，接口响应时间：{} ms, params:[ userId:{}, companyId:{} ] ", consumeTime, userId, companyId);
+            }
+            return isEmployee;
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
@@ -176,9 +185,9 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     }
 
     @Override
-    public Pagination getContributions(int companyId, int pageNum, int pageSize) throws BIZException, TException {
+    public Pagination getContributions(int companyId,String sendFrequency, int pageNum, int pageSize) throws BIZException, TException {
         try {
-            PaginationUtil<ContributionDetail> paginationUtil = employeeService.getContributions(companyId, pageNum, pageSize);
+            PaginationUtil<ContributionDetail> paginationUtil = employeeService.getContributions(companyId, sendFrequency,pageNum, pageSize);
             Pagination pagination = new Pagination();
             pagination.setPageSize(paginationUtil.getPageSize());
             pagination.setPageNum(paginationUtil.getPageNum());

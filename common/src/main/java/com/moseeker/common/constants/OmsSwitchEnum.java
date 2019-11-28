@@ -37,7 +37,9 @@ public enum OmsSwitchEnum {
     EM_AI_IM(25,"员工版MoBot(人工+智能对话模式)", false),
     EM_TURNHR_IM(26,"员工版MoBot(请转HR（仅开启智能对话模式有效）)", false),
     CM_PERFECT_RESUME(27,"校招粉丝完善简历",false),
-    EMPLOYEE_REFERRAL(28,"员工内推职位推荐",false);
+    EMPLOYEE_REFERRAL(28,"员工内推职位推荐",false),
+    LBS_POSITION_LIST(16,"LBS职位列表",false),//LBS职位列表
+    EMPLOYEE_IM_CHAT(30,"员工IM聊天",true);
 
     private int value;
     private String name;
@@ -75,6 +77,10 @@ public enum OmsSwitchEnum {
      */
     public byte getValidToByte() {
         return (byte) (valid?1:0);
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     @Override
