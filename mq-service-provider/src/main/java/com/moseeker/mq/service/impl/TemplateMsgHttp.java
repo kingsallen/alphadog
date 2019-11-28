@@ -335,7 +335,7 @@ public class TemplateMsgHttp {
         colMap.put("time", keywords3);
 
         MessageTplDataCol remarkJson = new MessageTplDataCol();
-        remarkJson.setColor("#173177");
+        remarkJson.setColor("#2BA245");
         remarkJson.setValue(ReferralEvaluateRemark);
         colMap.put("remark", remarkJson);
 
@@ -754,7 +754,7 @@ public class TemplateMsgHttp {
                     colMap.put("keyword3", keywords3);
 
                     MessageTplDataCol remarkJson = new MessageTplDataCol();
-                    remarkJson.setColor("#173177");
+                    remarkJson.setColor("#E75E48");
                     remarkJson.setValue(remark);
                     colMap.put("remark", remarkJson);
 
@@ -882,7 +882,7 @@ public class TemplateMsgHttp {
             first.setValue(String.format("您好，感谢您推荐候选人应聘职位，%s已投递简历，详情如下：", user.getName()));
             colMap.put("first",first);
             MessageTplDataCol remark = new MessageTplDataCol();
-            remark.setColor("#173177");
+            remark.setColor("#2BA245");
             remark.setValue("感谢您对公司人才招聘的支持，欢迎继续推荐！");
             colMap.put("remark",remark);
             MessageTplDataCol job = new MessageTplDataCol();
@@ -1173,7 +1173,7 @@ public class TemplateMsgHttp {
         }
         String remark = templateVO.getString("remark");
         if(StringUtils.isNotNullOrEmpty(remark)){
-            dataMap.put("remark", createTplVO(color.getString("first"), remark));
+            dataMap.put("remark", createTplVO("#E75E48", remark));
         }
         return dataMap;
     }
