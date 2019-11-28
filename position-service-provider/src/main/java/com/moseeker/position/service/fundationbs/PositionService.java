@@ -2418,7 +2418,8 @@ public class PositionService {
             if (jr.getSalaryBottom() != null) {
                 e.setSalary_bottom(jr.getSalaryBottom());
             }
-            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+            e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getPublishDate()));
+            e.setUpdate_time(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
             e.setDepartment(jr.getDepartment());
             e.setVisitnum(jr.getVisitnum());
             e.setIn_hb(true);
