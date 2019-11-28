@@ -316,10 +316,9 @@ public abstract class EmployeeReferralProfile {
             logger.error(String.format("employeeReferralProfileAdaptor(%s)",JSONObject.toJSONString(profileNotice)),e);
         }finally {
             long time = System.currentTimeMillis() - startTime;
-            if(time > 2000){
-                logger.info("employeeReferralProfileAdaptor耗时过长，employeeId:{},总耗时：{}ms ,params：({}) ,详细情况：{}  ",
-                        time,JSONObject.toJSONString(profileNotice),timeRecords);
-            }
+            logger.info("employeeReferralProfileAdaptor{} employeeId:{},总耗时：{}ms ,params：({}) ,详细情况：{}  ",
+                        time>8000?"耗时过长":"",time,JSONObject.toJSONString(profileNotice),timeRecords);
+
         }
         return resultVOS;
     }
