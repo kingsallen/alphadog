@@ -181,7 +181,7 @@ public abstract class EmployeeReferralProfile {
     }
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
-        logger.info("employeeReferralProfileAdaptor {}",JSONObject.toJSONString(profileNotice));
+        //logger.info("employeeReferralProfileAdaptor {}",JSONObject.toJSONString(profileNotice));
         long startTime = System.currentTimeMillis();
         List<MobotReferralResultVO> resultVOS = new ArrayList<>();
         List<Map<String,Object>> timeRecords = new LinkedList();
@@ -317,9 +317,10 @@ public abstract class EmployeeReferralProfile {
         }finally {
             long time = System.currentTimeMillis() - startTime;
             logger.info("employeeReferralProfileAdaptor{} employeeId:{},总耗时：{}ms ,params：({}) ,详细情况：{}  ",
-                        time>8000?"耗时过长":"",time,JSONObject.toJSONString(profileNotice),timeRecords);
+                        time>4000?"耗时过长":"",profileNotice.getEmployeeId(),time,JSONObject.toJSONString(profileNotice),timeRecords);
 
         }
+        logger.info("employeeReferralProfileAdaptor {} result: ",JSONObject.toJSONString(profileNotice),JSONObject.toJSONString(resultVOS));
         return resultVOS;
     }
 
