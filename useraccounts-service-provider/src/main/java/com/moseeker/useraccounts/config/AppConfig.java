@@ -374,6 +374,18 @@ public class AppConfig {
         return new Queue(Constant.ACTIVITY_DELAY_QUEUE,true);
     }
 
+    @Bean
+    public CustomExchange neo4jDelayExchange(){
+        Map<String,Object> args = new HashMap<>();
+        args.put(Constant.EXCHANGE_TYPE_DELAY,ExchangeTypes.DIRECT);
+        return new CustomExchange(Constant.NEO4J_SHUTDOWN_TASK_DELAY_EXCHANGE,Constant.MESSAGE_TYPE_DELAY,true,false,args);
+    }
+
+    @Bean
+    public Queue neo4jDelayQueue(){
+        return new Queue(Constant.NEO4J_SHUTDOWN_TASK_DELAY_QUEUE,true);
+    }
+
     /**
      * 绑定延时交换机与队列
      * */
@@ -381,6 +393,7 @@ public class AppConfig {
     public List<Binding> bindDelayQueue(){
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(delayQueue()).to(delayExchange()).with(Constant.ACTIVITY_DELAY_ROUTING_KEY).noargs());
+            add(BindingBuilder.bind(neo4jDelayQueue()).to(neo4jDelayExchange()).with(Constant.NEO4J_SHUTDOWN_TASK_DELAY_ROUTING_KEY).noargs());
         }};
     }
 

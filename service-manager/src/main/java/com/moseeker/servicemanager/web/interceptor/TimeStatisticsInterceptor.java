@@ -64,7 +64,10 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             Map<String, Object> logMap = new HashMap<>();
             logMap.put("url", request.getRequestURI());
             logMap.put("method", request.getMethod());
-            logMap.put("ipAddr", InetAddress.getLocalHost().getHostAddress());
+            try {
+                logMap.put("ipAddr", InetAddress.getLocalHost().getHostAddress());
+            } catch (Exception e) {}
+            logMap.put("httpStatus", response.getStatus());
 
             long startTime = (long) request.getAttribute("StatisticsStartTime");
             long consumerTime = System.currentTimeMillis() - startTime;
@@ -73,9 +76,8 @@ public class TimeStatisticsInterceptor implements HandlerInterceptor {
             logger.info("TimeStatisticsInterceptor.afterCompletion : {}", JSON.toJSONString(logMap));
             logMap.put("message", "接口运行时间:" + consumerTime);
             this.save(JSONObject.toJSONString(logMap));
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            logger.error("TimeStatisticsInterceptor.afterCompletion error:{}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("TimeStatisticsInterceptor.afterCompletion error:", e);
         }
     }
 

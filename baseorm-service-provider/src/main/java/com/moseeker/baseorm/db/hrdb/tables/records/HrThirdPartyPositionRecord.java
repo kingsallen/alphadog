@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 1299874732;
+    private static final long serialVersionUID = -151861630;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -368,15 +368,15 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     /**
      * Setter for <code>hrdb.hr_third_party_position.address_id</code>. 绑定第三方账号对应地址的id，关联thirdparty_account_company_address的id
      */
-    public void setAddressId(Integer value) {
+    public void setAddressId(Long value) {
         set(24, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_third_party_position.address_id</code>. 绑定第三方账号对应地址的id，关联thirdparty_account_company_address的id
      */
-    public Integer getAddressId() {
-        return (Integer) get(24);
+    public Long getAddressId() {
+        return (Long) get(24);
     }
 
     /**
@@ -517,7 +517,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     /**
      * Create a detached, initialised HrThirdPartyPositionRecord
      */
-    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practiceSalaryUnit, Byte practicePerWeek, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature, Byte internship, String param) {
+    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practiceSalaryUnit, Byte practicePerWeek, Integer companyId, Long addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature, Byte internship, String param) {
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION);
 
         set(0, id);

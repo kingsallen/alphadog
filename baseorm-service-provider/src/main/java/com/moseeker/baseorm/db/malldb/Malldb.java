@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.malldb;
 
 
 import com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo;
+import com.moseeker.baseorm.db.malldb.tables.MallMailAddress;
 import com.moseeker.baseorm.db.malldb.tables.MallOrder;
 import com.moseeker.baseorm.db.malldb.tables.MallOrderOperation;
 
@@ -32,7 +33,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Malldb extends SchemaImpl {
 
-    private static final long serialVersionUID = -303910486;
+    private static final long serialVersionUID = -1461369002;
 
     /**
      * The reference instance of <code>malldb</code>
@@ -42,17 +43,22 @@ public class Malldb extends SchemaImpl {
     /**
      * 商品信息表
      */
-    public final MallGoodsInfo MALL_GOODS_INFO = MallGoodsInfo.MALL_GOODS_INFO;
+    public final MallGoodsInfo MALL_GOODS_INFO = com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo.MALL_GOODS_INFO;
+
+    /**
+     * 邮寄地址信息
+     */
+    public final MallMailAddress MALL_MAIL_ADDRESS = com.moseeker.baseorm.db.malldb.tables.MallMailAddress.MALL_MAIL_ADDRESS;
 
     /**
      * 商品申请记录
      */
-    public final MallOrder MALL_ORDER = MallOrder.MALL_ORDER;
+    public final MallOrder MALL_ORDER = com.moseeker.baseorm.db.malldb.tables.MallOrder.MALL_ORDER;
 
     /**
      * 商品发放hr操作记录
      */
-    public final MallOrderOperation MALL_ORDER_OPERATION = MallOrderOperation.MALL_ORDER_OPERATION;
+    public final MallOrderOperation MALL_ORDER_OPERATION = com.moseeker.baseorm.db.malldb.tables.MallOrderOperation.MALL_ORDER_OPERATION;
 
     /**
      * No further instances allowed
@@ -80,6 +86,7 @@ public class Malldb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             MallGoodsInfo.MALL_GOODS_INFO,
+            MallMailAddress.MALL_MAIL_ADDRESS,
             MallOrder.MALL_ORDER,
             MallOrderOperation.MALL_ORDER_OPERATION);
     }

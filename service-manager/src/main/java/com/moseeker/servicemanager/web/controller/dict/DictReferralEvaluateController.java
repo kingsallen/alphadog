@@ -47,7 +47,7 @@ public class DictReferralEvaluateController {
             }
 
 		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

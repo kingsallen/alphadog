@@ -80,8 +80,7 @@ public class ProfileController {
             Response result = outPutResumeService.outPutResume(form);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -98,8 +97,7 @@ public class ProfileController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -115,8 +113,7 @@ public class ProfileController {
             Response result = profileService.postResource(form.getProfile(), form.getUser_id());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -194,8 +191,7 @@ public class ProfileController {
             }
             return ResponseLogNotification.fail(request, "参数错误");
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -216,9 +212,7 @@ public class ProfileController {
             logger.info("/profile/retrieve basic form:{}", form);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -242,8 +236,7 @@ public class ProfileController {
             logger.info("profileProcess result:{}", request);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -269,9 +262,7 @@ public class ProfileController {
                 return ResponseLogNotification.fail(request, "职位不存在");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -292,9 +283,7 @@ public class ProfileController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -329,9 +318,7 @@ public class ProfileController {
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -352,12 +339,9 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, result);
+            return ResponseLogNotification.fail(request, result, e);
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -384,9 +368,9 @@ public class ProfileController {
                 return null;
             }
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -467,9 +451,9 @@ public class ProfileController {
             logger.info("v2/profile basic profile: {}", profile);
             return ResponseLogNotification.successJson(request, profileId);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -485,11 +469,9 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, result);
+            return ResponseLogNotification.fail(request, result, e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -512,11 +494,9 @@ public class ProfileController {
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
 
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, result);
+            return ResponseLogNotification.fail(request, result, e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -538,11 +518,9 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, result);
+            return ResponseLogNotification.fail(request, result, e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -563,11 +541,9 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, result);
+            return ResponseLogNotification.fail(request, result, e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -591,9 +567,9 @@ public class ProfileController {
             Response res = service.resumeTalentProfile( filename, data,Integer.parseInt(companyId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -608,9 +584,9 @@ public class ProfileController {
             logger.info("/api/profile/upload/combine basic profile:{}", JSON.toJSONString(profile));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -628,9 +604,9 @@ public class ProfileController {
             logger.info("/api/profile/talent/preserve basic profile:{}", JSON.toJSONString(profile));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -654,9 +630,9 @@ public class ProfileController {
             Response res = profileService.validateHrAndUploaduser(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(userId));
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()), e);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -670,8 +646,7 @@ public class ProfileController {
             Response result = profileService.getUploadProfile(Integer.parseInt(String.valueOf(params.get("user_id"))));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -698,8 +673,7 @@ public class ProfileController {
             List<UserProfile> userProfileList = service.fetchUserProfile(userIdList);
             return ResponseLogNotification.successJson(request, userProfileList);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         } finally {
             // do nothing
         }
@@ -717,8 +691,7 @@ public class ProfileController {
             Response result=service.getProfileTokenDecrypt(token);
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -736,7 +709,7 @@ public class ProfileController {
             Response result = profileOtherService.updateSpecificResource(JSON.toJSONString(params));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -755,7 +728,7 @@ public class ProfileController {
             }
 
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     /**
@@ -928,12 +901,46 @@ public class ProfileController {
         String pdf_name = file_name.replace("." + file_type, Constant.WORD_PDF).trim();
         File pdf_file = new File(pdf_name);
         //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
-        if (!pdf_file.exists()) {
-            OfficeUtils.Word2Pdf(file_name.trim(), pdf_name);
-            logger.info("Create OfficeUtils.Word2Pdf: {} -----------", pdf_name);
+        if (!pdf_file.exists() || pdf_file.length() == 0) {
+            try {
+                service.wordToPdf(file_name.trim(), pdf_name);
+                logger.info("ProfileController.service Word2Pdf: {} -----------", pdf_name);
+            } catch (Exception e) {
+                logger.error("OfficeUtils error :{}, reason:{}", e.getMessage(), e);
+            }
+        }
+        pdf_file = new File(pdf_name);
+        logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
+        return Result.success(pdf_name).toJson();
+    }
+
+    @RequestMapping(value = "/profile/word/topdf/new", method = RequestMethod.GET)
+    @ResponseBody
+    public String wordToPdfNew(@RequestParam(value = "file_name") String file_name) throws Exception {
+        File file = new File(file_name);
+        if (!file.exists()) {
+            logger.info("wordToPdf file not exists path:{}", file_name);
+            throw ProfileException.NODATA_EXCEPTION;
+        }
+        String file_type = file_name.substring(file_name.lastIndexOf(".") + 1).toLowerCase().trim();
+        if (!Constant.WORD_DOC.equals(file_type) && !Constant.WORD_DOCX.equals(file_type)) {
+            throw new ProfileException(99999, "仅支持doc和docx类型文件");
         }
 
-        logger.info("wordToPdf return file : {}", pdf_name);
+        logger.info("wordToPdf fileName = {} ++++++++++++", file_name);
+        String pdf_name = Constant.WORD_TO_PDF_2B_DIRCTORY+file_name.substring(file_name.lastIndexOf("/"),file_name.indexOf("."))+Constant.WORD_PDF;
+        File pdf_file = new File(pdf_name);
+        //pdf文件不存在时,或者文件为空，生成pdf文件，并返回文件名称路径
+        if (!pdf_file.exists() || pdf_file.length() == 0) {
+            try {
+                service.wordToPdf(file_name.trim(), pdf_name);
+                logger.info("ProfileController.service Word2Pdf: {} -----------", pdf_name);
+            } catch (Exception e) {
+                logger.error("OfficeUtils error :{}, reason:{}", e.getMessage(), e);
+            }
+        }
+        pdf_file = new File(pdf_name);
+        logger.info("wordToPdf return file : {}, fileSize:{} byte", pdf_name, pdf_file.length());
         return Result.success(pdf_name).toJson();
     }
 }

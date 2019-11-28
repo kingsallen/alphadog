@@ -29,15 +29,14 @@ public class ExceptionHandle {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String processException(HttpServletRequest request, Exception ex) {
-        logger.error(ex.getMessage(), ex);
-        return ResponseLogNotification.fail(request, ResponseUtils.fail(99999, ex.getMessage() != null ? ex.getMessage() : "系统异常!"));
+        return ResponseLogNotification.fail(request, ResponseUtils.fail(99999, ex.getMessage() != null ? ex.getMessage() : "系统异常!"), ex);
     }
 
 
     @ExceptionHandler(BIZException.class)
     @ResponseBody
     public String processBIZException(HttpServletRequest request, BIZException ex) {
-        return ResponseLogNotification.fail(request, ResponseUtils.fail(ex.getCode(), ex.getMessage()));
+        return ResponseLogNotification.fail(request, ResponseUtils.fail(ex.getCode(), ex.getMessage()), ex);
     }
 
 }

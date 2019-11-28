@@ -176,4 +176,18 @@ public class HrTeamDao extends DAOImpl<HrTeamRecord, com.moseeker.baseorm.db.hrd
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByLink(String... values) {
         return fetch(HrTeam.HR_TEAM.LINK, values);
     }
+
+    /**
+     * Fetch records that have <code>parent_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByParentId(Integer... values) {
+        return fetch(HrTeam.HR_TEAM.PARENT_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>department_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeam> fetchByDepartmentCode(String... values) {
+        return fetch(HrTeam.HR_TEAM.DEPARTMENT_CODE, values);
+    }
 }

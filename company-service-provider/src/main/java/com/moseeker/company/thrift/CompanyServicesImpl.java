@@ -593,11 +593,24 @@ public class CompanyServicesImpl implements Iface {
     }
 
     @Override
-    public Response getCompanyWechatList(int companyId) throws BIZException, TException {
+    public Response getCompanyWechatList(int companyId,String currentDate) throws BIZException, TException {
         try {
-            List<HrCompanyWechatDO> infoList = service.getCompanyInfoByTemplateRank(companyId);
+            List<HrCompanyWechatDO> infoList = service.getCompanyInfoByTemplateRank(companyId, currentDate);
             String result= JSON.toJSONString(infoList,serializeConfig);
             return ResponseUtils.successWithoutStringify(result);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response notifyAwardsRankingTplMsgSent(List<Integer> wechatIds,String currentDate) throws BIZException, TException {
+        try {
+            int result = service.notifyAwardsRankingTplMsgSent(wechatIds, currentDate);
+            return ResponseUtils.success(result);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
