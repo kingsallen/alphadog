@@ -5,6 +5,9 @@ import java.util.Date;
 
 public enum TemplateMs {
 
+	/**
+	 * 求职者
+	 */
 	TOSEEKER("求职者") {
 		@Override
 		public MsInfo processStatus(int status, Object...args) {
@@ -24,6 +27,8 @@ public enum TemplateMs {
 				    break;
 				case 10:
 					mi = new MsInfo(45,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=45","您好，您已通过面试", "面试通过", "点击查看求职进度详情");
+					break;
+				default:
 			}
 			return mi;
 		}
@@ -43,6 +48,7 @@ public enum TemplateMs {
                 case 10:
                     mi = new MsInfo(37,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=37", "您好，HR重新评估了您的简历，更新状态如下：", "面试通过", "点击查看求职进度详情");
                     break;
+				default:
             }
             return mi;
         }
@@ -59,6 +65,7 @@ public enum TemplateMs {
 				case 13:
 				    mi = new MsInfo(61,"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=61",MessageFormat.format("很遗憾，您推荐的候选人{0}和公司在招岗位不合适", args), "简历不合适", "感谢您对公司人才招聘的贡献，欢迎继续推荐");
 				    break;
+				default:
 			}
 			return mi;
 		}
@@ -70,14 +77,32 @@ public enum TemplateMs {
             MsInfo mi = null;
             switch (status) {
                 case 4:
-                    mi = new MsInfo(75,"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=75", MessageFormat.format("您好，您推荐的候选人简历已被查看", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    mi = new MsInfo(75,
+							"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=75",
+							MessageFormat.format("您好，您推荐的候选人简历已被查看", args),
+							"日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！",
+							"#2BA245"
+					);
                     break;
                 case 7:
-                    mi = new MsInfo(76,"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=76",MessageFormat.format("您好，您推荐的候选人简历已通过初筛", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    mi = new MsInfo(
+                    		76,
+							"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=76",
+							MessageFormat.format("您好，您推荐的候选人简历已通过初筛", args),
+							"日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！",
+							"#2BA245"
+					);
                     break;
                 case 10:
-                    mi = new MsInfo(77,"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=77", MessageFormat.format("您好，您推荐的候选人已通过面试", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    mi = new MsInfo(
+                    		77,
+							"{0}m/employee/referral/progress?wechat_signature={1}&from_template_message=77",
+							MessageFormat.format("您好，您推荐的候选人已通过面试", args),
+							"日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！",
+							"#2BA245"
+					);
                     break;
+				default:
             }
             return mi;
         }
@@ -98,13 +123,17 @@ public enum TemplateMs {
     }
 
     public abstract MsInfo processStatus(int status, Object ...args);
-	
+
+	/**
+	 * 消息体数据
+	 */
 	public class MsInfo {
 		private String result;
 		private String statusDesc; 
 		private String remark;
 		private int config_id;
 		private String url;
+		private String remarkColor;
 
 		public String getResult() {
 			return result;
@@ -141,13 +170,31 @@ public enum TemplateMs {
             this.url = url;
         }
 
-        public MsInfo(int config_id, String url, String result, String statusDesc, String remark) {
+		public String getRemarkColor() {
+			return remarkColor;
+		}
+
+		public void setRemarkColor(String remarkColor) {
+			this.remarkColor = remarkColor;
+		}
+
+		public MsInfo(int config_id, String url, String result, String statusDesc, String remark) {
 			super();
 			this.config_id = config_id;
 			this.url = url;
 			this.result = result;
 			this.statusDesc = statusDesc;
 			this.remark = remark;
+		}
+
+		public MsInfo(int config_id, String url, String result, String statusDesc, String remark, String remarkColor) {
+			super();
+			this.config_id = config_id;
+			this.url = url;
+			this.result = result;
+			this.statusDesc = statusDesc;
+			this.remark = remark;
+			this.remarkColor = remarkColor;
 		}
 		public MsInfo() {}
 	}

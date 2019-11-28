@@ -1172,7 +1172,8 @@ public class UseraccountsController {
 	}
 
 	/**
-	 * 已读隐私协议用户删除记录
+	 * 用于同意了最新的隐私协议。
+	 * 目前虽然delete，但是不删除数据，而是更新到最新
 	 * @param request
 	 * @param response
 	 * @return
