@@ -1173,7 +1173,7 @@ public class TemplateMsgHttp {
         }
         String remark = templateVO.getString("remark");
         if(StringUtils.isNotNullOrEmpty(remark)){
-            dataMap.put("remark", createTplVO(color.getString("first"), remark));
+            dataMap.put("remark", createTplVO("#E75E48", remark));
         }
         return dataMap;
     }
