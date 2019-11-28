@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPrivacyRecord extends TableImpl<UserPrivacyRecordRecord> {
 
-    private static final long serialVersionUID = -323105183;
+    private static final long serialVersionUID = 1532490786;
 
     /**
      * The reference instance of <code>userdb.user_privacy_record</code>
@@ -75,6 +75,11 @@ public class UserPrivacyRecord extends TableImpl<UserPrivacyRecordRecord> {
      * The column <code>userdb.user_privacy_record.update_time</code>. 更新时间
      */
     public final TableField<UserPrivacyRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>userdb.user_privacy_record.version</code>. 隐私协议版本
+     */
+    public final TableField<UserPrivacyRecordRecord, Byte> VERSION = createField("version", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "隐私协议版本");
 
     /**
      * Create a <code>userdb.user_privacy_record</code> table reference
