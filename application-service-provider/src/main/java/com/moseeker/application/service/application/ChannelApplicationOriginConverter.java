@@ -167,6 +167,8 @@ public class ChannelApplicationOriginConverter {
             this.put(8388608, new ChannelApplicationOrigin("PU0014", 1));
             // hr推荐
             this.put(16777216, new ChannelApplicationOrigin("PU0018", 7));
+            // 台湾104
+            this.put(33554432, new ChannelApplicationOrigin("PU0021", 1));
         }
 
         public static Dict getInstance() {
