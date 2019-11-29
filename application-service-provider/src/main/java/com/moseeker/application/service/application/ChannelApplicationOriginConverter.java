@@ -201,7 +201,7 @@ public class ChannelApplicationOriginConverter {
      * @param origin
      * @return
      */
-    private static List<Integer> origin2DecList(Integer origin) {
+    private List<Integer> origin2DecList(Integer origin) {
         List<Integer> decList = Lists.newArrayList();
         // 获取二进制字符串
         String binStr = Integer.toBinaryString(origin);
@@ -222,7 +222,7 @@ public class ChannelApplicationOriginConverter {
 
     public static void main(String[] args) {
         ChannelApplicationOriginConverter converter = new ChannelApplicationOriginConverter();
-        List<Integer> integers = origin2DecList(16777216);
+        List<Integer> integers = converter.origin2DecList(16777216);
         System.out.println(integers);
     }
 }
