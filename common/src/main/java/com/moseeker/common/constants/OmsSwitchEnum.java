@@ -39,7 +39,8 @@ public enum OmsSwitchEnum {
     CM_PERFECT_RESUME(27,"校招粉丝完善简历",false),
     EMPLOYEE_REFERRAL(28,"员工内推职位推荐",false),
     LBS_POSITION_LIST(16,"LBS职位列表",false),//LBS职位列表
-    EMPLOYEE_IM_CHAT(30,"员工IM聊天",true);
+    EMPLOYEE_IM_CHAT(30,"员工IM聊天",true),
+    CUSTOM_PRIVACY_WECHAT(31,"客户自定义隐私协议", false);
 
     private int value;
     private String name;
