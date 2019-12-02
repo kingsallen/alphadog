@@ -1510,6 +1510,15 @@ public class UseraccountsService {
             logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
+            Map<String, Object> result = new HashMap<>();
+            result.put("user_id", userId);
+            result.put("tableName","user_meassage");
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            Map<String, Object> result1 = new HashMap<>();
+            result1.put("user_id", applierId);
+            result1.put("tableName","user_meassage");
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result1));
+
         },3000);
     }
     /*
