@@ -43,6 +43,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -541,11 +542,10 @@ public class ChatService {
             }else{
                 chatDO.setStatus(ChatStatus.DEFAULT.value());
             }
-
-            if (StringUtils.isNotNullOrEmpty(chat.getContent())) {
-                chatDO.setContent(chat.getContent());
-            } else {
-                chatDO.setContent("");
+            // 用户输入类型text 包含html标签转义
+            if(ChatMsgType.TEXT.value().equals(chat.getMsgType())
+                    && HtmlFilterUtil.isContainsHtmlTag(chat.getContent())){
+                chat.setContent(StringEscapeUtils.escapeHtml(chat.getContent()));
             }
             chatDO.setPicUrl(chat.getAssetUrl());
             chatDO.setBtnContent(JSON.toJSONString(chat.getBtnContent()));

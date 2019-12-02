@@ -23,6 +23,7 @@ import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
@@ -129,7 +130,7 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
-    public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
+    public String referralProfile(HttpServletRequest request,@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
         logger.info("ReferralController referralProfile id {} form: {}",id,referralForm);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
@@ -146,19 +147,30 @@ public class ReferralController {
         }
 
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            Map fields = new HashMap<>();
-            if(referralForm.getFields() != null && !referralForm.getFields().isEmpty()){
-                fields.putAll(referralForm.getFields());
+            try {
+                Map fields = new HashMap<>();
+                if(referralForm.getFields() != null && !referralForm.getFields().isEmpty()){
+                    fields.putAll(referralForm.getFields());
+                }
+                if(StringUtils.isNotBlank(referralForm.getEmail())){
+                    fields.putIfAbsent("email",referralForm.getEmail());
+                }
+                // map参数中，value不能为空。否则出现空指针异常
+                fields = MapUtils.removeEmptyValue(fields);
+                int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
+                        referralForm.getMobile(), fields,referralForm.getReferralReasons(), referralForm.getPosition(),
+                        (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
+                return Result.success(referralId).toJson();
+            }catch (CommonException e){
+                logger.error("员工推荐简历错误",e);
+                return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
+            }catch (BIZException e){
+                logger.error("员工推荐简历错误",e);
+                return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
+            }catch (Exception e){
+                logger.error("员工推荐简历错误",e);
+                return ResponseLogNotification.fail(request, e);
             }
-            if(StringUtils.isNotBlank(referralForm.getEmail())){
-                fields.putIfAbsent("email",referralForm.getEmail());
-            }
-            // map参数中，value不能为空。否则出现空指针异常
-            fields = MapUtils.removeEmptyValue(fields);
-            int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
-                    referralForm.getMobile(), fields,referralForm.getReferralReasons(), referralForm.getPosition(),
-                    (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
-            return Result.success(referralId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
@@ -306,9 +318,6 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
-        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
-            result =result+ "推荐理由标签和文本必填任一一个；";
-        }
         if (StringUtils.isBlank(result)) {
             logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();

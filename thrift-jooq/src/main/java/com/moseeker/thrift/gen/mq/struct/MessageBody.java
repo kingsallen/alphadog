@@ -178,7 +178,7 @@ public class MessageBody implements org.apache.thrift.TBase<MessageBody, Message
     tmpMap.put(_Fields.FLEXIBLE_FIELDS, new org.apache.thrift.meta_data.FieldMetaData("flexibleFields", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT            , "FlexibleField"))));
-    tmpMap.put(_Fields.SEND_FREQUENCY, new org.apache.thrift.meta_data.FieldMetaData("sendFrequency", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.SEND_FREQUENCY, new org.apache.thrift.meta_data.FieldMetaData("sendFrequency", org.apache.thrift.TFieldRequirementType.OPTIONAL,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "WxMessageFrequency")));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(MessageBody.class, metaDataMap);
@@ -1499,7 +1499,7 @@ public class MessageBody implements org.apache.thrift.TBase<MessageBody, Message
               struct.sendFrequency = new WxMessageFrequency();
               struct.sendFrequency.read(iprot);
               struct.setSendFrequencyIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;

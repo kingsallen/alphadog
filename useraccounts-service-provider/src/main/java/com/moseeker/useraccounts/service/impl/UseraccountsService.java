@@ -19,6 +19,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserPrivacyRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -78,6 +79,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.PRIVACY_POLICY_DISAGREE_VERSION;
+import static com.moseeker.common.constants.Constant.PRIVACY_POLICY_RELEASE_VERSION;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -1506,6 +1510,15 @@ public class UseraccountsService {
             logger.info("==========更新data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS===");
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
             redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(applierId));
+            Map<String, Object> result = new HashMap<>();
+            result.put("user_id", userId);
+            result.put("tableName","user_meassage");
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+            Map<String, Object> result1 = new HashMap<>();
+            result1.put("user_id", applierId);
+            result1.put("tableName","user_meassage");
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result1));
+
         },3000);
     }
     /*
@@ -1660,12 +1673,27 @@ public class UseraccountsService {
     /**
      * 是否查看隐私协议
      * @param userId user_user.id
-     * @return  是否查看标识 0：未查看，1：已查看
+     * @return  0 都同意 1 未同意过隐私协议 2 同意老版本的隐私协议
      * @throws BIZException
      * @throws TException
      */
     public int ifViewPrivacyProtocol(int userId) throws Exception {
-        return userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+        Optional<UserPrivacyRecord> optional = userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+        /**
+         * 兼容老版本代码：如果不存在则表示同意了隐私协议。
+         */
+        if (!optional.isPresent()) {
+            return 2;
+        } else {
+            byte version = optional.get().getVersion();
+            if (version == 0) {
+                return 1;
+            } else if (version < PRIVACY_POLICY_RELEASE_VERSION) {
+                return 2;
+            } else {
+                return 0;
+            }
+        }
     }
 
     /**
@@ -1674,18 +1702,18 @@ public class UseraccountsService {
      * @throws BIZException
      * @throws TException
      */
-    public void deletePrivacyRecordByUserId(int userId) throws Exception {
-        userPrivacyRecordDao.deletePrivacyRecordByUserId(userId);
+    public void agreeReleasePrivacy(int userId) throws Exception {
+        userPrivacyRecordDao.agreeReleasePrivacy(userId, PRIVACY_POLICY_RELEASE_VERSION);
     }
 
     /**
-     * 插入隐私协议未查看记录
+     * 添加未查看隐私协议
      *
-     * @param userId
+     * @param userId 用户编号
      * @throws BIZException
      * @throws TException
      */
     public void insertPrivacyRecord(int userId) throws Exception {
-        userPrivacyRecordDao.insertPrivacyRecord(userId);
+        userPrivacyRecordDao.insertPrivacyRecord(userId, PRIVACY_POLICY_DISAGREE_VERSION);
     }
 }
