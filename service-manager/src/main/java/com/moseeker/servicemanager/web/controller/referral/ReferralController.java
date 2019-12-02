@@ -23,6 +23,7 @@ import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
@@ -161,6 +162,9 @@ public class ReferralController {
                         (byte)referralForm.getRelationship(), referralForm.getRecomReasonText(),(byte) referralForm.getReferralType());
                 return Result.success(referralId).toJson();
             }catch (CommonException e){
+                logger.error("员工推荐简历错误",e);
+                return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
+            }catch (BIZException e){
                 logger.error("员工推荐简历错误",e);
                 return com.moseeker.servicemanager.web.controller.Result.fail(e.getMessage(),e.getCode()).toJson();
             }catch (Exception e){
@@ -314,9 +318,6 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
-        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
-            result =result+ "推荐理由标签和文本必填任一一个；";
-        }
         if (StringUtils.isBlank(result)) {
             logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
