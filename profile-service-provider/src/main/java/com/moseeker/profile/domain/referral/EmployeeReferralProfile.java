@@ -233,6 +233,7 @@ public abstract class EmployeeReferralProfile {
                                 mobotReferralResultVO.setPosition_id(positionDOOptional.get().getId());
                                 mobotReferralResultVO.setTitle(positionDOOptional.get().getTitle());
                                 mobotReferralResultVO.setSuccess(false);
+                                mobotReferralResultVO.setErrorCode(ProfileException.REFERRAL_REPEATE_REFERRAL.getCode());
                                 mobotReferralResultVO.setReason(ProfileException.REFERRAL_REPEATE_REFERRAL.getMessage());
                                 resultVOS.add(mobotReferralResultVO);
                             } else {
