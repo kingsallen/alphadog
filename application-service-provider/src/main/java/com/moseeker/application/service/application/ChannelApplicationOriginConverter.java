@@ -120,7 +120,7 @@ public class ChannelApplicationOriginConverter {
             // PC
             this.put(1, new ChannelApplicationOrigin("PU0005", 1));
             // 企业号
-            this.put(2, new ChannelApplicationOrigin("PU0012", 1));
+            this.put(2, new ChannelApplicationOrigin("PU0012", 0));
             // 聚合号
             this.put(4, new ChannelApplicationOrigin("PU0006", 1));
             // 51
@@ -164,7 +164,7 @@ public class ChannelApplicationOriginConverter {
             // 员工转岗
             this.put(4194304, new ChannelApplicationOrigin("PU0017", 1));
             // 猎头上传
-            this.put(8388608, new ChannelApplicationOrigin("PU0014", 1));
+            this.put(8388608, new ChannelApplicationOrigin("PU0014", 0));
             // hr推荐
             this.put(16777216, new ChannelApplicationOrigin("PU0018", 7));
             // 台湾104
