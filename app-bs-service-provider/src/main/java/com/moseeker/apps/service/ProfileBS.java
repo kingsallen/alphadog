@@ -120,7 +120,7 @@ public class ProfileBS {
                 //查找该帐号是否有profile
                 int origin = ApplicationSource.channelToOrigin(channel);
                 JobApplication application = initApplication(user.getId(), positionId, position.getCompany_id(), origin);
-                application.setChannel(convert2ChannelList(newchannel));
+//                application.setChannel(convert2ChannelList(newchannel));
                 logger.info("ProfileBS retrieveProfile application:{}", application);
                 //更新用户数据
                 map.put("id", user.getId());
@@ -184,7 +184,7 @@ public class ProfileBS {
                         // 判断来源
                         int origin = ApplicationSource.channelToOrigin(channel);
                         JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
-                        application.setChannel(convert2ChannelList(newchannel));
+//                        application.setChannel(convert2ChannelList(newchannel));
                         //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
                         //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
                         applicationService.postApplication(application);
