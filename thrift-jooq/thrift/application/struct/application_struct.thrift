@@ -38,6 +38,7 @@ struct JobApplication {
     29: optional string ats_errmsg,          // ats同步错误信息
     30: optional i32 hr_id                   // 操作的hrid
     31: optional i32 source_appid            // 推荐到其他职位时的源申请id
+    32: optional list<map<string,string>> channel       // 渠道集合
 }
 
 /*
@@ -87,4 +88,9 @@ struct ApplicationRecordsForm {
     4: optional string statusName,
     5: optional string time,
     6: optional string signature
+}
+
+struct Channel {
+    1: optional string code,
+    2: optional i32 source_id
 }

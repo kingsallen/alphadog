@@ -207,7 +207,8 @@ public class ProfileController {
             Response result = profileBSService.retrieveProfile(
                     form.getInt("position_id"),
                     form.getInt("channel"),
-                    JSON.toJSONString(form.get("profile")));
+                    JSON.toJSONString(form.get("profile")),
+                    JSON.toJSONString(form.get("newchannel")));
 
             logger.info("/profile/retrieve basic form:{}", form);
             return ResponseLogNotification.success(request, result);

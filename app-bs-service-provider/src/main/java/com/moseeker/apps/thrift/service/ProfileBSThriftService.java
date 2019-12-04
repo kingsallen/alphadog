@@ -1,20 +1,19 @@
 package com.moseeker.apps.thrift.service;
 
-import java.util.List;
-
+import com.moseeker.apps.service.ProfileBS;
+import com.moseeker.apps.service.ProfileProcessBS;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS.Iface;
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.apps.service.ProfileBS;
-import com.moseeker.apps.service.ProfileProcessBS;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS.Iface;
-import com.moseeker.thrift.gen.common.struct.Response;
+import java.util.List;
 
 @Service
 public class ProfileBSThriftService implements Iface {
@@ -23,11 +22,11 @@ public class ProfileBSThriftService implements Iface {
 	private ProfileBS profileBS;
 	@Autowired
 	private ProfileProcessBS profileProcessBS;
-	
+
 	@Override
-	public Response retrieveProfile(int positionId, int channel, String profile) throws TException {
+	public Response retrieveProfile(int positionId, int channel, String profile, String newchannel) throws TException {
 		try {
-			return profileBS.retrieveProfile(positionId, profile, channel);
+			return profileBS.retrieveProfile(positionId, profile, channel, newchannel);
 		}catch (Exception e){
 			logger.info("简历回流:{}", e.getMessage());
 			throw ExceptionUtils.convertException(e);

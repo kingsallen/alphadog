@@ -1,6 +1,5 @@
 package com.moseeker.application.thrift;
 
-
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.application.service.impl.vo.ApplicationRecord;
@@ -10,7 +9,6 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -37,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * 申请服务实现类
  * <p>
- *
+ * <p>
  * Created by zzh on 16/5/24.
  */
 @Service
@@ -48,7 +46,6 @@ public class JobApplicataionServicesImpl implements Iface {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-
     @Override
     public boolean healthCheck() throws TException {
         return true;
@@ -56,84 +53,78 @@ public class JobApplicataionServicesImpl implements Iface {
 
     /**
      * 创建申请
-     *
      * @param jobApplication 申请参数
      * @return 新创建的申请记录ID
      */
     @Override
-    public Response postApplication(JobApplication jobApplication){
-        try{
+    public Response postApplication(JobApplication jobApplication) {
+        try {
             return service.postApplication(jobApplication);
         } catch (CommonException e) {
             // todo redis删除
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             return new Response(e.getCode(), e.getMessage());
-        } catch(Exception e){
+        } catch (Exception e) {
             // todo redis删除
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                     jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
 
-
     /**
      * 更新申请数据
-     *
      * @param jobApplication 用户实体
      */
     @Override
-    public Response putApplication(JobApplication jobApplication){
-        try{
+    public Response putApplication(JobApplication jobApplication) {
+        try {
             return service.putApplication(jobApplication);
         } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
-        } catch(Exception e){
-            logger.error(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
         }
     }
 
     /**
      * 删除申请记录
-     *
      * @param applicationId 申请Id
      */
     @Override
-    public Response deleteApplication(long applicationId){
-        try{
+    public Response deleteApplication(long applicationId) {
+        try {
             return service.deleteApplication(applicationId);
         } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
-        } catch(Exception e){
-            logger.error(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
         }
     }
 
     /**
      * 创建申请
-     *
      * @param jobResumeOther 申请参数
      * @return 新创建的申请记录ID
      */
     @Override
     public Response postJobResumeOther(JobResumeOther jobResumeOther) throws TException {
-        try{
+        try {
             return service.postJobResumeOther(jobResumeOther);
         } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
-        }  catch(Exception e){
-            logger.error(e.getMessage(),e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
 
     /**
      * 判断当前用户是否申请了该职位
-     *
      * @param userId     用户ID
      * @param positionId 职位ID
      * @return true : 申请, false: 没申请过
@@ -147,7 +138,6 @@ public class JobApplicataionServicesImpl implements Iface {
      * 一个用户在一家公司的每月的申请次数校验
      * 超出申请次数限制, 每月每家公司一个人只能申请10次
      * <p>
-     *
      * @param userId    用户id
      * @param companyId 公司id
      */
@@ -189,12 +179,13 @@ public class JobApplicataionServicesImpl implements Iface {
         Response response = service.getHrApplicationNum(user_id);
         return response;
     }
+
     /**
      * HR查看申请
-     * @param hrId HR编号
+     * @param hrId              HR编号
      * @param applicationIdList 申请编号集合
      * @throws BIZException 业务异常
-     * @throws TException thrift异常
+     * @throws TException   thrift异常
      */
     @Override
     public void viewApplications(int hrId, List<Integer> applicationIdList) throws BIZException, TException {
@@ -232,7 +223,7 @@ public class JobApplicataionServicesImpl implements Iface {
         try {
             return service.employeeProxyApply(referenceId, applierId, positionIdList);
         } catch (Exception e) {
-            for(Integer position : positionIdList){
+            for (Integer position : positionIdList) {
                 redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                         applierId + "", position + "");
             }
@@ -263,29 +254,8 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Override
     public int appSendEmail(int appId) throws BIZException, TException {
-        try{
-            int result=service.appSendEmail(appId);
-            return result;
-        }catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ApplicationException.PROGRAM_EXCEPTION;
-        }
-    }
-
-    /**
-    * 校验公司下面的appid是否存在
-    *
-    * @param   appId
-    * @param companyId
-    * @Author  lee
-    * @Date  2019/3/6 下午6:58
-    */
-    @Override
-    public int validateAppid(int appId, int companyId) throws BIZException, TException {
         try {
-            int result=service.validateAppid(appId, companyId);
+            int result = service.appSendEmail(appId);
             return result;
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
@@ -295,10 +265,28 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
+    /**
+     * 校验公司下面的appid是否存在
+     * @param appId
+     * @param companyId
+     * @Author lee
+     * @Date 2019/3/6 下午6:58
+     */
+    @Override
+    public int validateAppid(int appId, int companyId) throws BIZException, TException {
+        try {
+            int result = service.validateAppid(appId, companyId);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ApplicationException.PROGRAM_EXCEPTION;
+        }
+    }
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
-     *
      * @param userId    用户id
      * @param companyId 公司id
      */
@@ -310,16 +298,15 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
-
     @Override
     public Response postApplicationIfNotApply(JobApplication application) throws TException {
-        try{
+        try {
             return service.postApplication(application);
-        }  catch (CommonException e) {
+        } catch (CommonException e) {
             return new Response(e.getCode(), e.getMessage());
-        } catch(Exception e){
+        } catch (Exception e) {
 
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
