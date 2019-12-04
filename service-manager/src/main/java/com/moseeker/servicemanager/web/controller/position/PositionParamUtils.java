@@ -56,7 +56,6 @@ public class PositionParamUtils extends ParamUtils {
             }
             form.setChannels(cs);
         } catch (Exception e) {
-            e.printStackTrace();
             LoggerFactory.getLogger(PositionParamUtils.class).error(e.getMessage(), e);
         }
         return form;

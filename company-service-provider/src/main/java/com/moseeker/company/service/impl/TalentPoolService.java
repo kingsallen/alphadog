@@ -188,7 +188,7 @@ public class TalentPoolService {
             }
         },80000);
 
-//        tp.startTast(() -> {
+//        tp.startSubmit(() -> {
 //            tagService.handlerCompanyTagTalent(idList, companyId);
 //            return 0;
 //        });

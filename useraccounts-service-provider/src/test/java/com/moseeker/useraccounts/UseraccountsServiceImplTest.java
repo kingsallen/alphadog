@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts;
 
 import com.moseeker.baseorm.util.SmsSender;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.Factory;
@@ -12,11 +13,18 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFastFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * 用户服务 客户端测试类
@@ -24,8 +32,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  * Created by zzh on 16/5/25.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = AppConfig.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = AppConfig.class)
 public class UseraccountsServiceImplTest {
 
 	@Autowired
@@ -72,5 +80,16 @@ public class UseraccountsServiceImplTest {
 		} finally {
 		}
 
+	}
+
+	@Test
+	public void testDateUtil() throws Exception{
+		try {
+			String dateStr = LocalDateTime.parse("2019-11-19T10:43:17", DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
+			.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+			Assert.assertEquals("2019-11-19 10:43:17",dateStr);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

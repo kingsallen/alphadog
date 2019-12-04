@@ -14,15 +14,15 @@ import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
 import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import emoji4j.EmojiUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,8 +56,7 @@ public class OrderController {
             resultMap.put("list", JSONArray.parseArray(orderMap.get("list")));
             return ResponseLogNotification.successJson(request, resultMap);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -83,8 +82,7 @@ public class OrderController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -98,27 +96,45 @@ public class OrderController {
     public String confirmOrder(HttpServletRequest request) {
         try {
             OrderForm orderForm = ParamUtils.initModelForm(request, OrderForm.class);
+            logger.info("/api/mall/visit/order orderForm:{}",orderForm);
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("company_id", orderForm.getCompany_id());
             vu.addRequiredValidate("employeeId", orderForm.getEmployee_id());
             vu.addRequiredValidate("商城id", orderForm.getGoods_id());
             vu.addRequiredValidate("商品兑换数量", orderForm.getCount());
+            if(2==orderForm.getDeliverType()){
+                if(EmojiUtils.countEmojis(orderForm.getAddress())>0){
+                    logger.warn("/api/mall/visit/order emoji are not permited orderForm:{}",orderForm);
+                    return ResponseLogNotification.fail(request, "详细地址不能包含表情");
+                }
+                vu.addRequiredValidate("收件人", orderForm.getAddressee());
+                vu.addRequiredValidate("province", orderForm.getProvince());
+                vu.addRequiredValidate("city", orderForm.getCity());
+                vu.addRequiredValidate("region", orderForm.getRegion());
+                vu.addRequiredValidate("详细地址", orderForm.getAddress());
+                vu.addStringLengthValidate("详细地址", orderForm.getAddress(),1,100);
+                vu.addRequiredValidate("用户编号", orderForm.getUserId());
+                vu.addRequiredValidate("手机号", orderForm.getMobile());
+            }
             vu.addIntTypeValidate("company_id", orderForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
             vu.addIntTypeValidate("employeeId", orderForm.getEmployee_id(), null, null, 1, Integer.MAX_VALUE);
             vu.addIntTypeValidate("商品兑换数量", orderForm.getCount(), null, null, 1, 99999);
             vu.addIntTypeValidate("商城id", orderForm.getGoods_id(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
+            logger.info("/api/mall/visit/order message:{}",message);
             if (StringUtils.isNullOrEmpty(message)) {
                 orderService.confirmOrder(orderForm);
+                logger.info("/api/mall/visit/order result:{}",ResponseLogNotification.successJson(request, null));
                 return ResponseLogNotification.successJson(request, null);
             } else {
+                logger.info("/api/mall/visit/order result:{}",ResponseLogNotification.fail(request, message));
                 return ResponseLogNotification.fail(request, message);
             }
         }catch (BIZException e){
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -152,8 +168,7 @@ public class OrderController {
         } catch (BIZException e){
             return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -179,10 +194,28 @@ public class OrderController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
 
+    @GetMapping(value = "/address/preview")
+    @ResponseBody
+    public String previewMailAddress(HttpServletRequest request){
+        try {
+            Map<String,Object> params = ParamUtils.parseRequestParam(request);
+            Integer mailId = Integer.valueOf(String.valueOf(params.get("mailId")));
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("mailId", mailId);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                return ResponseLogNotification.successJson(request, orderService.getAddressById(mailId));
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

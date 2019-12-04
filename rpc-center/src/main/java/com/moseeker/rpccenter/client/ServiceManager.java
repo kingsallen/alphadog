@@ -181,7 +181,7 @@ public enum ServiceManager {
      * @param configUtils
      * @return 服务名称和服务实现类对应关系
      */
-    private Map<String, String> createServicesByConf(ConfigPropertiesUtil configUtils) {
+    private Map<String, String>  createServicesByConf(ConfigPropertiesUtil configUtils) {
         Map<String, String> servers = new HashMap<>();
 
         Set<Object> keys = configUtils.returnKeys();

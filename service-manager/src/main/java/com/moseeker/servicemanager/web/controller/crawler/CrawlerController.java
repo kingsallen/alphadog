@@ -98,19 +98,20 @@ public class CrawlerController {
 					res = profileService.importCV(res.getData(), form.getUser_id());
 					return ResponseLogNotification.success(request, res);
 				} else {
+					if (res != null) {
+						logger.info("crawler fetchFirstResume error type:{}, code:{}, message:{}", form.getType(), res.getStatus(), res.getMessage());
+					}
 					return ResponseLogNotification.fail(request, res);
 				}
-
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
 		} catch (ConnectException e) {
-			logger.error(e.getMessage(), e);
+			logger.error("CrawlerController.get error:{}, url:{}, method:{}, reason:{}", e.getMessage(), "/crawler", "POST", e);
 			return ResponseLogNotification.fail(request,
-					ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT));
+					ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT), e);
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		} finally {
 			// do nothing
 		}
@@ -144,11 +145,9 @@ public class CrawlerController {
 
 			return ResponseLogNotification.successJson(request,result);
 		} catch (BIZException e) {
-			logger.error(e.getMessage(),e);
 			return ResponseLogNotification.failJson(request,e);
 		}  catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

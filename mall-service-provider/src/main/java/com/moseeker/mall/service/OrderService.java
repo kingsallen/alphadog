@@ -1,12 +1,17 @@
 package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
+import com.moseeker.baseorm.dao.malldb.MallMailAddressDao;
 import com.moseeker.baseorm.dao.malldb.MallOrderOperationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
+import com.moseeker.baseorm.db.malldb.tables.pojos.MallMailAddress;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -22,6 +27,7 @@ import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
+import com.moseeker.mall.vo.MallMailAddressVO;
 import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -30,16 +36,13 @@ import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderOperationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
-import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
-import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
-import com.moseeker.thrift.gen.mall.struct.OrderForm;
-import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import com.moseeker.thrift.gen.mall.struct.*;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,6 +76,10 @@ public class OrderService {
 
     private final HrCompanyDao hrCompanyDao;
 
+    private final MallMailAddressDao addressDao;
+
+    private final DictCityDao dictCityDao;
+
     private final TemplateService templateService;
 
     private final Environment environment;
@@ -87,10 +94,7 @@ public class OrderService {
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
-    @Autowired
-    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao,
-                        GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao,
-                        HrCompanyDao hrCompanyDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
+    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao, GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao, HrCompanyDao hrCompanyDao, MallMailAddressDao addressDao, DictCityDao dictCityDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
         this.orderDao = orderDao;
         this.userEmployeeDao = userEmployeeDao;
         this.historyUserEmployeeDao = historyUserEmployeeDao;
@@ -98,6 +102,8 @@ public class OrderService {
         this.orderOperationDao = orderOperationDao;
         this.userEmployeePointsDao = userEmployeePointsDao;
         this.hrCompanyDao = hrCompanyDao;
+        this.addressDao = addressDao;
+        this.dictCityDao = dictCityDao;
         this.templateService = templateService;
         this.environment = environment;
         this.searchengineEntity = searchengineEntity;
@@ -141,6 +147,7 @@ public class OrderService {
                 orderList = orderDao.getOrdersListByPageAndStateAndKeyword(orderSearchForm, startIndex);
             }
         }
+        logger.info("OrderService getCompanyOrderList orderList:{}",orderList);
         Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
         List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
@@ -149,6 +156,7 @@ public class OrderService {
             historyEmployeeDOS = historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds);
         }
         List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds);
+        logger.info("OrderService getCompanyOrderList orderList:{}",mallOrderInfoVOS);
         resultMap.put("total_row", totalRows + "");
         resultMap.put("list", JSON.toJSONString(mallOrderInfoVOS));
         return resultMap;
@@ -221,6 +229,46 @@ public class OrderService {
     @OnlySuperAccount
     public String exportOrder(BaseMallForm baseMallForm) {
         List<MallOrderDO> orderList = orderDao.getAllOrderByCompanyId(baseMallForm.getCompany_id());
+        //获取所有的邮寄地址id
+        List<Integer> mailIdList = orderList.stream().map(MallOrderDO::getMailId).collect(Collectors.toList());
+        //再根据地址id获取所有邮寄信息
+        List<MallMailAddress> addres = addressDao.getAddressByIdList(mailIdList);
+
+        List<MallMailAddressVO> addresses = addres.stream().map(addr -> {
+            MallMailAddressVO vo = new MallMailAddressVO();
+            BeanUtils.copyProperties(addr,vo);
+            return vo;
+        }).collect(Collectors.toList());
+
+        Set<Integer> codes = new HashSet<>();
+        addresses.stream().forEach(address -> {
+            codes.add(address.getProvince());
+            codes.add(address.getCity());
+            codes.add(address.getRegion());
+        });
+        List<DictCity> dictCities = dictCityDao.getDictCitiesByCodes(Lists.newArrayList(codes));
+        Map<Integer,DictCity> cityMap = dictCities.stream().collect(Collectors.toMap(DictCity::getCode,dictCity -> dictCity));
+
+        addresses.stream().forEach(address->{
+            if(cityMap.get(address.getCity())!=null){
+                address.setCityName(cityMap.get(address.getCity()).getName());
+            }
+            if(cityMap.get(address.getRegion())!=null){
+                address.setRegionName(cityMap.get(address.getRegion()).getName());
+            }
+            if(cityMap.get(address.getProvince())!=null){
+                if(810000==address.getProvince()){
+                    address.setProvinceName("中国香港");
+                }else if(820000==address.getProvince()){
+                    address.setProvinceName("中国澳门");
+                }else{
+                    address.setProvinceName(cityMap.get(address.getProvince()).getName());
+                }
+            }
+        });
+
+        Map<Integer,MallMailAddressVO> addressMap = addresses.stream().collect(Collectors.toMap(MallMailAddressVO::getId,address->address));
+
         Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
         List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
@@ -230,6 +278,11 @@ public class OrderService {
         }
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds, sdf);
+
+        //将邮寄地址信息插入到导出列表中
+        mallOrderInfoVOS.stream().forEach(mallOrderInfoVO -> {
+            mallOrderInfoVO.setAddress(addressMap.get(mallOrderInfoVO.getMailId()));
+        });
         return JSON.toJSONString(mallOrderInfoVOS);
     }
 
@@ -316,8 +369,18 @@ public class OrderService {
 
     @Transactional(rollbackFor = Exception.class)
     protected UserEmployeePointsRecordDO handleOrderDbUpdate(OrderForm orderForm, UserEmployeeDO userEmployeeDO, MallGoodsInfoDO mallGoodsInfoDO, int payCredit) throws BIZException {
+        //插入地址信息
+        if(orderForm.getUserId()==0&&!orderForm.isSetUserId()){
+            orderForm.setUserId(userEmployeeDO.getSysuserId());
+        }
+        MallMailAddress address = null;
+        if(orderForm.getDeliverType()==2){
+            logger.info("OrderService handleOrderDbUpdate inserMailAddr:{}",orderForm);
+            address = inserMailAddr(orderForm);
+        }
+        logger.info("OrderService handleOrderDbUpdate address:{}",address);
         // 插入订单记录
-        MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
+        MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm,address);
         // 乐观锁减库存
         minusStockByLock(mallGoodsInfoDO, orderForm);
         // 乐观锁减积分
@@ -329,6 +392,18 @@ public class OrderService {
         // 发送消息模板
         sendAwardTemplate(orderForm.getCompany_id(), mallOrderDO.getCount() * mallOrderDO.getCredit(), userEmployeeDO.getSysuserId(), mallGoodsInfoDO.getTitle());
         return userEmployeePointsDO;
+    }
+
+    private MallMailAddress inserMailAddr(OrderForm orderForm) {
+        MallMailAddress address = new MallMailAddress();
+        address.setAddress(orderForm.getAddress());
+        address.setAddressee(orderForm.getAddressee());
+        address.setCity(orderForm.getCity());
+        address.setMobile(orderForm.getMobile());
+        address.setProvince(orderForm.getProvince());
+        address.setRegion(orderForm.getRegion());
+        address.setUserId(orderForm.getUserId());
+        return addressDao.save(address);
     }
 
     private void sendAwardTemplate(int companyId, int credit, int sysUserId, String goodTitle) {
@@ -474,12 +549,14 @@ public class OrderService {
         goodsService.updateStockAndExchangeNumByLock(mallGoodsInfoDO, -orderForm.getCount(), GoodsEnum.UPSHELF.getState(), 1);
     }
 
-    private MallOrderDO insertOrder(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm) {
-        MallOrderDO mallOrderDO = initOrderDO(mallGoodsInfoDO, userEmployeeDO, orderForm);
+    private MallOrderDO insertOrder(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm,
+                                    MallMailAddress address) {
+        MallOrderDO mallOrderDO = initOrderDO(mallGoodsInfoDO, userEmployeeDO, orderForm,address);
         return orderDao.addData(mallOrderDO);
     }
 
-    private MallOrderDO initOrderDO(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm) {
+    private MallOrderDO initOrderDO(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm,
+                                    MallMailAddress address) {
         MallOrderDO mallOrderDO = new MallOrderDO();
         String orderId = createOrderId();
         mallOrderDO.setOrder_id(orderId);
@@ -491,6 +568,9 @@ public class OrderService {
         mallOrderDO.setTitle(mallGoodsInfoDO.getTitle());
         mallOrderDO.setPic_url(mallGoodsInfoDO.getPic_url());
         mallOrderDO.setCount(orderForm.getCount());
+        if(address!=null&&address.getId()!=null){
+            mallOrderDO.setMailId(address.getId());
+        }
         logger.info("mallOrderDO:{}", mallOrderDO);
         return mallOrderDO;
     }
@@ -699,6 +779,34 @@ public class OrderService {
             }
         }
         return userEmployeeDO;
+    }
+
+    public MallMailAddressForm getAddressById(Integer id){
+        MallMailAddress address = addressDao.fetchOneById(id);
+        MallMailAddressForm form = new MallMailAddressForm();
+
+        //根据城市code获取城市信息
+        List<Integer> codes = Lists.newArrayList(address.getProvince(),address.getCity(),address.getRegion());
+        List<DictCity> cities = dictCityDao.getDictCitiesByCodes(codes);
+        Map<Integer,DictCity> citiesMap =
+                cities.stream().collect(Collectors.toMap(DictCity::getCode,city->city));
+        BeanUtils.copyProperties(address,form);
+
+        if(cities!=null&&cities.size()>0){
+            DictCity province = citiesMap.get(form.getProvince());
+            DictCity city = citiesMap.get(form.getCity());
+            DictCity region = citiesMap.get(form.getRegion());
+            if(province!=null&&810000==province.getCode()){
+                province.setName("中国香港");
+            }else if(province!=null&&820000==province.getCode()){
+                province.setName("中国澳门");
+            }
+            form.setProvinceName(province!=null?province.getName():null);
+            form.setCityName(city!=null?city.getName():null);
+            form.setRegionName(region!=null?region.getName():null);
+        }
+
+        return form;
     }
 
 }

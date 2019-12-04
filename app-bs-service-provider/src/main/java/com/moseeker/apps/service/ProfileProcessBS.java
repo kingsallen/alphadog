@@ -30,6 +30,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
@@ -515,33 +516,32 @@ public class ProfileProcessBS {
             wechat = companyService.getWechat(companyId, 0);
         } catch (TException e) {
             log.error(e.getMessage(), e);
+            throw ExceptionUtils.convertToCommonException(e);
         }
         if (wechat.getStatus() == 0) {
             Map<String, Object> wechatData = JSON.parseObject(wechat
                     .getData());
             signature = String.valueOf(wechatData.get("signature"));
         }
-        if (msInfo != null) {
-            String companyName = "";
-            if(company != null){
-                companyName = company.getAbbreviation();
-            }
-            MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
-            this.handerTemplate(msInfo, companyName, positionName, msInfo.getStatusDesc(), templateNoticeStruct);
-            templateNoticeStruct.setCompany_id(companyId);
-            templateNoticeStruct.setUser_id(userId);
-            String url = MessageFormat.format(
-                    msInfo.getUrl(),
-                    ConfigPropertiesUtil.getInstance().get("platform.url",
-                            String.class), signature,
-                    String.valueOf(applicationId));
-            url = url +"&send_time=" + new Date().getTime();
-            templateNoticeStruct.setUrl(url);
-            try {
-                mqService.messageTemplateNotice(templateNoticeStruct);
-            } catch (TException e) {
-                log.error(e.getMessage(), e);
-            }
+        String companyName = "";
+        if(company != null){
+            companyName = company.getAbbreviation();
+        }
+        MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
+        this.handerTemplate(msInfo, companyName, positionName, msInfo.getStatusDesc(), templateNoticeStruct);
+        templateNoticeStruct.setCompany_id(companyId);
+        templateNoticeStruct.setUser_id(userId);
+        String url = MessageFormat.format(
+                msInfo.getUrl(),
+                ConfigPropertiesUtil.getInstance().get("platform.url",
+                        String.class), signature,
+                String.valueOf(applicationId));
+        url = url +"&send_time=" + System.currentTimeMillis();
+        templateNoticeStruct.setUrl(url);
+        try {
+            mqService.messageTemplateNotice(templateNoticeStruct);
+        } catch (TException e) {
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -626,7 +626,7 @@ public class ProfileProcessBS {
         keyThreeMs.setValue(keyword3);
         data.put("keyword3", keyThreeMs);
         MessageTplDataCol remarkMs = new MessageTplDataCol();
-        remarkMs.setColor(color);
+        remarkMs.setColor(StringUtils.isNotNullOrEmpty(msInfo.getRemarkColor()) ? msInfo.getRemarkColor():color);
         remarkMs.setValue(msInfo.getRemark());
         data.put("remark", remarkMs);
         templateNoticeStruct.setData(data);

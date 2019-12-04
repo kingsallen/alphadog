@@ -37,7 +37,7 @@ public class HealthCheckController {
         try {
             return ResponseLogNotification.successJson(request, true);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -47,7 +47,7 @@ public class HealthCheckController {
         try {
             return ResponseLogNotification.successJson(request, searchengineServices.healthCheck());
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -57,7 +57,7 @@ public class HealthCheckController {
         try {
             return ResponseLogNotification.successJson(request,userProviderService.healthCheck() );
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -67,7 +67,7 @@ public class HealthCheckController {
         try {
             return ResponseLogNotification.successJson(request,profileService.healthCheck() );
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

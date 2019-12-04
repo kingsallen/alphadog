@@ -39,7 +39,6 @@ public class OutPutResumeUtil {
 		try {
 			result = UrlUtil.sendPost(url, params.toJSONString());
 		} catch (ConnectException e) {
-			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
 		}
 		if(result != null) {

@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
@@ -22,19 +23,21 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCustomFields implements Serializable {
 
-    private static final long serialVersionUID = 1331863356;
+    private static final long serialVersionUID = 932772635;
 
-    private Integer id;
-    private Integer companyId;
-    private String  fname;
-    private String  fvalues;
-    private Integer forder;
-    private Byte    disable;
-    private Integer mandatory;
-    private Integer status;
-    private Integer optionType;
-    private Byte    fieldType;
-    private String  ename;
+    private Integer   id;
+    private Integer   companyId;
+    private String    fname;
+    private String    fvalues;
+    private Integer   forder;
+    private Byte      disable;
+    private Integer   mandatory;
+    private Integer   status;
+    private Integer   optionType;
+    private Byte      fieldType;
+    private String    ename;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public HrEmployeeCustomFields() {}
 
@@ -50,20 +53,24 @@ public class HrEmployeeCustomFields implements Serializable {
         this.optionType = value.optionType;
         this.fieldType = value.fieldType;
         this.ename = value.ename;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public HrEmployeeCustomFields(
-        Integer id,
-        Integer companyId,
-        String  fname,
-        String  fvalues,
-        Integer forder,
-        Byte    disable,
-        Integer mandatory,
-        Integer status,
-        Integer optionType,
-        Byte    fieldType,
-        String  ename
+        Integer   id,
+        Integer   companyId,
+        String    fname,
+        String    fvalues,
+        Integer   forder,
+        Byte      disable,
+        Integer   mandatory,
+        Integer   status,
+        Integer   optionType,
+        Byte      fieldType,
+        String    ename,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -76,6 +83,8 @@ public class HrEmployeeCustomFields implements Serializable {
         this.optionType = optionType;
         this.fieldType = fieldType;
         this.ename = ename;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -166,6 +175,22 @@ public class HrEmployeeCustomFields implements Serializable {
         this.ename = ename;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrEmployeeCustomFields (");
@@ -181,6 +206,8 @@ public class HrEmployeeCustomFields implements Serializable {
         sb.append(", ").append(optionType);
         sb.append(", ").append(fieldType);
         sb.append(", ").append(ename);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

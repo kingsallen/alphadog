@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSmsTemplate extends TableImpl<ConfigSmsTemplateRecord> {
 
-    private static final long serialVersionUID = -494395028;
+    private static final long serialVersionUID = 1640858544;
 
     /**
      * The reference instance of <code>configdb.config_sms_template</code>
@@ -64,7 +64,7 @@ public class ConfigSmsTemplate extends TableImpl<ConfigSmsTemplateRecord> {
     /**
      * The column <code>configdb.config_sms_template.code</code>.
      */
-    public final TableField<ConfigSmsTemplateRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false), this, "");
+    public final TableField<ConfigSmsTemplateRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
 
     /**
      * The column <code>configdb.config_sms_template.content_ali</code>. Aliyun 短信模板

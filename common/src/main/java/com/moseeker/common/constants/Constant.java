@@ -78,13 +78,15 @@ public final class Constant {
     public static final String POSITION_SYNC_FAIL_ROUTINGKEY = "messagetemplate.position_sync_fail";
 
     //延时交换机常量,以及队列常量
-    public static final String ACTIVITY_DELAY_EXCHANGE = "activity_delay_exchange_dog";
     public static final String EXCHANGE_TYPE_DELAY = "x-delayed-type";
     public static final String MESSAGE_TYPE_DELAY = "x-delayed-message";
+    public static final String ACTIVITY_DELAY_EXCHANGE = "activity_delay_exchange_dog";
     public static final String ACTIVITY_DELAY_QUEUE = "activity_delay_queue_dog";
     public static final String ACTIVITY_DELAY_ROUTING_KEY = "activity_delay_routing_key";
 
-
+    public static final String NEO4J_SHUTDOWN_TASK_DELAY_EXCHANGE = "NEO4J_SHUTDOWN_TASK_DELAY_EXCHANGE";
+    public static final String NEO4J_SHUTDOWN_TASK_DELAY_QUEUE = "NEO4J_SHUTDOWN_TASK_DELAY_QUEUE";
+    public static final String NEO4J_SHUTDOWN_TASK_DELAY_ROUTING_KEY = "NEO4J_SHUTDOWN_TASK_DELAY_ROUTING_KEY";
 
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
@@ -369,6 +371,13 @@ public final class Constant {
     public static final String KAFKA_TOPIC_EMPLOYEE_CERTIFICATION = "radar_employee_certification";
     public static final String KAFKA_TOPIC_RADAR_STATUS = "radar_button_status";
     public static final String KAFKA_TOPIC_IM_TPL_MSG = "jdpv_im_topic";
+
+    /**
+     * B端上传简历时，创建doc转pdf，存储pdf的目录地址
+     */
+    public static final String WORD_TO_PDF_2B_DIRCTORY="/mnt/nfs/attachment/candidate_upload";
+
+
 
     //简历上传小程序推荐来源的认领不需要校验手机号
     public static final String NO_VSCODE_CHECK = "no_vscode_check";

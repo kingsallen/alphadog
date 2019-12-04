@@ -2,9 +2,9 @@ package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
+import com.moseeker.baseorm.pojo.HrWxNoticeMessagePojo;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
-import org.jooq.Record13;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -30,23 +30,35 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
         super(table, hrWxNoticeMessageDOClass);
     }
 
-    public List<HrWxNoticeMessageDO> getHrWxNoticeMessageDOByWechatIds(List<Integer> ids, int sysTemplateId){
-        List<HrWxNoticeMessageDO> result = create.selectFrom(HR_WX_NOTICE_MESSAGE)
+    public List<HrWxNoticeMessageRecord> getHrWxNoticeMessageDOByWechatIds(List<Integer> ids, int sysTemplateId){
+        Result<HrWxNoticeMessageRecord> result = create.selectFrom(HR_WX_NOTICE_MESSAGE)
                 .where(HR_WX_NOTICE_MESSAGE.WECHAT_ID.in(ids))
                 .and(HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(sysTemplateId))
                 .and(HR_WX_NOTICE_MESSAGE.DISABLE.eq((byte)0))
                 .and(HR_WX_NOTICE_MESSAGE.STATUS.eq((byte)1))
-                .fetchInto(HrWxNoticeMessageDO.class);
+                .fetch();
         return result;
     }
 
-    public HrWxNoticeMessageDO getHrWxNoticeMessageDOByWechatId(Integer id, int sysTemplateId){
-        HrWxNoticeMessageDO result = create.selectFrom(HR_WX_NOTICE_MESSAGE)
+    public int updateSentDate(List<Integer> ids, int sysTemplateId,java.sql.Date date){
+        return create.update(HR_WX_NOTICE_MESSAGE)
+                .set(HR_WX_NOTICE_MESSAGE.SENT_DATE,date)
+                .where(HR_WX_NOTICE_MESSAGE.WECHAT_ID.in(ids))
+                .and(HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(sysTemplateId))
+                .and(HR_WX_NOTICE_MESSAGE.DISABLE.eq((byte)0))
+                .and(HR_WX_NOTICE_MESSAGE.STATUS.eq((byte)1))
+                .execute();
+    }
+
+
+
+    public HrWxNoticeMessageRecord getHrWxNoticeMessageDOByWechatId(Integer id, int sysTemplateId){
+        HrWxNoticeMessageRecord result = create.selectFrom(HR_WX_NOTICE_MESSAGE)
                 .where(HR_WX_NOTICE_MESSAGE.WECHAT_ID.eq(id))
                 .and(HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(sysTemplateId))
                 .and(HR_WX_NOTICE_MESSAGE.DISABLE.eq((byte)0))
                 .and(HR_WX_NOTICE_MESSAGE.STATUS.eq((byte)1))
-                .fetchOneInto(HrWxNoticeMessageDO.class);
+                .fetchOne();
         return result;
     }
 
@@ -57,17 +69,19 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
                 .fetchOneInto(HrWxNoticeMessageDO.class);
     }
 
-    public Result<Record13<Integer, String, String, String, String, String, String, Integer, String, String, String, Integer, Byte>> listByWechatId(int wechatId) {
-
+    public List<HrWxNoticeMessagePojo> listByWechatId(int wechatId) {
         return create
-                .select(HR_WX_NOTICE_MESSAGE.ID, CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.TITLE,
+                .select(HR_WX_NOTICE_MESSAGE.ID,
+                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.TITLE,
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SEND_CONDITION,
-                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SENDTIME,
-                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SENDTO,
+                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SENDTIME.as("send_time"),
+                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SENDTO.as("send_to"),
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SAMPLE,
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.FIRST,
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.PRIORITY,
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.REMARK,
+                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SEND_FREQUENCY.as("frequency_options"),
+                        HR_WX_NOTICE_MESSAGE.SEND_FREQUENCY.as("frequency_value"),
                         HR_WX_NOTICE_MESSAGE.FIRST.as("custom_first"),
                         HR_WX_NOTICE_MESSAGE.REMARK.as("custom_remark"),
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID.as("configId"),
@@ -79,7 +93,6 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
                 .and(HR_WX_NOTICE_MESSAGE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .and(CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
                 .orderBy(CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.PRIORITY.desc(), HR_WX_NOTICE_MESSAGE.ID.asc())
-                .fetch();
-
+                .fetchInto(HrWxNoticeMessagePojo.class);
     }
 }
