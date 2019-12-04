@@ -709,6 +709,7 @@ public class PositionService {
         Set<Integer> jobPositionIds = new LinkedHashSet<>();
         //记录需要更新的jobpostionID
         Set<Integer> updatePostionIds = new LinkedHashSet<>();
+        List<Integer> insertIds = new ArrayList<>();
         Integer deleteCounts = 0;
         Integer sourceId = jobPositionHandlerDates.get(0).getSource_id();
         // 删除操作,删除除了data以外的数据库中的数据
@@ -1080,6 +1081,7 @@ public class PositionService {
                         refreshCoordinators(pid, formData.getCompany_id(), formData.getDepartmentCode());
                     }
                     jobPositionIds.add(pid);
+                    insertIds.add(pid);
                     List<JobPositionCityRecord> jobPositionCityRecordList = cityCode(formData.getCity(), formRcord.getId());
                     if (jobPositionCityRecordList != null && jobPositionCityRecordList.size() > 0) {
                         // 新增城市code时，需要先删除jobpostionCity数据
@@ -1180,6 +1182,7 @@ public class PositionService {
             }
             positionStateAsyncHelper.resync(batchHandlerCountDown, needReSyncData);
             positionStateAsyncHelper.edit(batchHandlerCountDown, jobPositionUpdateRecordList, oldJobMap);
+            positionStateAsyncHelper.doUpdateProcess(batchHandlerCountDown, insertIds);
         } catch (Exception e) {
             logger.error("更新和插入数据发生异常,异常信息为：" + e.getMessage());
             e.printStackTrace();

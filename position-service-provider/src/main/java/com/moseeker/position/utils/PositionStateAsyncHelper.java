@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.moseeker.common.constants.PositionSyncVerify.*;
+import static com.moseeker.position.constants.position.PositionAsyncConstant.POSITION_PROCESS_EXCHANGE;
+import static com.moseeker.position.constants.position.PositionAsyncConstant.POSITION_PROCESS_QUEUE;
 
 @Component
 public class PositionStateAsyncHelper {
@@ -41,6 +43,31 @@ public class PositionStateAsyncHelper {
                     jsonObject.put("id", ids);
                     amqpTemplate.send(POSITION_OPERATE_LIEPIN_EXCHANGE,
                             POSITION_OPERATE_ROUTEKEY_DOWNSHELF,
+                            MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+                } else {
+                    throw new RuntimeException("rabbitmq线程等待超时");
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+            }
+            return true;
+        });
+    }
+
+    public void doUpdateProcess(CountDownLatch batchHandlerCountDown,List<Integer> ids) {
+        if(StringUtils.isEmptyList(ids)) {
+            return;
+        }
+        logger.info("职位流程更新：{}", JSON.toJSONString(ids));
+        ThreadPool.Instance.startTast(()-> {
+            try{
+                if(batchHandlerCountDown.await(600, TimeUnit.SECONDS)){
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("pids", ids);
+                    amqpTemplate.send(POSITION_PROCESS_EXCHANGE,
+                            POSITION_PROCESS_QUEUE,
                             MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
                 } else {
                     throw new RuntimeException("rabbitmq线程等待超时");
