@@ -21,8 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.moseeker.common.constants.PositionSyncVerify.*;
-import static com.moseeker.position.constants.position.PositionAsyncConstant.POSITION_PROCESS_EXCHANGE;
-import static com.moseeker.position.constants.position.PositionAsyncConstant.POSITION_PROCESS_QUEUE;
+import static com.moseeker.position.constants.position.PositionAsyncConstant.*;
 
 @Component
 public class PositionStateAsyncHelper {
@@ -60,15 +59,15 @@ public class PositionStateAsyncHelper {
         if(StringUtils.isEmptyList(ids)) {
             return;
         }
-        logger.info("职位流程更新：{}", JSON.toJSONString(ids));
         ThreadPool.Instance.startTast(()-> {
             try{
                 if(batchHandlerCountDown.await(600, TimeUnit.SECONDS)){
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("pids", ids);
                     amqpTemplate.send(POSITION_PROCESS_EXCHANGE,
-                            POSITION_PROCESS_QUEUE,
+                            POSITION_PROCESS_ROUTEKEY,
                             MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+                    logger.info("职位流程更新已发送：{}", JSON.toJSONString(ids));
                 } else {
                     throw new RuntimeException("rabbitmq线程等待超时");
                 }
