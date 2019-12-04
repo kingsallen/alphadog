@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition implements Serializable {
 
-    private static final long serialVersionUID = -1663416672;
+    private static final long serialVersionUID = -848222532;
 
     private Integer   id;
     private Integer   positionId;
@@ -49,7 +49,7 @@ public class HrThirdPartyPosition implements Serializable {
     private Byte      practiceSalaryUnit;
     private Byte      practicePerWeek;
     private Integer   companyId;
-    private Integer   addressId;
+    private Long      addressId;
     private Integer   departmentId;
     private String    companyName;
     private String    addressName;
@@ -122,7 +122,7 @@ public class HrThirdPartyPosition implements Serializable {
         Byte      practiceSalaryUnit,
         Byte      practicePerWeek,
         Integer   companyId,
-        Integer   addressId,
+        Long      addressId,
         Integer   departmentId,
         String    companyName,
         String    addressName,
@@ -359,11 +359,11 @@ public class HrThirdPartyPosition implements Serializable {
         this.companyId = companyId;
     }
 
-    public Integer getAddressId() {
+    public Long getAddressId() {
         return this.addressId;
     }
 
-    public void setAddressId(Integer addressId) {
+    public void setAddressId(Long addressId) {
         this.addressId = addressId;
     }
 

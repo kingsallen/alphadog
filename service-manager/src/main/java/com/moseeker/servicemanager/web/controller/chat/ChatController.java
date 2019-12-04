@@ -72,7 +72,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -112,7 +111,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -146,7 +144,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -168,7 +165,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, "参数错误");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -195,7 +191,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -223,7 +218,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -248,7 +242,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -272,7 +265,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -342,7 +334,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -369,7 +360,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -394,7 +384,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -455,8 +444,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error("================拉取出错==================");
             return ResponseLogNotification.failJson(request, e);
         } finally {
             if(null != bos){
@@ -493,7 +480,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -514,7 +500,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -535,7 +520,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }
@@ -563,7 +547,6 @@ public class ChatController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
         }
     }

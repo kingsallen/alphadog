@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Date;
 
 import javax.annotation.Generated;
 
@@ -22,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessage implements Serializable {
 
-    private static final long serialVersionUID = -1762257028;
+    private static final long serialVersionUID = -987571876;
 
     private Integer id;
     private Integer wechatId;
@@ -31,6 +32,8 @@ public class HrWxNoticeMessage implements Serializable {
     private String  remark;
     private Byte    status;
     private Byte    disable;
+    private String  sendFrequency;
+    private Date    sentDate;
 
     public HrWxNoticeMessage() {}
 
@@ -42,6 +45,8 @@ public class HrWxNoticeMessage implements Serializable {
         this.remark = value.remark;
         this.status = value.status;
         this.disable = value.disable;
+        this.sendFrequency = value.sendFrequency;
+        this.sentDate = value.sentDate;
     }
 
     public HrWxNoticeMessage(
@@ -51,7 +56,9 @@ public class HrWxNoticeMessage implements Serializable {
         String  first,
         String  remark,
         Byte    status,
-        Byte    disable
+        Byte    disable,
+        String  sendFrequency,
+        Date    sentDate
     ) {
         this.id = id;
         this.wechatId = wechatId;
@@ -60,6 +67,8 @@ public class HrWxNoticeMessage implements Serializable {
         this.remark = remark;
         this.status = status;
         this.disable = disable;
+        this.sendFrequency = sendFrequency;
+        this.sentDate = sentDate;
     }
 
     public Integer getId() {
@@ -118,6 +127,22 @@ public class HrWxNoticeMessage implements Serializable {
         this.disable = disable;
     }
 
+    public String getSendFrequency() {
+        return this.sendFrequency;
+    }
+
+    public void setSendFrequency(String sendFrequency) {
+        this.sendFrequency = sendFrequency;
+    }
+
+    public Date getSentDate() {
+        return this.sentDate;
+    }
+
+    public void setSentDate(Date sentDate) {
+        this.sentDate = sentDate;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxNoticeMessage (");
@@ -129,6 +154,8 @@ public class HrWxNoticeMessage implements Serializable {
         sb.append(", ").append(remark);
         sb.append(", ").append(status);
         sb.append(", ").append(disable);
+        sb.append(", ").append(sendFrequency);
+        sb.append(", ").append(sentDate);
 
         sb.append(")");
         return sb.toString();

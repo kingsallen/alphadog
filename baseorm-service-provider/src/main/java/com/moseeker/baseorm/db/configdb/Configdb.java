@@ -9,11 +9,16 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsEventType;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
+import com.moseeker.baseorm.db.configdb.tables.ConfigObsoleteReason;
 import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
+import com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogTemplate;
+import com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogType;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
@@ -50,7 +55,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Configdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1962959652;
+    private static final long serialVersionUID = -1635973050;
 
     /**
      * The reference instance of <code>configdb</code>
@@ -83,6 +88,16 @@ public class Configdb extends SchemaImpl {
     public final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
     /**
+     * 招聘管理自定义可显示字段基表
+     */
+    public final ConfigAtsApplicationShowField CONFIG_ATS_APPLICATION_SHOW_FIELD = com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD;
+
+    /**
+     * 事件状态管理表
+     */
+    public final ConfigAtsEventType CONFIG_ATS_EVENT_TYPE = com.moseeker.baseorm.db.configdb.tables.ConfigAtsEventType.CONFIG_ATS_EVENT_TYPE;
+
+    /**
      * The table <code>configdb.config_ats_source</code>.
      */
     public final ConfigAtsSource CONFIG_ATS_SOURCE = com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource.CONFIG_ATS_SOURCE;
@@ -103,9 +118,24 @@ public class Configdb extends SchemaImpl {
     public final ConfigHbBalance CONFIG_HB_BALANCE = com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance.CONFIG_HB_BALANCE;
 
     /**
+     * 淘汰理由记录表
+     */
+    public final ConfigObsoleteReason CONFIG_OBSOLETE_REASON = com.moseeker.baseorm.db.configdb.tables.ConfigObsoleteReason.CONFIG_OBSOLETE_REASON;
+
+    /**
      * The table <code>configdb.config_oms_switch_management</code>.
      */
     public final ConfigOmsSwitchManagement CONFIG_OMS_SWITCH_MANAGEMENT = com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT;
+
+    /**
+     * 操作记录模版配置表
+     */
+    public final ConfigOperationLogTemplate CONFIG_OPERATION_LOG_TEMPLATE = com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogTemplate.CONFIG_OPERATION_LOG_TEMPLATE;
+
+    /**
+     * 操作记录类型配置表
+     */
+    public final ConfigOperationLogType CONFIG_OPERATION_LOG_TYPE = com.moseeker.baseorm.db.configdb.tables.ConfigOperationLogType.CONFIG_OPERATION_LOG_TYPE;
 
     /**
      * kenexa职位字段映射表
@@ -192,11 +222,16 @@ public class Configdb extends SchemaImpl {
             ConfigAdminnotificationGroup.CONFIG_ADMINNOTIFICATION_GROUP,
             ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS,
             ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS,
+            ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD,
+            ConfigAtsEventType.CONFIG_ATS_EVENT_TYPE,
             ConfigAtsSource.CONFIG_ATS_SOURCE,
             ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY,
             ConfigCronjobs.CONFIG_CRONJOBS,
             ConfigHbBalance.CONFIG_HB_BALANCE,
+            ConfigObsoleteReason.CONFIG_OBSOLETE_REASON,
             ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT,
+            ConfigOperationLogTemplate.CONFIG_OPERATION_LOG_TEMPLATE,
+            ConfigOperationLogType.CONFIG_OPERATION_LOG_TYPE,
             ConfigPositionKenexa.CONFIG_POSITION_KENEXA,
             ConfigSmsTemplate.CONFIG_SMS_TEMPLATE,
             ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR,

@@ -1,7 +1,7 @@
 package com.moseeker.profile.thrift;
 
 
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.service.AbstractProfileMoveService;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.service.ProfileMoveServiceFactory;
@@ -10,8 +10,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.talentpool.service.ProfileMoveThriftService.Iface;
 import com.moseeker.thrift.gen.talentpool.struct.ProfileMoveForm;
 import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +21,6 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class ProfileMoveThriftServiceImpl implements Iface {
-
-    private Logger logger = LoggerFactory.getLogger(ProfileMoveThriftServiceImpl.class);
 
     private final ProfileMoveServiceFactory profileMoveServiceFactory;
 
@@ -43,12 +39,10 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.moveHouseLogin(form);
         }catch (BIZException e){
-            logger.info(e.getMessage());
-            throw e;
+            throw ExceptionUtils.convertException(e);
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "简历搬家用户登录时发生异常" + form.toString());
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -59,12 +53,10 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.getMoveOperationList(hrId, pageNumber, pageSize);
         } catch (BIZException e){
-            logger.info(e.getMessage());
-            throw e;
+            throw ExceptionUtils.convertException(e);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家操作记录时发生异常hrId:"+ hrId + ",pageNumber:"+ pageNumber + ",pageSize:" + pageSize);
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -75,12 +67,10 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.profileMove(profile, operationId, currentEmailNum);
         } catch (BIZException e) {
-            logger.info(e.getMessage());
-            throw e;
+            throw ExceptionUtils.convertException(e);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "简历搬家简历合并入库时发生异常profile:"+ profile + ",operationId:"+ operationId + ",currentEmailNum:" + currentEmailNum);
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -91,12 +81,10 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.getMoveOperationState(hrId);
         } catch (BIZException e){
-            logger.info(e.getMessage());
-            throw e;
+            throw ExceptionUtils.convertException(e);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家状态异常hrId:" + hrId);
-            logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 }

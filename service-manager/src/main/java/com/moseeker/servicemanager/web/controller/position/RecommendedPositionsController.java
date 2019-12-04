@@ -38,7 +38,7 @@ public class RecommendedPositionsController {
             Response result = positonServices.getRecommendedPositions(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
     @RequestMapping(value = "/position/pc/recommended", method = RequestMethod.GET)
@@ -58,7 +58,7 @@ public class RecommendedPositionsController {
             Response result = positonServices.getPcRecommendPosition(Integer.parseInt(positionId),Integer.parseInt(page),Integer.parseInt(pageSize));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

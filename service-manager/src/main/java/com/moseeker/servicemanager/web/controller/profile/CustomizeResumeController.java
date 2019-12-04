@@ -44,7 +44,7 @@ public class CustomizeResumeController {
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -57,9 +57,8 @@ public class CustomizeResumeController {
 			CustomizeResume customizeResume = ParamUtils.initModelForm(request, CustomizeResume.class);
 			Response result = awardService.postResource(customizeResume);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
-			e.printStackTrace();
-			return ResponseLogNotification.fail(request, e.getMessage());
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -71,7 +70,7 @@ public class CustomizeResumeController {
 			Response result = awardService.putResource(customizeResume);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 
@@ -83,7 +82,7 @@ public class CustomizeResumeController {
 			Response result = awardService.delResource(customizeResume);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

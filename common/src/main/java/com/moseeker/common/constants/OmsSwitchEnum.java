@@ -26,8 +26,21 @@ public enum OmsSwitchEnum {
     HUNTER_MANAGE(13,"猎头管理", false),
     WORK_WEICHAT(14,"企业微信版", false),// 允许使用企业微信进行员工认证
     IDCARD_RECOGNITION(15,"身份证识别", false),//身份证识别
+    MOMO_WECHAT(17,"MOMO微信端", true),//身份证识别
+    SM_MANUAL_IM(18,"社招版MoBot(人工对话模式)", false),
+    SM_AI_IM(19,"社招版MoBot(人工+智能对话模式)", false),
+    SM_TURNHR_IM(20,"社招版MoBot(请转HR（仅开启智能对话模式有效）)", false),
+    CM_MANUAL_IM(21,"校招MoBot(人工对话模式)", false),
+    CM_AI_IM(22,"校招MoBot(人工+智能对话模式)", false),
+    CM_TURNHR_IM(23,"校招MoBot(请转HR（仅开启智能对话模式有效）)", false),
+    EM_MANUAL_IM(24,"员工版MoBot(人工对话模式)", false),
+    EM_AI_IM(25,"员工版MoBot(人工+智能对话模式)", false),
+    EM_TURNHR_IM(26,"员工版MoBot(请转HR（仅开启智能对话模式有效）)", false),
+    CM_PERFECT_RESUME(27,"校招粉丝完善简历",false),
+    EMPLOYEE_REFERRAL(28,"员工内推职位推荐",false),
     LBS_POSITION_LIST(16,"LBS职位列表",false),//LBS职位列表
-    MOMO_WECHAT(17,"MOMO微信端", true);//身份证识别
+    EMPLOYEE_IM_CHAT(30,"员工IM聊天",true),
+    CUSTOM_PRIVACY_WECHAT(31,"客户自定义隐私协议", false);
 
     private int value;
     private String name;
@@ -65,6 +78,10 @@ public enum OmsSwitchEnum {
      */
     public byte getValidToByte() {
         return (byte) (valid?1:0);
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.moseeker.common.validation;
 
-import com.moseeker.common.validation.rules.*;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.ValidateNotAppointParamException;
 import com.moseeker.common.exception.ValidateNotAppointValidateException;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.rules.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 /**
  * 
@@ -23,7 +22,7 @@ public class ValidateUtil {
 
 	Logger logger = LoggerFactory.getLogger(ValidateUtil.class);
 
-	private Map<String, List<ValidateRule>> rules = new HashMap<>();
+	private final Map<String, List<ValidateRule>> rules = new HashMap<>();
 
 	private Optional<Boolean> verified = Optional.empty();
 
@@ -703,5 +702,9 @@ public class ValidateUtil {
 	 */
 	public String getResult() {
 		return sb.toString();
+	}
+
+	public int countRules() {
+		return rules.size();
 	}
 }

@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.hrdb.tables.daos;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -132,5 +133,19 @@ public class HrEmployeeCustomFieldsDao extends DAOImpl<HrEmployeeCustomFieldsRec
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByEname(String... values) {
         return fetch(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ENAME, values);
+    }
+
+    /**
+     * Fetch records that have <code>create_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByCreateTime(Timestamp... values) {
+        return fetch(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.CREATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields> fetchByUpdateTime(Timestamp... values) {
+        return fetch(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.UPDATE_TIME, values);
     }
 }

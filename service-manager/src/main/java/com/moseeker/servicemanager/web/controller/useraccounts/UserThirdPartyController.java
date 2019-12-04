@@ -44,7 +44,7 @@ public class UserThirdPartyController {
             Response result = service.updateUser(user);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -60,8 +60,7 @@ public class UserThirdPartyController {
             logger.info("user thirdparty result: {}", JSON.toJSONString(result));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

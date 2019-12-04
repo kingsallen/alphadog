@@ -59,8 +59,7 @@ public class MallController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -91,8 +90,7 @@ public class MallController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -116,8 +114,7 @@ public class MallController {
             resultMap.put("rule", rule);
             return ResponseLogNotification.successJson(request, resultMap);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -148,8 +145,7 @@ public class MallController {
                 return ResponseLogNotification.fail(request, message);
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 }

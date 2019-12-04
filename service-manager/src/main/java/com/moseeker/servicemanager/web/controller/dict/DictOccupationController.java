@@ -34,9 +34,7 @@ public class DictOccupationController {
 			 Response result=dictOccupationService.getDictOccupation(params);
 			 return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error(e.getMessage());
-			return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e);
 		}
 	}
 }

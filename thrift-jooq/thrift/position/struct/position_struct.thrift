@@ -153,7 +153,8 @@ struct WechatRpPositionListData {
     19: optional string requirement,
     20: optional i32 total_num,
     21: optional string city_ename,
-    22: optional i32 is_referral
+    22: optional i32 is_referral,
+    23: optional string update_time
 }
 
 // 微信端获取红包分享信息
@@ -292,6 +293,7 @@ struct JobPostrionObj{
     53: optional bool profile_cc_mail_enabled,  //简历申请是否抄送邮箱,不传默认false
     54: optional bool is_referral  //职位是否内推
     55: optional string ext //额外数据
+    56: optional string departmentCode  //部门code
 }
 
 struct City{

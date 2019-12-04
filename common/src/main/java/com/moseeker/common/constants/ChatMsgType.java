@@ -22,7 +22,8 @@ public enum ChatMsgType {
     TEXTPLACEHOLDER("textPlaceholder"),
     SATISFACTION("satisfaction"),
     UPLOADRESUME("uploadResume"),
-    TELLREFERRAL("tellReferral");
+    TELLREFERRAL("tellReferral"),
+    TEXT("text");
 
     ChatMsgType(String value) {
         this.value = value;
