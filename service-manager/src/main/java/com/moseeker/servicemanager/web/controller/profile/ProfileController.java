@@ -755,8 +755,10 @@ public class ProfileController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }else if (!ProfileDocCheckTool.checkFileFormat(file.getBytes())) {
+                return Result.fail(MessageType.PROGRAM_FILE_BROKEN).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
