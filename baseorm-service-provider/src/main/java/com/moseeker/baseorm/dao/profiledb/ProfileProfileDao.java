@@ -1975,7 +1975,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         if (mp.get("start") == null) {
                             continue;
                         }
-                        if (mp.get("end") == null && (int) mp.get("end_until_now") == 0) {
+                        if (mp.get("end") == null && (byte) mp.get("end_until_now") == 0) {
                             continue;
                         }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
