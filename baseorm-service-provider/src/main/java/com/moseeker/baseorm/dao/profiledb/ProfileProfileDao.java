@@ -1914,10 +1914,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     List<Map<String, Object>> profile_educations = new ArrayList<>();
                     for (Map<String, Object> mp : allProfile_educations) {
                         Integer pid = (Integer) mp.get("profile_id");
-                        if (map.get("start") == null) {
+                        if (mp.get("start") == null) {
                             continue;
                         }
-                        if (map.get("end") == null && (int) map.get("end_until_now") == 0) {
+                        if (mp.get("end") == null && (int) mp.get("end_until_now") == 0) {
                             continue;
                         }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
@@ -1972,10 +1972,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     List<Map<String, Object>> profile_projectexp = new ArrayList<>();
                     for (Map<String, Object> mp : allProfile_projectexp) {
                         Integer pid = (Integer) mp.get("profile_id");
-                        if (map.get("start") == null) {
+                        if (mp.get("start") == null) {
                             continue;
                         }
-                        if (map.get("end") == null && (int) map.get("end_until_now") == 0) {
+                        if (mp.get("end") == null && (int) mp.get("end_until_now") == 0) {
                             continue;
                         }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
@@ -2004,16 +2004,16 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     List<Map<String, Object>> profile_workexp = new ArrayList<>();
                     for (Map<String, Object> mp : allProfile_workexp) {
                         Integer pid = (Integer) mp.get("profile_id");
-                        if (map.get("start") == null) {
+                        if (mp.get("start") == null) {
                             continue;
                         }
-                        if (map.get("end") == null && (int) map.get("end_until_now") == 0) {
+                        if (mp.get("end") == null && (int) mp.get("end_until_now") == 0) {
                             continue;
                         }
-                        if (StringUtils.isNullOrEmpty((String) map.get("description"))) {
+                        if (StringUtils.isNullOrEmpty((String) mp.get("description"))) {
                             continue;
                         }
-                        if (StringUtils.isNullOrEmpty((String) map.get("job"))) {
+                        if (StringUtils.isNullOrEmpty((String) mp.get("job"))) {
                             continue;
                         }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
