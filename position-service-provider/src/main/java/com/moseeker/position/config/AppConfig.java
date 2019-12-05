@@ -244,4 +244,21 @@ public class AppConfig {
             add(BindingBuilder.bind(positionBatchHandleResponseQueue()).to(positionBatchHandleExchange()).with(POSITION_BATCH_HANDLE_RESPONSE_ROUTING_KEY));
         }};
     }
+
+    @Bean
+    public DirectExchange positionProcessExchange() {
+        return new DirectExchange(POSITION_PROCESS_EXCHANGE, true, false);
+    }
+
+    @Bean
+    public Queue positionProcessQueue() {
+        return new Queue(POSITION_PROCESS_QUEUE, true, false, false);
+    }
+
+    @Bean
+    public List<Binding> bindPositionProcess() {
+        return new ArrayList<Binding>() {{
+            add(BindingBuilder.bind(positionProcessQueue()).to(positionProcessExchange()).with(POSITION_PROCESS_ROUTEKEY));
+        }};
+    }
 }
