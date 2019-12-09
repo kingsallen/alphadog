@@ -88,9 +88,10 @@ public class ReferralController {
 
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileFormat(params.getString("file_name"),file.getBytes())) {
-                logger.error("员工上传简历 文件格式不支持 employee:{},file:{}",employeeId,fileName);
+            if (!ProfileDocCheckTool.checkFileName(fileName)) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }else if (!ProfileDocCheckTool.checkFileFormat(file.getBytes())) {
+                return Result.fail(MessageType.PROGRAM_FILE_BROKEN).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();

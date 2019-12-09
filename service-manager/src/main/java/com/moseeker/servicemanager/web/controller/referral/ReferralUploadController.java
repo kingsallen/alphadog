@@ -56,10 +56,10 @@ public class ReferralUploadController {
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
                 logger.info("uploadProfile checkFileLength  PROGRAM_FILE_OVER_SIZE");
                 return Result.fail(99999, "请上传小于5M的文件！").toJson();
-            }
-
-            if (!ProfileDocCheckTool.checkFileFormat(fileName,file.getBytes())) {
+            }else if (!ProfileDocCheckTool.checkFileName(fileName)) {
                 return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }else if (!ProfileDocCheckTool.checkFileFormat(file.getBytes())) {
+                return Result.fail(MessageType.PROGRAM_FILE_BROKEN).toJson();
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
