@@ -334,7 +334,7 @@ public class JobApplicataionService implements ApplicationEventPublisherAware {
         scheduledThread.startTast(()->{
             amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
                     MessageBuilder.withBody(message.getBytes()).build());
-        },5000);
+        },15000);
 
     }
     /*
