@@ -254,7 +254,7 @@ public class NetUtils {
                         if (addresses != null) {
                             while (addresses.hasMoreElements()) {
                                 InetAddress address = addresses.nextElement();
-                                LOGGER.info("NOC NetUtils getLocalAddress0 ", address.getHostAddress());
+                                LOGGER.info("NOC NetUtils getLocalAddress0:{}", address.getHostAddress());
                                 if (isValidAddress(address)) {
                                     LOGGER.info("NOC NetUtils getLocalAddress0 address is valid!");
                                 } else {
