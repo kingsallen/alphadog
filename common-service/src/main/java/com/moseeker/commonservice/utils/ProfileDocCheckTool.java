@@ -178,10 +178,14 @@ public class ProfileDocCheckTool {
         }
         if( !checkFileName(fileName)) return false;
         boolean result = checkMagicNumber(fileContent) || isHtmlOrXml(fileContent);
-
-        if(!result){
-            logger.error("上传文件格式不允许，filename:{},body:{}",fileName, arrayToString(fileContent));
+        return result;
+    }
+    public static boolean checkFileFormat(byte[] fileContent) {
+        if(fileContent.length <= 4) {
+            // 如果文件太小，不可能匹配任何文档或图片格式，直接返回false。造成的原因可能是空文件。
+            return false ;
         }
+        boolean result = checkMagicNumber(fileContent) || isHtmlOrXml(fileContent);
         return result;
     }
 
@@ -202,9 +206,10 @@ public class ProfileDocCheckTool {
         }
     }
     public static void main(String[] args) throws IOException {
-        File file = new File("/Users/huangxia/Desktop/fileverify/郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");//"郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");
-        String content = new String(IOUtils.toByteArray(new FileInputStream(file)));
-        System.out.print(checkFileFormat(file.getName(), IOUtils.toByteArray(new FileInputStream(file))));
+        File file = new File("/Users/huangxia/Downloads/【大前端开发工程师_上海】仇志林 5年.doc");//"郭倩倩-37岁-15年经验-推广主任-猎聘简历(1).doc");
+        byte[] bytes = IOUtils.toByteArray(new FileInputStream(file));
+        String content = new String(bytes);
+        System.out.print(checkFileFormat(file.getName(), bytes));
         /*Arrays.asList("   <!DOCTYPE html>"," \t \r \n <html> </html>","   <HTML> </HTML>","<?XML> <XML>").forEach(html->{
             System.out.printf("%s \tisHtmlOrXml : %s\n",html.trim(),isHtmlOrXml(html.getBytes()));
         });*/

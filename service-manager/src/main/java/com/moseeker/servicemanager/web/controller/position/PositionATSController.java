@@ -38,11 +38,9 @@ public class PositionATSController {
             Response res = positonATSServices.getSyncChannel();
             return ResponseLogNotification.success(request, res);
         } catch (BIZException e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -60,11 +58,9 @@ public class PositionATSController {
             List<ThirdpartyCompanyChannelConfDO> result = positonATSServices.updateCompanyChannelConf(company_id,channel);
             return ResponseLogNotification.successJson(request,result);
         } catch (BIZException e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -79,11 +75,9 @@ public class PositionATSController {
             List<Integer> res = positonATSServices.getCompanyChannelConfByCompanyId(company_id);
             return ResponseLogNotification.successJson(request, res);
         } catch (BIZException e) {
-            logger.error(e.getMessage(), e);
             return ResponseLogNotification.failJson(request,e);
         } catch (Exception e){
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -98,8 +92,7 @@ public class PositionATSController {
             Response res = positonATSServices.insertGlluePosition(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -114,8 +107,7 @@ public class PositionATSController {
             Response res = positonATSServices.updateGlluePosition(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -130,8 +122,7 @@ public class PositionATSController {
             Response res = positonATSServices.republishPosition(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -146,8 +137,7 @@ public class PositionATSController {
             Response res = positonATSServices.revokeGlluePosition(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 
@@ -162,8 +152,7 @@ public class PositionATSController {
             Response res = positonATSServices.atsUpdatePositionFeature(batchHandlerJobPostion);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail(request, e);
         }
     }
 

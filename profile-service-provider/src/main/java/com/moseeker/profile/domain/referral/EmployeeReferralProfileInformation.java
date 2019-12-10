@@ -44,7 +44,6 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
     protected void validateReferralInfo(EmployeeReferralProfileNotice profileNotice) {
         ValidateUtil validateUtil = new ValidateUtil();
         logger.info("validateReferralInfo email:{}", profileNotice.getEmail());
-        validateUtil.addRequiredOneValidate("推荐理由", profileNotice.getReferralReasons());
         if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
             validateUtil.addRegExpressValidate("邮箱", profileNotice.getEmail(), FormCheck.getEmailExp());
         }
@@ -76,12 +75,11 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         if(info.isGender()){
             validateUtil.addRequiredValidate("性别", profileNotice.getGender());
         }
-        String result = validateUtil.validate();
-        if(com.moseeker.common.util.StringUtils.isEmptyList(profileNotice.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(profileNotice.getReferralText())){
-            result =result+ "推荐理由标签和文本必填任一一个；";
-        }
-        if (StringUtils.isNotNullOrEmpty(result)) {
-            throw ProfileException.validateFailed(result);
+        if(validateUtil.countRules() > 0){
+            String result = validateUtil.validate();
+            if (StringUtils.isNotNullOrEmpty(result)) {
+                throw ProfileException.validateFailed(result);
+            }
         }
     }
 

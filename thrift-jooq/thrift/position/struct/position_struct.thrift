@@ -153,7 +153,8 @@ struct WechatRpPositionListData {
     19: optional string requirement,
     20: optional i32 total_num,
     21: optional string city_ename,
-    22: optional i32 is_referral
+    22: optional i32 is_referral,
+    23: optional string update_time
 }
 
 // 微信端获取红包分享信息

@@ -7,6 +7,7 @@ import com.moseeker.application.domain.HREntity;
 import com.moseeker.application.domain.constant.ApplicationOriginEnum;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
+import com.moseeker.application.service.annotation.HandleChannelApplication;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
@@ -29,7 +30,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
@@ -91,6 +91,8 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,7 +108,7 @@ import java.util.stream.Collectors;
  * @author ltf 申请服务 2016年11月3日
  */
 @Service
-public class JobApplicataionService {
+public class JobApplicataionService implements ApplicationEventPublisherAware {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
     // 申请次数限制 3次
@@ -182,7 +184,8 @@ public class JobApplicataionService {
     @Autowired
     private JobPositionATsProcessDao jobPositionATsProcessDao;
 
-
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 创建申请
@@ -191,6 +194,7 @@ public class JobApplicataionService {
      * @return 新创建的申请记录ID
      */
     @SuppressWarnings("serial")
+    @HandleChannelApplication
     @CounterIface
     public Response postApplication(JobApplication jobApplication) throws  TException {
         logger.info("JobApplicataionService postApplication jobApplication:{}", jobApplication);
@@ -230,6 +234,10 @@ public class JobApplicataionService {
                         (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
                         jobApplication.getOrigin());
             }else{
+                sendMessageAndEmailThreadNew(jobApplicationId, (int) jobApplication.getPosition_id(),
+                        jobApplication.getApply_type(), jobApplication.getEmail_status(),
+                        (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
+                        jobApplication.getOrigin());
                 this.sendNewAtsProcess(jobPositionRecord.getId(),jobPositionRecord.getPublisher(),jobApplicationId,jobPositionRecord.getCompanyId());
             }
             // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
@@ -237,7 +245,6 @@ public class JobApplicataionService {
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
             this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
-            // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
                                                  put("jobApplicationId", jobApplicationId);
@@ -327,7 +334,7 @@ public class JobApplicataionService {
         scheduledThread.startTast(()->{
             amqpTemplate.send(RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_EXCHANGE.getValue(),RabbmitMQConstant.APPLICATION_QUEUE_UPDATE_PROCESS_ROTINGKEY.getValue(),
                     MessageBuilder.withBody(message.getBytes()).build());
-        },500);
+        },15000);
 
     }
     /*
@@ -503,6 +510,29 @@ public class JobApplicataionService {
             }
         });
     }
+
+    private void sendMessageAndEmailThreadNew (int jobApplicationId, int positionId, int applyType, int emailStatus,
+                                            int recommenderUserId, int applierId, int origin) {
+        MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
+        messageEmailStruct.setApplication_id(jobApplicationId);
+        messageEmailStruct.setPosition_id(positionId);
+        messageEmailStruct.setApply_type(applyType);
+        messageEmailStruct.setEmail_status(emailStatus);
+        messageEmailStruct.setRecommender_user_id(recommenderUserId);
+        messageEmailStruct.setApplier_id(applierId);
+        messageEmailStruct.setOrigin(origin);
+        //发送模板消息，短信，邮件
+        tp.startTast(() -> {
+            try {
+                Response resppnse = mqServer.sendMessageAndEmailToDeliveryNew(messageEmailStruct);
+                logger.info("JobApplicataionService response {}", JSON.toJSONString(resppnse));
+                return resppnse;
+            }catch (TException e){
+                return ResponseUtils.fail(e.getMessage());
+            }
+        });
+    }
+
 
     private void handleReferralState(int jobApplicationId) {
         // todo 2019-01-15 需要迁到新服务
@@ -1348,6 +1378,9 @@ public class JobApplicataionService {
                                     0, referenceId, resultVO.getApplierId(),
                                     ApplicationSource.EMPLOYEE_CHATBOT.getValue());
                         }else{
+                            sendMessageAndEmailThreadNew(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
+                                    0, referenceId, resultVO.getApplierId(),
+                                    ApplicationSource.EMPLOYEE_CHATBOT.getValue());
                             //todo 这一段要注意
                             this.sendNewAtsProcess(resultVO.getPositionId(),positionPublisher.get(resultVO.getPositionId()),resultVO.getApplicationId(),employeeDO.getCompanyId());
                         }
@@ -1586,6 +1619,11 @@ public class JobApplicataionService {
 
     public int validateAppid(int appId, int companyId)  throws ApplicationException {
         return jobApplicationDao.validateAppid(appId, companyId);
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher=applicationEventPublisher;
     }
 }
 

@@ -1914,6 +1914,12 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     List<Map<String, Object>> profile_educations = new ArrayList<>();
                     for (Map<String, Object> mp : allProfile_educations) {
                         Integer pid = (Integer) mp.get("profile_id");
+                        if (mp.get("start") == null) {
+                            continue;
+                        }
+                        if (mp.get("end") == null && (byte) mp.get("end_until_now") == 0) {
+                            continue;
+                        }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
                             profile_educations.add(mp);
                         }
@@ -1966,6 +1972,12 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     List<Map<String, Object>> profile_projectexp = new ArrayList<>();
                     for (Map<String, Object> mp : allProfile_projectexp) {
                         Integer pid = (Integer) mp.get("profile_id");
+                        if (mp.get("start") == null) {
+                            continue;
+                        }
+                        if (mp.get("end") == null && (byte) mp.get("end_until_now") == 0) {
+                            continue;
+                        }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
                             profile_projectexp.add(mp);
                         }
@@ -1992,6 +2004,18 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                     List<Map<String, Object>> profile_workexp = new ArrayList<>();
                     for (Map<String, Object> mp : allProfile_workexp) {
                         Integer pid = (Integer) mp.get("profile_id");
+                        if (mp.get("start") == null) {
+                            continue;
+                        }
+                        if (mp.get("end") == null && (byte) mp.get("end_until_now") == 0) {
+                            continue;
+                        }
+                        if (StringUtils.isNullOrEmpty((String) mp.get("description"))) {
+                            continue;
+                        }
+                        if (StringUtils.isNullOrEmpty((String) mp.get("job"))) {
+                            continue;
+                        }
                         if (pid != null && pid.intValue() > 0 && pid.intValue() == profileId.intValue()) {
                             profile_workexp.add(mp);
                         }

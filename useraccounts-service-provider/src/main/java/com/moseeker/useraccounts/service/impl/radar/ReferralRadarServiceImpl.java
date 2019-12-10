@@ -30,12 +30,10 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.SensorSend;
@@ -80,6 +78,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -509,7 +508,26 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         long t1 = System.currentTimeMillis();
-        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+       //调回alphacloud取出公司配置信息
+        Integer newAtsStatus = null;
+        List<JobApplicationDO> jobApplicationDOS;
+        try {
+            String url = AlphaCloudProvider.Company.buildURL("v4/company/conf/companyId");
+            String getResult = HttpClient.sendGet(url, "companyId=" + companyId);
+            logger.info("ReferralRadarServiceImpl.getProgressBatch v4/company/conf/companyId : {}", getResult);
+            JSONObject jsonResult = JSON.parseObject(getResult);
+            if ("0".equals(jsonResult.getString("code"))) {
+                newAtsStatus = JSON.parseObject(getResult).getJSONObject("data").getInteger("newAtsStatus");
+            }
+        } catch (Exception e) {
+
+        }
+        //是否开通MoAts
+        if (newAtsStatus != null && newAtsStatus == 1) {
+            jobApplicationDOS = getQueryJobApplications(progressInfo);
+        } else {
+            jobApplicationDOS = getQueryJobApplications(progressInfo, true);
+        }
         long t2 = System.currentTimeMillis();
         logger.info("ReferralRadarServiceImpl getProgressBatch time consuming for getQueryJobApplications : {}",t2-t1);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
@@ -575,6 +593,35 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             throw UserAccountException.PROGRAM_EXCEPTION;
         }
 
+    }
+
+    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo) {
+        HashMap<String, Object> params = new HashMap<>();
+        String userName = progressInfo.getKeyword();
+        if (!StringUtils.isEmpty(userName)) {
+            List<Integer> applierIds = userUserDao.fetchByName(userName).stream().map(UserUserRecord::getId).collect(Collectors.toList());
+            params.put("applierIds", applierIds);
+        }
+
+        params.put("userId", progressInfo.getUserId());
+        params.put("companyId", progressInfo.getCompanyId());
+        params.put("progress", progressInfo.getProgress());
+        params.put("pageNum", progressInfo.getPageNum());
+        params.put("pageSize", progressInfo.getPageSize());
+        //int userId, int companyId, List<Integer> applierIds, List<Integer> progress
+        try {
+            String applicationUrl = AlphaCloudProvider.Application.buildURL("/v4/application/process/toc");
+            String appsString = HttpClient.sendPost(applicationUrl, JSON.toJSONString(params));
+            logger.info("ReferralRadarServiceImpl.getQueryJobApplications : {}", appsString);
+            JSONObject jsonResult = JSON.parseObject(appsString);
+            if ("0".equals(jsonResult.getString("code"))) {
+                List<JobApplicationDO> result = JSON.parseArray(jsonResult.getJSONObject("data").getString("data"), JobApplicationDO.class);
+                return result;
+            }
+        } catch (ConnectException e) {
+            logger.error("ReferralRadarServiceImpl.getQueryJobApplications /v5/application/process/toc error :", e);
+        }
+        return new ArrayList<>();
     }
 
     public void createApplyCard(JobApplicationDO jobApplicationDO,Map<Integer, JobPositionDO> positionMap,

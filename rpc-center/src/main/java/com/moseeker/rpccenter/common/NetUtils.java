@@ -196,7 +196,8 @@ public class NetUtils {
         if (address == null || address.isLoopbackAddress())
             return false;
         String name = address.getHostAddress();
-        return (name != null && !ANYHOST.equals(name) && !LOCALHOST.equals(name) && IP_PATTERN.matcher(name).matches());
+        return (name != null && !ANYHOST.equals(name) && !LOCALHOST.equals(name) && IP_PATTERN.matcher(name).matches()
+                && !name.startsWith("192"));
     }
 
     /**
@@ -254,7 +255,7 @@ public class NetUtils {
                         if (addresses != null) {
                             while (addresses.hasMoreElements()) {
                                 InetAddress address = addresses.nextElement();
-                                LOGGER.info("NOC NetUtils getLocalAddress0 ", address.getHostAddress());
+                                LOGGER.info("NOC NetUtils getLocalAddress0:{}", address.getHostAddress());
                                 if (isValidAddress(address)) {
                                     LOGGER.info("NOC NetUtils getLocalAddress0 address is valid!");
                                 } else {

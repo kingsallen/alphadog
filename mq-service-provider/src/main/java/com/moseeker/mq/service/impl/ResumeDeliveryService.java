@@ -284,7 +284,117 @@ public class ResumeDeliveryService {
         }
         return  ResponseUtils.success("success");
     }
+    //用于兼容newats
+    public Response sendMessageAndEmailNew(MessageEmailStruct messageEmailStruct) {
 
+        logger.info("sendMessageAndEmail messageEmailStruct :{}", messageEmailStruct);
+
+        if(messageEmailStruct != null && messageEmailStruct.getPosition_id() >0 && messageEmailStruct.getApplier_id()>0 && messageEmailStruct.getOrigin() != 128){
+            if(messageEmailStruct.getApply_type() == 1 && messageEmailStruct.getEmail_status() != 0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            }
+            JobPositionDO positionDo = positionDao.getData(new Query.QueryBuilder().where(JobPosition.JOB_POSITION.ID.getName(),
+                    messageEmailStruct.getPosition_id()).buildQuery());
+            if(positionDo == null){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+            HrCompanyDO companyDO = companyAccountDao.getHrCompany(positionDo.getPublisher());
+            if(companyDO == null ) return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            int companyId = companyDO.getId();
+            if(companyDO.getParentId() != 0)
+                companyId = companyDO.getParentId();
+            UserHrAccountDO accountDo = accountDao.getData(new Query.QueryBuilder().where(UserHrAccount.USER_HR_ACCOUNT.ID.getName(),
+                    positionDo.getPublisher()).buildQuery());
+            UserWxUserDO hrWxUserDo = null;
+
+            List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
+            //申请者用户
+            UserUserDO userUserDO = userDao.getData(new Query.QueryBuilder().where(UserUser.USER_USER.ID.getName(),
+                    messageEmailStruct.getApplier_id()).buildQuery());
+            if(userUserDO == null)
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+
+            //投递者关注的微信公众号
+            HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
+                    companyId).buildQuery());
+
+
+            //仟寻招聘助手
+            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
+                    env.getProperty("wechat.helper.signature")).buildQuery());
+
+            if(accountDo != null) {
+                //获取hr的微信号
+                hrWxUserDo = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
+                        accountDo.getWxuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrWxWechatDO.getId()).buildQuery());
+            }
+            //关注的聚合号
+            HrWxWechatDO aggregationChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
+                    env.getProperty("wechat.qx.signature")).buildQuery());
+            //向求职者发送的模板
+
+            HrWxTemplateMessageDO templateMessageDO = null;
+            HrWxTemplateMessageDO templateMessageDOForRecom = null;
+            if(hrChatDO != null) {
+                templateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_APPLY_NOTICE_TPL).and("disable", "0").buildQuery());
+                //向推荐者
+                templateMessageDOForRecom = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL).and("disable", "0").buildQuery());
+            }
+            HrWxTemplateMessageDO templateMessageDOForHr = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                    hrWxWechatDO.getId()).and("sys_template_id", Constant.TEMPLATES_NEW_RESUME_TPL).and("disable","0").buildQuery());
+            //工作年限
+            String workExp = calculate_workyears(messageEmailStruct.getApplier_id()+"");
+            String lastWorkName = lastWorkName(messageEmailStruct.getApplier_id()+"");
+
+            logger.info("sendMessageAndEmail origin :{}, workExp:{}, lastWorkName:{}", messageEmailStruct.getOrigin(), workExp, lastWorkName);
+
+            switch (messageEmailStruct.getOrigin()){
+                case 1:{
+                    sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                            workExp, lastWorkName, companyDO);
+                    sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
+                }
+                break;
+
+                case 524288: // 邀请投递申请
+                case 1048576 :// 员工转发申
+                    //企业号
+                case 2:{
+
+                    sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                            workExp, lastWorkName, companyDO);
+                    sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
+                }
+                break;
+                //聚合号
+                case 4:{
+                    Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                            workExp, lastWorkName, companyDO);
+                    sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
+                }
+                break;
+                //内推推荐评价
+                case 262144: {
+                    Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                            workExp, lastWorkName, companyDO);
+                    sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
+                }
+                break;
+                //简历回流
+                default:{
+                    Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                            workExp, lastWorkName, companyDO);
+                    sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
+                }
+            }
+
+        }else{
+            return  ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        return  ResponseUtils.success("success");
+    }
 
 
     /**

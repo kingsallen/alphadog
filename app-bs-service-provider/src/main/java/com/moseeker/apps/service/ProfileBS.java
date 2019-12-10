@@ -2,14 +2,16 @@ package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.google.common.collect.Lists;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
@@ -23,7 +25,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -48,7 +50,6 @@ public class ProfileBS {
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICE_MANAGER
             .getService(JobApplicationServices.Iface.class);
 
-
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -57,17 +58,16 @@ public class ProfileBS {
     @Autowired
     private UserUserDao userUserDao;
 
-    private ScheduledThread scheduledThread=ScheduledThread.Instance;
+    private ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-
     @SuppressWarnings("unchecked")
 //    @CounterIface
-    public Response retrieveProfile(int positionId, String profile, int channel) throws TException {
+    public Response retrieveProfile(int positionId, String profile, int channel, String newchannel) throws TException {
 
-        logger.info("ProfileBS retrieveProfile positionId:{}, channel:{}", positionId, channel);
+        logger.info("ProfileBS retrieveProfile positionId:{}, channel:{}, newchannel:{}", positionId, channel, newchannel);
 
         if (positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
             return ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
@@ -107,7 +107,7 @@ public class ProfileBS {
 
         //更新profile数据
         resume.put("channel", channel);
-		try {
+        try {
             //查询是否存在相同手机号码的C端帐号
             Query findRetrieveUserQU = new Query.QueryBuilder().where("mobile", mobile).and("country_code", countryCode).and("source", UserSource.RETRIEVE_PROFILE.getValue()).buildQuery();
             UserUserDO user = userUserDao.getData(findRetrieveUserQU); //userDao.getUser(findRetrieveUserQU);
@@ -120,6 +120,7 @@ public class ProfileBS {
                 //查找该帐号是否有profile
                 int origin = ApplicationSource.channelToOrigin(channel);
                 JobApplication application = initApplication(user.getId(), positionId, position.getCompany_id(), origin);
+//                application.setChannel(convert2ChannelList(newchannel));
                 logger.info("ProfileBS retrieveProfile application:{}", application);
                 //更新用户数据
                 map.put("id", user.getId());
@@ -133,11 +134,11 @@ public class ProfileBS {
                     logger.info("ProfileBS retrieveProfile profile exist");
                     Response improveProfile = wholeProfileService.improveProfile(JSON.toJSONString(resume));
                     if (improveProfile.getStatus() == 0) {
-    //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
-    //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+                        //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
+                        //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
                         Response response = applicationService.postApplication(application);
-    //                        return response;
-    //                    }
+                        //                        return response;
+                        //                    }
                         this.updateDataProfileIndex(user.getId());
                         return ResultMessage.SUCCESS.toResponse(new JSONObject());
                     } else {
@@ -148,7 +149,7 @@ public class ProfileBS {
                     logger.info("ProfileBS retrieveProfile profile not exist");
                     //如果不存在profile，进行profile创建
                     Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
-                    logger.info("ProfileBS retrieveProfile response:{}",response);
+                    logger.info("ProfileBS retrieveProfile response:{}", response);
                     if (response.getStatus() == 0) {
                         applicationService.postApplication(application);
                         this.updateDataProfileIndex(user.getId());
@@ -183,10 +184,11 @@ public class ProfileBS {
                         // 判断来源
                         int origin = ApplicationSource.channelToOrigin(channel);
                         JobApplication application = initApplication(userId, positionId, position.getCompany_id(), origin);
-    //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
-    //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
+//                        application.setChannel(convert2ChannelList(newchannel));
+                        //                    Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
+                        //                    if (getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
                         applicationService.postApplication(application);
-    //                    }
+                        //                    }
                         this.updateDataProfileIndex(userId);
                         return ResultMessage.SUCCESS.toResponse(new JSONObject());
                     } else {
@@ -195,21 +197,20 @@ public class ProfileBS {
                     }
                 }
             }
-		} catch (TException e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-		}
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+        }
         return ResponseUtils.success(new JSONObject());
     }
 
-    private void updateDataProfileIndex(int userId){
-        scheduledThread.startTast(()->{
+    private void updateDataProfileIndex(int userId) {
+        scheduledThread.startTast(() -> {
             logger.info("================data/profile===========ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS======");
-            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
-            logger.info("================userid={}=================",userId);
-        },6000);
+            redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS", String.valueOf(userId));
+            logger.info("================userid={}=================", userId);
+        }, 6000);
     }
-
 
     private JobApplication initApplication(int applierId, int positionId, int companyId, int origin) {
         JobApplication application = new JobApplication();
@@ -244,4 +245,21 @@ public class ProfileBS {
         this.applicationService = applicationService;
     }
 
+    private List<Map<String, String>> convert2ChannelList(String channelJson) {
+        List<Map<String, String>> channelList = Lists.newArrayList();
+        try {
+            if (StringUtils.isNotNullOrEmpty(channelJson)) {
+                channelList = JSON.parseObject(channelJson, new TypeReference<List<Map<String, String>>>() {
+                });
+            }
+        } catch (Exception e) {
+            logger.error("error: ", e);
+        }
+        return channelList;
+    }
+
+    public static void main(String[] args) {
+//        List<Map<String, String>> maps = convert2ChannelList("[{\"code\":\"PU0013\",\"source_id\":\"4\"},{\"code\":\"PU0013\",\"source_id\":\"6\"}]");
+//        System.out.println(maps);
+    }
 }

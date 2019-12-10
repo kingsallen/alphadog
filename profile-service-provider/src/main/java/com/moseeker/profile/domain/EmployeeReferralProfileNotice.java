@@ -166,12 +166,17 @@ public class EmployeeReferralProfileNotice {
                 validateUtil.addRegExpressValidate("邮箱", email, FormCheck.getEmailExp());
             }
             validateUtil.addIntTypeValidate("推荐方式", referralType.getValue(), 1, 4);
-            validateUtil.addRequiredValidate("推荐人与被推荐人关系", relationship);
-            validateUtil.addStringLengthValidate("推荐理由文本", referralText, "推荐理由文本长度过长", "推荐理由文本长度过长",null, 201);
-            validateUtil.addSensitiveValidate("推荐理由文本", referralText, null, null);
+            // 推荐人才关键信息页面 推荐人关系及推荐理由非必填
+            if(!ReferralType.PostInfo.equals(referralType)){
+                validateUtil.addRequiredValidate("推荐人与被推荐人关系", relationship);
+                validateUtil.addStringLengthValidate("推荐理由文本", referralText, "推荐理由文本长度过长", "推荐理由文本长度过长",null, 201);
+                validateUtil.addSensitiveValidate("推荐理由文本", referralText, null, null);
+            }
             String validateResult = validateUtil.validate();
-            if(com.moseeker.common.util.StringUtils.isEmptyList(referralReasons) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralText)){
-                validateResult =validateResult+ "推荐理由标签和文本必填任一一个；";
+            if(!ReferralType.PostInfo.equals(referralType)){
+                if(com.moseeker.common.util.StringUtils.isEmptyList(referralReasons) && com.moseeker.common.util.StringUtils.isNullOrEmpty(referralText)){
+                    validateResult =validateResult+ "推荐理由标签和文本必填任一一个；";
+                }
             }
             if(checkPositionTemplate){
                 companyCustomize = addValidateReferralByTemplate(validateUtil);
