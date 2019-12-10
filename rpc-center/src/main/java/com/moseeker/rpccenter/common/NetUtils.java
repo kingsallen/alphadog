@@ -196,7 +196,8 @@ public class NetUtils {
         if (address == null || address.isLoopbackAddress())
             return false;
         String name = address.getHostAddress();
-        return (name != null && !ANYHOST.equals(name) && !LOCALHOST.equals(name) && IP_PATTERN.matcher(name).matches());
+        return (name != null && !ANYHOST.equals(name) && !LOCALHOST.equals(name) && IP_PATTERN.matcher(name).matches()
+                && !name.startsWith("192"));
     }
 
     /**
