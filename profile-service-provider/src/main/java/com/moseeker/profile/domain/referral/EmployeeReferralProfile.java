@@ -93,6 +93,8 @@ public abstract class EmployeeReferralProfile {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    private ScheduledThread scheduledThread=ScheduledThread.Instance;
+
 
     protected abstract void validateReferralInfo(EmployeeReferralProfileNotice profileNotice);
 
@@ -250,9 +252,9 @@ public abstract class EmployeeReferralProfile {
                                 addTime(String.format("employeeReferralProfileAdaptor.lock[%d].handleRecommend:after",i),timeRecords,startTime);
                                 try {
                                     tp1.startTast(() -> {
-                                        logger.info("============三秒后执行=============================");
+                                        logger.info("============十秒后执行=============================");
                                         updateApplicationEsIndex(attementVO.getUserId());
-                                    }, 3000);
+                                    }, 10000);
                                 } catch (Exception e) {
                                     logger.error(e.getMessage(), e);
                                     throw ProfileException.PROGRAM_EXCEPTION;
