@@ -252,7 +252,7 @@ public abstract class EmployeeReferralProfile {
                                 addTime(String.format("employeeReferralProfileAdaptor.lock[%d].handleRecommend:after",i),timeRecords,startTime);
                                 try {
                                     tp1.startTast(() -> {
-                                        logger.info("============三秒后执行=============================");
+                                        logger.info("============十秒后执行=============================");
                                         updateApplicationEsIndex(attementVO.getUserId());
                                     }, 10000);
                                 } catch (Exception e) {
